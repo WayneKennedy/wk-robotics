@@ -11,7 +11,7 @@
 
 - [micro-ROS](https://micro.ros.org/) — the ROS 2 client library for microcontrollers.
 - [`micro-ROS/micro_ros_arduino`](https://github.com/micro-ROS/micro_ros_arduino) — the
-  Arduino/Teensy library, and the authority on board support (see OQ-03).
+  Arduino/Teensy library, and the authority on board support (see DEC-10).
 - [Zenoh](https://zenoh.io/) — `rmw_zenoh` and `zenoh-bridge-ros2dds`, the candidate
   transport for links that leave one LAN segment (OQ-05).
 - [Nav2](https://docs.nav2.org/) and `slam_toolbox` / RTAB-Map — reuse the hexapod's

@@ -20,6 +20,4 @@ Each entry: date · what was tested · conditions · result · what changed as a
 From [`roadmap.md`](roadmap.md) milestone 0, in order:
 
 - Motor bracket and sprocket shaft dimensions (OQ-11).
-- micro-ROS example flashed to the Teensy 4.0 — does the "Not tested" board work
-  (OQ-03).
 - Measured current draw of the drivetrain at realistic duty and at stall (DEC-07).

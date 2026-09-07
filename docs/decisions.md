@@ -19,8 +19,7 @@ not accepted are open questions, not decisions**, and are marked as such there.
 - **DEC-02 — Target ROS 2, with the reflex tier on a 32-bit MCU running micro-ROS.**
   (Owner, 2026-09-07.) The robot joins the family
   [topic contract](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#the-topic-contract)
-  rather than carrying a private protocol. **Teensy 4.0 is the owner's named candidate**
-  — see OQ-03, which is not a rejection of it but a support caveat worth closing early.
+  rather than carrying a private protocol. Which board runs it is DEC-10.
 
 - **DEC-03 — The fitted Arduino Nano and L298N are retired.** Follows necessarily from
   DEC-02 and from the family's own sourcing rules: the Nano is an 8-bit AVR and
@@ -58,3 +57,14 @@ not accepted are open questions, not decisions**, and are marked as such there.
 - **DEC-09 — The repository is the memory.** No project fact, measurement or decision
   lives only in a chat log or an assistant's private memory. This repo is public, so
   capabilities may be described but the machines providing them are never named.
+
+- **DEC-10 — The MCU is a Teensy 4.1.** (Owner, 2026-09-07.) Upstream lists the **4.1 as
+  Supported** and the **4.0 as "Not tested"** — the board table and the checked date are a
+  family fact and live
+  [in wk-robotics](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#micro-ros-how-the-mcu-joins-the-graph).
+  Two things closed this together. **This robot must buy an MCU regardless:** koala-bot's
+  Teensy 4.0 is not spare — qty 1 in its confirmed order, purchased 2026-09-01
+  (`koala-bot/docs/sourcing.md`). And **the owner will not buy a second untested board**:
+  any Teensy bought from here is a 4.1. Buying the supported part rather than the one that
+  needs proving takes the bench test off this project's critical path entirely. Resolves
+  the former OQ-03; the equivalent question stays live for koala-bot, which owns the 4.0.

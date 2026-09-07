@@ -14,11 +14,10 @@ No purchases. Close the questions that gate everything else:
    until a replacement motor is known to fit.
 2. **Resolve the motor question** (OQ-01) — the rail voltage, and therefore the battery
    and driver, follow from it.
-3. **Flash a micro-ROS example to the Teensy 4.0** (OQ-03). Upstream lists it as "Not
-   tested"; ten minutes now beats discovering it mid-firmware.
-4. **Compute the power budget** (DEC-07) at realistic duty, with stall headroom.
+3. **Compute the power budget** (DEC-07) at realistic duty, with stall headroom.
 
-**Exit:** OQ-01, OQ-03 and OQ-11 closed; a power budget exists on paper.
+**Exit:** OQ-01 and OQ-11 closed; a power budget exists on paper. The MCU no longer needs
+proving on the bench — DEC-10 buys the upstream-supported board instead.
 
 ## Milestone 1 — A robot that drives *(no perception at all)*
 
