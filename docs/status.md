@@ -44,42 +44,6 @@ state; a session that adds to it is expected to leave it complete.
 
 ## Open threads
 
-### Open Duck Mini V2 — pivot or addition? **(open, 2026-09-07)**
-
-A candidate external build is on the bench: **Open Duck Mini V2**, a ~42 cm RL-walking
-biped. Full facts, BOM, stack and caveats are in
-[`ideas.md`](ideas.md#open-duck-mini-v2) — not repeated here.
-
-**Why it is a status item and not just an idea:** it was raised as a *pivot*, and the only
-thing it could pivot away from is koala-bot V1, which has **~£460 of hardware purchased
-(2026-09-01)** and is mid-CAD. So the question spans two projects.
-
-**What is established:**
-
-- The reuse is the printer and the Feetech STS *family*, not parts. Different servo
-  variant (7.4 V vs 12 V), different bus voltage, no ROS 2, no reflex MCU.
-- It is the only candidate that delivers **RL sim-to-real**, which no current project does.
-- Two pretrained ONNX walk policies ship with the design, so building it does not require
-  training — which matters, because there is no NVIDIA GPU on the workstation.
-
-**Recommendation, not a decision:** take it as an *addition* framed as the RL vehicle, not
-as a rescue for koala-bot's CAD phase — park koala at a clean checkpoint (lower body
-printed, so the DEC-26→29 revisions have a physical result), rather than abandoning it.
-Two cheap de-risking steps before any spend: **a TPU test print**, and **running a shipped
-ONNX policy in MuJoCo on CPU** to prove the toolchain.
-
-**The one irreversible part of the decision is the servo order.** Building it modified
-towards the family pattern (12 V, reflex MCU, ROS 2) is attractive and partly cheap — the
-policy's trained delay tolerance is 0–60 ms, so an MCU fits — but the actuator kp envelope
-is only ±10 %, so a 12 V build risks the shipped policies not transferring. The
-recommendation is **7.4 V and stock first**, then modify against a working baseline;
-reasoning and the verified numbers are in
-[`ideas.md`](ideas.md#stock-or-modified--the-fork-that-must-be-decided-before-buying).
-
-**Unresolved:** whether to build it at all; if so, whether koala-bot pauses or continues in
-parallel; and whether a fourth active build is sustainable alongside the hexapod's Nav2
-work and the SO-ARM101 print. Nothing is committed and nothing is ordered.
-
 ### `fn-hexapod` cannot track upstream
 
 **What was established (2026-09-07, from the GitHub API):** `WayneKennedy/fn-hexapod` is

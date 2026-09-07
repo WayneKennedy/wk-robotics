@@ -60,6 +60,10 @@ what the build *teaches* and what it costs to run alongside the others.
 
 ### Open Duck Mini V2
 
+> **Parked 2026-09-07, the day it was raised.** Considered as a pivot away from koala-bot
+> and rejected as one: koala-bot remains the active design project. Not a judgement on the
+> design — everything below was verified and still holds. This is a *when*, not a *whether*.
+
 **A ~42 cm bipedal BDX-droid replica that walks from a reinforcement-learned policy.**
 Upstream is [`apirrone/Open_Duck_Mini`](https://github.com/apirrone/Open_Duck_Mini),
 Apache-2.0, default branch **`v2`** — 3,988 stars, 510 forks (checked 2026-09-07). The
@@ -193,7 +197,10 @@ one, every modification is a measurable delta. Suggested order afterwards, cheap
 most reversible first: **MCU + micro-ROS → IMU swap → 12 V / 3S conversion last**, since
 only the last requires re-identification and re-training.
 
-**Whether to build it is open** — see the pivot thread in [`status.md`](status.md).
+**If it is ever picked up**, start from the recommendation above — 7.4 V servos, stock
+build first — rather than re-deriving it. The two open technical questions are the 12 V
+kp envelope and whether a 3S pack fits the battery bay; both are cheap to close and
+neither has been.
 
 ---
 
