@@ -20,7 +20,7 @@ moves here and they link back.
 
 | Project | What it is | State | Repo |
 |---|---|---|---|
-| **koala-bot** | Self-balancing, knee-wheeled companion robot; first of a printable family | Design phase — CAD started, coupons printed, V1 hardware ordered | [WayneKennedy/koala-bot](https://github.com/WayneKennedy/koala-bot) (public) |
+| **koala-bot** | Self-balancing, knee-wheeled companion robot; first of a printable family | Design phase — CAD started, coupons printed; V1 hardware ordered, first servos in hand | [WayneKennedy/koala-bot](https://github.com/WayneKennedy/koala-bot) (public) |
 | **wk-devastator** | Tracked ROS 2 robot on a DFRobot Devastator chassis; resurrection of a stalled build | Design record only — nothing built; motor question gates the rest | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) (public) |
 | **wk-hexapod** | ROS 2 autonomous hexapod on Freenove Big Hexapod hardware | Locomotion, odometry and perception done; SLAM and Nav2 in progress | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) (public) |
 | **SO-ARM101** | Standard Open Arm — LeRobot-compatible manipulator, built from the upstream design | Printing the follower arm; plate 1 of 4 complete | [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) (upstream) |

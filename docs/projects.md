@@ -18,7 +18,7 @@ via 2-DOF hips, gestures with 3-DOF dual-purpose front limbs, and looks at you t
 | | |
 |---|---|
 | Repo | [WayneKennedy/koala-bot](https://github.com/WayneKennedy/koala-bot) — public |
-| State | Pre-alpha, design phase. CAD started, fit coupons printed, V1 hardware ordered |
+| State | Pre-alpha, design phase. CAD started, fit coupons printed; V1 hardware ordered, and a test-fit pair of 12 V ST3215 servos in hand since 2026-09-07 |
 | Compute | Raspberry Pi 5 + ROS 2 (intent) · real-time MCU, Teensy 4.0 leading (reflex) |
 | Actuation | Feetech STS3215 12 V bus servos (limbs) · STS3032M 6 V (neck) · 12 V geared DC + encoder (drive wheels) |
 | Power | Single ~12 V rail, 3S LiPo; separate 5 V buck for the Pi |
