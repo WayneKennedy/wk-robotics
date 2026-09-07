@@ -89,6 +89,10 @@ The hexapod is the exception — 20 hobby servos on a **PCA9685** I²C PWM drive
 from the Freenove kit. No feedback, no bus addressing. It works because a statically
 stable walker can tolerate open-loop position control in a way a balancing robot cannot.
 
+**A 3S LiPo is the ceiling for STS3215.** A full 3S is 12.6 V, within the servo's 12 V
+rating; 4S at 16.8 V destroys them. This constrains the power architecture of any project
+using them.
+
 ### Configuring a servo — true for every STS project
 
 The bus is a **single-wire half-duplex TTL UART**, 3-pin (V+, GND, signal), 1 Mbaud by
@@ -128,10 +132,6 @@ SUBSYSTEM=="usb-serial", DRIVER=="ftdi_sio", ATTR{latency_timer}="1"
 
 (Sourced from the Open Duck Mini V2 runtime's Pi setup, which ships exactly this rule.
 **Which USB-serial chip the FE-URT-1 presents is unverified** — check on first plug-in.)
-
-**A 3S LiPo is the ceiling for STS3215.** A full 3S is 12.6 V, within the servo's 12 V
-rating; 4S at 16.8 V destroys them. This constrains the power architecture of any project
-using them.
 
 ---
 
