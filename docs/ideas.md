@@ -339,6 +339,68 @@ neither has been.
 
 Threads worth pulling that are not yet attached to a specific build.
 
+### Physical AI and the hive mind
+
+**The stated direction of the work (owner, 2026-09-07): understand *Physical AI* by doing
+it, aiming at a "hive mind" — a central AI coordinator and reasoning machine, with remote
+physical agents that extend its area of awareness.** This is an aspiration, not a plan;
+nothing on this page is committed. It is recorded here because it reframes what the other
+projects are *for*, and that is a fact about the work even when the build is not decided.
+
+**It is a third tier on the existing architecture, not a new one.**
+[The two-tier split](common.md#compute-the-two-tier-split) already separates reflex (MCU,
+~1 kHz, deterministic) from intent (on-robot Pi, ROS 2). A coordinator is a third band
+above those, operating in seconds.
+
+| Tier | Where | Band | Survives loss of the tier above? |
+|---|---|---|---|
+| Reflex | MCU | ~200–1000 Hz | Must |
+| Intent | On-robot Pi | ~1–50 Hz | Must |
+| **Coordination** | Central machine | seconds | n/a |
+
+**The load-bearing rule is the same one, extended: each tier must stay useful when the
+tier above it is unreachable.** A robot whose link to the coordinator drops degrades to
+autonomous; it does not stop. A fleet that dies when the network hiccups is the failure
+mode this rule exists to prevent.
+
+**What the problem actually consists of**, in rough order of difficulty:
+
+- **Share a world model, not sensor streams.** Raw depth from several robots will not
+  cross a LAN — a constraint already met at single-robot scale on
+  [the tank](#devastator-tank-platform). Each robot runs its own SLAM and perception; the
+  core receives poses, semantic observations and map fragments. "Extending the area of
+  awareness" is a **map-merge** problem, not a streaming one.
+- **Map merging is the hard part.** Each robot's `map` frame is arbitrary until something
+  aligns them, and robots that have never seen the same place share no frame at all. The
+  tractable versions are a shared known origin or fiducials at surveyed positions; the
+  general case is a research problem.
+- **Time sync is the prerequisite nobody enjoys.** Fusing observations across robots needs
+  a common clock — `chrony` across the fleet at minimum.
+- **DDS does not travel.** ROS 2 discovery is multicast and works on one LAN segment; it
+  degrades across WiFi, subnets and overlay networks. The current answer for multi-robot
+  and wide-area ROS 2 is **Zenoh** (`rmw_zenoh`, or `zenoh-bridge-ros2dds` alongside
+  existing DDS). Worth knowing before designing around plain DDS.
+
+**The gap: the coordinator has no hardware.** The workstation has **no NVIDIA GPU**
+(verified 2026-09-07), so local VLM/LLM inference is not available. The core is therefore
+cloud APIs or a machine not yet owned — the same constraint that rules out training
+[duck](#open-duck-mini-v2) policies locally. **Undecided.**
+
+**What this implies for sequencing.** A hive needs **two bodies speaking one contract**,
+and there is currently one partly-working robot. So this direction is the *motivation* for
+[a shared ROS 2 package](#a-shared-ros-2-package-across-robots), which is argued down
+elsewhere on this page as premature — the argument changes if the fleet is the goal rather
+than a by-product. The cheapest second node is [the tank](#devastator-tank-platform):
+already owned, and a differential-drive base is the easiest body Nav2 will ever drive.
+koala-bot and the duck are **capability** projects (balance, learned locomotion) rather
+than fleet projects, and do not shorten this path.
+
+**Note on the term.** *Physical AI* is a current industry label for systems that perceive
+and act in the world through learned policies rather than hand-written control. Two
+entry points already exist on this page: [the duck](#open-duck-mini-v2) for RL sim-to-real
+locomotion, and [LeRobot](#lerobot-and-learned-manipulation) for learned manipulation on
+the SO-ARM101. The hive mind is the systems layer above both, not a substitute for either.
+
 ### A shared ROS 2 package across robots
 
 The [topic contract](common.md#the-topic-contract) is currently a convention held in
@@ -354,6 +416,9 @@ patterns — that every robot depends on rather than reimplements.
   and a differential-drive base speaks `/cmd_vel` natively with no gait or balance loop in
   the way. A modified [Open Duck Mini V2](#open-duck-mini-v2) running koala-bot's reflex
   firmware would be another, at considerably more effort.
+- **What reframes it entirely:** [the hive mind](#physical-ai-and-the-hive-mind). If a
+  fleet is the goal rather than a by-product, a shared contract is the point of the work,
+  not an extraction from it.
 - **Unresolved:** whether to wait for koala-bot's stack to exist before extracting anything.
 
 ### LeRobot and learned manipulation
