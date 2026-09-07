@@ -50,6 +50,7 @@ The strongest threads today:
 
 | File | Contents |
 |---|---|
+| [`docs/status.md`](docs/status.md) | Where things stand and what is in flight — **read this to pick work up** |
 | [`docs/projects.md`](docs/projects.md) | Per-project detail: hardware, status, entry points |
 | [`docs/common.md`](docs/common.md) | The shared substrate — printing, actuators, compute, power |
 | [`docs/ideas.md`](docs/ideas.md) | Future project candidates and open discussion |

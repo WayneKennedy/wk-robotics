@@ -58,6 +58,8 @@ Three jobs, and nothing else:
   family, the compute pattern, the conventions. [`docs/common.md`](docs/common.md)
 - **Idea bench** — candidate projects that do not have a repo yet.
   [`docs/ideas.md`](docs/ideas.md)
+- **Handover** — where things stand and what is in flight, so work can be picked up on
+  another machine or in a new session. [`docs/status.md`](docs/status.md)
 
 ### The placement rule
 
@@ -68,6 +70,7 @@ Three jobs, and nothing else:
 | True of *one* project | In that project's repo. Link to it from here; never copy it |
 | True of *several* projects | Here, in `docs/common.md`. The project repos link back |
 | Not yet true of anything | In `docs/ideas.md`, labelled as unbuilt |
+| In flight, spanning projects | In `docs/status.md`, until it resolves or finds a home |
 
 When a fact stops being project-specific, move it here and replace it with a link. When an
 idea earns a repo, move it out of `ideas.md` and into the index.
@@ -119,3 +122,8 @@ This repository doubles as the home for AI sessions that span more than one proj
 design discussion touching both the arm and the printer, say, or an idea that does not
 belong to any existing robot yet. Work that belongs to a single project should be done in
 that project's repo instead.
+
+**Leave the repository complete.** A session ends by writing what it established into a
+file — the index, `docs/common.md`, `docs/ideas.md`, or `docs/status.md` for anything
+still in flight. The next session may be a different assistant on a different machine with
+no history at all; [`docs/status.md`](docs/status.md) is what it reads to carry on.
