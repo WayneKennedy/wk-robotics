@@ -33,12 +33,15 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
   selected — 4.5–28 V, so it covers either outcome of OQ-01, with current sense and
   thermal protection. Reusing the family part also means one driver to understand.
 
-- **OQ-03 — Teensy 4.0 or 4.1.** `micro-ROS/micro_ros_arduino` lists **Teensy 4.1 as
-  Supported and Teensy 4.0 as "Not tested"** (checked 2026-09-07). They share the
-  i.MX RT1062 core and the same Teensyduino support, so the 4.0 is *expected* to work —
-  but that expectation is **unverified**, and koala-bot has already bought a 4.0.
-  **Cheap to close:** flash a micro-ROS example onto the 4.0 and see. Do it before
-  firmware is written around it, not after.
+- **OQ-03 — Teensy 4.0 or 4.1.** micro-ROS upstream has **not tested the 4.0**, while
+  listing the 4.1 as Supported; it is nonetheless expected to work. The board table, the
+  checked date and that reasoning are family facts and live once, in
+  [wk-robotics](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#micro-ros-how-the-mcu-joins-the-graph).
+  What is this repo's alone: **no MCU is bought here yet**, and koala-bot's 4.0 is the
+  in-family part that may or may not be spare (`docs/sourcing.md`). So the choice is
+  live in a way it is not for koala-bot, which tracks the same test as its OQ-14.
+  **Cheap to close:** flash a micro-ROS example onto a 4.0 and see — before firmware is
+  written around it, not after.
 
 - **OQ-07 — Battery chemistry, voltage and capacity.** Follows from OQ-01 and DEC-07.
   Must be sized for **stall current**, not average draw, and prototyping happens from the
