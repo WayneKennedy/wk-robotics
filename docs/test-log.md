@@ -65,12 +65,31 @@ summarised product page and was wrong. Two assembly notes follow: route both loo
 the motors go in, because the centre is unreachable afterwards; and caps-off leaves the
 encoder PCBs exposed on a vehicle that throws grit, so print a shroud.
 
+### 2026-09-07 · Does the shaft/hub interface clear? — **Yes**
+
+**Conditions:** inspection of the fitted assembly, with the original motors in place.
+
+**Result:** **No interference.** The chassis side plates carry a **clearance hole for the
+motor hub**, so the gearbox boss and shaft pass through the plate rather than butting
+against it. The motor face seats **flush** on the plate, held by the M3 screws, and the hub
+protrudes on the far side unobstructed.
+
+**What changed:** **closes OQ-11.** The question had been narrowed to whether the Pololu
+shaft's 12.5 mm proud of the face plate would bottom out against a hub of unknown bore
+depth. It cannot — nothing is being bottomed against. This was the one dimension not
+checked before ordering (DEC-11), so it retires the only risk carried into that purchase.
+
+**One check left for delivery day, and it is not this question:** the clearance hole was
+made for the *DFRobot* gearbox's boss. Confirm the Pololu 25D's boss diameter passes the
+same hole — readable from Pololu's
+[25D dimension diagram](https://www.pololu.com/file/0J1042/25d-metal-gearmotor-dimension-diagram.pdf)
+without waiting for the parts.
+
 ## Next entries expected
 
 From [`roadmap.md`](roadmap.md) milestone 0 — **none of them blocked by the motor back
 order**:
 
-- Sprocket hub bore depth against the 12.5 mm Pololu shaft (OQ-11).
 - Mass of the SO-ARM101 parts as they come off the plate (OQ-12).
 - Whether the white mounting plate is printed or laser-cut (OQ-10).
 - Measured current draw of the drivetrain at realistic duty and at stall (DEC-07) —

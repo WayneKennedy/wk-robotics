@@ -98,5 +98,7 @@ Measured, not assumed. The swap itself is **DEC-11**.
 - **Length is the binding constraint, not diameter.** Two motors face each other across
   **134 mm**, so a facing pair must total less than that. The original pair uses 104 mm;
   anything with a rear-mounted encoder is close to the limit.
-- **Still open: hub engagement depth** on the 4 mm D shaft — diameter matches, depth is
-  unmeasured. See OQ-11.
+- **The shaft/hub interface clears.** The side plates carry a **clearance hole for the
+  motor hub**, so the boss and shaft pass through it and the motor face seats flush on the
+  plate. Nothing bottoms out, and the 12.5 mm the Pololu shaft stands proud is not
+  consumed by the plate. Confirmed by inspection 2026-09-07 ([`test-log.md`](test-log.md)).

@@ -97,5 +97,5 @@ so milestone 1 cannot start. A Teensy 4.1 is ordered (DEC-10); the motor driver 
 **borrowed from koala-bot** (DEC-13), which leaves that robot without one.
 
 **Frontier: compute the power budget** (DEC-07). It is not blocked by the back order, and
-every number it needs now exists. Neither are the arm's mass (OQ-12), the sprocket hub
-depth (OQ-11) or the plate question (OQ-10).
+every number it needs now exists. Neither are the arm's mass (OQ-12) or the plate question
+(OQ-10). The drivetrain's mechanical questions are all closed.

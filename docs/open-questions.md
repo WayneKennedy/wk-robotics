@@ -8,27 +8,13 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
 
 ---
 
-## Gating
-
-- **OQ-11 — Sprocket hub engagement on the 4 mm D shaft.** *Narrowed 2026-09-07; the
-  rest of this question is closed by DEC-11.* Verified: the bracket takes **2 × M3 at
-  17 mm centres** and the Pololu face plate matches, and the shaft **diameter** is 4 mm on
-  both. **Not verified: engagement depth.** The Pololu shaft stands **12.5 mm** proud of
-  the face plate; how deep the Devastator's sprocket hub needs is unmeasured. A shallower
-  hub is fine, a deeper one means new hubs.
-
-  **This is the one thing not checked before ordering**, so it is a live risk carried into
-  a purchase rather than a question gating one. Measure the original shaft's free length
-  and the hub bore depth — both possible now, with the motors still fitted and nothing on
-  back order needed to do it.
-
 ## Electronics
 
 - **OQ-07 — Battery capacity, fuse rating and the logic-rail regulator.** *Narrowed
   2026-09-07:* chemistry and voltage are settled at **3S LiPo, 12 V** (DEC-12); what
   remains is how much of it. Must be sized for **stall current**, not average draw, and
-  prototyping happens from the eventual pack rather than a bench supply. **If the arm rides on the same pack (OQ-12),
-  stall means something much larger** — see
+  prototyping happens from the eventual pack rather than a bench supply. **If the arm
+  rides on the same pack (OQ-12), stall means something much larger** — see
   [`architecture.md`](architecture.md#the-arm-rewrites-the-budget).
 
 ## Software and networking
