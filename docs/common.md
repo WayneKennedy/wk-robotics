@@ -149,8 +149,34 @@ dynamic project should follow:
 real-time and ROS 2 over USB adds jitter that destabilises an inverted pendulum. IMU → PID →
 output closes on the MCU; the Pi sends setpoints and reads telemetry.
 
-**micro-ROS** (DDS-XRCE over serial) makes the MCU a native ROS 2 node, so the boundary is
-a topic contract rather than a bespoke protocol.
+### micro-ROS: how the MCU joins the graph
+
+ROS 2 is a Linux system — its transport is DDS, which assumes an OS, a network stack and
+megabytes of RAM. **An MCU cannot run ROS 2.** micro-ROS is the ROS 2 client library for
+microcontrollers: it replaces DDS with **DDS-XRCE** (*eXtremely Resource Constrained
+Environments*), and the MCU speaks XRCE over serial to a **micro-ROS Agent** process on
+the Linux host, which bridges it into the real DDS graph.
+
+The MCU then *is* a ROS 2 node — it appears in `ros2 topic list`, RViz plots it, Nav2
+drives it. The boundary between the tiers becomes the topic contract rather than a bespoke
+serial protocol that has to be maintained, and re-diverges, per robot. The agent is a
+container:
+
+```bash
+docker run -it --rm -v /dev:/dev --privileged --net=host \
+  microros/micro-ros-agent:rolling serial --dev /dev/ttyACM0 -v6
+```
+
+**It requires a 32-bit target.** An 8-bit AVR (Arduino Uno/Nano) cannot run micro-ROS at
+all — a constraint that decides MCU choice, not just MCU preference.
+
+**Board support, from `micro-ROS/micro_ros_arduino` (checked 2026-09-07):** ESP32,
+Teensy 3.2/3.6, **Teensy 4.1** and Arduino Portenta H7 are listed **Supported**;
+**Teensy 4.0 is listed "Not tested"**, as is Teensy 3.5. RP2040 appears only as a
+community-contributed entry. This matters because **koala-bot has already bought a Teensy
+4.0** (DEC-18). The 4.0 and 4.1 share the same i.MX RT1062 core and the same Teensyduino
+support, so it is *expected* to work — but that expectation is **unverified**, and proving
+it on the bench is worth doing before the firmware is written rather than after.
 
 **Raspberry Pi 5 (8 GB) is the standard intent-tier host** — hexapod brain, koala-bot
 cerebrum, and the printer's Klipper host. One board to know, one image to maintain.

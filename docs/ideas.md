@@ -129,13 +129,52 @@ stripboard serves.
   (toroidal inductor, two trimpots — so constant-voltage and constant-current adjustment)
   is fitted and wired. Its exact part number is **unidentified**, so its rating and its
   actual set-point are unknown; measure before trusting it.
-- **Why it stalled the first time, and how far it got, are unrecorded.** Worth capturing
-  when the project starts — a resurrection that does not know what killed the original is
-  liable to hit the same wall.
+- **Both RealSense cameras were mounted, and that may be its own problem.** Two
+  RealSense D4xx on a **Pi 4** share a single USB 3 host controller, which is a known
+  bandwidth fight. **Unverified here**, but a plausible second reason final bring-up never
+  happened. Start with one camera. Which two models were fitted is **unrecorded** — the
+  hexapod now runs a D435i, and whether that is one of these two is **not established**.
 - **No reflex MCU is obviously needed.** Like the hexapod, a statically stable base can
   drive straight off the Pi; [the two-tier rule](common.md#compute-the-two-tier-split) is
   a balancing-robot rule. Whether a driver-side MCU is still wanted for current sensing
   and a safety watchdog is open.
+
+**Why it stalled (owner's account, recorded 2026-09-07):** the build **petered out on
+battery limitations and over-ambitious scope**. Both Intel RealSense cameras and a
+**Raspberry Pi 4** were mounted on top; the final wiring and programming were never
+finished, so it never ran.
+
+That is consistent with the arithmetic. A Pi 4 under load is ~5–7 W, each RealSense
+~2–3.5 W, and the two 6 V motors draw ~12 W at a modest 1 A each against a **2.3 A stall
+apiece** — call it 25–30 W, asked of a small pack, through an L298N giving away ~2 V of a
+6 V rail. **It was under-powered by design, not abandoned for lack of interest.** A power
+budget is therefore a first-class design task for the resurrection, not an afterthought;
+[power integrity](common.md#power-integrity) already carries the rules, banked from the
+InMoov build stalling on the same class of problem.
+
+**Resurrection direction (owner's intent, 2026-09-07):** keep the **mechanical chassis** —
+it is a high-quality platform and the part worth preserving — and modernise everything
+else. Motors with encoders, a **Teensy 4.0** reflex tier, and ROS 2.
+
+**The strongest single move: swap to 12 V encoder motors, not 6 V ones.** The motors are
+already being replaced, and they are the sole source of the rail conflict above. At 12 V
+the odd rail and its buck disappear, and koala-bot's 3S pack, its Pololu Dual TB9051FTG
+and its power work all transfer unchanged. **To check before ordering:** the Devastator's
+motor bracket is sized for its own gearmotor (koala-bot's 37D class is likely too large —
+**unverified**), and the drive sprocket currently takes a **4 mm** shaft.
+
+**How ROS 2 and micro-ROS divide** — they are not alternatives, they run on different
+processors. Teensy runs **micro-ROS**: encoder decoding, the PID velocity loop, motor PWM,
+safety watchdog. Pi runs **ROS 2**: SLAM, Nav2, mission. See
+[the two-tier split](common.md#compute-the-two-tier-split) and
+[micro-ROS](common.md#micro-ros-how-the-mcu-joins-the-graph). Note the tank's
+justification for an MCU differs from koala-bot's: not a balance loop, but quadrature
+decoding and closed-loop wheel velocity, which want determinism for their own reasons.
+
+**Suggested staging, given that over-scope is the recorded cause of death:** milestone 1 is
+chassis + encoder motors + Teensy + driver + battery, delivering teleop over `/cmd_vel`
+with real `/wheel_odom` and **no perception at all** — a complete, testable robot.
+Perception is milestone 2, one camera. Nav2 is milestone 3.
 
 **Next step:** this earns a repository as soon as it is real work — at which point it moves
 out of here into [`README.md`](../README.md) and [`projects.md`](projects.md), per the
