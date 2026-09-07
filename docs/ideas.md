@@ -101,9 +101,9 @@ see below.
 
 - **The servo overlap is family-level, not part-level.** The duck is the **7.4 V**
   STS3215 on a 2S pack; koala-bot and SO-ARM101 use the **12 V** variant on 3S. Separate
-  part number, separate spares pool, separate bus voltage. Whether a 12 V unit can serve
-  at 7.4 V is **unverified**, and the shipped policies were identified (BAM) against 7.4 V
-  actuator dynamics — assume a fresh 14-servo order.
+  part number, separate spares pool, separate bus voltage — assume a fresh 14-servo order
+  either way. What a 12 V build would cost is worked through under
+  [stock or modified](#stock-or-modified--the-fork-that-must-be-decided-before-buying).
 - **TPU is unproven on the Ender-5 S1.** The validated material set is PETG and PLA+
   ([`common.md`](common.md#materials-in-use)). Two foot-sole parts need TPU. Test print
   before committing.
@@ -124,6 +124,75 @@ see below.
   upstream fixes.
 - **Part sizes have not been checked** against koala-bot's ≤ 200 × 200 mm design rule.
 
+#### Stock or modified — the fork that must be decided before buying
+
+Modifying the design toward the family pattern (12 V servos, a reflex MCU, ROS 2) is an
+obvious temptation. The verified control-loop facts decide how much each modification
+actually costs. All of the following were read from upstream on 2026-09-07.
+
+**How the stock robot is actually controlled.** `rustypot_position_hwi.py` writes **goal
+positions** over rustypot at 1 Mbaud, with **kp = 32, kd = 0** loaded into each servo's
+internal loop. The policy runs at **50 Hz** (`ctrl_dt=0.02`, `sim_dt=0.002` in
+`playground/open_duck_mini_v2/joystick.py`). The IMU is a **BNO055** on I²C, driven by
+`adafruit_bno055` in `IMUPLUS_MODE` with an axis remap for upside-down mounting
+(`mini_bdx_runtime/imu.py`) — **an IMU is already in the design; it is not a modification.**
+
+**The training envelope, from `playground/common/randomize.py` and `joystick.py`:**
+
+| Randomised at training | Range |
+|---|---|
+| Actuator **kp** | ×U(0.9, 1.1) — **±10 %** (narrowed from ±20 %; the old range is in the comment) |
+| Action delay | 0–3 env steps = **0–60 ms** |
+| IMU delay | 0–3 env steps = **0–60 ms** |
+| Link masses | ×U(0.9, 1.1); torso additionally +U(−0.1, +0.1) kg |
+| Torso CoM | +U(−0.05, +0.05) m |
+| Armature / friction loss | ×U(1.0, 1.05) / ×U(0.9, 1.1) |
+| Floor friction | U(0.5, 1.0) |
+
+Training also hard-caps `max_motor_velocity = 5.24 rad/s` (**50 rpm**) with
+`USE_MOTOR_SPEED_LIMITS = True`.
+
+**What each modification therefore costs:**
+
+- **Reflex MCU under the policy — cheap, and inside the envelope.** A serial hop is
+  single-digit ms against a **0–60 ms** trained delay tolerance. But the MCU is *not*
+  load-bearing here the way it is on koala-bot: a 50 Hz learned policy explicitly trained
+  against randomised jitter is a different regime from a PID inverted pendulum, where
+  [the two-tier rule](common.md#compute-the-two-tier-split) comes from. The real argument
+  for it is family-level — it makes the duck a second consumer of koala-bot's reflex
+  firmware and the [topic contract](common.md#the-topic-contract), which is exactly what
+  [the shared ROS 2 package idea](#a-shared-ros-2-package-across-robots) currently lacks.
+- **ROS 2 on the stock compute — tight.** The Pi Zero 2W has 512 MB RAM and is already
+  running ONNX inference at 50 Hz. The plausible shapes are micro-ROS on the MCU with the
+  Pi Zero as a thin agent, or ROS 2 offboard with the duck as a node. **Untested.**
+- **BNO055 → BNO085 (the koala-bot part) — small but not a drop-in.** Different protocol
+  (SH-2), so `imu.py` is rewritten against `adafruit_bno08x`. Saves the €40 BOM line and
+  consolidates the family on one IMU.
+- **12 V servos — three separate consequences, one of them serious.**
+  1. *Mechanically fine.* SO-101 uses 7.4 V and 12 V STS3215 in common printed housings,
+     so case and horn geometry carry over.
+  2. *Electrically it forces a CAD change.* The duck is 2S; `common.md` fixes 3S as the
+     ceiling for a 12 V STS3215. A third cell means a different holder and, almost
+     certainly, a modified `battery_pack_lid` and body bay — plus a mass and CoM change.
+     **Not yet checked against the CAD.**
+  3. *Control is the real risk.* Whether a 12 V SKU at 12 V presents an effective
+     stiffness within the **±10 %** kp envelope of a 7.4 V SKU at 7.4 V is **unverified** —
+     it depends on how Feetech wound the 12 V variant, and the two SKUs' torque-speed
+     curves have not been compared here. Outside that envelope, the shipped policies do
+     not transfer. The 50 rpm speed cap is the benign direction (a faster servo is simply
+     under-used). **Hypothesis, untested:** scaling the kp register down in proportion to
+     supply voltage may bring the response back inside the envelope. The rigorous route is
+     re-running [BAM](https://github.com/Rhoban/bam) on a 12 V unit, re-fitting the sim
+     actuator model and re-training — which needs a GPU this workstation does not have.
+
+**Recommendation (not a decision): buy the 7.4 V servos and build stock first.** The servo
+order is the only part of this fork that is expensive to reverse, and €196 buys a
+known-good baseline. Without one, a modified duck that will not walk cannot be diagnosed —
+servo stiffness, added mass, MCU latency and a wiring fault all present identically. With
+one, every modification is a measurable delta. Suggested order afterwards, cheapest and
+most reversible first: **MCU + micro-ROS → IMU swap → 12 V / 3S conversion last**, since
+only the last requires re-identification and re-training.
+
 **Whether to build it is open** — see the pivot thread in [`status.md`](status.md).
 
 ---
@@ -142,6 +211,8 @@ patterns — that every robot depends on rather than reimplements.
   in practice; a shared package is what would close that gap.
 - **Argument against:** two robots is a thin basis for an abstraction, and koala-bot's
   ROS 2 layer is not written yet. Premature.
+- **What would change this:** a third consumer. A modified
+  [Open Duck Mini V2](#open-duck-mini-v2) running koala-bot's reflex firmware would be one.
 - **Unresolved:** whether to wait for koala-bot's stack to exist before extracting anything.
 
 ### LeRobot and learned manipulation

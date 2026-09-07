@@ -68,6 +68,14 @@ printed, so the DEC-26→29 revisions have a physical result), rather than aband
 Two cheap de-risking steps before any spend: **a TPU test print**, and **running a shipped
 ONNX policy in MuJoCo on CPU** to prove the toolchain.
 
+**The one irreversible part of the decision is the servo order.** Building it modified
+towards the family pattern (12 V, reflex MCU, ROS 2) is attractive and partly cheap — the
+policy's trained delay tolerance is 0–60 ms, so an MCU fits — but the actuator kp envelope
+is only ±10 %, so a 12 V build risks the shipped policies not transferring. The
+recommendation is **7.4 V and stock first**, then modify against a working baseline;
+reasoning and the verified numbers are in
+[`ideas.md`](ideas.md#stock-or-modified--the-fork-that-must-be-decided-before-buying).
+
 **Unresolved:** whether to build it at all; if so, whether koala-bot pauses or continues in
 parallel; and whether a fourth active build is sustainable alongside the hexapod's Nav2
 work and the SO-ARM101 print. Nothing is committed and nothing is ordered.
