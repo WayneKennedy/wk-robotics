@@ -82,8 +82,12 @@ tolerances, one pool of spares, and tooling that transfers between projects.
 
 | Servo | Rating | Bus | Used by |
 |---|---|---|---|
-| **STS3215** | 12 V, ~30 kg·cm, positional feedback | STS serial bus | SO-ARM101 (all joints) · koala-bot (hip, knee, shoulder, elbow) |
+| **STS3215** | 12 V, ~30 kg·cm, positional feedback | STS serial bus | SO-ARM101 (all joints) · koala-bot (hip roll + pitch, shoulder pitch + roll, elbow) |
 | **STS3032M** | 6 V, 4.5 kg·cm, positional feedback | STS serial bus (separate 6 V bus) | koala-bot (3-RPS neck) |
+
+koala-bot's **knee is not a servo joint**: it is a wheel on a 12 V geared DC motor, and
+the V1 leg ends there. A knee servo is designed for and deferred
+(`koala-bot/docs/concept.md`, DEC-17), so it is not in the count of ten V1 limb joints.
 
 The hexapod is the exception — 20 hobby servos on a **PCA9685** I²C PWM driver, inherited
 from the Freenove kit. No feedback, no bus addressing. It works because a statically
