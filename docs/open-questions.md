@@ -24,12 +24,6 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
 
 ## Electronics
 
-- **OQ-02 — Motor driver.** The L298N is retired (DEC-03); nothing has replaced it.
-  **Recommendation, not accepted:** the **Pololu Dual TB9051FTG** koala-bot already
-  selected — 4.5–28 V, and its 2.6 A continuous per channel has comfortable headroom over
-  the **1.8 A stall** of the chosen motors (DEC-11), with current sense and thermal
-  protection. Reusing the family part also means one driver to understand.
-
 - **OQ-07 — Battery capacity, fuse rating and the logic-rail regulator.** *Narrowed
   2026-09-07:* chemistry and voltage are settled at **3S LiPo, 12 V** (DEC-12); what
   remains is how much of it. Must be sized for **stall current**, not average draw, and

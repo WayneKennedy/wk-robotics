@@ -25,7 +25,7 @@ not accepted are open questions, not decisions**, and are marked as such there.
   DEC-02 and from the family's own sourcing rules: the Nano is an 8-bit AVR and
   [micro-ROS requires a 32-bit target](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#micro-ros-how-the-mcu-joins-the-graph),
   and the L298N is the driver koala-bot explicitly rejected for its ~2 V drop. What
-  replaces the driver is OQ-02.
+  replaces the driver is DEC-13.
 
 - **DEC-04 — Three tiers, and each stays useful when the tier above it is unreachable.**
   Derived from DEC-02 and DEC-05. The coordinator is a desktop that will frequently be
@@ -102,3 +102,17 @@ not accepted are open questions, not decisions**, and are marked as such there.
   with no 6 V motor rail there is nothing for the as-found DC-DC converter to do, so it is
   discarded rather than identified. Capacity, fuse rating and the logic-rail regulator
   stay open (OQ-07).
+
+- **DEC-13 — The motor driver is koala-bot's Pololu Dual TB9051FTG, borrowed.** (Owner,
+  2026-09-07.) Resolves OQ-02. Dual channel, **2.6 A continuous and 5 A peak per motor,
+  4.5–28 V** — one board drives both tracks with comfortable headroom over the motors'
+  1.8 A stall (DEC-11). Arduino shield form factor, wired as a breakout to the Teensy,
+  exactly as koala-bot uses it.
+
+  **There is one in the family and it is koala-bot's** — qty 1, purchased 2026-09-01
+  (`koala-bot/docs/sourcing.md`, DEC-16). Borrowing it means **the two robots cannot both
+  be in drive bring-up at once.** That is affordable today, because koala-bot is still in
+  CAD and printing while this robot's motors arrive around 26 September; it stops being
+  affordable the moment koala-bot reaches its own drive bring-up. **Whether a second is
+  bought, and by when, is koala-bot's call and is recorded there** — this repo must not be
+  read as having settled it.

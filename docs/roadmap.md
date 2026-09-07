@@ -25,9 +25,10 @@ Close the questions that gate everything else.
 5. **Measure the sprocket hub bore depth** against the Pololu shaft's 12.5 mm (OQ-11) —
    the one dimension not checked before ordering.
 
-**The motors are on back order** (2026-09-07), so milestone 1 cannot start. **Milestone 0
-is not blocked by it:** items 3, 4 and 5 need no motors, and neither does OQ-10. Only the
-measured current draw waits on delivery.
+**The motors are on back order, due ~26 September 2026**, so milestone 1 cannot start.
+**Milestone 0 is not blocked by it:** items 3, 4 and 5 need no motors, and neither does
+OQ-10. The Teensy 4.1 is ordered and the driver is borrowed (DEC-13), so only the measured
+current draw actually waits on delivery.
 
 **Exit:** a power budget on paper; the arm's real mass measured; OQ-11 closed. The MCU
 needs no bench proving — DEC-10 buys the upstream-supported board instead.

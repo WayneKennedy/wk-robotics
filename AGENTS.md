@@ -92,8 +92,9 @@ documented; the drivetrain has now been **measured**
 ([`docs/test-log.md`](docs/test-log.md)). No code written.
 
 The motor question that gated everything is **closed** — DEC-11 buys two Pololu #4865, and
-the 12 V / 3S rail follows as DEC-12. **They are on back order**, so milestone 1 cannot
-start.
+the 12 V / 3S rail follows as DEC-12. **They are on back order, due ~26 September 2026**,
+so milestone 1 cannot start. A Teensy 4.1 is ordered (DEC-10); the motor driver is
+**borrowed from koala-bot** (DEC-13), which leaves that robot without one.
 
 **Frontier: compute the power budget** (DEC-07). It is not blocked by the back order, and
 every number it needs now exists. Neither are the arm's mass (OQ-12), the sprocket hub
