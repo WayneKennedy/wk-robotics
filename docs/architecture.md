@@ -97,3 +97,30 @@ apply in full and are not restated here. The project-specific requirements:
   one the first build most obviously broke.
 
 The rail voltage itself is undecided and follows from the motor choice (OQ-01).
+
+### The arm rewrites the budget
+
+The first build's failure was arithmetic on a **~25–30 W** robot
+([`concept.md`](concept.md#the-first-build-and-why-it-stopped)). A robot carrying the
+SO-ARM101 ([OQ-12](open-questions.md)) is not that robot, and the budget cannot be
+inherited from it.
+
+Six STS3215 on the arm bus draw ~5–8 A in realistic motion and **16.2 A** all-stalled —
+per-servo figures and the sizing rule are family facts and live
+[in wk-robotics](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#actuators).
+At 12 V that fault case alone is **~195 W**, on top of the drive. Three consequences, all
+of which bite before a pack is bought:
+
+- **Fuse and wire for the arm's stall case, not its motion case.** The existing rule says
+  size for stall; the arm raises what stall means by an order of magnitude.
+- **The arm and the drive motors share a pack and must not share a sagging rail.** Both
+  are spiky inductive loads on the same 3S. The logic-rail isolation rule already covers
+  the Pi and MCU; the arm bus wants its own bulk capacitance at the adapter's screw
+  terminals for the same reason.
+- **The arm's servo bus is fed from the pack directly.** The
+  [Waveshare Bus Servo Adapter (A)](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#configuring-a-servo--true-for-every-sts-project)
+  is a pass-through with no regulation or protection of its own, so pack voltage *is*
+  servo voltage and pack sag *is* lost torque.
+
+**This is a further argument for 12 V (OQ-01), not a new one:** the arm needs a 3S rail
+regardless, so a 6 V drive rail means two rails and a converter to feed them.

@@ -38,7 +38,9 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
 
 - **OQ-07 — Battery chemistry, voltage and capacity.** Follows from OQ-01 and DEC-07.
   Must be sized for **stall current**, not average draw, and prototyping happens from the
-  eventual pack rather than a bench supply.
+  eventual pack rather than a bench supply. **If the arm rides on the same pack (OQ-12),
+  stall means something much larger** — see
+  [`architecture.md`](architecture.md#the-arm-rewrites-the-budget).
 
 - **OQ-08 — Identity of the fitted DC-DC converter module.** Toroidal inductor, two
   trimpots, no legible part number. Its rating and set-point are unknown, so it cannot be

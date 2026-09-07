@@ -32,7 +32,7 @@ depends on OQ-01 or OQ-11.
 | Teensy 4.1 | — | Settled by DEC-10 — the upstream-**Supported** board, not the "Not tested" 4.0 |
 | Battery pack + fuse + connector | OQ-01, OQ-07 | Size for **stall**, not average draw |
 | Logic-rail regulator | DEC-07 | Isolated from the motor feed — family power rule |
-| Bulk capacitance | — | ~1000–2200 µF across the motor bus, per the family power rules |
+| Bulk capacitance | — | ~1000–2200 µF across the motor bus, per the family power rules — **and again on the arm bus** if OQ-12 resolves yes |
 | Printed mounts, tray, battery bay | OQ-10 | Off the family printer; PETG default |
 
 ## The reference the family already carries
