@@ -37,8 +37,9 @@ and the hexapod drives its servos straight off the Pi for exactly that reason.
 
 The justification here is different and narrower: **quadrature encoder decoding and a
 closed-loop wheel-velocity PID.** Both want timing the Linux scheduler does not
-guarantee, and both are cheap and reliable on an MCU. If the motors end up without
-encoders (see OQ-01), this justification weakens considerably.
+guarantee, and both are cheap and reliable on an MCU. **The justification rests on the
+encoders** — which is why an encoder-less variant was rejected rather than merely not
+chosen. See DEC-11.
 
 ## micro-ROS, and how the tiers connect
 
@@ -96,7 +97,7 @@ apply in full and are not restated here. The project-specific requirements:
 - **Prototype from the eventual battery**, not a bench supply — the family rule, and the
   one the first build most obviously broke.
 
-The rail voltage itself is undecided and follows from the motor choice (OQ-01).
+The rail is **12 V from a 3S LiPo** (DEC-12), following the motor choice (DEC-11).
 
 ### The arm rewrites the budget
 
@@ -122,5 +123,6 @@ of which bite before a pack is bought:
   is a pass-through with no regulation or protection of its own, so pack voltage *is*
   servo voltage and pack sag *is* lost torque.
 
-**This is a further argument for 12 V (OQ-01), not a new one:** the arm needs a 3S rail
-regardless, so a 6 V drive rail means two rails and a converter to feed them.
+**This was a further argument for 12 V, and it prevailed:** the arm needs a 3S rail
+regardless, so a 6 V drive rail would have meant two rails and a converter between them.
+Settled as DEC-12.

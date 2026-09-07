@@ -10,42 +10,32 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
 
 ## Gating
 
-- **OQ-01 — What replaces the 6 V motors.** This gates the rail voltage, the battery,
-  the driver and the power budget, so it is first. The fitted motors are 6 V with a
-  **7.5 V ceiling**, which no pack the rest of the family uses can feed directly — a
-  2S LiPo alone peaks at 8.4 V. The owner has said motors with encoders are a likely
-  swap.
-  **Recommendation, not accepted:** buy **12 V encoder motors**. The motors are being
-  replaced anyway and are the sole source of the voltage conflict; at 12 V the odd rail
-  and its converter disappear, and koala-bot's 3S pack, driver choice and power work all
-  transfer unchanged. **A third argument arrived with the arm (OQ-12):** the SO-101 "Pro"
-  follower runs **12 V STS3215** servos — the same part and voltage koala-bot bought
-  (`koala-bot/docs/sourcing.md`) — so a 12 V rail feeds drive *and* arm from one 3S pack,
-  where a 6 V drive rail would need a second. **Blocked on OQ-11** — a motor that does not fit the bracket is not
-  a candidate whatever its voltage.
+- **OQ-11 — Sprocket hub engagement on the 4 mm D shaft.** *Narrowed 2026-09-07; the
+  rest of this question is closed by DEC-11.* Verified: the bracket takes **2 × M3 at
+  17 mm centres** and the Pololu face plate matches, and the shaft **diameter** is 4 mm on
+  both. **Not verified: engagement depth.** The Pololu shaft stands **12.5 mm** proud of
+  the face plate; how deep the Devastator's sprocket hub needs is unmeasured. A shallower
+  hub is fine, a deeper one means new hubs.
 
-- **OQ-11 — Mechanical compatibility of any replacement motor.** Two dimensions,
-  neither measured: the Devastator's **motor bracket** (koala-bot's 37D class is *likely*
-  too large — unverified) and the **4 mm output shaft** the drive sprocket takes. A
-  different shaft means new hubs as well as new motors. **Measure before ordering.**
+  **This is the one thing not checked before ordering**, so it is a live risk carried into
+  a purchase rather than a question gating one. Measure the original shaft's free length
+  and the hub bore depth — both possible now, with the motors still fitted and nothing on
+  back order needed to do it.
 
 ## Electronics
 
 - **OQ-02 — Motor driver.** The L298N is retired (DEC-03); nothing has replaced it.
   **Recommendation, not accepted:** the **Pololu Dual TB9051FTG** koala-bot already
-  selected — 4.5–28 V, so it covers either outcome of OQ-01, with current sense and
-  thermal protection. Reusing the family part also means one driver to understand.
+  selected — 4.5–28 V, and its 2.6 A continuous per channel has comfortable headroom over
+  the **1.8 A stall** of the chosen motors (DEC-11), with current sense and thermal
+  protection. Reusing the family part also means one driver to understand.
 
-- **OQ-07 — Battery chemistry, voltage and capacity.** Follows from OQ-01 and DEC-07.
-  Must be sized for **stall current**, not average draw, and prototyping happens from the
-  eventual pack rather than a bench supply. **If the arm rides on the same pack (OQ-12),
+- **OQ-07 — Battery capacity, fuse rating and the logic-rail regulator.** *Narrowed
+  2026-09-07:* chemistry and voltage are settled at **3S LiPo, 12 V** (DEC-12); what
+  remains is how much of it. Must be sized for **stall current**, not average draw, and
+  prototyping happens from the eventual pack rather than a bench supply. **If the arm rides on the same pack (OQ-12),
   stall means something much larger** — see
   [`architecture.md`](architecture.md#the-arm-rewrites-the-budget).
-
-- **OQ-08 — Identity of the fitted DC-DC converter module.** Toroidal inductor, two
-  trimpots, no legible part number. Its rating and set-point are unknown, so it cannot be
-  relied on. Either identify and measure it, or discard it. Moot if OQ-01 resolves to
-  12 V motors, which remove the need for a separate motor rail.
 
 ## Software and networking
 
@@ -103,7 +93,8 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
   battery at the opposite end as deliberate ballast; **limit the horizontal reach envelope
   in firmware**. Each moves the sum substantially, and each constrains where the battery
   and Pi go — so this is an input to milestone 0, not a milestone-5 discovery. Total mass
-  also raises the drive torque required, which feeds back into OQ-01.
+  also raises the drive torque required; the chosen motors give **6.4 kg·cm** each
+  (DEC-11), which the loaded figure must be checked against.
 
   **Cheap to close, and already in progress:** **weigh the printed parts as they come off
   the plate**, then redo the arithmetic with real masses and a chosen mount position. The

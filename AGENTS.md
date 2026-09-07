@@ -87,7 +87,14 @@ Three, and they all come from the same place — the first build failed by ignor
 
 ## Status
 
-**Not started.** Chassis and original electronics exist and are documented. No parts
-ordered, no code written, no decisions taken beyond those in
-[`decisions.md`](docs/decisions.md). Frontier: resolve the motor question (OQ-01),
-which gates almost everything else.
+**Milestone 0, and waiting on a part.** Chassis and original electronics exist and are
+documented; the drivetrain has now been **measured**
+([`docs/test-log.md`](docs/test-log.md)). No code written.
+
+The motor question that gated everything is **closed** — DEC-11 buys two Pololu #4865, and
+the 12 V / 3S rail follows as DEC-12. **They are on back order**, so milestone 1 cannot
+start.
+
+**Frontier: compute the power budget** (DEC-07). It is not blocked by the back order, and
+every number it needs now exists. Neither are the arm's mass (OQ-12), the sprocket hub
+depth (OQ-11) or the plate question (OQ-10).

@@ -20,6 +20,7 @@ The chassis as purchased, and the electronics as found on the part-built robot.
 | Rated payload | **3 kg** |
 | Construction | Aluminium plates, drilled with a dense mounting-hole pattern |
 | Drive | 2 × brushed DC metal gearmotors, skid-steer through tracks |
+| **Between side frames** | **134 mm** (measured 2026-09-07) — the hard limit on a facing pair of motors |
 
 ### The original motors
 
@@ -31,14 +32,19 @@ The chassis as purchased, and the electronics as found on the part-built robot.
 | No-load current | 0.13 A |
 | Stall torque | **4.5 kg·cm** |
 | Stall current | **2.3 A** |
-| Output shaft | **4 mm** |
+| Output shaft | **4 mm D** |
+| Motor + gearbox | **25 mm OD × 52 mm** — the commodity **25D / 25GA** envelope |
+| Face mounting | **2 × M3 at 17 mm centres** |
 | Encoders | **None.** Not part of this SKU — confirmed from the hardware, not only the listing |
+
+All four dimensions and the 6 V / 133 RPM gearbox marking were **measured 2026-09-07**
+([`test-log.md`](test-log.md)); the electrical ratings above remain vendor figures.
 
 **The 6 V rating is the single most consequential fact about this platform.** The family
 standard is a 12 V rail from a 3S pack
 ([common.md](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#actuators));
 a **2S LiPo alone peaks at 8.4 V**, already above the 7.5 V ceiling. These motors cannot
-be fed directly from any pack the rest of the family uses. See OQ-01.
+be fed directly from any pack the rest of the family uses. They are replaced — DEC-11.
 
 ## As-found inventory
 
@@ -81,11 +87,16 @@ Both are cheap to replace, and both are recorded here so the reason is not lost.
   [micro-ROS requires a 32-bit target](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#micro-ros-how-the-mcu-joins-the-graph).
   Joining the topic contract means replacing it.
 
-## Constraints on any motor swap
+## Constraints on any motor swap — resolved 2026-09-07
 
-Two things to verify **before ordering**, neither yet checked:
+Measured, not assumed. The swap itself is **DEC-11**.
 
-- **The motor bracket.** The Devastator's mount is sized for its own gearmotor.
-  koala-bot's 37D-class motors are **likely too large — unverified**.
-- **The shaft/hub interface** to the drive sprocket, currently **4 mm**. A different
-  shaft diameter means new hubs as well as new motors.
+- **The motor bracket takes 2 × M3 at 17 mm centres**, which the Pololu 25D face plate
+  matches exactly. No modification needed.
+- **koala-bot's 37D motors are ruled out** — 37 mm body, 25 mm envelope. Confirmed, where
+  this previously read "likely too large — unverified".
+- **Length is the binding constraint, not diameter.** Two motors face each other across
+  **134 mm**, so a facing pair must total less than that. The original pair uses 104 mm;
+  anything with a rear-mounted encoder is close to the limit.
+- **Still open: hub engagement depth** on the 4 mm D shaft — diameter matches, depth is
+  unmeasured. See OQ-11.

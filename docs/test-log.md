@@ -3,9 +3,10 @@
 What was actually measured, on what date, under what conditions — including
 "no change needed" results, which are findings too.
 
-**Nothing has been tested.** The robot is not built. The as-found inventory in
-[`hardware.md`](hardware.md) is *identification from photographs*, not measurement, and
-is labelled as such.
+The robot is not built, and most of the as-found inventory in
+[`hardware.md`](hardware.md) is still *identification from photographs* rather than
+measurement, labelled as such there. The drivetrain is the exception: it has been
+measured, and those entries are below.
 
 ## Format
 
@@ -13,11 +14,64 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
-*(none yet)*
+### 2026-09-07 · Drivetrain envelope, measured
 
-## First entries expected
+**Conditions:** direct measurement of the fitted motors and the chassis, robot part-built
+and motors in place.
 
-From [`roadmap.md`](roadmap.md) milestone 0, in order:
+**Result:**
 
-- Motor bracket and sprocket shaft dimensions (OQ-11).
-- Measured current draw of the drivetrain at realistic duty and at stall (DEC-07).
+| | |
+|---|---|
+| Motor + gearbox | **25 mm OD × 52 mm** |
+| Output shaft | **4 mm D** |
+| Face mounting | **2 × M3 at 17 mm centres** |
+| Between side frames | **134 mm**, cross-checked against the electronics plate that spans them |
+| Motor seating | **Flush** to the frame, no recess |
+| Gearbox marking | **6 V, 133 RPM** |
+
+**What changed:** made OQ-01 decidable and closed most of OQ-11. The marking confirms
+[`hardware.md`](hardware.md#the-original-motors)'s 6 V / 133 RPM **from the hardware**,
+where it had rested on the vendor listing. **17 mm supersedes an initial 16.5 mm reading**
+taken earlier the same day; the remeasure is the figure of record. The 25 × 52 envelope
+identifies the part as the commodity **25D / 25GA** class, which is what made a
+replacement search tractable at all.
+
+### 2026-09-07 · Do koala-bot's 37D motors fit? — **No**
+
+**Conditions:** measured Devastator envelope against the 37D class koala-bot bought.
+
+**Result:** **No.** A 37 mm body cannot go in a 25 mm envelope on 17 mm centres.
+
+**What changed:** removed the in-family part from consideration and cost nothing to
+establish. [`hardware.md`](hardware.md) had carried this as *"likely too large —
+unverified"*; it is now verified. **The project's first recorded negative result.**
+
+### 2026-09-07 · Does a Pololu 25D with encoder fit the 134 mm span?
+
+**Conditions:** desk check of measured chassis dimensions against Pololu's published
+lengths and a product photograph of the encoder end. Not a physical trial — no motor in
+hand.
+
+**Result:** **Caps on, no. Caps off, yes.** With end caps fitted the pair is 2 × 67 mm =
+**134 mm in a 134 mm span** — zero clearance. With the caps removed it is 2 × ~64.5 mm ≈
+**129 mm, about 5 mm clear**. The six encoder leads exit **radially at the base of the
+cap**, so removing the cap does not move the exit. The factory no-cap variant (#3241,
+`25Dx64L`) is discontinued and replaced by #4865, whose cap Pololu states is removable.
+
+**What changed:** made DEC-11 possible. **Supersedes an earlier claim in this project's
+working notes that the leads exit axially** — they do not; that reading came from a
+summarised product page and was wrong. Two assembly notes follow: route both looms before
+the motors go in, because the centre is unreachable afterwards; and caps-off leaves the
+encoder PCBs exposed on a vehicle that throws grit, so print a shroud.
+
+## Next entries expected
+
+From [`roadmap.md`](roadmap.md) milestone 0 — **none of them blocked by the motor back
+order**:
+
+- Sprocket hub bore depth against the 12.5 mm Pololu shaft (OQ-11).
+- Mass of the SO-ARM101 parts as they come off the plate (OQ-12).
+- Whether the white mounting plate is printed or laser-cut (OQ-10).
+- Measured current draw of the drivetrain at realistic duty and at stall (DEC-07) —
+  this one *does* need the motors.

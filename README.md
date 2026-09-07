@@ -3,10 +3,12 @@
 **A tracked ROS 2 robot, resurrected from a stalled build.** The chassis is a
 DFRobot Devastator; everything above it is being replaced.
 
-**Status:** resurrection, not yet started. The chassis and its original electronics
-exist and are documented here; no new work has been done. This repo is currently the
-**design record** — see [`docs/roadmap.md`](docs/roadmap.md) for direction and
-[`docs/open-questions.md`](docs/open-questions.md) for what is undecided.
+**Status:** milestone 0 — deciding and measuring. The chassis and its original
+electronics exist and are documented; the drivetrain has been measured and its
+replacement chosen (**two Pololu 25D 12 V gearmotors with encoders**, on back order).
+No code written. See [`docs/roadmap.md`](docs/roadmap.md) for direction,
+[`docs/decisions.md`](docs/decisions.md) for what is settled, and
+[`docs/open-questions.md`](docs/open-questions.md) for what is not.
 
 ## What it is
 

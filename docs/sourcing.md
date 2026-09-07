@@ -1,6 +1,7 @@
 # Sourcing
 
-UK-focused, as the rest of the family is. **Nothing has been ordered.**
+UK-focused, as the rest of the family is. **One order placed** — the drive motors
+(DEC-11), on back order as of 2026-09-07. Nothing else.
 
 UK import: **VAT 20 %** applies; the **£135 threshold** (goods value, excluding
 shipping) decides how — under it the seller charges VAT at checkout, over it the courier
@@ -22,15 +23,15 @@ of both. (The 4.0 is moot here regardless — DEC-10 buys a 4.1.)
 
 ## Needed, once the gating questions close
 
-**Do not order against this table yet** — milestone 0 buys nothing. Every row but the MCU
-depends on OQ-01 or OQ-11.
+**The motors are ordered; the rest still waits on the power budget** (DEC-07), which is
+the rule that purchases follow a budget rather than produce one.
 
 | Part | Depends on | Note |
 |---|---|---|
-| Replacement gearmotors with encoders | OQ-01, OQ-11 | Voltage undecided; bracket and 4 mm shaft unverified |
+| 2 × Pololu #4865 — 25D 47:1 MP 12V, 48 CPR encoder | — | **DEC-11. Ordered 2026-09-07, on back order.** ~£50 each, RobotShop UK. Remove the end caps on fitting — 67 mm each does not fit, 64.5 mm does |
 | Motor driver | OQ-02 | TB9051FTG recommended, not accepted |
 | Teensy 4.1 | — | Settled by DEC-10 — the upstream-**Supported** board, not the "Not tested" 4.0 |
-| Battery pack + fuse + connector | OQ-01, OQ-07 | Size for **stall**, not average draw |
+| 3S LiPo + fuse + connector | OQ-07 | **12 V / 3S settled by DEC-12**; capacity and fuse rating open. Size for **stall**, not average draw |
 | Logic-rail regulator | DEC-07 | Isolated from the motor feed — family power rule |
 | Bulk capacitance | — | ~1000–2200 µF across the motor bus, per the family power rules — **and again on the arm bus** if OQ-12 resolves yes |
 | Printed mounts, tray, battery bay | OQ-10 | Off the family printer; PETG default |

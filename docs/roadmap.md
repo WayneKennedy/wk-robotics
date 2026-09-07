@@ -8,19 +8,29 @@ Each milestone ends with a **robot that works** — not a subsystem that might.
 
 ## Milestone 0 — Decide and measure *(current)*
 
-No purchases. Close the questions that gate everything else:
+Close the questions that gate everything else.
 
-1. **Measure the motor bracket and the sprocket shaft** (OQ-11). Nothing can be ordered
-   until a replacement motor is known to fit.
-2. **Resolve the motor question** (OQ-01) — the rail voltage, and therefore the battery
-   and driver, follow from it.
-3. **Compute the power budget** (DEC-07) at realistic duty, with stall headroom.
+1. ~~**Measure the motor bracket and the sprocket shaft**~~ — **done 2026-09-07**
+   ([`test-log.md`](test-log.md)). 25 × 52 mm envelope, 4 mm D shaft, M3 at 17 mm centres,
+   134 mm between frames. Hub engagement depth still outstanding (OQ-11).
+2. ~~**Resolve the motor question**~~ — **done, DEC-11.** Two Pololu #4865, caps removed.
+   The rail follows as DEC-12: 12 V from a 3S pack.
+3. **Compute the power budget** (DEC-07) at realistic duty, with stall headroom. **This is
+   the frontier**, and every number it needs now exists: 1.8 A stall per motor (DEC-11),
+   the arm's draw ([`architecture.md`](architecture.md#the-arm-rewrites-the-budget)), and
+   the Pi and MCU.
 4. **Weigh the SO-ARM101 parts as they come off the plate** (OQ-12). The arm's real mass
    decides whether the tipping arithmetic is marginal or comfortable, and the parts are
    being printed regardless.
+5. **Measure the sprocket hub bore depth** against the Pololu shaft's 12.5 mm (OQ-11) —
+   the one dimension not checked before ordering.
 
-**Exit:** OQ-01 and OQ-11 closed; a power budget on paper; the arm's real mass measured.
-The MCU needs no bench proving — DEC-10 buys the upstream-supported board instead.
+**The motors are on back order** (2026-09-07), so milestone 1 cannot start. **Milestone 0
+is not blocked by it:** items 3, 4 and 5 need no motors, and neither does OQ-10. Only the
+measured current draw waits on delivery.
+
+**Exit:** a power budget on paper; the arm's real mass measured; OQ-11 closed. The MCU
+needs no bench proving — DEC-10 buys the upstream-supported board instead.
 
 ## Milestone 1 — A robot that drives *(no perception at all)*
 
