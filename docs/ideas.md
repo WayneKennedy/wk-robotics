@@ -89,6 +89,32 @@ mounts, an electronics tray and a battery bay — the chassis is drilled with mo
 but ships with nothing to mount. No servo overlap: this is a DC-motor platform, so
 [the STS substrate](common.md#actuators) does not apply.
 
+**What is installed** (from photographs of the part-built robot, 2026-09-07):
+
+| Fitted | Note |
+|---|---|
+| **Arduino Nano** (ATmega328P) on stripboard | 6-way ribbon down to the driver — IN1–IN4 plus the two enables |
+| **L298N** dual H-bridge module | Heatsink, onboard 5 V regulator, screw terminals |
+| **Adjustable DC-DC converter module** | Toroidal inductor, two trimpots; part number unidentified |
+| White plate carrying the stack | Printed or laser-cut — **not established which** |
+| Both gearmotors wired, twisted pairs soldered direct to the tabs | Tidy work; **no encoders present**, confirming the SKU |
+
+Not visible in the photographs, so still unknown: the battery and its connector, whether
+motor suppression capacitors are fitted, and what the 4-way JST connector on the
+stripboard serves.
+
+**Two fitted parts are dead ends for this family, and both are cheap to replace:**
+
+- **The L298N is the part koala-bot explicitly rejected** — *"avoid L298N (lossy BJT,
+  ~2 V drop)"*, `koala-bot/docs/sourcing.md`. On a **6 V** motor that drop costs a third
+  of the rail, where on koala-bot's 12 V it costs a sixth. It is the first thing to
+  change, and a plausible — **but unconfirmed** — reason the original build disappointed.
+  koala-bot's Pololu Dual TB9051FTG (4.5–28 V) is the known-good family part.
+- **The Arduino Nano cannot run micro-ROS.** It is an 8-bit AVR; micro-ROS needs a 32-bit
+  target. Joining [the topic contract](common.md#the-topic-contract) means an ESP32,
+  RP2040 or Teensy in its place — the candidates already named in
+  [the two-tier split](common.md#compute-the-two-tier-split).
+
 **Unresolved:**
 
 - **No encoders, so no wheel odometry** — and a skid-steer *tracked* vehicle has poor
@@ -99,10 +125,10 @@ but ships with nothing to mount. No servo overlap: this is a DC-motor platform, 
 - **The 6 V rail conflicts with the family's 12 V.** A 2S LiPo peaks at **8.4 V**, above
   the stated 7.5 V maximum, so it cannot feed these motors directly off a charged pack.
   A regulated 6 V buck off a larger pack is the obvious answer; **not yet designed.**
-- **What electronics are already owned for it is unrecorded** — driver, battery, any
-  Pi or MCU bought at the time. Establish this before sourcing anything: koala-bot already
-  has a Pololu Dual TB9051FTG (4.5–28 V, so electrically fine for 6 V motors) as a known
-  quantity if a driver is needed.
+- **The 6 V rail is already partly solved.** An adjustable DC-DC converter module
+  (toroidal inductor, two trimpots — so constant-voltage and constant-current adjustment)
+  is fitted and wired. Its exact part number is **unidentified**, so its rating and its
+  actual set-point are unknown; measure before trusting it.
 - **Why it stalled the first time, and how far it got, are unrecorded.** Worth capturing
   when the project starts — a resurrection that does not know what killed the original is
   liable to hit the same wall.
