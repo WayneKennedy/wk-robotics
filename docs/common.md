@@ -93,9 +93,24 @@ The hexapod is the exception — 20 hobby servos on a **PCA9685** I²C PWM drive
 from the Freenove kit. No feedback, no bus addressing. It works because a statically
 stable walker can tolerate open-loop position control in a way a balancing robot cannot.
 
-**A 3S LiPo is the ceiling for STS3215.** A full 3S is 12.6 V, within the servo's 12 V
-rating; 4S at 16.8 V destroys them. This constrains the power architecture of any project
-using them.
+**STS3215 electrical, per servo** (vendor figures, checked 2026-09-07):
+
+| Idle | No-load | **Stall** | Operating range | No-load speed |
+|---|---|---|---|---|
+| 30 mA | 200 mA | **2.7 A** | **6–14 V** | 0.22 s/60° @ 12 V |
+
+Sizing is the count times the stall figure, because the fuse and the wiring have to
+survive the fault case rather than the average: **six** on an SO-ARM101 is ~5–8 A in
+realistic motion and **16.2 A** all-stalled; koala-bot's **ten** limb servos are 27 A.
+
+**A 3S LiPo is the ceiling for STS3215.** A full 3S is 12.6 V, inside both the servo's
+12 V rating and its 14 V absolute range; 4S at 16.8 V exceeds the range and destroys them.
+This constrains the power architecture of any project using them.
+
+**Torque and speed track the rail.** Both scale roughly with voltage, so a servo fed 9 V
+delivers about three-quarters of its rated 30 kg·cm. A pack sagging toward its floor
+therefore reads as a weakening arm, not as a tuning problem — worth knowing before chasing
+the wrong fault.
 
 ### Configuring a servo — true for every STS project
 
@@ -106,9 +121,24 @@ required, not optional.
 
 **The adapter is already owned.** An **FE-URT-1** was bundled with each STS3215 6-pack
 (`koala-bot/docs/sourcing.md`, purchased 2026-09-01) — two in total. Whether the STS3032M
-4-pack included one is **unrecorded**; check the box before planning around it.
-Equivalents if a third is ever needed: Waveshare's *Bus Servo Adapter (A)*, or the
-*Serial Bus Servo Driver Board* (~€5, the part in the Open Duck Mini V2 BOM).
+4-pack included one is **unrecorded**; check the box before planning around it. A
+**Waveshare Bus Servo Adapter (A) v1.1** is also in hand (2026-09-07) for the SO-ARM101
+build. A further equivalent, if ever needed: the *Serial Bus Servo Driver Board* (~€5, the
+part in the Open Duck Mini V2 BOM).
+
+**The Waveshare Bus Servo Adapter (A) is a pass-through, confirmed 2026-09-07** — owner
+read the Waveshare documentation (*"the input voltage must match the servo voltage"*,
+stated twice) and confirmed against the board, which carries none of the inductor or bulk
+electrolytics a switching converter would need. Its two input bands are the two pack
+sizes, not a choice of supply: **9–12.6 V is the 3S window** for 12 V servos, **5–8.4 V
+the 2S window** for 7.4 V ones. Consequences:
+
+- **Feeding 9 V does not get you 12 V.** There is no boost. The servos see the pack.
+- **The board supplies no regulation, bulk capacitance or protection of its own** — the
+  bulk capacitance and fuse under [Power integrity](#power-integrity) are external to it,
+  and are not optional.
+- **Use the screw terminals, not the barrel jack**, for anything past bench testing: a
+  5.5 × 2.1 mm jack is typically good for only ~3–5 A, in series with the whole bus.
 
 Three constraints that apply on every project using these servos:
 
@@ -244,6 +274,30 @@ MCU/IMU resets and I²C corruption.
 - **Bulk capacitance** (~1000–2200 µF) across the servo/motor bus, to absorb transients
   and tame lead inductance.
 - **Fuse the main pack lead.** LiPos deliver enormous fault current.
+
+**The mechanism is source impedance, not "clean DC."** A bench PSU regulates through a
+control loop with millisecond response; a servo stepping 200 mA → 2.7 A does it in
+microseconds, and on a shared bus those dips overlap. A LiPo has milliohms of internal
+resistance and no loop to settle. Lead resistance and inductance cause the same dip and
+follow you between supplies — hence short, fat leads and the bulk capacitance above.
+
+**Where a current-limited bench PSU is still the right tool** (scope note, 2026-09-07;
+this does not weaken the rule above, which is about transient response *under load*):
+
+- **First power-up and servo ID assignment.** A LiPo into a miswired bus delivers tens of
+  amps without complaint; a supply limited to ~1 A turns a wiring error into a shrug. IDs
+  are assigned one unplugged servo at a time, so there is no load to respond to.
+- **Measuring draw**, which is where a project's power budget comes from.
+
+Move to the pack the moment anything runs under load.
+
+**One InMoov failure mode does not transfer.** InMoov ran PWM hobby servos, which jitter
+both from brownout *and* from signal-path noise and deadband hunting. STS bus servos are
+closed-loop, with their own magnetic encoder and a serial command — there is no pulse
+width to misread. The brownout half still applies; the signal-side half does not.
+
+**Nothing in this chain has a low-voltage cutoff.** Stop at ~10.5 V on a 3S (3.5 V/cell);
+the adapter's 9 V floor is ~3.0 V/cell and already deep enough to hurt the pack.
 
 ---
 
