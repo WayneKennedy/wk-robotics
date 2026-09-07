@@ -89,6 +89,46 @@ The hexapod is the exception — 20 hobby servos on a **PCA9685** I²C PWM drive
 from the Freenove kit. No feedback, no bus addressing. It works because a statically
 stable walker can tolerate open-loop position control in a way a balancing robot cannot.
 
+### Configuring a servo — true for every STS project
+
+The bus is a **single-wire half-duplex TTL UART**, 3-pin (V+, GND, signal), 1 Mbaud by
+default. A generic USB-TTL cable has separate TX and RX and no direction switching, so it
+will not drive these servos without a tri-state buffer — a purpose-made bus adapter is
+required, not optional.
+
+**The adapter is already owned.** An **FE-URT-1** was bundled with each STS3215 6-pack
+(`koala-bot/docs/sourcing.md`, purchased 2026-09-01) — two in total. Whether the STS3032M
+4-pack included one is **unrecorded**; check the box before planning around it.
+Equivalents if a third is ever needed: Waveshare's *Bus Servo Adapter (A)*, or the
+*Serial Bus Servo Driver Board* (~€5, the part in the Open Duck Mini V2 BOM).
+
+Three constraints that apply on every project using these servos:
+
+- **The adapter does not power the servo.** USB 5 V will not drive a 12 V STS3215; the
+  servo rail is fed separately. Configuration *moves* the servo — it drives to zero
+  position so the horn can be fitted aligned — so it needs working current, not a trickle.
+- **Match the rail to the part.** STS3215 is 12 V, **STS3032M is 6 V**, and the adapter
+  passes through whatever it is given. Same bus, same protocol, different rail.
+- **One servo at a time, unplugged between each.** Every unit ships as **ID 1**, so IDs
+  cannot be assigned on a shared bus.
+
+**Scripted, not GUI.** Feetech's FD / SCServo Debug tool works, but leaves no record. The
+one-time write is small enough to script and log: unlock EEPROM, mode 0, zero the
+acceleration limits, write the PID coefficients, `change_id`. Open Duck Mini V2's
+`scripts/configure_motor.py` (`pypot.feetech.FeetechSTS3215IO`) is a working reference;
+LeRobot's SO-ARM setup command does the same job against the same SO-101 follower spec.
+
+**The FTDI latency trap.** If a bus adapter presents as an FTDI device, its default
+**16 ms latency timer** caps every bus round-trip — harmless during one-time ID setup,
+fatal for a fast control loop later. The fix is a udev rule:
+
+```
+SUBSYSTEM=="usb-serial", DRIVER=="ftdi_sio", ATTR{latency_timer}="1"
+```
+
+(Sourced from the Open Duck Mini V2 runtime's Pi setup, which ships exactly this rule.
+**Which USB-serial chip the FE-URT-1 presents is unverified** — check on first plug-in.)
+
 **A 3S LiPo is the ceiling for STS3215.** A full 3S is 12.6 V, within the servo's 12 V
 rating; 4S at 16.8 V destroys them. This constrains the power architecture of any project
 using them.
