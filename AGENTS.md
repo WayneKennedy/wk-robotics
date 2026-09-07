@@ -110,6 +110,7 @@ checked out alongside this one:
 | koala-bot | `../koala-bot` | [WayneKennedy/koala-bot](https://github.com/WayneKennedy/koala-bot) — public |
 | SO-ARM101 | `../SO-ARM100` | [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) — upstream clone |
 | 3D printing | `../3d-printing` | [WayneKennedy/3d-printing](https://github.com/WayneKennedy/3d-printing) — private |
+| wk-devastator | `../wk-devastator` | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) — public |
 | wk-hexapod | *not checked out* | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |
 | fn-hexapod | *not checked out* | [WayneKennedy/fn-hexapod](https://github.com/WayneKennedy/fn-hexapod) — public, vendor reference |
 

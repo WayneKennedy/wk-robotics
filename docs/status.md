@@ -30,6 +30,7 @@ cd ..
 git clone git@github.com:WayneKennedy/koala-bot.git
 git clone git@github.com:WayneKennedy/3d-printing.git        # private
 git clone https://github.com/TheRobotStudio/SO-ARM100.git    # upstream, not a fork
+git clone git@github.com:WayneKennedy/wk-devastator.git
 git clone git@github.com:WayneKennedy/wk-hexapod.git
 git clone git@github.com:WayneKennedy/fn-hexapod.git         # vendor reference
 ```

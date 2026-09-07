@@ -63,6 +63,39 @@ walker in a way it would not be for a balancing robot.
 
 ---
 
+## wk-devastator
+
+**A tracked, skid-steer ROS 2 robot on a purchased DFRobot Devastator chassis** — bought,
+part-built, abandoned, and now being resurrected. The chassis is kept; the electronics,
+compute and software are all replaced.
+
+| | |
+|---|---|
+| Repo | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) — public |
+| State | Design record only. Nothing built, nothing ordered. Milestone 0 is measure-and-decide |
+| Chassis | DFRobot **ROB0128**, aluminium, 225 × 220 × 108 mm, 1.3 kg, 3 kg payload |
+| Actuation | 2 × brushed DC gearmotors, 45:1 — **6 V originals, no encoders**; replacement undecided |
+| Compute (planned) | 32-bit MCU running micro-ROS (reflex) · Raspberry Pi + ROS 2 (intent) |
+| Start at | `AGENTS.md`, then `docs/concept.md` |
+| Licence | Tri-licence: `CERN-OHL-S-2.0` hardware · `MIT` software · `CC-BY-SA-4.0` docs |
+
+**Why it matters to the others:** it is the simplest body in the family — statically
+stable, no gait, no balance loop — which makes it the cheapest second consumer of the
+hexapod's SLAM and Nav2 work, and the first plausible node of a fleet. See
+[`ideas.md`](ideas.md#physical-ai-and-the-hive-mind).
+
+**Shares with the rest:** the Pi + ROS 2 intent tier and the
+[topic contract](common.md#the-topic-contract) with the hexapod; the printer, for mounts
+and trays; koala-bot's driver and MCU selections. **No servo overlap** — it is a DC-motor
+platform, so [the STS substrate](common.md#actuators) does not apply.
+
+**The useful history:** the first build stalled on battery limitations and over-ambitious
+scope — two depth cameras and a Pi 4 mounted before the drivetrain worked, through an
+L298N losing ~2 V of a 6 V rail. It was under-powered by design. The project's rules and
+its perception-last roadmap follow from that, and are recorded in its own repo.
+
+---
+
 ## SO-ARM101
 
 **A Standard Open Arm** — the LeRobot-compatible low-cost manipulator designed by The

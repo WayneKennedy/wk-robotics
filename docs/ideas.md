@@ -52,137 +52,6 @@ Named as later personal builds in `koala-bot/docs/backlog.md`. Nothing decided.
 
 ---
 
-## Owned but unfinished
-
-Hardware already bought and part-built, waiting on a decision rather than on money. The
-[InMoov resurrection](#inmoov-resurrection) above is the other member of this class.
-
-### Devastator tank platform
-
-**A tracked, skid-steer mobile base — bought, never finished, to be resurrected.**
-DFRobot **ROB0128**, sold in the UK by
-[The Pi Hut](https://thepihut.com/products/devastator-tank-mobile-robot-platform-metal-dc-gear-motor)
-at **£81.60 inc VAT** (checked 2026-09-07).
-
-| | |
-|---|---|
-| Chassis | Aluminium, **225 × 220 × 108 mm**, **1.3 kg**, rated **3 kg payload** |
-| Drive | 2 × brushed DC metal gearmotors, **45:1**, 4 mm output shaft |
-| Motor rating | **6 V nominal, 2–7.5 V range** · 133 RPM no-load · 0.13 A no-load · **4.5 kg·cm stall at 2.3 A** |
-| Encoders | **None.** Not part of this SKU |
-| Included | Chassis, tracks and motors only — **no controller, driver, battery or sensors** |
-| Docs | DFRobot product wiki; instruction manual and example code on GitHub |
-
-**Why it is interesting here:** it is the only **statically stable, rough-ground** base in
-the family. Everything else is an indoor flat-floor machine — the hexapod walks, koala-bot
-balances, the arm is fixed. More usefully, a tracked differential-drive base speaks
-`/cmd_vel` natively and continuously, with no gait to integrate and no balance loop to
-respect, which makes it **the easiest possible second consumer of the hexapod's SLAM and
-Nav2 work**. [The shared ROS 2 package](#a-shared-ros-2-package-across-robots) is currently
-argued down as premature on the grounds that two robots is a thin basis and koala-bot's
-stack does not exist yet; this platform is the cheapest way to test that abstraction
-against a body that is *already* built.
-
-**Reuses:** the Pi 5 + ROS 2 intent tier and the
-[topic contract](common.md#the-topic-contract) with the hexapod; the printer, for sensor
-mounts, an electronics tray and a battery bay — the chassis is drilled with mounting holes
-but ships with nothing to mount. No servo overlap: this is a DC-motor platform, so
-[the STS substrate](common.md#actuators) does not apply.
-
-**What is installed** (from photographs of the part-built robot, 2026-09-07):
-
-| Fitted | Note |
-|---|---|
-| **Arduino Nano** (ATmega328P) on stripboard | 6-way ribbon down to the driver — IN1–IN4 plus the two enables |
-| **L298N** dual H-bridge module | Heatsink, onboard 5 V regulator, screw terminals |
-| **Adjustable DC-DC converter module** | Toroidal inductor, two trimpots; part number unidentified |
-| White plate carrying the stack | Printed or laser-cut — **not established which** |
-| Both gearmotors wired, twisted pairs soldered direct to the tabs | Tidy work; **no encoders present**, confirming the SKU |
-
-Not visible in the photographs, so still unknown: the battery and its connector, whether
-motor suppression capacitors are fitted, and what the 4-way JST connector on the
-stripboard serves.
-
-**Two fitted parts are dead ends for this family, and both are cheap to replace:**
-
-- **The L298N is the part koala-bot explicitly rejected** — *"avoid L298N (lossy BJT,
-  ~2 V drop)"*, `koala-bot/docs/sourcing.md`. On a **6 V** motor that drop costs a third
-  of the rail, where on koala-bot's 12 V it costs a sixth. It is the first thing to
-  change, and a plausible — **but unconfirmed** — reason the original build disappointed.
-  koala-bot's Pololu Dual TB9051FTG (4.5–28 V) is the known-good family part.
-- **The Arduino Nano cannot run micro-ROS.** It is an 8-bit AVR; micro-ROS needs a 32-bit
-  target. Joining [the topic contract](common.md#the-topic-contract) means an ESP32,
-  RP2040 or Teensy in its place — the candidates already named in
-  [the two-tier split](common.md#compute-the-two-tier-split).
-
-**Unresolved:**
-
-- **No encoders, so no wheel odometry** — and a skid-steer *tracked* vehicle has poor
-  odometry even with them, because turning is track slip by design. Two routes: fit
-  encoders and accept degraded rotational accuracy, or skip wheel odometry entirely and
-  lean on the depth-camera route the hexapod already runs (RealSense + RTAB-Map). The
-  second reuses more and is probably right, but is **undecided**.
-- **The 6 V rail conflicts with the family's 12 V.** A 2S LiPo peaks at **8.4 V**, above
-  the stated 7.5 V maximum, so it cannot feed these motors directly off a charged pack.
-  A regulated 6 V buck off a larger pack is the obvious answer; **not yet designed.**
-- **The 6 V rail is already partly solved.** An adjustable DC-DC converter module
-  (toroidal inductor, two trimpots — so constant-voltage and constant-current adjustment)
-  is fitted and wired. Its exact part number is **unidentified**, so its rating and its
-  actual set-point are unknown; measure before trusting it.
-- **Both RealSense cameras were mounted, and that may be its own problem.** Two
-  RealSense D4xx on a **Pi 4** share a single USB 3 host controller, which is a known
-  bandwidth fight. **Unverified here**, but a plausible second reason final bring-up never
-  happened. Start with one camera. Which two models were fitted is **unrecorded** — the
-  hexapod now runs a D435i, and whether that is one of these two is **not established**.
-- **No reflex MCU is obviously needed.** Like the hexapod, a statically stable base can
-  drive straight off the Pi; [the two-tier rule](common.md#compute-the-two-tier-split) is
-  a balancing-robot rule. Whether a driver-side MCU is still wanted for current sensing
-  and a safety watchdog is open.
-
-**Why it stalled (owner's account, recorded 2026-09-07):** the build **petered out on
-battery limitations and over-ambitious scope**. Both Intel RealSense cameras and a
-**Raspberry Pi 4** were mounted on top; the final wiring and programming were never
-finished, so it never ran.
-
-That is consistent with the arithmetic. A Pi 4 under load is ~5–7 W, each RealSense
-~2–3.5 W, and the two 6 V motors draw ~12 W at a modest 1 A each against a **2.3 A stall
-apiece** — call it 25–30 W, asked of a small pack, through an L298N giving away ~2 V of a
-6 V rail. **It was under-powered by design, not abandoned for lack of interest.** A power
-budget is therefore a first-class design task for the resurrection, not an afterthought;
-[power integrity](common.md#power-integrity) already carries the rules, banked from the
-InMoov build stalling on the same class of problem.
-
-**Resurrection direction (owner's intent, 2026-09-07):** keep the **mechanical chassis** —
-it is a high-quality platform and the part worth preserving — and modernise everything
-else. Motors with encoders, a **Teensy 4.0** reflex tier, and ROS 2.
-
-**The strongest single move: swap to 12 V encoder motors, not 6 V ones.** The motors are
-already being replaced, and they are the sole source of the rail conflict above. At 12 V
-the odd rail and its buck disappear, and koala-bot's 3S pack, its Pololu Dual TB9051FTG
-and its power work all transfer unchanged. **To check before ordering:** the Devastator's
-motor bracket is sized for its own gearmotor (koala-bot's 37D class is likely too large —
-**unverified**), and the drive sprocket currently takes a **4 mm** shaft.
-
-**How ROS 2 and micro-ROS divide** — they are not alternatives, they run on different
-processors. Teensy runs **micro-ROS**: encoder decoding, the PID velocity loop, motor PWM,
-safety watchdog. Pi runs **ROS 2**: SLAM, Nav2, mission. See
-[the two-tier split](common.md#compute-the-two-tier-split) and
-[micro-ROS](common.md#micro-ros-how-the-mcu-joins-the-graph). Note the tank's
-justification for an MCU differs from koala-bot's: not a balance loop, but quadrature
-decoding and closed-loop wheel velocity, which want determinism for their own reasons.
-
-**Suggested staging, given that over-scope is the recorded cause of death:** milestone 1 is
-chassis + encoder motors + Teensy + driver + battery, delivering teleop over `/cmd_vel`
-with real `/wheel_odom` and **no perception at all** — a complete, testable robot.
-Perception is milestone 2, one camera. Nav2 is milestone 3.
-
-**Next step:** this earns a repository as soon as it is real work — at which point it moves
-out of here into [`README.md`](../README.md) and [`projects.md`](projects.md), per the
-[placement rule](../AGENTS.md#the-placement-rule). It is on this page only because no repo
-exists yet.
-
----
-
 ## Externally designed builds
 
 Existing open designs worth building as-is, rather than projects to design. The value is
@@ -368,7 +237,7 @@ mode this rule exists to prevent.
 
 - **Share a world model, not sensor streams.** Raw depth from several robots will not
   cross a LAN — a constraint already met at single-robot scale on
-  [the tank](#devastator-tank-platform). Each robot runs its own SLAM and perception; the
+  [the tank](projects.md#wk-devastator). Each robot runs its own SLAM and perception; the
   core receives poses, semantic observations and map fragments. "Extending the area of
   awareness" is a **map-merge** problem, not a streaming one.
 - **Map merging is the hard part.** Each robot's `map` frame is arbitrary until something
@@ -404,7 +273,7 @@ training both, but the two roles have different demands and only one is hard:
 and there is currently one partly-working robot. So this direction is the *motivation* for
 [a shared ROS 2 package](#a-shared-ros-2-package-across-robots), which is argued down
 elsewhere on this page as premature — the argument changes if the fleet is the goal rather
-than a by-product. The cheapest second node is [the tank](#devastator-tank-platform):
+than a by-product. The cheapest second node is [the tank](projects.md#wk-devastator):
 already owned, and a differential-drive base is the easiest body Nav2 will ever drive.
 koala-bot and the duck are **capability** projects (balance, learned locomotion) rather
 than fleet projects, and do not shorten this path.
@@ -426,7 +295,7 @@ patterns — that every robot depends on rather than reimplements.
 - **Argument against:** two robots is a thin basis for an abstraction, and koala-bot's
   ROS 2 layer is not written yet. Premature.
 - **What would change this:** a third consumer. The
-  [Devastator tank](#devastator-tank-platform) is the strongest candidate — already owned,
+  [Devastator tank](projects.md#wk-devastator) is the strongest candidate — already owned,
   and a differential-drive base speaks `/cmd_vel` natively with no gait or balance loop in
   the way. A modified [Open Duck Mini V2](#open-duck-mini-v2) running koala-bot's reflex
   firmware would be another, at considerably more effort.
