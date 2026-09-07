@@ -52,6 +52,72 @@ Named as later personal builds in `koala-bot/docs/backlog.md`. Nothing decided.
 
 ---
 
+## Owned but unfinished
+
+Hardware already bought and part-built, waiting on a decision rather than on money. The
+[InMoov resurrection](#inmoov-resurrection) above is the other member of this class.
+
+### Devastator tank platform
+
+**A tracked, skid-steer mobile base — bought, never finished, to be resurrected.**
+DFRobot **ROB0128**, sold in the UK by
+[The Pi Hut](https://thepihut.com/products/devastator-tank-mobile-robot-platform-metal-dc-gear-motor)
+at **£81.60 inc VAT** (checked 2026-09-07).
+
+| | |
+|---|---|
+| Chassis | Aluminium, **225 × 220 × 108 mm**, **1.3 kg**, rated **3 kg payload** |
+| Drive | 2 × brushed DC metal gearmotors, **45:1**, 4 mm output shaft |
+| Motor rating | **6 V nominal, 2–7.5 V range** · 133 RPM no-load · 0.13 A no-load · **4.5 kg·cm stall at 2.3 A** |
+| Encoders | **None.** Not part of this SKU |
+| Included | Chassis, tracks and motors only — **no controller, driver, battery or sensors** |
+| Docs | DFRobot product wiki; instruction manual and example code on GitHub |
+
+**Why it is interesting here:** it is the only **statically stable, rough-ground** base in
+the family. Everything else is an indoor flat-floor machine — the hexapod walks, koala-bot
+balances, the arm is fixed. More usefully, a tracked differential-drive base speaks
+`/cmd_vel` natively and continuously, with no gait to integrate and no balance loop to
+respect, which makes it **the easiest possible second consumer of the hexapod's SLAM and
+Nav2 work**. [The shared ROS 2 package](#a-shared-ros-2-package-across-robots) is currently
+argued down as premature on the grounds that two robots is a thin basis and koala-bot's
+stack does not exist yet; this platform is the cheapest way to test that abstraction
+against a body that is *already* built.
+
+**Reuses:** the Pi 5 + ROS 2 intent tier and the
+[topic contract](common.md#the-topic-contract) with the hexapod; the printer, for sensor
+mounts, an electronics tray and a battery bay — the chassis is drilled with mounting holes
+but ships with nothing to mount. No servo overlap: this is a DC-motor platform, so
+[the STS substrate](common.md#actuators) does not apply.
+
+**Unresolved:**
+
+- **No encoders, so no wheel odometry** — and a skid-steer *tracked* vehicle has poor
+  odometry even with them, because turning is track slip by design. Two routes: fit
+  encoders and accept degraded rotational accuracy, or skip wheel odometry entirely and
+  lean on the depth-camera route the hexapod already runs (RealSense + RTAB-Map). The
+  second reuses more and is probably right, but is **undecided**.
+- **The 6 V rail conflicts with the family's 12 V.** A 2S LiPo peaks at **8.4 V**, above
+  the stated 7.5 V maximum, so it cannot feed these motors directly off a charged pack.
+  A regulated 6 V buck off a larger pack is the obvious answer; **not yet designed.**
+- **What electronics are already owned for it is unrecorded** — driver, battery, any
+  Pi or MCU bought at the time. Establish this before sourcing anything: koala-bot already
+  has a Pololu Dual TB9051FTG (4.5–28 V, so electrically fine for 6 V motors) as a known
+  quantity if a driver is needed.
+- **Why it stalled the first time, and how far it got, are unrecorded.** Worth capturing
+  when the project starts — a resurrection that does not know what killed the original is
+  liable to hit the same wall.
+- **No reflex MCU is obviously needed.** Like the hexapod, a statically stable base can
+  drive straight off the Pi; [the two-tier rule](common.md#compute-the-two-tier-split) is
+  a balancing-robot rule. Whether a driver-side MCU is still wanted for current sensing
+  and a safety watchdog is open.
+
+**Next step:** this earns a repository as soon as it is real work — at which point it moves
+out of here into [`README.md`](../README.md) and [`projects.md`](projects.md), per the
+[placement rule](../AGENTS.md#the-placement-rule). It is on this page only because no repo
+exists yet.
+
+---
+
 ## Externally designed builds
 
 Existing open designs worth building as-is, rather than projects to design. The value is
@@ -218,8 +284,11 @@ patterns — that every robot depends on rather than reimplements.
   in practice; a shared package is what would close that gap.
 - **Argument against:** two robots is a thin basis for an abstraction, and koala-bot's
   ROS 2 layer is not written yet. Premature.
-- **What would change this:** a third consumer. A modified
-  [Open Duck Mini V2](#open-duck-mini-v2) running koala-bot's reflex firmware would be one.
+- **What would change this:** a third consumer. The
+  [Devastator tank](#devastator-tank-platform) is the strongest candidate — already owned,
+  and a differential-drive base speaks `/cmd_vel` natively with no gait or balance loop in
+  the way. A modified [Open Duck Mini V2](#open-duck-mini-v2) running koala-bot's reflex
+  firmware would be another, at considerably more effort.
 - **Unresolved:** whether to wait for koala-bot's stack to exist before extracting anything.
 
 ### LeRobot and learned manipulation
