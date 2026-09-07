@@ -242,9 +242,10 @@ see below.
 - **TPU is unproven on the Ender-5 S1.** The validated material set is PETG and PLA+
   ([`common.md`](common.md#materials-in-use)). Two foot-sole parts need TPU. Test print
   before committing.
-- **No NVIDIA GPU on the workstation** (`nvidia-smi` absent, 2026-09-07). The shipped ONNX
-  policies run without a GPU; training a new one needs a cloud GPU — upstream's headline
-  run is 300 M timesteps.
+- **Training is now possible locally** — see [the GPU workstation](common.md#the-gpu-workstation),
+  established 2026-09-07. The shipped ONNX policies need no GPU at all; training a new one
+  (upstream's headline run is 300 M timesteps) is a job for that machine, subject to the
+  Blackwell toolchain constraint recorded there.
 - **It breaks the two-tier compute rule.** Policy inference runs on the Pi Zero 2W with no
   real-time MCU beneath it — a second counter-example alongside the hexapod, and a
   different regime again (a learned policy at low rate, not a PID inverted pendulum). What
@@ -318,7 +319,7 @@ Training also hard-caps `max_motor_velocity = 5.24 rad/s` (**50 rpm**) with
      under-used). **Hypothesis, untested:** scaling the kp register down in proportion to
      supply voltage may bring the response back inside the envelope. The rigorous route is
      re-running [BAM](https://github.com/Rhoban/bam) on a 12 V unit, re-fitting the sim
-     actuator model and re-training — which needs a GPU this workstation does not have.
+     actuator model and re-training — a job for [the GPU workstation](common.md#the-gpu-workstation).
 
 **Recommendation (not a decision): buy the 7.4 V servos and build stock first.** The servo
 order is the only part of this fork that is expensive to reverse, and €196 buys a
@@ -381,10 +382,23 @@ mode this rule exists to prevent.
   and wide-area ROS 2 is **Zenoh** (`rmw_zenoh`, or `zenoh-bridge-ros2dds` alongside
   existing DDS). Worth knowing before designing around plain DDS.
 
-**The gap: the coordinator has no hardware.** The workstation has **no NVIDIA GPU**
-(verified 2026-09-07), so local VLM/LLM inference is not available. The core is therefore
-cloud APIs or a machine not yet owned — the same constraint that rules out training
-[duck](#open-duck-mini-v2) policies locally. **Undecided.**
+**The coordinator has a candidate machine** (2026-09-07): [the GPU
+workstation](common.md#the-gpu-workstation) — 16 GB Blackwell, Docker present, reachable
+over the private overlay network. It is a good fit for the reasoning tier and for RL
+training both, but the two roles have different demands and only one is hard:
+
+- **Training is batch and offline.** It cares about the GPU and nothing else. Settled.
+- **Coordination is a live service**, and this machine is a **desktop** — powered off or
+  busy when it is being used for something else. That is not a blocker; it is a direct
+  argument for the tier rule above. A fleet whose robots stall when the desktop sleeps has
+  the architecture wrong. **The coordination tier must be treated as optional from day
+  one**, and this hardware choice guarantees it gets tested.
+- **Its networking is the real constraint.** The WSL2 instance is **NAT'd, not mirrored**,
+  so the LAN cannot open connections into it; it is reachable only over the overlay
+  network. Unicast is therefore fine, but **DDS multicast discovery will not cross that
+  boundary** — the concrete instance of the "DDS does not travel" problem above.
+  **Zenoh** is the answer (`zenoh-bridge-ros2dds`, or `rmw_zenoh`), not a WSL networking
+  workaround. **Undecided but strongly indicated.**
 
 **What this implies for sequencing.** A hive needs **two bodies speaking one contract**,
 and there is currently one partly-working robot. So this direction is the *motivation* for

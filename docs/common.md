@@ -181,6 +181,37 @@ it on the bench is worth doing before the firmware is written rather than after.
 **Raspberry Pi 5 (8 GB) is the standard intent-tier host** — hexapod brain, koala-bot
 cerebrum, and the printer's Klipper host. One board to know, one image to maintain.
 
+### The GPU workstation
+
+**Established 2026-09-07.** A workstation with an **NVIDIA GeForce RTX 5070 Ti (16 GB,
+driver 610.62)** is available, running **Ubuntu 24.04 LTS under WSL2** on a Windows
+desktop. GPU passthrough is working (`/dev/dxg` present, CUDA libraries at
+`/usr/lib/wsl/lib/`), and Docker is installed. **No ML stack is installed yet** — no
+PyTorch, JAX, MuJoCo or `uv` as of that date.
+
+It is the only GPU in the family, and it unlocks two things nothing else can: **RL
+policy training** (MuJoCo Playground / MJX and anything else JAX- or PyTorch-based) and
+**local LLM/VLM inference** for a reasoning tier.
+
+Four constraints, all of which bite early:
+
+- **Blackwell means `sm_120`.** The RTX 50-series needs **CUDA 12.8 or newer** and
+  framework builds carrying `sm_120` kernels — PyTorch `cu128` wheels or later, a current
+  `jax[cuda12]`. Older wheels fail outright or fall back silently to CPU, which on a
+  300 M-step training run looks like "it works, but slowly" rather than like an error.
+- **`nvidia-smi` is not on `PATH`.** It lives at `/usr/lib/wsl/lib/nvidia-smi`. A naive
+  check therefore reports *no GPU* on a machine that has one.
+- **WSL2 networking is NAT'd, not mirrored.** The LAN cannot open connections *into* the
+  instance. This is the concrete reason **DDS multicast discovery will not reach it**, and
+  why [Zenoh](ideas.md#physical-ai-and-the-hive-mind) rather than a networking workaround
+  is the indicated route for any ROS 2 role. Unicast over the private overlay network
+  works — that is how the machine is reached today.
+- **It is a desktop, not a server.** Availability is not guaranteed: it may be powered
+  off, or busy. Any role given to it must degrade gracefully when it is absent.
+
+**16 GB of VRAM** is comfortable for MJX-scale RL training and for quantised models in the
+7–14 B class; it is the binding limit on anything larger.
+
 ### The topic contract
 
 The vocabulary is shared deliberately: fix it once and every robot inherits it. Bodies
