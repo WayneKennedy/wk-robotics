@@ -1,8 +1,8 @@
 # Roadmap
 
-**Drivetrain first, perception last** (DEC-06). The first build mounted two depth
-cameras and a Pi before the drive worked, and never ran. This inverts that order
-deliberately.
+**Drivetrain first, perception last** (DEC-06) — and the arm last of all. The first build
+mounted two depth cameras and a Pi before the drive worked, and never ran. This inverts
+that order deliberately.
 
 Each milestone ends with a **robot that works** — not a subsystem that might.
 
@@ -15,9 +15,12 @@ No purchases. Close the questions that gate everything else:
 2. **Resolve the motor question** (OQ-01) — the rail voltage, and therefore the battery
    and driver, follow from it.
 3. **Compute the power budget** (DEC-07) at realistic duty, with stall headroom.
+4. **Weigh the SO-ARM101 parts as they come off the plate** (OQ-12). The arm's real mass
+   decides whether the tipping arithmetic is marginal or comfortable, and the parts are
+   being printed regardless.
 
-**Exit:** OQ-01 and OQ-11 closed; a power budget exists on paper. The MCU no longer needs
-proving on the bench — DEC-10 buys the upstream-supported board instead.
+**Exit:** OQ-01 and OQ-11 closed; a power budget on paper; the arm's real mass measured.
+The MCU needs no bench proving — DEC-10 buys the upstream-supported board instead.
 
 ## Milestone 1 — A robot that drives *(no perception at all)*
 
@@ -66,3 +69,27 @@ the hexapod on one contract, reporting to the coordination tier.
 
 **Exit:** two robots, one contract, one coordinator, and no single point of failure
 below it.
+
+## Milestone 5 — A robot that carries an arm
+
+The reason the kit came out of its box ([`concept.md`](concept.md#what-it-is-for)).
+**Depends on milestone 2, not on milestone 4** — it needs the Pi, and may be taken before
+the fleet node.
+
+- Mount and reach envelope designed against **measured** masses (OQ-12), not assumed ones.
+- The arm sits on the **intent tier**: STS3215s on a half-duplex TTL bus from the Pi, not
+  from the reflex MCU.
+- **Base positioning is coarse by construction.** A skid-steer cannot strafe, and its
+  heading is [not trustworthy](architecture.md#odometry-is-weak-by-construction). Absorb
+  that in the arm's workspace and an eye-in-hand camera rather than in base odometry.
+  [LeKiwi](https://github.com/SIGRobotics-UIUC/LeKiwi) — the same arm on a holonomic
+  three-omniwheel base — chose that drive precisely to avoid the problem. That choice is
+  not available here (DEC-01 keeps the chassis), so it is a limitation to design around
+  rather than one to fix.
+- **Honest caveat:** LeRobot teleoperation and policy inference want an off-robot machine,
+  which is the coordination tier DEC-04 expects to be *absent*. Manipulation is the one
+  capability here that does **not** survive losing the tier above it, unless a policy runs
+  onboard.
+
+**Exit:** the base drives to an object, the arm picks it up and puts it somewhere else —
+and it does not tip.

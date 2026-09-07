@@ -12,9 +12,12 @@ exist and are documented here; no new work has been done. This repo is currently
 
 A **statically stable, tracked, skid-steer mobile base** carrying a two-tier
 reflex/intent stack and speaking the family's ROS 2 topic contract. It is the
-simplest body in the family — no balance loop, no gait, no manipulator — which is
-precisely what makes it useful: it is the cheapest platform on which the shared
-navigation stack and a multi-robot architecture can actually be tested.
+simplest body in the family — no balance loop, no gait, and no manipulator it designs
+itself — which is precisely what makes it useful: the cheapest platform on which the
+shared navigation stack and a multi-robot architecture can actually be tested, and the
+intended mobile base for the family's
+[SO-ARM101](https://github.com/TheRobotStudio/SO-ARM100) (feasibility open —
+[OQ-12](docs/open-questions.md)).
 
 - Aluminium tracked chassis, **225 × 220 × 108 mm**, 1.3 kg, 3 kg payload.
 - Reflex tier on a 32-bit MCU running **micro-ROS** — encoder decoding, closed-loop

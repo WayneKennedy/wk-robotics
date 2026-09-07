@@ -22,7 +22,10 @@ and none of the other three count if the content is wrong.
 
 **A tracked ROS 2 robot built on a purchased DFRobot Devastator chassis**, resurrected
 from a build that stalled in 2025. The chassis is kept; the electronics, compute and
-software are all being replaced. Full intent: [`docs/concept.md`](docs/concept.md).
+software are all being replaced. It is also the intended **mobile base for the family's
+[SO-ARM101](https://github.com/TheRobotStudio/SO-ARM100)** — which is what prompted the
+resurrection, and whose feasibility is **open** (OQ-12: on estimated masses, a ~500 mm
+reach on a 225 mm chassis tips — the arm has not been weighed). Full intent: [`docs/concept.md`](docs/concept.md).
 
 **Nothing has been built yet.** The original electronics are still fitted and are
 documented as *as-found*, not as a design. Do not read

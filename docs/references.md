@@ -17,6 +17,18 @@
 - [Nav2](https://docs.nav2.org/) and `slam_toolbox` / RTAB-Map — reuse the hexapod's
   configuration rather than deriving a new one.
 
+## The arm
+
+- [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) — the **Standard
+  Open Arm** this robot is intended to carry (Apache-2.0). The repo name is the
+  *repository*, not the revision: it ships both SO-100 and SO-101, and the family builds
+  the **SO-101 follower**. Its CAD is already vendored into koala-bot as servo reference.
+- [LeKiwi](https://github.com/SIGRobotics-UIUC/LeKiwi) — the same arm on a **holonomic
+  three-omniwheel** base, Pi 5, LeRobot-native. The closest prior art to milestone 5, and
+  the sharpest illustration of where a tracked skid-steer differs: it cannot strafe.
+- [LeRobot](https://github.com/huggingface/lerobot) — the learning and teleoperation stack
+  the SO-101 ecosystem is built around.
+
 ## Family
 
 - [wk-robotics](https://github.com/WayneKennedy/wk-robotics) — the index, and everything

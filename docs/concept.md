@@ -9,29 +9,45 @@ Devastator chassis, carrying a reflex/intent compute stack and speaking the fami
 ROS 2 topic contract.
 
 It is deliberately the **simplest body in the family**. No balance loop, no gait, no
-manipulator, no closed kinematic chains. A differential-drive base publishes `/cmd_vel`
-and consumes it continuously, with nothing to integrate and nothing to keep upright.
+closed kinematic chains, and no manipulator *of its own design* — the arm it is meant to
+carry is an upstream project mounted as payload (below). A differential-drive base
+publishes `/cmd_vel` and consumes it continuously, with nothing to integrate and nothing
+to keep upright.
 
 ## What it is for
 
-Three things, in order of how much they justify the work:
+Four things. The first is what sent the kit looking for a use; the rest are in order of
+how much they justify the work.
 
-1. **It is the cheapest second consumer of the family's ROS 2 stack.** The hexapod's
+1. **It is a mobile base for the SO-ARM101.** (Owner, 2026-09-07.) The
+   [Standard Open Arm](https://github.com/TheRobotStudio/SO-ARM100) is
+   [already being printed](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/projects.md#so-arm101)
+   as a family project and has no base. Arm on a driving chassis is **mobile
+   manipulation** — the one capability neither the hexapod nor koala-bot is aimed at, and
+   the reason this chassis was dug out rather than left in its box.
+   **Feasibility is not established:** the arm's **~500 mm reach against a 225 mm
+   chassis** is a tipping problem before it is a payload problem. See
+   [OQ-12](open-questions.md), and [`roadmap.md`](roadmap.md) milestone 5 — nothing is
+   mounted before milestone 1 exits.
+
+2. **It is the cheapest second consumer of the family's ROS 2 stack.** The hexapod's
    SLAM and Nav2 work is
    [portable in principle and not in practice](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/ideas.md#a-shared-ros-2-package-across-robots).
    A second body that speaks the same contract is what turns that from an assertion
    into a test — and a tracked base is the easiest body Nav2 will ever drive.
-2. **It is the first node of a fleet.** The
+3. **It is the first node of a fleet.** The
    [hive-mind direction](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/ideas.md#physical-ai-and-the-hive-mind)
    needs two bodies on one contract before any of its interesting problems — map
    merging, shared world model, graceful degradation — can even be posed. This robot
    plus the hexapod is the minimum viable fleet.
-3. **It is already paid for.** The chassis is a high-quality aluminium platform that
-   exists, in a box, doing nothing.
+4. **It is already paid for.** The chassis is a high-quality aluminium platform that sat
+   in a box, assembled, doing nothing.
 
-**What it is not for:** it teaches nothing about balance (koala-bot's job), nothing
-about learned locomotion, and nothing about manipulation. It is a *systems* robot, not
-a *capability* robot. That is the point.
+**What it is not for:** it teaches nothing about balance (koala-bot's job) and nothing
+about learned locomotion, and it **designs no manipulator** — the arm is upstream's. What
+this robot contributes to manipulation is *mobility under it*. The body stays the simplest
+in the family and the robot stays a *systems* robot rather than a *capability* one; that
+is still the point.
 
 ## The first build, and why it stopped
 
