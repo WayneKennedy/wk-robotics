@@ -9,6 +9,10 @@
   commissioning tutorial this build follows: find port, set up motors, assemble, calibrate.
 - [LeRobot installation](https://huggingface.co/docs/lerobot/installation) — the `feetech`
   extra is what the servo tooling needs.
+- Upstream `Simulation/SO101/` — URDF and MuJoCo MJCF of the SO-101, generated with
+  onshape-to-robot; the basis for any simulated two-arm work (OQ-08).
+- LeRobot `robots/bi_so_follower` and `teleoperators/bi_so_leader` (in the 0.6.1 package)
+  — the two-arm robot and leader definitions.
 
 ## Servos and bus
 

@@ -17,7 +17,9 @@ rest of the family is. Upstream's BOM with prices and vendors:
 
 | Part | Qty | Status |
 |---|---|---|
-| STS3215 12 V, 1/345 | 4 | **OQ-01** — not ordered. Upstream lists Alibaba (~$14 each, 12 V variant separately); UK routes used by the family are in [koala-bot `sourcing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/sourcing.md) |
+| STS3215 12 V, 1/345 | 4 (10 if a second follower, OQ-08) | **OQ-01** — not ordered. Upstream lists Alibaba (~$14 each, 12 V variant separately); UK routes used by the family are in [koala-bot `sourcing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/sourcing.md) |
 | 12 V supply, ≥5 A | 1 | **OQ-03** — upstream brick versus family 3S pack; undecided |
 | M2×6 and M3×6 screws | counts per upstream guide | **OQ-07** — not tallied, not bought |
 | USB-C cable, table clamps | 1, 2 | Upstream BOM items; whether already owned is unrecorded |
+| Cameras | 1–2 | For LeRobot recording (DEC-08). None owned or specified |
+| Second follower: parts, 6 servos, Waveshare board | — | Only if the two-arm candidate under OQ-08 is taken |

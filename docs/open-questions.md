@@ -53,6 +53,25 @@ and not yet accepted. Do not build against one without the owner deciding.
   for the desk phase, and **cameras** join the sourcing list — LeRobot's imitation-learning
   loop needs one or two, and none is owned or specified.
 
+  **Leading candidate, likely but not decided (owner, 2026-09-09): two followers
+  cooperating in one workspace.** Motivated by a real problem in large-scale industrial
+  machinery — one arm places a pallet of components where a second arm can pick it up and
+  load a machine — reproduced at desk scale and solved with current learned-policy
+  ("Physical AI") methods rather than scripted coordination. What already exists for it:
+
+  | Need | Exists |
+  |---|---|
+  | Two-arm robot type | LeRobot 0.6.1 `bi_so_follower` — left and right `SOFollowerConfig`, each on its own USB port, with shared top-level cameras; `bi_so_leader` for teleop |
+  | Simulation | Upstream `Simulation/SO101/` — URDF and MuJoCo MJCF with a `scene.xml`, STS3215 motor parameters from Open Duck Mini, mid-range joint zeros matching LeRobot's calibration. Gripper not yet modelled as LeRobot's linear 0–100 joint |
+  | Training compute | The family GPU workstation ([wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#the-gpu-workstation)); no ML stack installed yet |
+
+  Consequences if taken: a **second follower** (six more 12 V servos, so OQ-01 becomes ten
+  servos, not four; a second Waveshare board; a 12 V supply sized for twelve servos, which
+  stall at ~32 A in total), and for teleoperation either **two leaders** or one leader
+  driving one arm at a time. Whether the handover is learned end to end or the two arms
+  run separate single-arm policies with a hand-off protocol is the research question, and
+  is not for this document to settle.
+
 - **OQ-09 — What drives the servo bus at runtime.** Commissioning and calibration are
   done from a PC over USB and need nothing else (DEC-04). For running the arm, three
   architectures are possible and none is chosen:

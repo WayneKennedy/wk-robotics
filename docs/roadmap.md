@@ -32,7 +32,9 @@ arm clamped to a table.
 
 The LeRobot loop as upstream intends it, entirely on the PC-over-USB path. Needs a leader
 or a substitute (OQ-02) and cameras (OQ-08). Ends with a recorded dataset of a simple
-pick-and-place, a policy trained from it, and the follower executing it.
+pick-and-place, a policy trained from it, and the follower executing it. **If the two-arm
+candidate under OQ-08 is taken, a second follower is printed and commissioned in parallel
+with this milestone**, and the single-arm result becomes the baseline for the handover.
 
 ## Milestone 5 — Decide what it is for, and what drives it
 

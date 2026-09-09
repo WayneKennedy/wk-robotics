@@ -31,6 +31,10 @@ anything else, so the arm is understood as intended before it is repurposed. Wha
   driven by whatever drives the tank. Needs that robot's OQ-12 to close and an
   interface (OQ-06).
 - **Both**, at different times — a desk arm that is occasionally mounted.
+- **One of a cooperating pair** — a second follower is likely to be printed, and the two
+  used to reproduce an industrial two-arm handover (one arm places a pallet where the
+  other picks it up) at desk scale, solved with learned policies. The leading candidate as
+  of 2026-09-09; detail and what already exists for it under OQ-08.
 
 One thing it has already been, regardless: **the proving ground for the servo family.**
 Every STS3215 fact the family relies on — press-fit tolerance in PLA+, bus adapter
