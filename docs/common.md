@@ -174,14 +174,27 @@ SUBSYSTEM=="usb-serial", DRIVER=="ftdi_sio", ATTR{latency_timer}="1"
 The pattern koala-bot's architecture sets out, and the one any future balancing or
 dynamic project should follow:
 
-| Tier | Hardware | Role | Rule |
-|---|---|---|---|
-| **Reflex** | Real-time MCU (Teensy 4.0 leading; ESP32 / RP2040 candidates) | Motor and servo output, IMU read, balance loop, encoders, safety | Fast (~200–1000 Hz), deterministic |
-| **Intent** | Raspberry Pi 5 + ROS 2 | Perception, SLAM, mission and behaviour, LLM personality, networking | Not real-time |
+| Tier | Hardware | Band | Role | Status |
+|---|---|---|---|---|
+| **Reflex** | Real-time MCU (Teensy 4.0 leading; ESP32 / RP2040 candidates) | ~200–1000 Hz, deterministic | Motor and servo output, IMU read, balance loop, encoders, safety | **Decided** |
+| **Intent** | On-robot Raspberry Pi 5 + ROS 2 | ~1–50 Hz, not real-time | Perception, SLAM, behaviour, LLM personality, networking | **Decided** |
+| **Mission Planning** | Off-robot central machine | seconds | Shared world model, reasoning, fleet-level tasking | **Aspirational** — see [ideas.md](ideas.md#physical-ai-and-the-hive-mind) |
+
+**The tiers are defined by one axis: control band.** Each is a loop that runs slower than
+the one below it and hands the one below setpoints, and **each must stay useful when the
+tier above it is unreachable** — the balance loop survives losing the Pi, the robot
+survives losing the planner. Only the first two tiers are built or committed; the third is
+recorded so the two below are designed with it in mind, not because it is planned.
 
 **The load-bearing rule: the balance loop lives on the MCU, never on the Pi.** Linux is not
 real-time and ROS 2 over USB adds jitter that destabilises an inverted pendulum. IMU → PID →
 output closes on the MCU; the Pi sends setpoints and reads telemetry.
+
+**What is *not* a tier: a smart sensor.** A camera that computes depth or runs a detector
+on-board closes no control loop, takes no setpoints and offers no graceful degradation —
+if it dies, the intent tier is blind wherever the depth was computed. It is a peripheral
+of the intent tier, and where its work runs is a separate axis, covered under
+[Perception placement](#perception-placement) below.
 
 ### micro-ROS: how the MCU joins the graph
 
@@ -214,6 +227,57 @@ it on the bench is worth doing before the firmware is written rather than after.
 
 **Raspberry Pi 5 (8 GB) is the standard intent-tier host** — hexapod brain, koala-bot
 cerebrum, and the printer's Klipper host. One board to know, one image to maintain.
+
+### Perception placement
+
+**Orthogonal to the tiers: where each stage of the perception pipeline runs.** Every
+stage — image signal processing, stereo depth, detection and classification, feature
+tracking, SLAM — can run in one of four places, and the choice is made per stage, not per
+robot:
+
+| Place | Examples | Costs the Pi |
+|---|---|---|
+| **In the sensor** | RealSense D4xx stereo ASIC; Sony IMX500 in the Raspberry Pi AI Camera; RealSense D555 Vision SoC V5 | Nothing but the bus |
+| **Host accelerator** | Raspberry Pi AI HAT+ (Hailo) on the Pi 5 PCIe connector | PCIe bandwidth; the single lane is shared with NVMe |
+| **Pi CPU** | depth-to-laserscan, `slam_toolbox`, RTAB-Map, Nav2 — everything the hexapod runs today | The whole cost |
+| **Off-robot** | GPU workstation | Ruled out for raw streams — see below |
+
+**Why it matters here.** The hive-mind direction fixes one end: *share a world model, not
+sensor streams* ([ideas.md](ideas.md#physical-ai-and-the-hive-mind)), so perception must
+stay on the robot. The intent host is a Pi 5 on every project, so the Pi 5 is the
+perception bottleneck, and moving stages into the sensor or an accelerator is the only
+lever that does not change the host. The hexapod (D435i, all SLAM on the Pi) and the tank
+(two RealSense cameras on one USB 3 host — `wk-devastator` OQ-09) are the two instances so
+far; koala-bot's CSI camera-eyes are where an in-sensor module would go.
+
+**What the current products actually do on-device (checked 2026-09-09):**
+
+- **RealSense D4xx (the hexapod's D435i):** stereo disparity matching on the on-board
+  ASIC; the host receives finished depth frames over USB 3. **No SLAM on-device** — the
+  hexapod's `slam_toolbox` and RTAB-Map run on the Pi.
+- **RealSense T265** was the only member that ran visual-inertial SLAM on-device and
+  emitted pose. **Discontinued.** No current RealSense does on-device SLAM.
+- **RealSense D555 PoE:** D450 optical module, IMU, and the new *Vision SoC V5* —
+  disparity, motion estimation, a vision DSP and an ISP on-device; depth to 1280 × 720 at
+  60 fps. Power and data over one Ethernet cable, and it **streams to ROS 2 directly
+  over Ethernet with no host driver**. The biggest on-device offload in the family, and
+  it takes the USB 3 bandwidth question off the table. Sources:
+  [product page](https://www.realsenseai.com/products/d555-poe/),
+  [datasheet v1.1](https://realsenseai.com/wp-content/uploads/2025/08/D555-Datasheet-v1.1.pdf).
+- **Raspberry Pi AI Camera (Sony IMX500):** runs one int8 model, up to ~8 MB and a
+  640 × 640 input tensor, on the sensor and returns output tensors and regions of interest
+  as metadata alongside each frame. **Detection and classification only** — no depth, no
+  SLAM. Source:
+  [Raspberry Pi documentation](https://www.raspberrypi.com/documentation/accessories/ai-camera.html).
+- **Raspberry Pi AI HAT+ (Hailo):** a host accelerator, not a sensor — the model runs
+  on the HAT, the frames still cross to the Pi. Whether a given HAT variant also carries
+  an M.2 slot for the NVMe it displaces is **unverified**; check before pairing one with a
+  Pi 5 that boots from NVMe.
+
+**Rule of thumb:** put a stage in the sensor when the sensor's output is what the next
+stage consumes anyway (depth for laserscan, detections for behaviour), and leave a stage
+on the Pi when it needs the whole robot's state (SLAM, Nav2). No project has yet tested an
+in-sensor or accelerator stage; the table above records options, not results.
 
 ### The GPU workstation
 

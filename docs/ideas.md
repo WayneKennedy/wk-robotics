@@ -212,26 +212,25 @@ Threads worth pulling that are not yet attached to a specific build.
 ### Physical AI and the hive mind
 
 **The stated direction of the work (owner, 2026-09-07): understand *Physical AI* by doing
-it, aiming at a "hive mind" — a central AI coordinator and reasoning machine, with remote
-physical agents that extend its area of awareness.** This is an aspiration, not a plan;
+it, aiming at a "hive mind" — a central mission-planning and reasoning machine, with
+remote physical agents that extend its area of awareness.** This is an aspiration, not a plan;
 nothing on this page is committed. It is recorded here because it reframes what the other
 projects are *for*, and that is a fact about the work even when the build is not decided.
 
-**It is a third tier on the existing architecture, not a new one.**
-[The two-tier split](common.md#compute-the-two-tier-split) already separates reflex (MCU,
-~1 kHz, deterministic) from intent (on-robot Pi, ROS 2). A coordinator is a third band
-above those, operating in seconds.
-
-| Tier | Where | Band | Survives loss of the tier above? |
-|---|---|---|---|
-| Reflex | MCU | ~200–1000 Hz | Must |
-| Intent | On-robot Pi | ~1–50 Hz | Must |
-| **Coordination** | Central machine | seconds | n/a |
+**It is a third tier on the existing architecture, not a new one.** The tier table in
+[`common.md`](common.md#compute-the-two-tier-split) already separates reflex (MCU,
+~1 kHz, deterministic) from intent (on-robot Pi, ROS 2). **Mission Planning** is a third
+band above those, operating in seconds, and it is the only tier that is aspirational
+rather than decided.
 
 **The load-bearing rule is the same one, extended: each tier must stay useful when the
-tier above it is unreachable.** A robot whose link to the coordinator drops degrades to
-autonomous; it does not stop. A fleet that dies when the network hiccups is the failure
+tier above it is unreachable.** A robot whose link to the mission planner drops degrades
+to autonomous; it does not stop. A fleet that dies when the network hiccups is the failure
 mode this rule exists to prevent.
+
+Smart sensors — cameras that compute depth or run a detector on-board — are **not a
+fourth tier**; they are a placement choice inside the intent tier. See
+[Perception placement](common.md#perception-placement).
 
 **What the problem actually consists of**, in rough order of difficulty:
 
@@ -251,16 +250,16 @@ mode this rule exists to prevent.
   and wide-area ROS 2 is **Zenoh** (`rmw_zenoh`, or `zenoh-bridge-ros2dds` alongside
   existing DDS). Worth knowing before designing around plain DDS.
 
-**The coordinator has a candidate machine** (2026-09-07): [the GPU
+**The mission planner has a candidate machine** (2026-09-07): [the GPU
 workstation](common.md#the-gpu-workstation) — 16 GB Blackwell, Docker present, reachable
 over the private overlay network. It is a good fit for the reasoning tier and for RL
 training both, but the two roles have different demands and only one is hard:
 
 - **Training is batch and offline.** It cares about the GPU and nothing else. Settled.
-- **Coordination is a live service**, and this machine is a **desktop** — powered off or
+- **Mission Planning is a live service**, and this machine is a **desktop** — powered off or
   busy when it is being used for something else. That is not a blocker; it is a direct
   argument for the tier rule above. A fleet whose robots stall when the desktop sleeps has
-  the architecture wrong. **The coordination tier must be treated as optional from day
+  the architecture wrong. **The Mission Planning tier must be treated as optional from day
   one**, and this hardware choice guarantees it gets tested.
 - **Its networking is the real constraint.** The WSL2 instance is **NAT'd, not mirrored**,
   so the LAN cannot open connections into it; it is reachable only over the overlay
