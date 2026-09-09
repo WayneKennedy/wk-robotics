@@ -20,7 +20,7 @@ variant (~30 kg·cm) rather than the standard 7.4 V one, so it needs a 12 V rail
 - Design, STLs and bill of materials: [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100), cloned as a sibling, never forked.
 - Parts printed in white eSUN PLA+ on the family's Ender-5 S1.
 - Servo bus driven by a Waveshare Bus Servo Adapter (A), the upstream BOM part.
-- Intended to ride on [wk-devastator](https://github.com/WayneKennedy/wk-devastator) — feasibility open on both sides.
+- **Purpose and runtime controller not yet decided** (OQ-08, OQ-09): a desk LeRobot arm, the manipulator on [wk-devastator](https://github.com/WayneKennedy/wk-devastator), or both in turn.
 
 ## Why a repo, when upstream has one
 
