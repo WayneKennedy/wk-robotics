@@ -119,12 +119,21 @@ default. A generic USB-TTL cable has separate TX and RX and no direction switchi
 will not drive these servos without a tri-state buffer — a purpose-made bus adapter is
 required, not optional.
 
-**The adapter is already owned.** An **FE-URT-1** was bundled with each STS3215 6-pack
-(`koala-bot/docs/sourcing.md`, purchased 2026-09-01) — two in total. Whether the STS3032M
-4-pack included one is **unrecorded**; check the box before planning around it. A
-**Waveshare Bus Servo Adapter (A) v1.1** is also in hand (2026-09-07) for the SO-ARM101
-build. A further equivalent, if ever needed: the *Serial Bus Servo Driver Board* (~€5, the
-part in the Open Duck Mini V2 BOM).
+**Adapters in hand (2026-09-08):** a **Waveshare Bus Servo Adapter (A) v1.1** — the
+"Motor Control Board" in the SO-ARM100 BOM, so it is the SO-ARM101 part — and a
+**Feetech FE-URT-2**. Two **FE-URT-1** are on order, one bundled with each STS3215 6-pack
+(`koala-bot/docs/sourcing.md`, purchased 2026-09-01, not yet arrived). Whether the STS3032M
+4-pack includes one is **unrecorded**. A further equivalent, if ever needed: the *Serial
+Bus Servo Driver Board* (~€5, the part in the Open Duck Mini V2 BOM).
+
+| Adapter | USB | Servo power in | Servo ports | Notes |
+|---|---|---|---|---|
+| Waveshare Bus Servo Adapter (A) | USB-C; chip **unverified** — read `lsusb` on first plug-in | 5.5 × 2.1 mm barrel **or** screw terminals, 9–12.6 V / 5–8.4 V (pass-through, below) | 2 × 3-pin, either is the bus | **Both jumpers on channel B** for USB control (LeRobot docs) |
+| Feetech FE-URT-2 | USB-C, **CH343** (vendor listing) | Two screw-terminal inputs: **DC 4.8–12 V for TTL** servos, **DC 12–24 V for RS485** servos | TTL bus header plus 2 × XH4 RS485 — check the silkscreen before plugging a 3-pin STS lead | 3.3 V / 5 V logic-level switch; also serves the SMS (RS485) family, which nothing here uses |
+
+A CH343 enumerates under the kernel's `cdc_acm` driver as `/dev/ttyACM*`; the FTDI note
+below does not apply to it. Either board needs the user in the **`dialout`** group (or a
+udev rule) before the port is writable without `sudo`.
 
 **The Waveshare Bus Servo Adapter (A) is a pass-through, confirmed 2026-09-07** — owner
 read the Waveshare documentation (*"the input voltage must match the servo voltage"*,
@@ -142,9 +151,11 @@ the 2S window** for 7.4 V ones. Consequences:
 
 Three constraints that apply on every project using these servos:
 
-- **The adapter does not power the servo.** USB 5 V will not drive a 12 V STS3215; the
-  servo rail is fed separately. Configuration *moves* the servo — it drives to zero
-  position so the horn can be fitted aligned — so it needs working current, not a trickle.
+- **The adapter does not power the servo, and USB alone cannot.** Neither board routes
+  USB 5 V onto the servo V+, and 5 V is below the STS3215's 6–14 V range anyway — the
+  servo will not even answer a ping. The servo rail is fed separately, even for ID setup.
+  LeRobot's setup writes ID and baud rate only and does not move the servo; Open Duck's
+  script also drives it to zero so the horn can be fitted aligned, so needs working current.
 - **Match the rail to the part.** STS3215 is 12 V, **STS3032M is 6 V**, and the adapter
   passes through whatever it is given. Same bus, same protocol, different rail.
 - **One servo at a time, unplugged between each.** Every unit ships as **ID 1**, so IDs
