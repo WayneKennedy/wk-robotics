@@ -108,7 +108,8 @@ checked out alongside this one:
 | Project | Path | Repo |
 |---|---|---|
 | koala-bot | `../koala-bot` | [WayneKennedy/koala-bot](https://github.com/WayneKennedy/koala-bot) — public |
-| SO-ARM101 | `../SO-ARM100` | [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) — upstream clone |
+| SO-ARM101 (build record) | `../wk-soarm101` | [WayneKennedy/wk-soarm101](https://github.com/WayneKennedy/wk-soarm101) — public |
+| SO-ARM101 (design) | `../SO-ARM100` | [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) — upstream clone, read-only |
 | 3D printing | `../3d-printing` | [WayneKennedy/3d-printing](https://github.com/WayneKennedy/3d-printing) — private |
 | wk-devastator | `../wk-devastator` | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) — public |
 | wk-hexapod | `../wk-hexapod` | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |

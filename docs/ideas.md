@@ -45,6 +45,9 @@ electronics, on a powered-wheelchair base.
   rather than a shortcut.
 - **Currently:** shelved as inspiration. A good future testbed for parallel mechanisms, an
   AI brain, and electronics lessons at humanoid scale.
+- **New use (2026-09-09, candidate):** its existing torso is the obvious mount if the
+  SO-ARM101 pair is ever tried as humanoid shoulders — see
+  [wk-soarm101 OQ-08](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/open-questions.md).
 
 ### A printed hexapod
 
@@ -320,11 +323,12 @@ patterns — that every robot depends on rather than reimplements.
 
 ### LeRobot and learned manipulation
 
-The SO-ARM101 exists to work with LeRobot. Once the follower arm is built, the question is
-what it is *for* — teleoperated data collection, a learned policy, or a testbed for
-putting a learned component into one of the mobile robots.
-
-- **Unresolved:** everything downstream of "build the arm". Worth revisiting once it moves.
+The SO-ARM101 now has its own repo, and the question of what it is *for* lives there as
+[wk-soarm101 OQ-08](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/open-questions.md)
+— LeRobot first (its DEC-08), then a two-arm handover, humanoid shoulders, or the tank's
+manipulator. Not restated here. What remains a *family* question is the one above under
+[Physical AI and the hive mind](#physical-ai-and-the-hive-mind): how a learned component
+from that arm gets into the mobile robots.
 
 ---
 

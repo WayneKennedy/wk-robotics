@@ -30,6 +30,7 @@ cd ..
 git clone git@github.com:WayneKennedy/koala-bot.git
 git clone git@github.com:WayneKennedy/3d-printing.git        # private
 git clone https://github.com/TheRobotStudio/SO-ARM100.git    # upstream, not a fork
+git clone git@github.com:WayneKennedy/wk-soarm101.git
 git clone git@github.com:WayneKennedy/wk-devastator.git
 git clone git@github.com:WayneKennedy/wk-hexapod.git
 git clone git@github.com:WayneKennedy/fn-hexapod.git         # vendor reference
@@ -62,6 +63,12 @@ and the re-import question now live in
 control. They may belong to the same retired lineage as the archived terrain repos below.
 Local disk only — no GitHub action outstanding. Decision needed: keep, archive offline, or
 delete.
+
+### Moved to a project home
+
+**SO-ARM101 servo commissioning** (2026-09-09) — held here for one day while the build had
+no repo of its own. Now in
+[wk-soarm101 `docs/servos.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/servos.md).
 
 ### Deferred, already recorded elsewhere
 

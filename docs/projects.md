@@ -73,9 +73,9 @@ compute and software are all replaced.
 | | |
 |---|---|
 | Repo | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) — public |
-| State | Design record only. Nothing built, nothing ordered. Milestone 0 is measure-and-decide |
+| State | Design record; milestone 0 (measure-and-decide) in progress. Motors and Teensy 4.1 ordered, driver borrowed from koala-bot. **Motors on back order, due end of October 2026** (revised 2026-09-09) — milestone 1 waits on them |
 | Chassis | DFRobot **ROB0128**, aluminium, 225 × 220 × 108 mm, 1.3 kg, 3 kg payload |
-| Actuation | 2 × brushed DC gearmotors, 45:1 — **6 V originals, no encoders**; replacement undecided |
+| Actuation | 2 × Pololu 25D 47:1 12 V gearmotors with 48 CPR encoders (DEC-11), replacing the kit's 6 V encoderless originals |
 | Compute (planned) | 32-bit MCU running micro-ROS (reflex) · Raspberry Pi + ROS 2 (intent) |
 | Start at | `AGENTS.md`, then `docs/concept.md` |
 | Licence | Tri-licence: `CERN-OHL-S-2.0` hardware · `MIT` software · `CC-BY-SA-4.0` docs |
@@ -100,16 +100,19 @@ its perception-last roadmap follow from that, and are recorded in its own repo.
 ## SO-ARM101
 
 **A Standard Open Arm** — the LeRobot-compatible low-cost manipulator designed by The
-Robot Studio with Hugging Face. Being built from the upstream design; there is no fork,
-the upstream repo is cloned directly and the build record lives in the printing log.
+Robot Studio with Hugging Face, built here in its 12 V variant from the upstream design.
+No fork: upstream is cloned read-only as the design authority, and **the build record has
+its own repo** since 2026-09-09.
 
 | | |
 |---|---|
-| Upstream | [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) — public, Apache-2.0 |
-| State | Printing the follower arm — plate 1 of 4 complete (2026-09-07), 4 parts clean |
-| Actuation | Feetech STS3215 bus servos |
-| Material | White eSUN PLA+, 220 °C / 60 °C bed, no supports |
-| Build record | The print log in the private `3d-printing` repo |
+| Repo | [WayneKennedy/wk-soarm101](https://github.com/WayneKennedy/wk-soarm101) — public, build record |
+| Upstream | [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) — public, Apache-2.0, cloned not forked |
+| State | Parts printed (11 of 11 at least once; `Wrist_Roll_Pitch` without a usable copy yet), servos being commissioned (2 of 6 — IDs 1 and 2 set and verified on one bus 2026-09-09), nothing assembled |
+| Actuation | Feetech STS3215 **12 V** bus servos on a Waveshare Bus Servo Adapter (A) |
+| Material | White eSUN PLA+, 220 °C / 60 °C bed, supports avoided by orientation |
+| Start at | `AGENTS.md`, then `docs/servos.md` |
+| Licence | Tri-licence: `CERN-OHL-S-2.0` hardware · `MIT` software · `CC-BY-SA-4.0` docs. The arm design stays upstream's Apache-2.0 |
 
 **Shares with the rest:** the STS3215 servo family with koala-bot, and its CAD is
 vendored into koala-bot as reference. Its parts drove the PLA+ profile and the

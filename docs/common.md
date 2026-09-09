@@ -128,12 +128,27 @@ Bus Servo Driver Board* (~€5, the part in the Open Duck Mini V2 BOM).
 
 | Adapter | USB | Servo power in | Servo ports | Notes |
 |---|---|---|---|---|
-| Waveshare Bus Servo Adapter (A) | USB-C; chip **unverified** — read `lsusb` on first plug-in | 5.5 × 2.1 mm barrel **or** screw terminals, 9–12.6 V / 5–8.4 V (pass-through, below) | 2 × 3-pin, either is the bus | **Both jumpers on channel B** for USB control (LeRobot docs) |
+| Waveshare Bus Servo Adapter (A) | USB-C, **CH343** (`1a86:55d3`, verified 2026-09-09; `cdc_acm` → `/dev/ttyACM0`) | 5.5 × 2.1 mm barrel **or** screw terminals, 9–12.6 V / 5–8.4 V (pass-through, below) | 2 × 3-pin, either is the bus | **Both jumpers on channel B** for USB control (LeRobot docs) |
 | Feetech FE-URT-2 | USB-C, **CH343** (vendor listing) | Two screw-terminal inputs: **DC 4.8–12 V for TTL** servos, **DC 12–24 V for RS485** servos | TTL bus header plus 2 × XH4 RS485 — check the silkscreen before plugging a 3-pin STS lead | 3.3 V / 5 V logic-level switch; also serves the SMS (RS485) family, which nothing here uses |
 
 A CH343 enumerates under the kernel's `cdc_acm` driver as `/dev/ttyACM*`; the FTDI note
 below does not apply to it. Either board needs the user in the **`dialout`** group (or a
-udev rule) before the port is writable without `sudo`.
+udev rule) before the port is writable without `sudo`. The Waveshare board **does not echo
+transmitted bytes** back on RX (verified 2026-09-09) — a bus scanner need not strip them.
+
+**Verified against a Waveshare ST3215 (2026-09-09):** factory state is **ID 1, 1 Mbaud**,
+model number **777**; LeRobot 0.6.1's `FeetechMotorsBus.setup_motor()` and
+`broadcast_ping()` work through the Waveshare board unmodified. `Present_Voltage` reads
+the rail in 0.1 V units and is the quickest proof that a servo is actually powered.
+
+**Home and travel limits are a separate, later step, and they live in the servo.** Setup
+writes ID and baud only. LeRobot's `calibrate()` (after assembly) writes **`Homing_Offset`**
+so the joint's mid-range reads 2047, then records the range you sweep by hand and writes
+**`Min_Position_Limit` / `Max_Position_Limit`** — all three to servo EEPROM (LeRobot 0.6.1
+`write_calibration`, read 2026-09-09), so the servo itself clamps any goal past them. The
+limits are only as good as the sweep: stop just short of the hard stops. For a soft first
+test, upstream's `SO-ARM100/Software/WEBUI_CALIBRATION.md` caps `Torque_Limit` (reg 48) at
+30 %.
 
 **The Waveshare Bus Servo Adapter (A) is a pass-through, confirmed 2026-09-07** — owner
 read the Waveshare documentation (*"the input voltage must match the servo voltage"*,
