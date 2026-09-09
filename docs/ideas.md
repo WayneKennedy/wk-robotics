@@ -46,6 +46,21 @@ electronics, on a powered-wheelchair base.
 - **Currently:** shelved as inspiration. A good future testbed for parallel mechanisms, an
   AI brain, and electronics lessons at humanoid scale.
 
+### A printed hexapod
+
+Raised by the owner on 2026-09-09 while deciding not to modify the Freenove kit's power
+path (`wk-hexapod` OQ-14): any significant deviation from Freenove's design — a USB-C PD
+power path that charges with the servos live, or anything else structural — would be a
+new, printed hexapod rather than a change to that robot.
+
+- **Reuses:** everything above the hardware in `wk-hexapod` — controller, SLAM, Nav2,
+  autonomy — which is written against the topic contract and a servo-angle interface, not
+  the kit; the printer; plausibly the STS servo family, which would add position feedback
+  the kit's hobby servos lack.
+- **Unresolved:** everything mechanical and electrical, and whether it would carry a
+  reflex tier (the kit does not — `wk-hexapod` OQ-09).
+- **Not committed.** A thought recorded so it is not lost.
+
 ### SpotMicro · Annin Robotics AR4
 
 Named as later personal builds in `koala-bot/docs/backlog.md`. Nothing decided.
