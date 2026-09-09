@@ -65,7 +65,29 @@ and not yet accepted. Do not build against one without the owner deciding.
   | Simulation | Upstream `Simulation/SO101/` — URDF and MuJoCo MJCF with a `scene.xml`, STS3215 motor parameters from Open Duck Mini, mid-range joint zeros matching LeRobot's calibration. Gripper not yet modelled as LeRobot's linear 0–100 joint |
   | Training compute | The family GPU workstation ([wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#the-gpu-workstation)); no ML stack installed yet |
 
-  Consequences if taken: a **second follower** (six more 12 V servos, so OQ-01 becomes ten
+  **Further candidate (owner, 2026-09-09): two followers as the actual shoulders of a
+  humanoid torso.** Prior art and family assets, none committed to:
+
+  - **XLeRobot** — upstream's own sibling project: two SO-101 arms on a body over a Lekiwi
+    mobile base, with wrist cameras and a 2-DoF neck ([docs](https://xlerobot.readthedocs.io/en/latest/index.html)).
+    Proof that the arm works as a shoulder-mounted pair, and a ready BOM for it.
+  - **The family's ~80 %-built InMoov** — head, neck and shoulders already exist
+    ([wk-robotics `ideas.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/ideas.md#inmoov-resurrection)),
+    shelved. A candidate torso, if the InMoov shoulder interface can carry the arm's mass
+    (OQ-04) and its 12 V bus.
+  - **koala-bot** has arms of its own design — 3 DoF each, shoulder pitch + roll + elbow,
+    same STS3215 — so it is *not* a candidate torso; it is the alternative answer to
+    "what a humanoid arm on this servo looks like".
+
+  Technical notes, all unverified on hardware: the SO-101 is a table arm — `shoulder_pan`'s
+  axis is vertical and the `Base` is meant to be clamped down, so a shoulder mount turns
+  the base sideways and re-labels the joints; it is 5 DoF plus gripper, ~500 mm reach and
+  ~500 g payload (upstream), which is roughly human forearm-and-hand scale; a pair has the
+  same servo count, power and teleoperation arithmetic as the two-arm handover candidate
+  above, and `bi_so_follower` serves both. The two candidates are therefore the same
+  hardware in different frames, and one build can explore both.
+
+  Consequences if either two-arm candidate is taken: a **second follower** (six more 12 V servos, so OQ-01 becomes ten
   servos, not four; a second Waveshare board; a 12 V supply sized for twelve servos, which
   stall at ~32 A in total), and for teleoperation either **two leaders** or one leader
   driving one arm at a time. Whether the handover is learned end to end or the two arms

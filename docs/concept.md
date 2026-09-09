@@ -35,6 +35,9 @@ anything else, so the arm is understood as intended before it is repurposed. Wha
   used to reproduce an industrial two-arm handover (one arm places a pallet where the
   other picks it up) at desk scale, solved with learned policies. The leading candidate as
   of 2026-09-09; detail and what already exists for it under OQ-08.
+- **Shoulders on a humanoid torso** — the same pair mounted on a body rather than a
+  bench, as upstream's XLeRobot does over a mobile base and as the family's shelved
+  InMoov torso might allow. Same hardware as the pair above in a different frame; OQ-08.
 
 One thing it has already been, regardless: **the proving ground for the servo family.**
 Every STS3215 fact the family relies on — press-fit tolerance in PLA+, bus adapter
