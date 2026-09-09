@@ -19,10 +19,11 @@ Consequence: a 12 V rail, not the 5 V supply in upstream's default BOM.
 
 ## What it is for
 
-**Not yet decided** (owner, 2026-09-09) — see OQ-08. The arm is being built because the
-design is good, cheap and LeRobot-native, and because the family's servo work needed a
-real part to prove itself on. What it *does* once built is open. The candidates on the
-table, none chosen:
+**First, what it was designed for** (DEC-08): imitation learning with LeRobot — a leader
+arm teleoperates the follower, demonstrations are recorded with cameras, a policy is
+trained on the family's GPU workstation, and the follower runs it. That is explored before
+anything else, so the arm is understood as intended before it is repurposed. What it is for
+*ultimately* is open (OQ-08); the candidates, none chosen:
 
 - **A LeRobot arm** — imitation learning end to end on the platform the design is made
   for. Needs a leader or substitute (OQ-02) and a desk.

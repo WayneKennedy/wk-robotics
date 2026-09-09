@@ -45,9 +45,13 @@ and not yet accepted. Do not build against one without the owner deciding.
 
 ## Purpose and control
 
-- **OQ-08 — What the arm is for.** (Owner, 2026-09-09: not yet thought about.) Candidates
-  in [`concept.md`](concept.md#what-it-is-for): a desk LeRobot arm, the tank's manipulator,
-  or both in turn. This decides OQ-02, OQ-03 and OQ-09, so it is the one to take first.
+- **OQ-08 — What the arm is for, ultimately.** Candidates in
+  [`concept.md`](concept.md#what-it-is-for): a desk LeRobot arm, the tank's manipulator,
+  or both in turn. **Narrowed by DEC-08 (2026-09-09):** the LeRobot use case is explored
+  first and the answer is taken afterwards, informed by it. Consequences already visible:
+  OQ-02 (a leader) becomes likely rather than optional, OQ-03 is answered "a 12 V brick"
+  for the desk phase, and **cameras** join the sourcing list — LeRobot's imitation-learning
+  loop needs one or two, and none is owned or specified.
 
 - **OQ-09 — What drives the servo bus at runtime.** Commissioning and calibration are
   done from a PC over USB and need nothing else (DEC-04). For running the arm, three
@@ -59,9 +63,8 @@ and not yet accepted. Do not build against one without the owner deciding.
   | **Own reflex MCU** (Teensy, RP2040/Pico, ESP32) | MCU on the board's UART header (jumpers to channel A) runs the bus; joins the family topic contract via micro-ROS | The family two-tier rule ([wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#compute-the-two-tier-split)); a standalone robot arm |
   | **The tank's MCU** | wk-devastator's reflex tier (Teensy 4.1, its DEC-10) drives the arm bus as more joints; the arm has no compute of its own | The mounted purpose. Cheapest, but the arm then cannot run without the tank |
 
-  **Recommendation, not accepted:** defer until OQ-08 is decided, and commission,
-  calibrate and first-move the arm **from the PC over USB** meanwhile, because that path
-  is needed in every case and proves the mechanics without buying anything. If the answer
+  **DEC-08 settles the near term:** the PC-over-USB path is used for the whole LeRobot
+  exploration. The MCU options remain open for afterwards. If the answer
   to OQ-08 is "both", the Waveshare board's A/B jumpers are exactly the switch between the
   PC and an MCU, so the arm can be moved between the two without rewiring.
 

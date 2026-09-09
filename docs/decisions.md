@@ -42,3 +42,11 @@ that was made. Recommendations offered and not accepted are open questions.
 
 - **DEC-07 — Servo IDs follow LeRobot's `so101_follower` map exactly.** Follows from
   DEC-04: any other numbering would need a custom robot definition for no benefit.
+
+- **DEC-08 — Learn the arm as LeRobot intends it before repurposing it.** (Owner,
+  2026-09-09.) The SO-101 was designed for imitation learning — teleoperate a follower
+  from a leader, record demonstrations, train a policy, run it. That use case is explored
+  **first**, on the PC-over-USB path upstream supports, before any micro-ROS driver or
+  tank mounting is attempted. This sequences the work; it does not close OQ-08 (what the
+  arm is ultimately for) or OQ-09 (what drives it at runtime), which stay open until the
+  exploration has taught something.

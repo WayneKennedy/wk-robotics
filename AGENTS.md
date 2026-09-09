@@ -89,7 +89,9 @@ The print jobs themselves are in the family's private `3d-printing` repo. Their
 
 ## Status
 
-**Parts printed, servos being commissioned, nothing assembled.** All 11 follower parts
+**Parts printed, servos being commissioned, nothing assembled.** Direction: learn it as
+a LeRobot arm first (DEC-08); its ultimate purpose and runtime controller stay open
+(OQ-08, OQ-09). All 11 follower parts
 have been printed at least once; one (`Wrist_Roll_Pitch`) has no confirmed-usable copy
 yet. Two of six servos are commissioned — `shoulder_pan` ID 1 and `shoulder_lift` ID 2,
 verified together on one bus 2026-09-09. The other four servos are **not yet sourced**

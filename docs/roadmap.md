@@ -28,17 +28,18 @@ Ends with the servos daisy-chained, `shoulder_pan` to the control board, and a
 Ends with a scripted move to a pose and back, under a decided 12 V supply (OQ-03), with the
 arm clamped to a table.
 
-## Milestone 4 — Decide what it is for, and what drives it
+## Milestone 4 — Teleoperate, record, train, run *(DEC-08: this comes first)*
 
-OQ-08 and OQ-09. Nothing below this line is scheduled until they are decided. Milestone 3
-deliberately uses the PC-over-USB path, which every candidate answer needs anyway.
+The LeRobot loop as upstream intends it, entirely on the PC-over-USB path. Needs a leader
+or a substitute (OQ-02) and cameras (OQ-08). Ends with a recorded dataset of a simple
+pick-and-place, a policy trained from it, and the follower executing it.
 
-## Milestone 5a — Teleoperate and record *(if a LeRobot arm)*
+## Milestone 5 — Decide what it is for, and what drives it
 
-Needs a leader or a substitute (OQ-02). Ends with a recorded LeRobot dataset of a simple
-pick-and-place, replayed on the arm.
+OQ-08 and OQ-09, answered with milestone 4's experience in hand. Nothing below is
+scheduled until then.
 
-## Milestone 5b — Mount on wk-devastator *(if the tank's manipulator)*
+## Milestone 6 — Mount on wk-devastator *(only if OQ-08 says so)*
 
 Only if that robot's OQ-12 closes in the arm's favour, which needs this arm's mass (OQ-04),
 an interface (OQ-06), and a bus driver decision (OQ-09).
