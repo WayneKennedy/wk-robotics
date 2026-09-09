@@ -9,7 +9,7 @@ This is a *state* document, not a log. When an item resolves, delete it; when it
 to one project, move it to that project's repo and leave a link. It is not a transcript —
 see [`AGENTS.md`](../AGENTS.md#what-does-not-belong-here).
 
-**Last reviewed: 2026-09-07.**
+**Last reviewed: 2026-09-09.**
 
 ---
 
@@ -35,8 +35,9 @@ git clone git@github.com:WayneKennedy/wk-hexapod.git
 git clone git@github.com:WayneKennedy/fn-hexapod.git         # vendor reference
 ```
 
-`wk-hexapod` and `fn-hexapod` are the two that are usually **not** checked out. Clone them
-before doing hexapod work rather than reasoning from this repo's summary of them.
+`wk-hexapod` and `fn-hexapod` are checked out on the robot's own Pi, where hexapod work
+happens; on the workstation they usually are not. Clone them before doing hexapod work
+rather than reasoning from this repo's summary of them.
 
 Nothing here depends on a particular AI assistant, editor or shell. The repository is the
 state; a session that adds to it is expected to leave it complete.
@@ -45,32 +46,15 @@ state; a session that adds to it is expected to leave it complete.
 
 ## Open threads
 
-### `fn-hexapod` cannot track upstream
+### `fn-hexapod` cannot track upstream — **resolved, moved**
 
-**What was established (2026-09-07, from the GitHub API):** `WayneKennedy/fn-hexapod` is
-not a GitHub fork (`fork: false`, no parent). It carries Freenove's commits — matching
-messages and matching author timestamps — but under **different SHAs**, so its history was
-rewritten rather than cloned intact. 74 commits against upstream's 123; 9 MB against
-489 MB. The one commit authored locally is *"Remove Application binaries (mac/windows
-clients)"*, and a 50× size drop means those binaries were stripped from **history**, not
-deleted at the tip.
-
-**Why it matters:** no shared SHAs means **no fast-forward from upstream**. Picking up new
-Freenove work needs a cherry-pick or a fresh re-import, not a `git pull`.
-
-**The live risk:** the snapshot is pinned at **2025-11-28**. Upstream
-([`Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi`](https://github.com/Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi))
-has moved on — 9 commits since, latest 2026-03-07, **including `Update control.py`**.
-`wk-hexapod` names `control.py` as confirmed-working reference for gait and IK, so the
-reference it is built against is stale.
-
-**Unverified:** the 49 missing commits are *consistent with* a history filter dropping
-commits that touched only the removed binaries. That cause has not been confirmed.
-
-**Next step:** clone `wk-hexapod` and `fn-hexapod`, diff the upstream `control.py` against
-the pinned copy, and **record this finding in those repos** — it is a single-project fact
-sitting here only because neither repo was checked out when it was found.
-[Placement rule](../AGENTS.md#the-placement-rule).
+Diffed 2026-09-09 on the robot: upstream's only change since the 2025-11-28 snapshot is
+`np.mat` → `np.asmatrix` in `control.py` (numpy 2 compatibility); every other
+`Code/Server` file is byte-identical, and `wk-hexapod`'s controller does not use `np.mat`.
+Nothing to port. The provenance facts (rewritten history, no shared SHAs, `master` branch)
+and the re-import question now live in
+[`wk-hexapod/docs/open-questions.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md)
+(OQ-10) and `docs/references.md` there.
 
 ### Untracked terrain files on the workstation
 

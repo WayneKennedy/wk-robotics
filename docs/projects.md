@@ -3,7 +3,7 @@
 Per-project detail. Each section says what the project is, what it runs on, where its
 documentation starts, and what it shares with the others. The authoritative record for
 any one project is that project's own repository — this page is a pointer, and is
-accurate as of **2026-09-07**.
+accurate as of **2026-09-09**.
 
 ---
 
@@ -41,25 +41,26 @@ ultrasonic sensor, giving RGB, depth and a second IMU on the pan/tilt head.
 | | |
 |---|---|
 | Repo | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |
-| State | Locomotion, odometry and perception complete; SLAM, Nav2 and autonomy in progress |
-| Compute | Raspberry Pi 5 (8 GB), ROS 2 Jazzy on Ubuntu Server 24.04 |
-| Actuation | 20 servos (18 leg + 2 head) via PCA9685 — direct from the Pi, no reflex MCU |
-| Sensing | RealSense D435i (RGB-D + IMU) · MPU6050 body IMU · ADS7830 ADC for dual-battery monitoring |
+| State | Native stack verified end to end on the bench, 2026-09-09 (USB power): RTAB-Map maps, Nav2 active, frontier exploration sends goals, mission API answers. First battery run of this stack pending |
+| Compute | Raspberry Pi 5 (8 GB), ROS 2 Jazzy on Ubuntu Server 24.04, **installed natively from apt** (the Docker container was removed 2026-09-09); runs as a `systemd` service |
+| Actuation | 20 hobby servos (18 leg + 2 head) via 2× PCA9685 on I²C — direct from the Pi, no reflex MCU |
+| Sensing | RealSense D435i (RGB-D + IMU, depth computed in-camera) · MPU6050 body IMU · ADS7830 ADC for dual-battery monitoring |
 | Reference | [WayneKennedy/fn-hexapod](https://github.com/WayneKennedy/fn-hexapod) — Freenove vendor code; confirmed-working `servo.py`, `home.py`, `stand.py`, `control.py` |
-| Not checked out | Neither repo is currently cloned under `~/Code/` |
+| Start at | `AGENTS.md`, then `docs/architecture.md` |
+| Licence | `Apache-2.0` (software and docs only; hardware is Freenove's) — adopting the tri-licence is open in its repo |
 
-**Progress by phase:** locomotion (IK + tripod gait, `/cmd_vel`, poses) — done. Odometry
-(gait integration, `/odom`, `odom`→`base_link` TF, IMU complementary filter,
-`MoveDistance` action) — done. Perception (D435i, depth-to-laserscan, URDF camera frames)
-— done. SLAM (`slam_toolbox` and RTAB-Map configured; untested against the physical D435i)
-— in progress. Navigation (Nav2 tuned for slow hexapod motion; planners, semantic
-waypoints and return-to-home outstanding) — in progress. Autonomy (systemd auto-start
-done; mission queue, battery-aware behaviour and wander mode outstanding) — in progress.
+**Progress:** milestone 0 (native stack end to end on the bench) done; milestone 1 (it
+explores a room, on the battery) current. Open in its repo: velocity semantics between
+Nav2 and the gait controller, CPU load with everything running, collision-monitor tuning,
+and what an "approved" mission planner is. Its `docs/roadmap.md` is authoritative.
 
-**Shares with the rest:** the Pi 5 + ROS 2 tier and the `/cmd_vel` · `/odom` · `/imu`
-topic vocabulary with koala-bot. It is the counter-example to the two-tier rule — servos
-are driven straight off the Pi via PCA9685, which is viable for a statically stable
-walker in a way it would not be for a balancing robot.
+**Shares with the rest:** the Pi 5 + ROS 2 tier and the `/cmd_vel` · `/joint_commands` ·
+`/joint_states` · `/imu` · `/odom` topic vocabulary with koala-bot. It is the
+**intent-tier reference implementation** of the family — the only robot with a working
+SLAM, navigation and mission stack — and the counter-example to the two-tier rule: every
+device is a direct peripheral of the Pi, viable for a statically stable walker in a way it
+would not be for a balancing robot. Its `docs/architecture.md` records what that flat
+design costs; a reflex-tier retrofit is an open question there, not a plan.
 
 ---
 

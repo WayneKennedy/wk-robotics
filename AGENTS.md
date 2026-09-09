@@ -111,8 +111,8 @@ checked out alongside this one:
 | SO-ARM101 | `../SO-ARM100` | [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) — upstream clone |
 | 3D printing | `../3d-printing` | [WayneKennedy/3d-printing](https://github.com/WayneKennedy/3d-printing) — private |
 | wk-devastator | `../wk-devastator` | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) — public |
-| wk-hexapod | *not checked out* | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |
-| fn-hexapod | *not checked out* | [WayneKennedy/fn-hexapod](https://github.com/WayneKennedy/fn-hexapod) — public, vendor reference |
+| wk-hexapod | `../wk-hexapod` | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |
+| fn-hexapod | `../fn-hexapod` | [WayneKennedy/fn-hexapod](https://github.com/WayneKennedy/fn-hexapod) — public, vendor reference |
 
 Read those repos directly rather than re-deriving their state from this one. Each carries
 its own `AGENTS.md`; this page does not override it.

@@ -328,9 +328,10 @@ change; the spinal-cord protocol does not.
 
 `/cmd_vel` · `/joint_commands` · `/joint_states` · `/imu` · `/wheel_odom` · `/telemetry`
 
-The hexapod already speaks the common subset — `/cmd_vel` for velocity, `/odom` for
-gait-integrated position, `/tf` for `odom`→`base_link` — which is what makes its
-navigation stack portable in principle.
+The hexapod already speaks most of it — `/cmd_vel`, `/joint_commands`, `/joint_states`,
+`/imu/data`, plus `/odom` for gait-integrated position and `/tf` for `odom`→`base_link`
+(it has no wheels, so no `/wheel_odom`, and battery is `/battery/voltages` rather than
+`/telemetry`) — which is what makes its navigation stack portable in principle.
 
 ---
 
@@ -373,6 +374,19 @@ width to misread. The brownout half still applies; the signal-side half does not
 
 **Nothing in this chain has a low-voltage cutoff.** Stop at ~10.5 V on a 3S (3.5 V/cell);
 the adapter's 9 V floor is ~3.0 V/cell and already deep enough to hurt the pack.
+
+### GPIO lines float when their process dies
+
+Established on the hexapod, 2026-09-09, and true of any robot that drives a peripheral
+straight from a Raspberry Pi GPIO: when the userspace process holding a line exits or is
+killed, the kernel releases the line and it reverts to a **floating input**. An
+active-high load on that pin — the hexapod's shield buzzer — then turns on and stays on
+through a `reboot`. The fixes that worked, in layers: a firmware default in `config.txt`
+(`gpio=<n>=op,dl`), a `systemd` service holding the line with `gpioset --mode=signal`,
+and the software default off. Details in
+[`wk-hexapod/docs/hardware.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/hardware.md#the-buzzer-hazard).
+This is one of the concrete arguments for the reflex tier: an MCU holds its pins through
+a host crash; a Pi does not.
 
 ---
 
