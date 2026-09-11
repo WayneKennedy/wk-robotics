@@ -33,6 +33,7 @@ git clone https://github.com/TheRobotStudio/SO-ARM100.git    # upstream, not a f
 git clone git@github.com:WayneKennedy/wk-soarm101.git
 git clone git@github.com:WayneKennedy/wk-devastator.git
 git clone git@github.com:WayneKennedy/wk-hexapod.git
+git clone git@github.com:WayneKennedy/wk-drone-bee35.git      # private
 git clone git@github.com:WayneKennedy/fn-hexapod.git         # vendor reference
 ```
 

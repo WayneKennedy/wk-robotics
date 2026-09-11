@@ -113,6 +113,7 @@ checked out alongside this one:
 | 3D printing | `../3d-printing` | [WayneKennedy/3d-printing](https://github.com/WayneKennedy/3d-printing) — private |
 | wk-devastator | `../wk-devastator` | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) — public |
 | wk-hexapod | `../wk-hexapod` | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |
+| wk-drone-bee35 | `../wk-drone-bee35` | [WayneKennedy/wk-drone-bee35](https://github.com/WayneKennedy/wk-drone-bee35) — private |
 | fn-hexapod | `../fn-hexapod` | [WayneKennedy/fn-hexapod](https://github.com/WayneKennedy/fn-hexapod) — public, vendor reference |
 
 Read those repos directly rather than re-deriving their state from this one. Each carries

@@ -3,7 +3,7 @@
 Per-project detail. Each section says what the project is, what it runs on, where its
 documentation starts, and what it shares with the others. The authoritative record for
 any one project is that project's own repository — this page is a pointer, and is
-accurate as of **2026-09-09**.
+accurate as of **2026-09-11**.
 
 ---
 
@@ -117,6 +117,35 @@ its own repo** since 2026-09-09.
 **Shares with the rest:** the STS3215 servo family with koala-bot, and its CAD is
 vendored into koala-bot as reference. Its parts drove the PLA+ profile and the
 press-fit findings in [`common.md`](common.md#press-fits-and-supports).
+
+---
+
+## wk-drone-bee35
+
+**An aerial robot: a 3.5" ducted cinewhoop on a SpeedyBee Bee35 Pro frame**, built for
+position hold and endurance rather than speed. Reference behaviour is a DJI Neo: level
+hover, solid position hold, returns to hold when the sticks are released. The first
+airborne member of the family, and intended as a node the mission-planning tier can reach.
+
+| | |
+|---|---|
+| Repo | [WayneKennedy/wk-drone-bee35](https://github.com/WayneKennedy/wk-drone-bee35) — **private** |
+| State | Parts ordered 2026-09-11; nothing built, flashed or flown. Firmware open (its OQ-01) |
+| Airframe | Bee35 Pro, 153 mm, ducted; 4× T-Motor F2004 3000KV; HQProp 90 mm 3-blade; 4S Li-Ion (Molicel P45B 21700 packs shared across the fleet) |
+| Flight controller | MicoAir743 V2 (BMI088, 55 A AM32 ESC). Ships with ArduPilot; iNav intended (its DEC-01), under review |
+| Sensing | MicoAir MTF-01P optical flow + 12 m lidar · Flywoo GM10 Mini V3 GPS + compass · Walksnail Avatar HD video |
+| Link | ELRS 2.4 GHz, RadioMaster RP3 V2 |
+| Start at | `AGENTS.md`, then `docs/decisions.md` and `docs/open-questions.md` |
+| Licence | None set yet |
+
+**Why it differs from the rest:** the flight controller is reflex and intent tier in one
+MCU — there is no on-board Pi and no ROS 2. How it joins the
+[topic contract](common.md#the-topic-contract) and whether that forces ArduPilot (native
+ROS 2 via AP_DDS, two-way MAVLink) over iNav (MAVLink transmit-only, no ROS 2) is its
+OQ-01, decided once hardware is in hand.
+
+**Shares with the rest:** the printer, for TPU sensor mounts and PETG brackets. No servo,
+compute or software overlap with the ground robots.
 
 ---
 
