@@ -130,19 +130,20 @@ airborne member of the family, and intended as a node the mission-planning tier 
 | | |
 |---|---|
 | Repo | [WayneKennedy/wk-drone-bee35](https://github.com/WayneKennedy/wk-drone-bee35) — **private** |
-| State | Parts ordered 2026-09-11; nothing built, flashed or flown. Firmware open (its OQ-01) |
+| State | Parts ordered 2026-09-11; nothing built, flashed or flown |
 | Airframe | Bee35 Pro, 153 mm, ducted; 4× T-Motor F2004 3000KV; HQProp 90 mm 3-blade; 4S Li-Ion (Molicel P45B 21700 packs shared across the fleet) |
-| Flight controller | MicoAir743 V2 (BMI088, 55 A AM32 ESC). Ships with ArduPilot; iNav intended (its DEC-01), under review |
+| Flight controller | MicoAir743 V2 (BMI088, 55 A AM32 ESC). Ships with ArduPilot; runs iNav first (its DEC-01, DEC-06) |
 | Sensing | MicoAir MTF-01P optical flow + 12 m lidar · Flywoo GM10 Mini V3 GPS + compass · Walksnail Avatar HD video |
 | Link | ELRS 2.4 GHz, RadioMaster RP3 V2 |
 | Start at | `AGENTS.md`, then `docs/decisions.md` and `docs/open-questions.md` |
 | Licence | None set yet |
 
 **Why it differs from the rest:** the flight controller is reflex and intent tier in one
-MCU — there is no on-board Pi and no ROS 2. How it joins the
-[topic contract](common.md#the-topic-contract) and whether that forces ArduPilot (native
-ROS 2 via AP_DDS, two-way MAVLink) over iNav (MAVLink transmit-only, no ROS 2) is its
-OQ-01, decided once hardware is in hand.
+MCU — there is no on-board Pi and no ROS 2. Its initial goal is a DIY build close to the
+DJI Neo experience: reliable hands-off loiter and docile flight, on iNav. Joining the
+[topic contract](common.md#the-topic-contract) as a fleet node is a later evolution,
+once the flight envelope is predictable, and needs ArduPilot (native ROS 2 via AP_DDS,
+two-way MAVLink; iNav's MAVLink is transmit-only). Its DEC-06.
 
 **Shares with the rest:** the printer, for TPU sensor mounts and PETG brackets. No servo,
 compute or software overlap with the ground robots.
