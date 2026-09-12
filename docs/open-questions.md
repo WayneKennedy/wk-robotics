@@ -30,7 +30,13 @@ and not yet accepted. Do not build against one without the owner deciding.
   answers; both may be right at different times. What powered the bench on 2026-09-09 is
   **unrecorded**; on 2026-09-12 it was a 3S LiPo, not fully charged, 11.7–11.9 V at the
   servos ([`hardware.md`](hardware.md)). The family's 3S ceiling applies (wk-robotics
-  `common.md`).
+  `common.md`). **Recommendation for a mains brick, 2026-09-12 (not decided): 12.0 V
+  regulated, 10 A**, into the adapter's screw terminals (a 5.5 × 2.1 barrel is typically ~5 A;
+  the Waveshare jack's rating is unverified), with a few thousand µF across the servo rail.
+  Basis: upstream's 5 A minimum; measured peaks of 2 A on `shoulder_lift` lifting the arm and
+  ~0.6 A on the elbow and pan; 16 A all-stalled, which is the fuse's job. The 0.9 V sag seen
+  at < 1 A on the 3S pack says the current path (pack lead, terminals) needs checking whatever
+  the source.
 
 ## Parts
 
