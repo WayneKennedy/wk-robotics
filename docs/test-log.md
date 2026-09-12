@@ -53,8 +53,45 @@ minimum — the "middle" was held near one end of the elbow's travel. Harmless f
 which normalises on the range; noted in case the elbow's usable range looks lopsided later.
 Limits are a hand sweep and stop short of the hard stops by an unmeasured margin.
 
-**Not yet done:** a scripted move under torque (milestone 3's exit) — the arm must be
-clamped first.
+**Limits pulled in 10 % of span at each end (owner, same day)** after the first move below —
+`software/shrink_limits.py`, servos read back matching, JSON re-saved and mirrored:
+
+| Joint | Limits now | Span |
+|---|---|---|
+| `shoulder_pan` | 1009 – 3084 | 2075 |
+| `shoulder_lift` | 962 – 2771 | 1809 |
+| `elbow_flex` | 2095 – 3813 | 1718 |
+| `wrist_flex` | 1216 – 2924 | 1708 |
+| `wrist_roll` | 0 – 4095 | full turn |
+| `gripper` | 1469 – 2596 | 1127 |
+
+**First move under torque — aborted by an elbow overload; no damage reported.** Arm clamped,
+started from the folded rest pose (in which the gripper body rests against the base — owner).
+`software/first_move.py` (first version): LeRobot `so101_follower` connect (torque on), hold,
+then ±10° per joint with `max_relative_target = 10`. Observed:
+
+| Joint | What happened |
+|---|---|
+| `wrist_roll` | ±10° reached within 5–6°, current 13–26 mA. Fine |
+| `wrist_flex` | did not move in either direction, load −200 (full), 136–156 mA — blocked by the pose |
+| `gripper` | did not move, load +200, 117–156 mA — jaw against its stop; **Overload error** flagged afterwards |
+| `elbow_flex` | the present-position read used by LeRobot's step clamp returned **−259°** (a true 101° minus a full turn) while the observation a moment earlier read 99.3°; the clamp then commanded a goal past the wrap, the servo took the short way round through its recorded maximum into the hard stop, **Overload error**, position 4087 afterwards (max limit was 4028). `Min/Max_Position_Limit` did not stop it |
+| `shoulder_lift` | +10° reached 1.3°, 507 mA, load −376 — lifting the folded arm; steady-state error with LeRobot's P = 16 |
+| `shoulder_pan` | ±10° fine, 0 mA |
+
+`disconnect()` failed on the overloaded servos; torque was released servo by servo
+(`software/release_torque.py`). All six then read status 0, 0 mA, 35–40 °C. Swept by hand
+with torque off, the elbow's position is **continuous, never negative, from 4087 down to
+2380** (1 765 samples) — the sensing is fine; the −259° read is unexplained. Read errors
+seen during that sweep were **port contention: two of this session's processes on
+`/dev/ttyACM0` at once**. Alone on the port, `sync_read` is 100/100. **One process on the
+bus at a time** — recorded as a rule in `servos.md`.
+
+Consequences, in `first_move.py` (second version): every present read is retried and must
+be inside the encoder range, within 200 counts of the saved range and within 30° of the
+previous read, or the run aborts with torque holding the last good pose; goals are clamped
+to the saved range minus a 5° margin; default step 5°; start from a pose with no joint in
+contact. Milestone 3's scripted move is **still pending**.
 
 **Changed as a result:** servos hold homing and limits; `servos.md` points here; roadmap
 milestone 3 half done; OQ-03 gains the second pack.

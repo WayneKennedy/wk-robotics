@@ -87,3 +87,8 @@ three-point alternative that also caps torque at 30 % during calibration.
 stepwise tool is [`software/calibrate.py`](../software/calibrate.py); `status` shows what
 the servos hold. Re-running `home` re-centres every joint on the pose held at that moment,
 so do not run it casually.
+
+**One process on the bus at a time.** Two of this repo's tools on `/dev/ttyACM0` together
+produce a stream of failed and possibly corrupted reads (2026-09-12); alone, `sync_read` is
+100/100. Stop any logger or recorder before running anything else. Every tool here opens
+the port itself; none shares it.
