@@ -1,6 +1,6 @@
 # Sourcing
 
-In hand versus still needed, for the follower only (the leader is OQ-02). UK-based, as the
+In hand versus still needed, for the follower only (no leader will be built — DEC-13). UK-based, as the
 rest of the family is. Upstream's BOM with prices and vendors:
 [SO-ARM100 README](https://github.com/TheRobotStudio/SO-ARM100#bill-of-materials-bom).
 

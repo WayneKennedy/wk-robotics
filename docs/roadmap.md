@@ -32,8 +32,8 @@ proven sequence.
 
 ## Milestone 4 — Teleoperate, record, train, run *(DEC-08: this comes first)*
 
-The LeRobot loop as upstream intends it, entirely on the PC-over-USB path. Needs a leader
-or a substitute (OQ-02) and cameras (OQ-08). Ends with a recorded dataset of a simple
+The LeRobot loop on the PC-over-USB path, **without a leader arm (DEC-13)**: a substitute
+teleoperator or scripted demonstrations (OQ-02), and cameras (OQ-08). Ends with a recorded dataset of a simple
 pick-and-place, a policy trained from it, and the follower executing it. **If the two-arm
 candidate under OQ-08 is taken, a second follower is printed and commissioned in parallel
 with this milestone**, and the single-arm result becomes the baseline for the handover.

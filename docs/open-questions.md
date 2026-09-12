@@ -13,10 +13,14 @@ and not yet accepted. Do not build against one without the owner deciding.
   2026-09-12 by DEC-09:** taken from koala-bot's RCmall packs, which leaves that robot four
   short. The recommendation here had been a dedicated 6-pack; the owner chose otherwise.
 
-- **OQ-02 — Whether to build the leader arm.** Depends on OQ-08. LeRobot's teleoperation
-  and data collection assume an SO-101 leader: 7.4 V servos in three gear ratios, its own control board and
-  5 V supply. Alternatives exist (keyboard, gamepad, other leaders) but none is chosen.
-  Nothing for a leader has been printed or bought.
+- **OQ-02 — Where demonstrations come from, given no leader arm (DEC-13).** LeRobot's
+  record loop wants a teleoperator; the installed 0.6.1 offers, besides leaders:
+  **keyboard** (joint or end-effector mode; needs a graphical session for `pynput`, so not
+  plain SSH), **gamepad** (pygame or hidapi; whether it works on this headless host is
+  untested), and **phone** (iOS or Android pose tracking; the app and its network path are
+  unexamined). A fourth route needs no teleoperator: **scripted trajectories recorded as a
+  dataset**, which fits DEC-12's aim of proving the control path more than the imitation
+  loop does. None chosen; the choice is made when milestone 4 starts.
 
 - **OQ-03 — The 12 V supply.** Upstream specifies a **12 V, 5 A+** brick for the 12 V
   follower. The family rule for servo robots is a stiff source — a **3S LiPo** with a fuse
@@ -47,7 +51,7 @@ and not yet accepted. Do not build against one without the owner deciding.
   [`concept.md`](concept.md#what-it-is-for): a desk LeRobot arm, the tank's manipulator,
   or both in turn. **Narrowed by DEC-08 (2026-09-09):** the LeRobot use case is explored
   first and the answer is taken afterwards, informed by it. Consequences already visible:
-  OQ-02 (a leader) becomes likely rather than optional, OQ-03 is answered "a 12 V brick"
+  OQ-02 becomes a demonstration-source question (no leader, DEC-13), OQ-03 is answered "a 12 V brick"
   for the desk phase, and **cameras** join the sourcing list — LeRobot's imitation-learning
   loop needs one or two, and none is owned or specified.
 

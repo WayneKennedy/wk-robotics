@@ -93,3 +93,9 @@ that was made. Recommendations offered and not accepted are open questions.
   (micro-ROS per the family rule, or bare-metal first), and whether the tank's MCU later
   absorbs the role. Calibration written by LeRobot lives in the servos' EEPROM (homing
   offset and limits), so it carries over to the Teensy unchanged.
+
+- **DEC-13 — No leader arm.** (Owner, 2026-09-12; resolves OQ-02 as "no".) "Not a useful
+  use case for me." The LeRobot exploration (DEC-08) therefore runs without upstream's
+  intended teleoperator; demonstrations come from one of the substitutes in OQ-02, or are
+  scripted. Nothing for a leader is printed or bought, and the two-follower candidate under
+  OQ-08 loses its "two leaders" line.
