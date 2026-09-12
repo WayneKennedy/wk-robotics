@@ -68,6 +68,15 @@ is in [`common.md`](common.md#drive-motors-drivers-and-mcus-in-hand); the candid
 [a pure balance bot](ideas.md#a-pure-balance-bot). Resolves when that idea earns a repo
 or the parts are allocated elsewhere.
 
+### SO-ARM101 is the reflex-tier proving ground
+
+Decided 2026-09-12 (wk-soarm101 DEC-12): once the LeRobot loop has been run on the arm, its
+servo bus moves to a Teensy 4.1 to develop the MCU-drives-the-bus pattern before koala-bot
+and wk-devastator depend on it. Cross-project because what it proves feeds
+[`common.md` → Compute](common.md#compute-the-two-tier-split) and the topic contract. Which
+Teensy is open; the unallocated 4.1 NE in the pool is the candidate. Resolves when the
+arm moves under an MCU and the lesson lands in `common.md`.
+
 ### Untracked terrain files on the workstation
 
 `~/Code/FirstTerrain/` and `~/Code/Terrain_2019.zip` (237 MB) are under no version

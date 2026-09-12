@@ -143,7 +143,7 @@ project's BOM records only its own allocation.
 | same | 1 | **Spare**, paired with the surplus motors |
 | Teensy 4.0 | 1 | koala-bot (DEC-18) — upstream micro-ROS lists it "Not tested", koala-bot OQ-14 |
 | Teensy 4.1 | 1 | wk-devastator (DEC-10) — ordered; arrival not recorded |
-| **Teensy 4.1 NE** (no-Ethernet variant) | 1 | **Unallocated**, in hand 2026-09-11 — bought for whichever project is ready for it first. Upstream-Supported for micro-ROS, so it is also koala-bot's fallback if the 4.0 fails OQ-14 |
+| **Teensy 4.1 NE** (no-Ethernet variant) | 1 | **Unallocated**, in hand 2026-09-11 — bought for whichever project is ready for it first. Upstream-Supported for micro-ROS, so it is also koala-bot's fallback if the 4.0 fails OQ-14. Obvious candidate for SO-ARM101's Teensy 4.1 phase (wk-soarm101 DEC-12) — not allocated |
 
 The second motor pair and the two extra drivers came in one order; its date, supplier and
 price are not recorded, and so are the spare Teensy's. Whichever project takes an
