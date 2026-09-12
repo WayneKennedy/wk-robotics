@@ -497,7 +497,9 @@ first look (2026-09-12, specs partly unverified — check the port ratings befor
 
 | Class | Example | 12 V out | UPS / charge-while-supplying | Verdict for a 6-servo bench |
 |---|---|---|---|---|
-| Portable power station (LiFePO₄) | Bluetti AC70 768 Wh (~£419); EcoFlow River 3 Plus (~£219); EcoFlow Delta Pro 3 | Regulated DC "car" port, **typically 12 V / 10 A (120 W)**; Delta Pro 3 has a **12.6 V / 30 A Anderson** | Yes — AC70 states "UPS in 20 ms"; pass-through is the normal mode for this class | **Best fit.** Battery-fed regulated DC, mains-charged, and it powers the Pi and laptop too. Confirm the car-port voltage (some sit at 13.2–13.6 V; STS3215 limit is 14 V) and its continuous rating |
+| Portable power station (LiFePO₄) — **Bluetti AC70** | 768 Wh, 1 000 W AC, 10.2 kg, ~£419 UK (2026-09-12) | Car port **12 V / 10 A, stated "regulated"**; 2 × USB-C 100 W | **Yes**: pass-through stated; UPS 20 ms claimed, 14 ms measured (StorageReview) | **Recommended bench unit.** Everything confirmed; runs the Pi, a laptop and the iron as well; 768 Wh ≈ a day of arm work at ~1 A |
+| Portable power station (LiFePO₄) — **EcoFlow River 3 Plus** | 286 Wh, 600 W AC, 4.2 kg, ~£219 UK | Car port **12.6 V / 10 A, 126 W** | UPS < 10 ms; **pass-through not confirmed** in the sources read | Value pick for the arm alone, if pass-through is confirmed on the spec sheet |
+| Portable power station — EcoFlow Delta Pro 3 | ~4 kWh, house-backup class | **12.6 V / 30 A Anderson** | Yes | Only unit found with a > 10 A regulated 12 V port; far too big and dear for a bench |
 | 12 V Li-ion pack with DC out | Talentcell YB1208300 (11.1 V nominal, 8.3 Ah, **6 A max**, 12.6 V/1.5 A charger) | 12 V barrel, 6 A | Pass-through is claimed for some Talentcell models; not verified per model | Marginal — 6 A is under the 10 A target; fine for one or two servos on a bench |
 | "Mini DC UPS" for routers / CCTV | many, 12 V 2–5 A | Low | Yes | Too small |
 | Automotive DC UPS | PowerStream DC-UPS-1212 (12 A pass-through, lead-acid, 0.8 A charge, ~$135) | 12 A | Yes, < 50 µs switch | Right current, wrong chemistry and needs a separate battery; not a desk unit |
@@ -505,8 +507,10 @@ first look (2026-09-12, specs partly unverified — check the port ratings befor
 
 A power station's DC port is a DC-DC converter fed from the battery, so it is battery DC in
 the sense that matters (no mains ripple, no fold-back on transients) without being raw cell
-voltage — which is better for the servos than a sagging pack. Which unit, and whether the
-car-port rating is honest at 10 A continuous, is open; nothing bought.
+voltage — which is better for the servos than a sagging pack. Every affordable unit tops out
+at **10 A on 12 V** — the same 120 W ceiling as the brick recommendation, enough for realistic
+motion (SO-ARM101 peaks ~2 A) and not for the all-stalled fault case, which is the fuse's job.
+Nothing bought; whether the car-port rating holds at 10 A continuous is unverified.
 
 ### GPIO lines float when their process dies
 
