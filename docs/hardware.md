@@ -57,4 +57,5 @@ Adapter behaviour, pinouts and power rules are family facts:
 **Not in hand:** a decided 12 V supply (OQ-03), the
 M2×6 and M3×6 fasteners upstream's guide calls for (OQ-07). The 12 V source used on the
 bench on 2026-09-09 read 12.3–12.4 V at the servo and is otherwise **unrecorded**; on
-2026-09-12 it was a **3S LiPo**, not fully charged, reading 11.7–11.9 V.
+2026-09-12 it was a **3S LiPo**, not fully charged, reading 11.7–11.9 V; a second, fuller 3S pack
+read 12.2–12.4 V for the afternoon's calibration.

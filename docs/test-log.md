@@ -10,6 +10,55 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-12 · Assembled; calibrated with LeRobot's routine, stepwise
+
+**Conditions:** arm assembled per upstream's guide the same day (milestone 2), no camera,
+at rest on the bench. Waveshare Bus Servo Adapter (A) on this host, **second 3S LiPo, more
+charge than the morning's, 12.2–12.4 V at the servos.** LeRobot 0.6.1. Written by
+`software/calibrate.py`, which runs `SOFollower.calibrate()`'s writes as separate steps
+(`home` → `sweep-start` → `sweep-stop`) because the arm is moved by hand between them.
+Robot id **`wk_soarm101`**; the calibration JSON LeRobot will load is
+`~/.cache/huggingface/lerobot/calibration/robots/so_follower/wk_soarm101.json`, copied to
+[`software/calibration/wk_soarm101.json`](../software/calibration/wk_soarm101.json).
+
+**Before:** every servo at factory calibration — `Homing_Offset` 85, limits 0–4095.
+
+**Homing** — owner held all six at approximate mid-range; `set_half_turn_homings()` wrote
+an offset so that pose reads 2047:
+
+| Joint | Raw at mid-range | `Homing_Offset` written |
+|---|---|---|
+| `shoulder_pan` | 1168 | −793 |
+| `shoulder_lift` | 2831 | 870 |
+| `elbow_flex` | 3517 | 1555 |
+| `wrist_flex` | 3793 | 1831 |
+| `wrist_roll` | 2002 | 40 |
+| `gripper` | 423 | −1539 |
+
+**Range sweep** — 7 489 samples at ~50 Hz while the owner moved each joint to just short of
+both stops; `wrist_roll` is LeRobot's full-turn joint and gets 0–4095 unswept:
+
+| Joint | `Min_Position_Limit` | `Max_Position_Limit` | Span (counts / °) |
+|---|---|---|---|
+| `shoulder_pan` | 750 | 3343 | 2593 / 228 |
+| `shoulder_lift` | 736 | 2997 | 2261 / 199 |
+| `elbow_flex` | 1880 | 4028 | 2148 / 189 |
+| `wrist_flex` | 1002 | 3137 | 2135 / 188 |
+| `wrist_roll` | 0 | 4095 | full turn |
+| `gripper` | 1328 | 2737 | 1409 / 124 |
+
+Read back from the servos after the write and matching the JSON. The mid-range pose sits
+well inside every range except `elbow_flex`, where it is 167 counts (15°) from the recorded
+minimum — the "middle" was held near one end of the elbow's travel. Harmless for LeRobot,
+which normalises on the range; noted in case the elbow's usable range looks lopsided later.
+Limits are a hand sweep and stop short of the hard stops by an unmeasured margin.
+
+**Not yet done:** a scripted move under torque (milestone 3's exit) — the arm must be
+clamped first.
+
+**Changed as a result:** servos hold homing and limits; `servos.md` points here; roadmap
+milestone 3 half done; OQ-03 gains the second pack.
+
 ### 2026-09-12 · Servos 3–6 commissioned from koala-bot's RCmall packs
 
 **Conditions:** as 2026-09-09 — Waveshare Bus Servo Adapter (A), jumpers on B, USB to

@@ -19,3 +19,4 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+software/.calibration_state*.json

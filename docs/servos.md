@@ -81,4 +81,9 @@ saved on the host as a calibration JSON keyed by the robot's `--robot.id` and re
 the servos on every connect. Upstream's `Software/WEBUI_CALIBRATION.md` describes a
 three-point alternative that also caps torque at 30 % during calibration.
 
-Calibration values, when they exist, are recorded in [`test-log.md`](test-log.md).
+**Calibrated 2026-09-12** — homing offsets and limits are in the servos and in
+[`test-log.md`](test-log.md); LeRobot's file for robot id `wk_soarm101` is mirrored at
+[`software/calibration/wk_soarm101.json`](../software/calibration/wk_soarm101.json). The
+stepwise tool is [`software/calibrate.py`](../software/calibrate.py); `status` shows what
+the servos hold. Re-running `home` re-centres every joint on the pose held at that moment,
+so do not run it casually.

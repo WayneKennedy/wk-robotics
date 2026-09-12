@@ -15,18 +15,18 @@ Each servo got its ID and baud by script, one at a time, and was labelled
 ([`servos.md`](servos.md)): two on 2026-09-09, four on 2026-09-12 (DEC-09). All six read
 on one bus in LeRobot's order once A and B were upgraded to firmware 3.10 (DEC-11).
 
-## Milestone 2 — Assemble the follower
+## Milestone 2 — Assemble the follower *(done 2026-09-12)*
 
 Per upstream's guide, joint 1 to gripper. Needs milestones 0 and 1, and fasteners (OQ-07).
 Ends with the servos daisy-chained, `shoulder_pan` to the control board, and a
 `broadcast_ping()` returning IDs 1–6.
 
-## Milestone 3 — Calibrate and move
+## Milestone 3 — Calibrate and move *(calibrated 2026-09-12; move pending)*
 
-`lerobot-calibrate` writes homing and travel limits into the servos
-([`servos.md` → What calibration adds](servos.md#what-calibration-adds--after-assembly)).
-Ends with a scripted move to a pose and back, under a decided 12 V supply (OQ-03), with the
-arm clamped to a table.
+Homing and travel limits are in the servos ([`test-log.md`](test-log.md) 2026-09-12,
+written stepwise by `software/calibrate.py` — the same writes as `lerobot-calibrate`). Ends
+with a scripted move to a pose and back, under a decided 12 V supply (OQ-03), with the arm
+clamped to a table.
 
 ## Milestone 4 — Teleoperate, record, train, run *(DEC-08: this comes first)*
 
