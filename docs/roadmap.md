@@ -9,11 +9,11 @@ milestone ends with something that demonstrably works.
 All 11 parts printed at least once by 2026-09-09. Remaining: inspect plate 4 and the third
 `Wrist_Roll_Pitch` (OQ-05). Weigh each accepted part (OQ-04).
 
-## Milestone 1 — Commission six servos *(2 of 6)*
+## Milestone 1 — Commission six servos *(done 2026-09-12)*
 
-Each servo gets its ID and baud by script, one at a time, and is labelled
-([`servos.md`](servos.md)). `shoulder_pan` and `shoulder_lift` done 2026-09-09 and verified
-together on one bus. **Blocked on OQ-01** for the other four.
+Each servo got its ID and baud by script, one at a time, and was labelled
+([`servos.md`](servos.md)): two on 2026-09-09, four on 2026-09-12 (DEC-09). All six read
+on one bus in LeRobot's order once A and B were upgraded to firmware 3.10 (DEC-11).
 
 ## Milestone 2 — Assemble the follower
 

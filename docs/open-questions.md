@@ -9,13 +9,9 @@ and not yet accepted. Do not build against one without the owner deciding.
 
 ## Servos and power
 
-- **OQ-01 — Where the remaining four STS3215 12 V servos come from.** Two of six are in
-  hand ([`servos.md`](servos.md)). koala-bot's two 6-packs on order are **fully allocated
-  to its twelve limb joints with no spare**
-  ([koala-bot `bom.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/bom.md)),
-  so drawing four from them leaves that robot short. **Recommendation, not accepted:** buy
-  a dedicated 6-pack for this arm — four for the joints, two spares that also cover
-  koala-bot's OQ-16 — from the same source, so the whole family shares one part number.
+- **OQ-01 — Where the remaining four STS3215 12 V servos come from.** **Resolved
+  2026-09-12 by DEC-09:** taken from koala-bot's RCmall packs, which leaves that robot four
+  short. The recommendation here had been a dedicated 6-pack; the owner chose otherwise.
 
 - **OQ-02 — Whether to build the leader arm.** Depends on OQ-08. LeRobot's teleoperation
   and data collection assume an SO-101 leader: 7.4 V servos in three gear ratios, its own control board and
@@ -28,7 +24,9 @@ and not yet accepted. Do not build against one without the owner deciding.
   ([wk-robotics `common.md` → Power integrity](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#power-integrity)).
   A desk arm on a brick and an arm riding a robot on the robot's pack are different
   answers; both may be right at different times. What powered the bench on 2026-09-09 is
-  **unrecorded** and should be written into [`hardware.md`](hardware.md).
+  **unrecorded**; on 2026-09-12 it was a 3S LiPo, not fully charged, 11.7–11.9 V at the
+  servos ([`hardware.md`](hardware.md)). The family's 3S ceiling applies (wk-robotics
+  `common.md`).
 
 ## Parts
 
@@ -108,6 +106,11 @@ and not yet accepted. Do not build against one without the owner deciding.
   exploration. The MCU options remain open for afterwards. If the answer
   to OQ-08 is "both", the Waveshare board's A/B jumpers are exactly the switch between the
   PC and an MCU, so the arm can be moved between the two without rewiring.
+
+- **OQ-10 — Upgrade units A and B from firmware 3.9 to 3.10.** **Resolved 2026-09-12 by
+  DEC-11:** both upgraded with Feetech FD 1.9.8.3 on Windows; all six read 3.10 and every
+  bus check passes ([`test-log.md`](test-log.md)). The pitfalls were the CH343 driver
+  (install WCH's VCP driver) and FD's baud, which must be set to 1 000 000 before Search.
 
 ## Integration
 

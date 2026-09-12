@@ -12,22 +12,34 @@ All six are STS3215 at 1/345, 1 Mbaud, model number 777.
 
 | ID | Joint | This build |
 |---|---|---|
-| 1 | `shoulder_pan` (base rotation) | **Set 2026-09-09.** Waveshare ST3215 12 V, unit A |
-| 2 | `shoulder_lift` | **Set 2026-09-09.** Waveshare ST3215 12 V, unit B |
-| 3 | `elbow_flex` | not sourced (OQ-01) |
-| 4 | `wrist_flex` | not sourced |
-| 5 | `wrist_roll` | not sourced |
-| 6 | `gripper` | not sourced |
+| 1 | `shoulder_pan` (base rotation) | **Set 2026-09-09.** Waveshare ST3215 12 V, unit A. Firmware 3.9 → **3.10** on 2026-09-12 |
+| 2 | `shoulder_lift` | **Set 2026-09-09.** Waveshare ST3215 12 V, unit B. Firmware 3.9 → **3.10** on 2026-09-12. Held ID 6 for part of 2026-09-12 (DEC-10, reverted) |
+| 3 | `elbow_flex` | **Set 2026-09-12.** Feetech STS3215 12 V from koala-bot's RCmall packs (DEC-09), firmware 3.10, unit C |
+| 4 | `wrist_flex` | **Set 2026-09-12.** Feetech STS3215 12 V (DEC-09), firmware 3.10, unit D |
+| 5 | `wrist_roll` | **Set 2026-09-12.** Feetech STS3215 12 V (DEC-09), firmware 3.10, unit E |
+| 6 | `gripper` | **Set 2026-09-12.** Feetech STS3215 12 V (DEC-09), firmware 3.10, unit F. Held ID 2 for part of 2026-09-12 (DEC-10, reverted) |
 
-"Unit A / B" is the label written on the servo case at commissioning. Both units left the
+**Verified on one bus, 2026-09-12, all six on firmware 3.10:** LeRobot's `sync_read` in
+this order 30 of 30, every other order tried 30 of 30, `broadcast_ping()` complete 5 of 5
+([`test-log.md`](test-log.md)). Milestone 1 is done. The unit letters run A–F in ID order
+and in chain order from the base.
+
+The unit letter is the label written on the servo case at commissioning. Every unit left the
 factory as **ID 1, 1 Mbaud**; unit A's write therefore changed nothing and served to prove
-the toolchain.
+the toolchain. A and B are Waveshare-branded, C–F Feetech-branded; same part (model 777,
+1/345). **All six run firmware 3.10** — A and B shipped with 3.9 and were upgraded on
+2026-09-12 because mixed 3.9/3.10 firmware collides on a shared bus (DEC-11; the diagnosis
+and the upgrade are in [`test-log.md`](test-log.md); the family rule is in
+[wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#configuring-a-servo--true-for-every-sts-project)).
+Any servo joining this bus later is brought to 3.10 first.
 
 ## How an ID is set here
 
 Scripted through LeRobot (DEC-04), one servo on the bus at a time, 12 V on the adapter,
-adapter on USB. Exactly what was run on 2026-09-09, with the joint name and ID changed per
-servo:
+adapter on USB. Since 2026-09-12 the write is [`software/set_servo_id.py`](../software/set_servo_id.py)
+`<joint> --label "<unit>"`, run from the LeRobot venv: it refuses unless the bus shows exactly
+one factory servo, writes, re-pings, reads back voltage/position/temperature and prints the
+test-log row. It is this 2026-09-09 sequence, unchanged:
 
 ```python
 from lerobot.motors import Motor, MotorNormMode

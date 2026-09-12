@@ -50,3 +50,32 @@ that was made. Recommendations offered and not accepted are open questions.
   tank mounting is attempted. This sequences the work; it does not close OQ-08 (what the
   arm is ultimately for) or OQ-09 (what drives it at runtime), which stay open until the
   exploration has taught something.
+
+- **DEC-09 — The remaining four servos come from koala-bot's RCmall STS3215 packs.**
+  (Owner, 2026-09-12; resolves OQ-01.) Four of the twelve Feetech STS3215 12 V that arrived
+  for koala-bot that day become this arm's `elbow_flex`, `wrist_flex`, `wrist_roll` and
+  `gripper`, commissioned the same day ([`servos.md`](servos.md)). Same part number as the
+  two Waveshare units (model 777, 1/345), so the arm stays one uniform servo. The cost lands
+  on koala-bot: it now holds **eight of the twelve** its V1 limbs need and must re-order
+  ([koala-bot `bom.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/bom.md),
+  OQ-16). Chosen over the OQ-01 recommendation (a dedicated 6-pack) because the arm can be
+  finished now and the re-order is koala-bot's, whose limbs are months from assembly.
+
+- **DEC-10 — The two firmware-3.9 units (Waveshare A and B) hold IDs 1 and 6.**
+  *Superseded the same day by DEC-11 and reverted: B is ID 2, F is ID 6 again.*
+  (2026-09-12; from the six-on-one-bus diagnosis in [`test-log.md`](test-log.md).) Mixed
+  3.9/3.10 firmware collides on a sync read whenever a 3.10 unit answers after a 3.9 unit
+  that was not the first responder. LeRobot reads IDs 1–6 in fixed order, so the 3.9 units
+  go first and last: unit B moves from `shoulder_lift` (2) to `gripper` (6), unit F takes
+  `shoulder_lift`. Chosen over a firmware upgrade because it worked immediately with no
+  new tooling; the upgrade stays open as OQ-10 and would make this decision unnecessary.
+  Reply-delay tuning was tried first and does not help.
+
+- **DEC-11 — One firmware on the bus: every servo runs 3.10, and any servo joining later
+  is upgraded before it is chained.** (Owner, 2026-09-12, resolves OQ-10; supersedes
+  DEC-10.) A and B were upgraded from 3.9 with Feetech FD 1.9.8.3 on Windows
+  ([`test-log.md`](test-log.md) has the procedure and the pitfalls — VCP driver, and FD
+  must be set to 1 000 000 baud). Afterwards every read order passes 30/30 and broadcast
+  ping is complete, so the ID placement of DEC-10 was reverted and IDs follow the seated
+  units. Chosen over the workaround because it removes the constraint instead of routing
+  around it — "if a firmware update is possible, let's do that".

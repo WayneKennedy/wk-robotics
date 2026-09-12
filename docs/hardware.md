@@ -35,13 +35,15 @@ test-fitted into pockets.
 
 | Item | Qty | Since | Note |
 |---|---|---|---|
-| Waveshare **ST3215 12 V** bus servo (Feetech STS3215 rebadge, 1/345) | 2 | 2026-09-07 | Amazon. Bought as koala-bot's test-fit pair; now this arm's `shoulder_pan` and `shoulder_lift` ([`servos.md`](servos.md)). Box contained M3 horn screws and M2×5 self-tapping case screws |
+| Waveshare **ST3215 12 V** bus servo (Feetech STS3215 rebadge, 1/345), firmware **3.10** (shipped 3.9, upgraded 2026-09-12, DEC-11) | 2 | 2026-09-07 | Amazon. Bought as koala-bot's test-fit pair; now this arm's `shoulder_pan` and `shoulder_lift` ([`servos.md`](servos.md)). Box contained M3 horn screws and M2×5 self-tapping case screws |
+| Feetech **STS3215 12 V** bus servo (1/345), firmware 3.10 | 4 | 2026-09-12 | From koala-bot's RCmall packs (DEC-09); this arm's IDs 3–6 ([`servos.md`](servos.md)). Each box: two metal horns, M3×6 horn screws, M2×6 case screws |
 | Waveshare **Bus Servo Adapter (A)** v1.1 | 1 | 2026-09-07 | Upstream's "Motor Control Board" (DEC-03). CH343 USB-C. Both jumpers on **B** for USB |
 | Feetech **FE-URT-2** | 1 | 2026-09-08 | Spare / bench bus adapter. Not needed for the arm |
 
 Adapter behaviour, pinouts and power rules are family facts:
 [wk-robotics `common.md` → Configuring a servo](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#configuring-a-servo--true-for-every-sts-project).
 
-**Not in hand:** four more STS3215 12 V servos (OQ-01), a decided 12 V supply (OQ-03), the
+**Not in hand:** a decided 12 V supply (OQ-03), the
 M2×6 and M3×6 fasteners upstream's guide calls for (OQ-07). The 12 V source used on the
-bench on 2026-09-09 read 12.3–12.4 V at the servo and is otherwise **unrecorded**.
+bench on 2026-09-09 read 12.3–12.4 V at the servo and is otherwise **unrecorded**; on
+2026-09-12 it was a **3S LiPo**, not fully charged, reading 11.7–11.9 V.
