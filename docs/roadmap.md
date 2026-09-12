@@ -21,12 +21,14 @@ Per upstream's guide, joint 1 to gripper. Needs milestones 0 and 1, and fastener
 Ends with the servos daisy-chained, `shoulder_pan` to the control board, and a
 `broadcast_ping()` returning IDs 1–6.
 
-## Milestone 3 — Calibrate and move *(calibrated 2026-09-12; move pending)*
+## Milestone 3 — Calibrate and move *(done 2026-09-12)*
 
-Homing and travel limits are in the servos ([`test-log.md`](test-log.md) 2026-09-12,
-written stepwise by `software/calibrate.py` — the same writes as `lerobot-calibrate`). Ends
-with a scripted move to a pose and back, under a decided 12 V supply (OQ-03), with the arm
-clamped to a table.
+Homing and travel limits are in the servos, pulled in 10 % at each end
+([`test-log.md`](test-log.md) 2026-09-12, `software/calibrate.py` + `shrink_limits.py`).
+Every joint nudged ±3° and back within 1° from a hands-off hold, arm clamped, on a 3S pack
+(OQ-03 still open). The day's cost was four lurches before the servo behaviours in
+[`servos.md`](servos.md) were understood; `hold_test.py --keep` then `first_move.py` is the
+proven sequence.
 
 ## Milestone 4 — Teleoperate, record, train, run *(DEC-08: this comes first)*
 

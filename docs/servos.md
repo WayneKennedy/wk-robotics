@@ -101,6 +101,11 @@ so do not run it casually.
    a joint already moving is followed, not held. Command absolute goals from a verified
    stationary pose and monitor.
 
+4. **EEPROM writes to a servo with a latched protection flag may not persist** (the 10 %
+   limits vanished from `wrist_flex` and `gripper` at the next power cycle; unverified
+   mechanism, [`test-log.md`](test-log.md)). Clear flags with a power cycle first, and
+   re-read calibration after every power cycle — `first_move.py` refuses on a mismatch.
+
 **One process on the bus at a time.** Two of this repo's tools on `/dev/ttyACM0` together
 produce a stream of failed and possibly corrupted reads (2026-09-12); alone, `sync_read` is
 100/100. Stop any logger or recorder before running anything else. Every tool here opens

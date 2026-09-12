@@ -4,8 +4,8 @@
 The Robot Studio and Hugging Face, printed and commissioned here, with nothing changed
 in the design. This repo is the build record; the design lives upstream.
 
-**Status:** parts printed, all six servos commissioned and verified on one bus
-(2026-09-12), nothing assembled. See
+**Status:** assembled, calibrated, and moving under script (2026-09-12): every joint nudged
+and returned within 1° from a hands-off hold. Not yet teleoperated; no camera fitted. See
 [`docs/roadmap.md`](docs/roadmap.md) for direction, [`docs/decisions.md`](docs/decisions.md)
 for what is settled, and [`docs/open-questions.md`](docs/open-questions.md) for what is not.
 

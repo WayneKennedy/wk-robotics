@@ -136,10 +136,35 @@ anything) → `Torque_Enable := 1` (resumes the stale target, but cannot act on 
 `Goal_Position := Present_Position` (adopted, because torque is on) → ramp `Torque_Limit`
 150 / 300 / 600 / 1000, checking drift at each step. Implemented in `hold_test.py`.
 
-**Where this leaves milestone 3:** calibrated, arm intact (owner: prints undamaged, no servo
-noise), no controlled move yet. Next: a hands-off hold at full torque limit from a compact
-pose, then absolute-goal nudges from the commanded start pose with no present-based clamp
-(`first_move.py`, third version — torque stays on at the end and on abort so the arm never drops).
+**Hands-off hold, then run 5 — milestone 3 closed.** Owner let go at the upright mid-range
+pose: 20 s, **0 counts drift on all six, 0 mA** (bench webcam frame confirms the arm standing
+unaided). Then `first_move.py` (fourth version: requires the verified hold, never toggles
+torque, absolute goals from the start pose, no present-based clamp), ±3° per joint and back,
+`Torque_Limit` 1000:
+
+| Joint | +3° reached | −3° reached | back | Peak mA | Other joints |
+|---|---|---|---|---|---|
+| `wrist_roll` | −0.7° | +0.8° | −0.8° | 13 | 0.0° |
+| `gripper` (0..100 units) | −0.2 | at range floor (0.3, −3 clamped) | +0.3 | 6 | 0.8° |
+| `wrist_flex` | −0.7° | +0.2° | −0.8° | 13 | 0.8° |
+| `elbow_flex` | −0.5° | +0.2° | −0.4° | 6 | 0.8° |
+| `shoulder_pan` | −0.5° | +0.3° | −0.5° | 6 | 0.8° |
+| `shoulder_lift` | −0.5° | −0.1° | −0.7° | 0 | 0.8° |
+
+Every joint reached within 1° (P = factory value — LeRobot's `configure()` PIDs were **not**
+written this run), no joint disturbed another beyond 0.8°, temperatures 34–43 °C. The arm
+ended holding the start pose under torque.
+
+**Also found on the way:** the 10 % limit shrink had **not persisted** on `wrist_flex` and
+`gripper` — after the power cycle their limits read the pre-shrink values (1002/3137,
+1328/2737) while the other four kept theirs. Both were in protection state (overload /
+over-current flags) when the shrink was written; the read-back had matched. Working
+hypothesis, unverified: an EEPROM write to a servo with a latched protection flag lands in
+RAM only. Rewritten with the flags clear, verified by read-back; **confirm across the next
+power cycle.** Until then, treat any limit written to a flagged servo as unsaved.
+
+**Changed as a result:** roadmap milestone 3 done; `servos.md` rules extended; OQ-03 still
+open (the "decided supply" was a 3S pack both times).
 
 **Changed as a result:** servos hold homing and limits; `servos.md` points here; roadmap
 milestone 3 half done; OQ-03 gains the second pack.
