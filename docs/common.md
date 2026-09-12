@@ -89,8 +89,8 @@ tolerances, one pool of spares, and tooling that transfers between projects.
 
 | Servo | Qty | Where | Source |
 |---|---|---|---|
-| Waveshare ST3215 12 V (Feetech STS3215 rebadge), firmware 3.9 | 2 | SO-ARM101, IDs 1 and 6 | Amazon, 2026-09-07 ([wk-soarm101 `servos.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/servos.md)) |
-| Feetech STS3215 12 V, firmware 3.10 | 4 | SO-ARM101, IDs 2–5 (wk-soarm101 DEC-09) | RCmall via koala-bot, arrived 2026-09-12 ([koala-bot `sourcing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/sourcing.md)) |
+| Waveshare ST3215 12 V (Feetech STS3215 rebadge), firmware 3.10 (upgraded from 3.9, 2026-09-12) | 2 | SO-ARM101, IDs 1–2 | Amazon, 2026-09-07 ([wk-soarm101 `servos.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/servos.md)) |
+| Feetech STS3215 12 V, firmware 3.10 | 4 | SO-ARM101, IDs 3–6 (wk-soarm101 DEC-09) | RCmall via koala-bot, arrived 2026-09-12 ([koala-bot `sourcing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/sourcing.md)) |
 | Feetech STS3215 12 V, firmware 3.10 (four read; the eight assumed the same batch, unverified) | 8 | koala-bot, eight of twelve limb joints — **four short** | same order |
 | Feetech STS3032M 6 V | 4 | koala-bot, three neck + one spare | same order |
 
@@ -172,10 +172,11 @@ Bus Servo Driver Board* (~€5, the part in the Open Duck Mini V2 BOM).
 A CH343 enumerates under the kernel's `cdc_acm` driver as `/dev/ttyACM*`; the FTDI note
 below does not apply to it. **On Windows** the same chip binds to the generic CDC serial
 driver by default and gets a COM port; WCH's **VCP driver (CH343SER)** is a separate manual
-install (Waveshare's wiki note, read 2026-09-12). Feetech's FD software saw the COM port but
-no servo on 2026-09-09 under the default driver; whether the VCP driver fixes that is
-**untested** — it is the first thing to try (wk-soarm101 OQ-10). The chip's flow-control
-setting is irrelevant to the servo bus, which uses no flow-control lines. Either board needs the user in the **`dialout`** group (or a
+install (Waveshare's wiki note, read 2026-09-12). Feetech's FD software found the servos on
+2026-09-12 with the VCP driver installed **and its baud set to 1 000 000** — the 2026-09-09
+"port but no servo" was the baud (FD defaults to 115200); whether the CDC driver would also
+have worked at 1 Mbaud is untested. The chip's flow-control setting is irrelevant to the
+servo bus, which uses no flow-control lines. Either board needs the user in the **`dialout`** group (or a
 udev rule) before the port is writable without `sudo`. The Waveshare board **does not echo
 transmitted bytes** back on RX (verified 2026-09-09) — a bus scanner need not strip them.
 
@@ -184,18 +185,23 @@ model number **777**; LeRobot 0.6.1's `FeetechMotorsBus.setup_motor()` and
 `broadcast_ping()` work through the Waveshare board unmodified. `Present_Voltage` reads
 the rail in 0.1 V units and is the quickest proof that a servo is actually powered.
 
-**Mixed STS3215 firmware collides on a shared bus (verified 2026-09-12, SO-ARM101, six
-servos).** Units ship with firmware **3.9** (the 2026-09-07 Waveshare pair) or **3.10** (the
-RCmall Feetech packs). In a `sync_read` the servos answer in the order asked; a 3.10 unit
-starts its reply too early when the unit before it is a 3.9 unit that was not the first
-responder, and its header lands on the previous checksum byte — the host sees `Incorrect
-status packet`, and `broadcast_ping()` loses IDs. `Return_Delay_Time` does not help. LeRobot
-calls 3.10 the required version and documents the upgrade (Feetech FD on Windows, *Upgrade →
-Online*). Read `Firmware_Major_Version` / `Firmware_Minor_Version` at commissioning and record
-it; on a mixed bus, assign IDs so no 3.10 unit follows a non-first 3.9 unit in the read order
-— first and last are safe places for 3.9 units. Full diagnosis:
+**Every STS3215 on a bus must run the same firmware, and that firmware is 3.10 (verified
+2026-09-12, SO-ARM101, six servos).** Units ship with **3.9** (the 2026-09-07 Waveshare pair
+did) or **3.10** (the RCmall Feetech packs). Mixed, they collide: in a `sync_read` the servos
+answer in the order asked, and a 3.10 unit starts its reply too early when the unit before it
+is a 3.9 unit that was not the first responder — its header lands on the previous checksum
+byte, the host sees `Incorrect status packet`, and `broadcast_ping()` loses IDs.
+`Return_Delay_Time` does not help; ID placement can route around it but is fragile. **The
+fix is the upgrade**, and it worked first time: Feetech **FD 1.9.8.3** on Windows (LeRobot's
+[documented path](https://huggingface.co/docs/lerobot/main/feetech)), servo on the Waveshare
+board, *Upgrade → Online → Upgrade*, one servo selected at a time, on a supply that will not
+drop mid-write. Two pitfalls: Windows binds the board's CH343 to a generic CDC driver — install
+WCH's **CH343SER** VCP driver — and FD defaults to **115200 baud; set 1 000 000** before
+*Search* or it lists nothing. After the upgrade every read order passed 30/30 and broadcast
+ping was complete. So: read `Firmware_Major_Version` / `Firmware_Minor_Version` at
+commissioning, record it, and upgrade any 3.9 unit before it joins a bus. Full record:
 [wk-soarm101 `test-log.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/test-log.md)
-2026-09-12; the upgrade is its OQ-10.
+2026-09-12, DEC-11.
 
 **Home and travel limits are a separate, later step, and they live in the servo.** Setup
 writes ID and baud only. LeRobot's `calibrate()` (after assembly) writes **`Homing_Offset`**

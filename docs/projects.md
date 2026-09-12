@@ -108,7 +108,7 @@ its own repo** since 2026-09-09.
 |---|---|
 | Repo | [WayneKennedy/wk-soarm101](https://github.com/WayneKennedy/wk-soarm101) — public, build record |
 | Upstream | [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) — public, Apache-2.0, cloned not forked |
-| State | Parts printed (11 of 11 at least once; `Wrist_Roll_Pitch` without a usable copy yet), all six servos commissioned and verified on one bus 2026-09-12 (the two firmware-3.9 units placed at IDs 1 and 6, wk-soarm101 DEC-10), nothing assembled |
+| State | Parts printed (11 of 11 at least once; `Wrist_Roll_Pitch` without a usable copy yet), all six servos commissioned, on firmware 3.10, verified on one bus 2026-09-12 (wk-soarm101 DEC-11), nothing assembled |
 | Actuation | Feetech STS3215 **12 V** bus servos on a Waveshare Bus Servo Adapter (A) |
 | Material | White eSUN PLA+, 220 °C / 60 °C bed, supports avoided by orientation |
 | Start at | `AGENTS.md`, then `docs/servos.md` |
