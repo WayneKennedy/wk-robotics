@@ -1,109 +1,116 @@
 #!/usr/bin/env python3
-"""First move under torque: hold the current pose, then nudge one joint at a time and return.
+"""First controlled move: hands-off hold, then absolute nudges from the start pose, one joint at a time.
 
-Usage: first_move.py [--port /dev/ttyACM0] [--id wk_soarm101] [--delta 5] [--dwell 1.0] [--joints a,b]
+Usage: first_move.py [--port] [--id wk_soarm101] [--delta 3] [--dwell 1.5] [--torque-limit 1000]
+                     [--hold 5] [--joints a,b] [--max-drift 3]
 
-Connects as LeRobot's so101_follower with the saved calibration (connect-time configure():
-position mode, PID 16/0/32, gripper torque capped at 50 %). Joints in degrees, gripper in
-0..100. Default order: wrist_roll, wrist_flex, gripper, elbow_flex, shoulder_lift,
-shoulder_pan. Torque is released at the end, so start it at a pose the arm can rest in.
-
-Guards, added after 2026-09-12's first attempt drove the elbow into its stop off a bad read:
-  * every present-position read is retried and must lie inside the saved range and within
-    --max-jump of the previous read for that joint, or the run aborts with torque still
-    holding the last good pose;
-  * commanded goals are clamped to the saved range less --margin degrees, not just stepped;
-  * start from a pose where no joint is in contact — the folded rest pose is not one.
+Sequence (all writes are LeRobot's own registers; nothing here touches EEPROM):
+  1. torque off; read present; write Torque_Limit, then Goal_Position := present (that write
+     turns torque ON — STS3215 fact, servos.md); run LeRobot's configure() for PIDs/gripper caps.
+  2. hands-off hold for --hold seconds: abort (torque off) if any joint drifts > --max-drift °.
+  3. for each joint: goal = start ± --delta, then back to start, as ABSOLUTE goals built from
+     the start pose — no present-based clamp (servos.md rule 3). After each step read position,
+     current, load; abort with torque off if any *other* joint has left start by > --max-drift.
+  4. torque off at the end. Start from a pose the arm can rest in.
 """
 import argparse
+import sys
 import time
 
 from lerobot.robots.so_follower import SOFollower, SOFollowerRobotConfig
 
-ORDER = ["wrist_roll", "wrist_flex", "gripper", "elbow_flex", "shoulder_lift", "shoulder_pan"]
+ORDER = ["wrist_roll", "gripper", "wrist_flex", "elbow_flex", "shoulder_pan", "shoulder_lift"]
 
 
-def raw_to_norm(r, m, raw):
-    c = r.calibration[m]
-    if m == "gripper":
-        return (raw - c.range_min) / (c.range_max - c.range_min) * 100
-    return (raw - 2047) / 4095 * 360
+def torque_off(b):
+    for m in b.motors:
+        try:
+            b.write("Torque_Enable", m, 0, normalize=False, num_retry=5)
+        except Exception as e:
+            print(m, "torque release failed:", str(e)[-40:])
 
 
-def limits_norm(r, m, margin):
-    c = r.calibration[m]
-    lo, hi = raw_to_norm(r, m, c.range_min), raw_to_norm(r, m, c.range_max)
-    if m == "wrist_roll":
-        return -180 + margin, 180 - margin
-    return lo + margin, hi - margin
+def deg(r, m, raw):
+    id_ = r.bus.motors[m].id
+    return r.bus._normalize({id_: raw})[id_]
 
 
-def read_checked(r, prev, max_jump):
-    obs = {k: v for k, v in r.get_observation().items() if k.endswith(".pos")}
-    raw = r.bus.sync_read("Present_Position", normalize=False, num_retry=5)
-    for m in r.bus.motors:
-        c = r.calibration[m]
-        if not (0 <= raw[m] <= 4095):
-            raise RuntimeError(f"{m}: raw position {raw[m]} out of encoder range — refusing to act")
-        if m != "wrist_roll" and not (c.range_min - 200 <= raw[m] <= c.range_max + 200):
-            raise RuntimeError(f"{m}: raw {raw[m]} outside saved range {c.range_min}..{c.range_max} — refusing to act")
-        if prev is not None and abs(obs[m + ".pos"] - prev[m + ".pos"]) > max_jump:
-            raise RuntimeError(f"{m}: jumped {prev[m+'.pos']:.1f} → {obs[m+'.pos']:.1f} between reads — refusing to act")
-    return obs, raw
-
-
-def readings(r):
-    cur = r.bus.sync_read("Present_Current", normalize=False, num_retry=5)
-    tmp = r.bus.sync_read("Present_Temperature", normalize=False, num_retry=5)
-    load = r.bus.sync_read("Present_Load", normalize=False, num_retry=5)
-    return cur, tmp, load
+def read_all(b):
+    p = b.sync_read("Present_Position", normalize=False, num_retry=5)
+    c = b.sync_read("Present_Current", normalize=False, num_retry=5)
+    l = b.sync_read("Present_Load", normalize=False, num_retry=5)
+    t = b.sync_read("Present_Temperature", normalize=False, num_retry=5)
+    return p, c, l, t
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--port", default="/dev/ttyACM0")
     ap.add_argument("--id", default="wk_soarm101")
-    ap.add_argument("--delta", type=float, default=5.0)
-    ap.add_argument("--dwell", type=float, default=1.0)
-    ap.add_argument("--margin", type=float, default=5.0, help="degrees kept clear of the saved range ends")
-    ap.add_argument("--max-jump", type=float, default=30.0, help="degrees a joint may differ between consecutive reads")
+    ap.add_argument("--delta", type=float, default=3.0, help="degrees; gripper in 0..100 units")
+    ap.add_argument("--dwell", type=float, default=1.5)
+    ap.add_argument("--hold", type=float, default=5.0)
+    ap.add_argument("--torque-limit", type=int, default=1000)
+    ap.add_argument("--max-drift", type=float, default=3.0, help="degrees another joint may move before abort")
     ap.add_argument("--joints", default=",".join(ORDER))
     a = ap.parse_args()
     joints = [j for j in a.joints.split(",") if j]
 
-    r = SOFollower(SOFollowerRobotConfig(port=a.port, id=a.id, max_relative_target=a.delta))
-    r.connect(calibrate=True)                      # torque ON after configure()
-    held = None
+    r = SOFollower(SOFollowerRobotConfig(port=a.port, id=a.id, max_relative_target=None))
+    b = r.bus
+    b.connect(handshake=False)
     try:
-        start, raw = read_checked(r, None, a.max_jump)
-        cur, tmp, load = readings(r)
-        print("| Joint | Start | Raw | Range (norm) | Current (mA) | Load | °C |\n|---|---|---|---|---|---|---|")
-        for m in r.bus.motors:
-            lo, hi = limits_norm(r, m, a.margin)
-            print(f"| `{m}` | {start[m+'.pos']:.1f} | {raw[m]} | {lo:.0f}..{hi:.0f} | {cur[m]*6.5:.0f} | {load[m]} | {tmp[m]} |")
-        r.send_action(dict(start)); held = dict(start); time.sleep(a.dwell)
-        prev = start
+        torque_off(b)
+        if not r.is_calibrated:
+            print("servos do not match saved calibration — refusing"); return 2
+        start_raw = b.sync_read("Present_Position", normalize=False, num_retry=5)
+        stale = b.sync_read("Goal_Position", normalize=False, num_retry=5)
+        print("stale goals vs present (counts):", {m: stale[m] - start_raw[m] for m in b.motors})
+        for m in b.motors:
+            b.write("Torque_Limit", m, a.torque_limit, normalize=False, num_retry=5)
+            b.write("Goal_Position", m, start_raw[m], normalize=False, num_retry=5)   # torque ON here
+        r.configure()                                                               # PIDs; torque on
+        start = {m: deg(r, m, start_raw[m]) for m in b.motors}
 
-        print("\n| Joint | Command | Reached | Δ | Current (mA) | Load | °C |\n|---|---|---|---|---|---|---|")
+        # 2. hands-off hold
+        t0 = time.time(); worst = {m: 0.0 for m in b.motors}
+        while time.time() - t0 < a.hold:
+            p, c, l, t = read_all(b)
+            for m in b.motors:
+                worst[m] = max(worst[m], abs(deg(r, m, p[m]) - start[m]))
+            if max(worst.values()) > a.max_drift:
+                bad = max(worst, key=worst.get)
+                print(f"ABORT during hold: {bad} drifted {worst[bad]:.1f}° — torque off"); torque_off(b); return 1
+            time.sleep(0.1)
+        p, c, l, t = read_all(b)
+        print(f"hold {a.hold:.0f} s OK. | Joint | Start | Drift ° | mA | Load | °C |\n|---|---|---|---|---|---|")
+        for m in b.motors:
+            print(f"| `{m}` | {start[m]:.1f} | {worst[m]:.1f} | {c[m]*6.5:.0f} | {l[m]} | {t[m]} |")
+
+        # 3. absolute nudges
+        print("\n| Joint | Command | Reached | Δ | mA | Load | °C | Others max drift ° |\n|---|---|---|---|---|---|---|---|")
         for m in joints:
-            key = m + ".pos"
-            lo, hi = limits_norm(r, m, a.margin)
             for sign in (+1, -1, 0):
-                target = dict(start)
-                target[key] = min(max(start[key] + sign * a.delta, lo), hi)
-                r.send_action(target); held = target; time.sleep(a.dwell)
-                obs, _ = read_checked(r, prev, a.max_jump); prev = obs
-                cur, tmp, load = readings(r)
-                print(f"| `{m}` | {target[key]:.1f} | {obs[key]:.1f} | {obs[key]-target[key]:+.1f} | {cur[m]*6.5:.0f} | {load[m]} | {tmp[m]} |")
-        r.send_action(dict(start)); held = dict(start); time.sleep(a.dwell)
-        end, _ = read_checked(r, prev, a.max_jump)
-        print("\nback at start, max |Δ| = %.1f → torque off" % max(abs(end[k] - start[k]) for k in start))
+                goal = dict(start); goal[m] = start[m] + sign * a.delta
+                b.sync_write("Goal_Position", goal)             # normalised → raw, absolute
+                time.sleep(a.dwell)
+                p, c, l, t = read_all(b)
+                reached = deg(r, m, p[m])
+                others = max(abs(deg(r, j, p[j]) - start[j]) for j in b.motors if j != m)
+                print(f"| `{m}` | {goal[m]:.1f} | {reached:.1f} | {reached-goal[m]:+.1f} | {c[m]*6.5:.0f} | {l[m]} | {t[m]} | {others:.1f} |")
+                if others > a.max_drift:
+                    print(f"ABORT: another joint moved {others:.1f}° while nudging {m} — torque off"); torque_off(b); return 1
+        print("\ndone → torque off")
+        torque_off(b)
+        return 0
     except Exception as e:
-        print(f"\nABORTED: {e}\nTorque left ON holding the last commanded pose {held}. Run release_torque.py when the arm is supported.")
-        raise SystemExit(1)
-    else:
-        r.disconnect()
+        print("ABORT on error:", e); torque_off(b); return 1
+    finally:
+        try:
+            b.disconnect(disable_torque=False)
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
