@@ -20,3 +20,5 @@ Thumbs.db
 .idea/
 .vscode/
 software/.calibration_state*.json
+software/logs/
+software/.stop_cycle
