@@ -13,7 +13,8 @@ gently (Goal_Velocity / Acceleration in RAM), and repeats. After every move it c
   tracking   |present − goal| ≤ --track counts once Moving clears, else STALL → park, stop
   current    any servo > --max-ma sustained across a step → park, stop
   temperature any servo > --max-temp °C → park, stop
-  voltage    min servo rail < --stop-volts → park, stop (warn below --warn-volts)
+  voltage    min servo rail < --stop-volts, judged only at the mid pose (unloaded; the rail
+             sags ~0.9 V under a holding load) → park, stop; loaded readings warn below --warn-volts
   stop file  exists → park, stop
 "Park" = command mid on all joints and leave torque ON. One CSV line per move in --log.
 """
@@ -102,10 +103,14 @@ def main():
                 park(f"CURRENT: {max(c, key=c.get)} {max(c.values()):.0f} mA sustained"); return False
             if max(t.values()) > a.max_temp:
                 park(f"TEMPERATURE: {max(t, key=t.get)} {max(t.values())} °C"); return False
-            if min(v.values()) < a.stop_volts:
-                park(f"PACK LOW: {min(v.values()):.1f} V < {a.stop_volts}"); return False
+            # The rail sags ~0.9 V under a holding load (2026-09-12: 10.8 V loaded, 11.7 V at mid),
+            # so the stop decision uses the reading at mid (all joints at 2047, ~0 mA); loaded
+            # readings only warn.
+            at_mid = goal_raw == 2047
+            if at_mid and min(v.values()) < a.stop_volts:
+                park(f"PACK LOW: {min(v.values()):.1f} V at rest < {a.stop_volts}"); return False
             if min(v.values()) < a.warn_volts:
-                print(f"   warning: pack {min(v.values()):.1f} V")
+                print(f"   warning: pack {min(v.values()):.1f} V{'' if at_mid else ' (loaded)'}")
             if stop_file.exists():
                 park("stop file"); return False
             return True

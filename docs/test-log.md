@@ -166,6 +166,21 @@ power cycle.** Until then, treat any limit written to a flagged servo as unsaved
 **Changed as a result:** roadmap milestone 3 done; `servos.md` rules extended; OQ-03 still
 open (the "decided supply" was a 3S pack both times).
 
+**Extents loop — 15 cycles, 260 moves, 9.5 min, stopped itself and parked.** Owner: "arm
+stopped and parked, bloody marvelous." `software/extents_cycle.py`: from the calibration mid
+pose, each joint in turn to its shrunk upper limit − 3°, lower limit + 3°, back to mid
+(`wrist_roll` ±123°), `Goal_Velocity` 600, `Acceleration` 30, full torque limit, one joint
+moving at a time so only the hand-swept envelope is visited. Every move tracked within 13
+counts except the elbow's return to mid (up to 59, gravity lag), no stall, hottest servo
+43 °C. Peak currents: `shoulder_lift` ~2 A lifting the arm from its forward extent (cycle 1,
+foreground run), 630 mA in the logged run; `elbow_flex` and `shoulder_pan` ~590 mA; wrist
+and gripper under 170 mA. **Rail sag:** 11.8 V at mid falling to 11.7 over the run, but
+**10.8 V while the shoulder held the arm at its forward extent** — the 11.0 V stop tripped on
+that loaded reading while the pack still read 11.7 V at rest (≈ 3.9 V/cell, far from spent).
+The tool now judges the stop on the unloaded reading at mid and only warns on loaded dips.
+The ~0.9 V sag under < 1 A is the pack, its lead or the adapter's screw terminals — part of
+OQ-03. Log: `software/logs/extents_20260912_141344.csv` (git-ignored, on the host).
+
 **Changed as a result:** servos hold homing and limits; `servos.md` points here; roadmap
 milestone 3 half done; OQ-03 gains the second pack.
 

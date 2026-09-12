@@ -55,6 +55,12 @@ and not yet accepted. Do not build against one without the owner deciding.
   for the desk phase, and **cameras** join the sourcing list — LeRobot's imitation-learning
   loop needs one or two, and none is owned or specified.
 
+  **Stated purpose, 2026-09-12 (owner): a surrogate for big industrial robots, where
+  operating ranges are safety issues** — defining and enforcing a box of acceptable
+  movement, and more generally geometry awareness that per-joint limits cannot give
+  ([wk-robotics `common.md` → Collision awareness](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#collision-awareness--open-family-wide)).
+  This sits alongside, not instead of, the candidate below.
+
   **Leading candidate, likely but not decided (owner, 2026-09-09): two followers
   cooperating in one workspace.** Motivated by a real problem in large-scale industrial
   machinery — one arm places a pallet of components where a second arm can pick it up and
