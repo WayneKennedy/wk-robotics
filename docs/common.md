@@ -170,7 +170,12 @@ Bus Servo Driver Board* (~€5, the part in the Open Duck Mini V2 BOM).
 | Feetech FE-URT-2 | USB-C, **CH343** (vendor listing) | Two screw-terminal inputs: **DC 4.8–12 V for TTL** servos, **DC 12–24 V for RS485** servos | TTL bus header plus 2 × XH4 RS485 — check the silkscreen before plugging a 3-pin STS lead | 3.3 V / 5 V logic-level switch; also serves the SMS (RS485) family, which nothing here uses |
 
 A CH343 enumerates under the kernel's `cdc_acm` driver as `/dev/ttyACM*`; the FTDI note
-below does not apply to it. Either board needs the user in the **`dialout`** group (or a
+below does not apply to it. **On Windows** the same chip binds to the generic CDC serial
+driver by default and gets a COM port; WCH's **VCP driver (CH343SER)** is a separate manual
+install (Waveshare's wiki note, read 2026-09-12). Feetech's FD software saw the COM port but
+no servo on 2026-09-09 under the default driver; whether the VCP driver fixes that is
+**untested** — it is the first thing to try (wk-soarm101 OQ-10). The chip's flow-control
+setting is irrelevant to the servo bus, which uses no flow-control lines. Either board needs the user in the **`dialout`** group (or a
 udev rule) before the port is writable without `sudo`. The Waveshare board **does not echo
 transmitted bytes** back on RX (verified 2026-09-09) — a bus scanner need not strip them.
 
