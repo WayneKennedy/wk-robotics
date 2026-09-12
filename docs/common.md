@@ -424,7 +424,9 @@ The hexapod already speaks most of it — `/cmd_vel`, `/joint_commands`, `/joint
 
 ## Collision awareness — open, family-wide
 
-**Raised 2026-09-12 while watching SO-ARM101 cycle its joints:** per-joint travel limits are
+**Raised 2026-09-12 while watching SO-ARM101 cycle its joints**, which the owner treats as a
+surrogate for industrial arms, where operating ranges are safety matters and "a box of
+acceptable movement" is the basic tool: per-joint travel limits are
 the only geometric protection any robot here has, and they cannot express "elbow past X is
 fine unless the wrist is past Y", let alone another robot or a person in the same space.
 LeRobot has no self-collision or world model at runtime (its policies inherit safety from the
