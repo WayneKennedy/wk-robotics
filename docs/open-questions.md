@@ -93,8 +93,11 @@ and not yet accepted. Do not build against one without the owner deciding.
   is not for this document to settle.
 
 - **OQ-09 — What drives the servo bus at runtime.** Commissioning and calibration are
-  done from a PC over USB and need nothing else (DEC-04). For running the arm, three
-  architectures are possible and none is chosen:
+  done from a PC over USB and need nothing else (DEC-04). **Narrowed by DEC-12
+  (2026-09-12): the PC path for the LeRobot exploration, then the *own reflex MCU* row
+  with a Teensy 4.1.** Still open: which board, how it connects to the bus, micro-ROS or
+  bare-metal first, and whether the tank's MCU takes over on mounting. The three
+  architectures, for the record:
 
   | Option | How | Fits |
   |---|---|---|

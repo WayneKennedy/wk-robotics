@@ -79,3 +79,17 @@ that was made. Recommendations offered and not accepted are open questions.
   ping is complete, so the ID placement of DEC-10 was reverted and IDs follow the seated
   units. Chosen over the workaround because it removes the constraint instead of routing
   around it — "if a firmware update is possible, let's do that".
+
+- **DEC-12 — After the LeRobot exploration, the arm becomes a Teensy 4.1-operated arm:
+  the family's reflex-tier proving ground.** (Owner, 2026-09-12.) The LeRobot loop is run
+  first and in full "for completeness" (DEC-08 stands), then the servo bus moves from the
+  PC to a **Teensy 4.1** — the family's reflex-tier MCU pattern
+  ([wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#compute-the-two-tier-split))
+  — "to develop and prove our approach for other bots". This picks the *own reflex MCU* row
+  of OQ-09 and adds a purpose to OQ-08: the arm is the testbed where the MCU-drives-the-bus
+  approach is developed before koala-bot and wk-devastator depend on it. Not decided:
+  which Teensy 4.1 (the family holds an unallocated 4.1 NE), whether the Waveshare board's
+  channel-A UART header or a separate adapter carries the bus, the firmware stack
+  (micro-ROS per the family rule, or bare-metal first), and whether the tank's MCU later
+  absorbs the role. Calibration written by LeRobot lives in the servos' EEPROM (homing
+  offset and limits), so it carries over to the Teensy unchanged.

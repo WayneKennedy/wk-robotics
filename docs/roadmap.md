@@ -36,10 +36,13 @@ pick-and-place, a policy trained from it, and the follower executing it. **If th
 candidate under OQ-08 is taken, a second follower is printed and commissioned in parallel
 with this milestone**, and the single-arm result becomes the baseline for the handover.
 
-## Milestone 5 — Decide what it is for, and what drives it
+## Milestone 5 — A Teensy 4.1-operated arm *(DEC-12)*
 
-OQ-08 and OQ-09, answered with milestone 4's experience in hand. Nothing below is
-scheduled until then.
+The servo bus moves from the PC to a Teensy 4.1, the family's reflex-tier pattern, with
+the arm as the proving ground for koala-bot and wk-devastator. Board, bus connection and
+firmware stack are the open parts of OQ-09. Ends with the arm reproducing milestone 3's
+scripted move under the MCU, using the calibration LeRobot left in the servos. What the
+arm is ultimately *for* (OQ-08) is decided alongside, with milestone 4's experience in hand.
 
 ## Milestone 6 — Mount on wk-devastator *(only if OQ-08 says so)*
 
