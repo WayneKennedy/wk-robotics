@@ -88,6 +88,16 @@ stepwise tool is [`software/calibrate.py`](../software/calibrate.py); `status` s
 the servos hold. Re-running `home` re-centres every joint on the pose held at that moment,
 so do not run it casually.
 
+**Three servo facts every tool here obeys (2026-09-12, [`test-log.md`](test-log.md)):**
+1. **Writing `Goal_Position` turns torque on**, whatever `Torque_Enable` said a moment
+   before. Set `Torque_Limit` first; treat any goal write as energising the arm.
+2. **Servos keep their last `Goal_Position` across sessions**, and LeRobot's `connect()`
+   re-enables torque without touching it — the arm lurches toward stale goals. Write
+   `Goal_Position := Present_Position` before torque comes on (`hold_test.py`, `first_move.py`).
+3. **`max_relative_target` is not a safety net.** It clamps each goal to *present ± step*, so
+   a joint already moving is followed, not held. Command absolute goals from a verified
+   stationary pose and monitor.
+
 **One process on the bus at a time.** Two of this repo's tools on `/dev/ttyACM0` together
 produce a stream of failed and possibly corrupted reads (2026-09-12); alone, `sync_read` is
 100/100. Stop any logger or recorder before running anything else. Every tool here opens

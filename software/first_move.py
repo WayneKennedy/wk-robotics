@@ -7,11 +7,12 @@ Usage: first_move.py [--port] [--id wk_soarm101] [--delta 3] [--dwell 1.5] [--to
 Sequence (all writes are LeRobot's own registers; nothing here touches EEPROM):
   1. torque off; read present; write Torque_Limit, then Goal_Position := present (that write
      turns torque ON — STS3215 fact, servos.md); run LeRobot's configure() for PIDs/gripper caps.
-  2. hands-off hold for --hold seconds: abort (torque off) if any joint drifts > --max-drift °.
+  2. hands-off hold for --hold seconds: abort (re-command start, keep torque) if any joint drifts > --max-drift °.
   3. for each joint: goal = start ± --delta, then back to start, as ABSOLUTE goals built from
      the start pose — no present-based clamp (servos.md rule 3). After each step read position,
      current, load; abort with torque off if any *other* joint has left start by > --max-drift.
-  4. torque off at the end. Start from a pose the arm can rest in.
+  4. torque is LEFT ON holding the start pose at the end and on every abort, so the arm never
+     drops; release with release_torque.py once someone supports it.
 """
 import argparse
 import sys
@@ -80,7 +81,8 @@ def main():
                 worst[m] = max(worst[m], abs(deg(r, m, p[m]) - start[m]))
             if max(worst.values()) > a.max_drift:
                 bad = max(worst, key=worst.get)
-                print(f"ABORT during hold: {bad} drifted {worst[bad]:.1f}° — torque off"); torque_off(b); return 1
+                b.sync_write("Goal_Position", {m: start_raw[m] for m in b.motors}, normalize=False)
+                print(f"ABORT during hold: {bad} drifted {worst[bad]:.1f}° — re-commanded start, torque LEFT ON"); return 1
             time.sleep(0.1)
         p, c, l, t = read_all(b)
         print(f"hold {a.hold:.0f} s OK. | Joint | Start | Drift ° | mA | Load | °C |\n|---|---|---|---|---|---|")
@@ -99,12 +101,13 @@ def main():
                 others = max(abs(deg(r, j, p[j]) - start[j]) for j in b.motors if j != m)
                 print(f"| `{m}` | {goal[m]:.1f} | {reached:.1f} | {reached-goal[m]:+.1f} | {c[m]*6.5:.0f} | {l[m]} | {t[m]} | {others:.1f} |")
                 if others > a.max_drift:
-                    print(f"ABORT: another joint moved {others:.1f}° while nudging {m} — torque off"); torque_off(b); return 1
-        print("\ndone → torque off")
-        torque_off(b)
+                    b.sync_write("Goal_Position", {m: start_raw[m] for m in b.motors}, normalize=False)
+                    print(f"ABORT: another joint moved {others:.1f}° while nudging {m} — re-commanded start, torque LEFT ON"); return 1
+        b.sync_write("Goal_Position", {m: start_raw[m] for m in b.motors}, normalize=False)
+        print("\ndone → holding start pose, torque LEFT ON (run release_torque.py once the arm is supported)")
         return 0
     except Exception as e:
-        print("ABORT on error:", e); torque_off(b); return 1
+        print("ABORT on error:", e, "— torque LEFT ON at last goal"); return 1
     finally:
         try:
             b.disconnect(disable_torque=False)

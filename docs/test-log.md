@@ -87,11 +87,52 @@ seen during that sweep were **port contention: two of this session's processes o
 `/dev/ttyACM0` at once**. Alone on the port, `sync_read` is 100/100. **One process on the
 bus at a time** — recorded as a rule in `servos.md`.
 
-Consequences, in `first_move.py` (second version): every present read is retried and must
-be inside the encoder range, within 200 counts of the saved range and within 30° of the
-previous read, or the run aborts with torque holding the last good pose; goals are clamped
-to the saved range minus a 5° margin; default step 5°; start from a pose with no joint in
-contact. Milestone 3's scripted move is **still pending**.
+Two more attempts, both aborted by the read guards, and the diagnosis that followed:
+
+| Run | What happened |
+|---|---|
+| 2 — open pose, held by owner, LeRobot `connect()`, step 5° | Guard tripped before the first nudge: elbow read −57° then +54° a second later. Afterwards the servos' `Goal_Position` registers held values far from the start (elbow 3514 vs 2306, wrist 3166 vs 2326). **Cause: stale goals.** `connect()` re-enables torque while each servo still holds the goal from the previous session (the elbow's was 121 from run 1's crash), so joints lurch toward old goals the instant torque comes on. Proven with `software/hold_test.py`: goals set to present before torque, shoulder's stale goal 55° away, torque on at 30 % — **zero drift on all six** |
+| 3 — open pose, held, goals := present before torque, Torque_Limit 500, step 5° | Guard tripped at the first nudge (`wrist_roll` +5°): wrist_flex had gone 2904 → 3158 and the elbow 3408 → 3730 in ~2 s, both the same direction; gripper body hit the base. Not yet explained — candidates are sag under half torque with LeRobot's P = 16, and the owner's hold |
+
+With torque off and the arm still: 300 unretried `sync_read`s matched a retried reference
+exactly; a `sync_write` of six distinct goals landed on the right servos; the normalised
+write path reproduces the present raw within +1…+14 counts (and pushes a joint that sits
+outside its saved range to the range edge — the gripper, below its minimum after the slam,
++112); `ensure_safe_goal_position` never clamped in 200 live reads. So the data path is
+sound. What is not sound is the **`max_relative_target` clamp as a safety device**: it bounds
+each goal to *present ± step*, so once a joint is moving for any other reason every hold
+re-anchors to where it has got to and never pulls it back — it ratchets a lurch or a sag
+into a slam.
+
+**Writing `Goal_Position` turns torque on.** Found because the arm was "holding torque in the
+slammed position" (owner) after tools that had disabled torque and then written goals; read
+back `Torque_Enable = 1` on all six, elbow and wrist at 526–540 mA, load −500, 47 °C,
+pressing on the base. Verified in isolation on `wrist_roll`: `Torque_Enable` 0 → write
+`Goal_Position` → reads 1. So "set goals with torque off" energises the arm; every tool now
+sets `Torque_Limit` first and treats a goal write as a torque-on. Torque released properly
+(`Torque_Enable := 0`, no goal writes): all 0 mA, status 0.
+
+**Run 4 — the decisive one.** Hands-off hold attempt from mid-range, `hold_test.py`, full
+torque limit: goals were written equal to present **with torque off** and read back equal;
+on `Torque_Enable := 1` the elbow drove 2128 → 3657 (134°) and the wrist 2108 → 2940 (98°),
+stopping near the goals the servos had held *before* the write (3730, 3113). **A
+`Goal_Position` written while torque is off is stored in the register but is not adopted as
+the motion target; enabling torque resumes the previous target.** This is also what run 3
+was: its "goals := present before torque" step did nothing, and the elbow and wrist went to
+run 2's leftovers (3730 and 3113 — exactly where they ended). The 30 % "zero drift" pass
+earlier was the owner's hand, not the servos. Overload / over-current protection tripped on
+elbow, wrist and gripper (status 8 latched on the wrist, 49–50 °C); torque forced off at
+packet level, all 0 mA, cooling. Owner: prints undamaged.
+
+**Safe torque-on sequence, to be verified next:** `Torque_Limit := ~30` (too weak to move
+anything) → `Torque_Enable := 1` (resumes the stale target, but cannot act on it) →
+`Goal_Position := Present_Position` (adopted, because torque is on) → ramp `Torque_Limit`
+150 / 300 / 600 / 1000, checking drift at each step. Implemented in `hold_test.py`.
+
+**Where this leaves milestone 3:** calibrated, arm intact (owner: prints undamaged, no servo
+noise), no controlled move yet. Next: a hands-off hold at full torque limit from a compact
+pose, then absolute-goal nudges from the commanded start pose with no present-based clamp
+(`first_move.py`, third version — torque stays on at the end and on abort so the arm never drops).
 
 **Changed as a result:** servos hold homing and limits; `servos.md` points here; roadmap
 milestone 3 half done; OQ-03 gains the second pack.
