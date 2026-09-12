@@ -203,6 +203,15 @@ commissioning, record it, and upgrade any 3.9 unit before it joins a bus. Full r
 [wk-soarm101 `test-log.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/test-log.md)
 2026-09-12, DEC-11.
 
+**Three STS3215 behaviours that bit on 2026-09-12 (SO-ARM101, LeRobot 0.6.1):** writing
+`Goal_Position` **turns torque on** regardless of `Torque_Enable`; servos **keep their last
+goal across power and sessions**, and LeRobot's `connect()` re-enables torque without
+resetting it, so joints lurch toward stale goals — write `Goal_Position := Present_Position`
+before torque comes on; and LeRobot's `max_relative_target` clamps to *present ± step*, so
+it follows a moving joint rather than holding it — not a safety net. Record and evidence:
+[wk-soarm101 `servos.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/servos.md)
+and its `test-log.md`. These apply to every STS bus in the family.
+
 **Home and travel limits are a separate, later step, and they live in the servo.** Setup
 writes ID and baud only. LeRobot's `calibrate()` (after assembly) writes **`Homing_Offset`**
 so the joint's mid-range reads 2047, then records the range you sweep by hand and writes
