@@ -422,6 +422,30 @@ The hexapod already speaks most of it — `/cmd_vel`, `/joint_commands`, `/joint
 
 ---
 
+## Collision awareness — open, family-wide
+
+**Raised 2026-09-12 while watching SO-ARM101 cycle its joints:** per-joint travel limits are
+the only geometric protection any robot here has, and they cannot express "elbow past X is
+fine unless the wrist is past Y", let alone another robot or a person in the same space.
+LeRobot has no self-collision or world model at runtime (its policies inherit safety from the
+human demonstrator); the Freenove hexapod stack has none; koala-bot's limbs will have the
+same problem with more joints. **Nothing is decided.** What exists to draw on, and where it
+would sit in the [two-tier split](#compute-the-two-tier-split):
+
+| Layer | Mechanism | Tier | State here |
+|---|---|---|---|
+| Joint envelope | Per-joint limits **plus pairwise rules** (elbow vs wrist, shoulder vs elbow) fitted from hand-swept contact poses — cheap, MCU-sized, checks every goal before it is sent | Reflex | Not built. SO-ARM101 needs it first; the method is the calibration sweep applied to joint pairs |
+| Effort reflex | Current / load / tracking-error thresholds that stop or back off a joint on unexpected resistance | Reflex | Only in bench tools (`extents_cycle.py`): stall, current, temperature stops |
+| Self-collision model | URDF with collision meshes checked with FCL each control step — what MoveIt 2 does; upstream ships an SO-101 URDF and MuJoCo scene | Intent (ROS 2) | Not built; the meshes exist |
+| World model | Depth camera → occupancy (octomap / voxel grid) → planning-scene obstacles; other robots publish their own poses into the same scene | Intent | Nothing; koala-bot's head camera and the hexapod's depth camera are the sensors that would feed it |
+| Speed-and-separation | Slow down as anything approaches, stop inside a radius — the collaborative-robot rule (ISO/TS 15066 in industry) | Intent → reflex | Nothing |
+
+The pattern that fits the family: the **reflex tier guarantees the arm cannot fold into
+itself** (joint envelope + effort reflex, no perception needed, runs with the intent tier
+dead), and the **intent tier keeps it out of the world** (geometric model + perception). A
+policy or planner then commands only within what both allow. Which robot proves it first,
+and whether MoveIt 2 or something lighter carries the intent-tier check, are open.
+
 ## Power integrity
 
 Banked from an earlier InMoov build that stalled partly on this. A fully-loaded

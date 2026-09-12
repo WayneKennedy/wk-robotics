@@ -77,6 +77,14 @@ and wk-devastator depend on it. Cross-project because what it proves feeds
 Teensy is open; the unallocated 4.1 NE in the pool is the candidate. Resolves when the
 arm moves under an MCU and the lesson lands in `common.md`.
 
+### Collision awareness — no robot here has it
+
+Raised 2026-09-12: joint limits cannot prevent self-collision, and no stack in the family
+models geometry at runtime. The layered picture and where each layer sits in the two-tier
+split are in [`common.md` → Collision awareness](common.md#collision-awareness--open-family-wide).
+Resolves when one robot carries a working joint envelope on its reflex tier and the lesson
+is written back here.
+
 ### Untracked terrain files on the workstation
 
 `~/Code/FirstTerrain/` and `~/Code/Terrain_2019.zip` (237 MB) are under no version
