@@ -31,6 +31,17 @@ dimensionally correct with no elephant-foot compensation
 **Nothing is assembled.** No part has been fastened to another; servos have only been
 test-fitted into pockets.
 
+**The two M3 hex-nut recesses in `Wrist_Roll_Follower` are the wrist-camera provision**
+(nuts installed 2026-09-12). They take upstream's *Hex-Nut Recess Wrist Camera Adapter*,
+`Optional/SO101_Wrist_Cam_Hex-Nut_Mount_32x32_UVC_Module/stl/SO-ARM101_camera_wrist_mount.stl`
+— an add-on, not part of the base print list, which is why it was not printed with the
+eleven. Upstream prints it as oriented with tree supports and 40 % infill; it needs two
+M3 × 8 screws into those nuts and four of the servos' M2 screws for the camera board.
+Alternatives in the same folder: a one-piece `Wrist_Roll` replacement carrying the camera,
+a plug-on variant, and RealSense D405/D435 mounts. An overhead mount that keys into the
+arm's base is there too. All assume a **32 × 32 mm USB UVC camera module**; nothing is
+printed or bought yet (OQ-08, [`sourcing.md`](sourcing.md)).
+
 ## Electronics in hand
 
 | Item | Qty | Since | Note |
