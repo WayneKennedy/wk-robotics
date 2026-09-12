@@ -32,7 +32,13 @@ def main():
     b = r.bus
     b.connect(handshake=False)
     try:
-        b.disable_torque()
+        # packet-level torque off: a servo with a latched protection flag (status 8 = over-current,
+        # 32 = overload) answers every write with an error status, which makes bus.write() raise
+        for m in b.motors:
+            b._write(40, 1, b.motors[m].id, 0, num_retry=5, raise_on_error=False)
+        flags = {m: b._read(65, 1, b.motors[m].id, num_retry=3, raise_on_error=False)[0] for m in b.motors}
+        if any(flags.values()):
+            print("latched protection flags (clear with a servo power cycle):", {m: f for m, f in flags.items() if f})
         pres = b.sync_read("Present_Position", normalize=False, num_retry=5)
         goal = b.sync_read("Goal_Position", normalize=False, num_retry=5)
         print("| Joint | Present | Stale goal | Δ |\n|---|---|---|---|")

@@ -91,9 +91,12 @@ so do not run it casually.
 **Three servo facts every tool here obeys (2026-09-12, [`test-log.md`](test-log.md)):**
 1. **Writing `Goal_Position` turns torque on**, whatever `Torque_Enable` said a moment
    before. Set `Torque_Limit` first; treat any goal write as energising the arm.
-2. **Servos keep their last `Goal_Position` across sessions**, and LeRobot's `connect()`
-   re-enables torque without touching it — the arm lurches toward stale goals. Write
-   `Goal_Position := Present_Position` before torque comes on (`hold_test.py`, `first_move.py`).
+2. **Servos keep their last motion target across sessions, and read `Goal_Position = 0`
+   after a power cycle.** LeRobot's `connect()` re-enables torque without touching it — the
+   arm lurches toward the stale target (or toward 0). **A goal written while torque is off
+   is stored but not adopted.** The only safe order, verified: `Torque_Limit := 30` →
+   `Torque_Enable := 1` → `Goal_Position := Present_Position` → ramp `Torque_Limit` with
+   drift checks (`hold_test.py`, `first_move.py`).
 3. **`max_relative_target` is not a safety net.** It clamps each goal to *present ± step*, so
    a joint already moving is followed, not held. Command absolute goals from a verified
    stationary pose and monitor.

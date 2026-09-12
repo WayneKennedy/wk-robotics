@@ -124,7 +124,14 @@ earlier was the owner's hand, not the servos. Overload / over-current protection
 elbow, wrist and gripper (status 8 latched on the wrist, 49–50 °C); torque forced off at
 packet level, all 0 mA, cooling. Owner: prints undamaged.
 
-**Safe torque-on sequence, to be verified next:** `Torque_Limit := ~30` (too weak to move
+**After a servo power cycle every `Goal_Position` register reads 0** (all six, 2026-09-12),
+and protection flags clear. A LeRobot `connect()` straight after power-up would therefore
+enable torque with a target of 0 on every joint. Sequence verified immediately afterwards,
+`hold_test.py`, owner holding the arm at mid-range: torque on at `Torque_Limit` 30 — no
+motion; goals := present; ramp 150 / 300 / 600 / 1000 — no drift at any step; hold 5 s at
+1000 — max drift 3 counts, 0 mA on every servo.
+
+**Safe torque-on sequence, verified 2026-09-12 (was: to be verified next):** `Torque_Limit := ~30` (too weak to move
 anything) → `Torque_Enable := 1` (resumes the stale target, but cannot act on it) →
 `Goal_Position := Present_Position` (adopted, because torque is on) → ramp `Torque_Limit`
 150 / 300 / 600 / 1000, checking drift at each step. Implemented in `hold_test.py`.
