@@ -64,6 +64,26 @@ new, printed hexapod rather than a change to that robot.
   reflex tier (the kit does not — `wk-hexapod` OQ-09).
 - **Not committed.** A thought recorded so it is not lost.
 
+### A pure balance bot
+
+Raised by the owner on 2026-09-11, when a second pair of 37D motors arrived that
+koala-bot no longer needs: they were bought for its four-wheel V1 (DEC-38) and DEC-43
+cancelled the front drives before they shipped. A two-wheeled inverted pendulum and
+nothing else — the balance loop koala-bot depends on, isolated from its limbs, head and
+CAD.
+
+- **Reuses:** the surplus 37D pair and the spare Dual TB9051FTG —
+  [what the family holds](common.md#drive-motors-drivers-and-mcus-in-hand); the family rule
+  that [the balance loop lives on the MCU](common.md#compute-the-two-tier-split) and
+  koala-bot's reflex-tier design; the printer for the chassis.
+- **Unresolved:** everything except the motors and driver — IMU, wheels and hubs
+  (koala-bot's one Ø80 pair is committed to its ankles), battery, form. An unallocated
+  Teensy 4.1 NE is in the same pool and would fit; it is not earmarked for this. Whether it is a
+  standalone project or koala-bot's balance-loop testbed is the question that decides
+  where its repo and docs go; the firmware would plausibly be the same loop either way.
+- **Not committed.** Surplus hardware looking for a job, recorded so the parts are not
+  lost.
+
 ### SpotMicro · Annin Robotics AR4
 
 Named as later personal builds in `koala-bot/docs/backlog.md`. Nothing decided.
@@ -115,7 +135,7 @@ hardware. No current project does this: the hexapod is analytic IK, koala-bot's 
 loop is classical PID on an MCU, the arm is teleoperated. It is also a *finished* design,
 so the work is assembly and bring-up rather than a second from-scratch mechanical project.
 
-**Reuses:** the printer; the Feetech STS bus protocol, FE-URT-1 tooling, servo press-fit
+**Reuses:** the printer; the Feetech STS bus protocol, bus-adapter tooling, servo press-fit
 and bracket knowledge from [`common.md`](common.md#actuators). That is the extent of it —
 see below.
 

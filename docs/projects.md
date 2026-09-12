@@ -18,7 +18,7 @@ via 2-DOF hips, gestures with 3-DOF dual-purpose front limbs, and looks at you t
 | | |
 |---|---|
 | Repo | [WayneKennedy/koala-bot](https://github.com/WayneKennedy/koala-bot) — public |
-| State | Pre-alpha, design phase. CAD started, fit coupons printed; V1 hardware ordered, and a test-fit pair of 12 V ST3215 servos in hand since 2026-09-07 |
+| State | Pre-alpha, design phase. CAD started, fit coupons printed. All sixteen V1 servos in hand since 2026-09-12 and the drive/balance base since 2026-09-11; fasteners not yet ordered; nothing assembled |
 | Compute | Raspberry Pi 5 + ROS 2 (intent) · real-time MCU, Teensy 4.0 leading (reflex) |
 | Actuation | Feetech STS3215 12 V bus servos (limbs) · STS3032M 6 V (neck) · 12 V geared DC + encoder (drive wheels) |
 | Power | Single ~12 V rail, 3S LiPo; separate 5 V buck for the Pi |
@@ -73,7 +73,7 @@ compute and software are all replaced.
 | | |
 |---|---|
 | Repo | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) — public |
-| State | Design record; milestone 0 (measure-and-decide) in progress. Motors and Teensy 4.1 ordered, driver borrowed from koala-bot. **Motors on back order, due end of October 2026** (revised 2026-09-09) — milestone 1 waits on them |
+| State | Design record; milestone 0 (measure-and-decide) in progress. Motors and Teensy 4.1 ordered; driver in hand — its own since 2026-09-11, no longer borrowed from koala-bot (DEC-13, amended). **Motors on back order, due end of October 2026** (revised 2026-09-09) — milestone 1 waits on them |
 | Chassis | DFRobot **ROB0128**, aluminium, 225 × 220 × 108 mm, 1.3 kg, 3 kg payload |
 | Actuation | 2 × Pololu 25D 47:1 12 V gearmotors with 48 CPR encoders (DEC-11), replacing the kit's 6 V encoderless originals |
 | Compute (planned) | 32-bit MCU running micro-ROS (reflex) · Raspberry Pi + ROS 2 (intent) |

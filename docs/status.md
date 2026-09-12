@@ -9,7 +9,7 @@ This is a *state* document, not a log. When an item resolves, delete it; when it
 to one project, move it to that project's repo and leave a link. It is not a transcript —
 see [`AGENTS.md`](../AGENTS.md#what-does-not-belong-here).
 
-**Last reviewed: 2026-09-09.**
+**Last reviewed: 2026-09-12.**
 
 ---
 
@@ -57,6 +57,16 @@ Nothing to port. The provenance facts (rewritten history, no shared SHAs, `maste
 and the re-import question now live in
 [`wk-hexapod/docs/open-questions.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md)
 (OQ-10) and `docs/references.md` there.
+
+### Surplus drive hardware — home undecided
+
+Two 37D motors and one Dual TB9051FTG arrived 2026-09-11 with no project to go to:
+koala-bot's four-wheel V1 was cancelled before its follow-on order shipped. A Teensy 4.1 NE
+arrived the same day, bought deliberately unallocated for whichever project is ready first.
+The inventory
+is in [`common.md`](common.md#drive-motors-drivers-and-mcus-in-hand); the candidate use is
+[a pure balance bot](ideas.md#a-pure-balance-bot). Resolves when that idea earns a repo
+or the parts are allocated elsewhere.
 
 ### Untracked terrain files on the workstation
 

@@ -20,7 +20,7 @@ moves here and they link back.
 
 | Project | What it is | State | Repo |
 |---|---|---|---|
-| **koala-bot** | Self-balancing, knee-wheeled companion robot; first of a printable family | Design phase — CAD started, coupons printed; V1 hardware ordered, first servos in hand | [WayneKennedy/koala-bot](https://github.com/WayneKennedy/koala-bot) (public) |
+| **koala-bot** | Self-balancing, knee-wheeled companion robot; first of a printable family | Design phase — CAD started, coupons printed; all V1 servos and drive hardware in hand, nothing assembled | [WayneKennedy/koala-bot](https://github.com/WayneKennedy/koala-bot) (public) |
 | **wk-devastator** | Tracked ROS 2 robot on a DFRobot Devastator chassis; resurrection of a stalled build | Design record only — nothing built; motor question gates the rest | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) (public) |
 | **wk-hexapod** | ROS 2 autonomous hexapod on Freenove Big Hexapod hardware | Native ROS 2 stack verified end to end on the bench (2026-09-09): SLAM maps, Nav2 active, exploration sends goals; first battery run pending | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) (public) |
 | **SO-ARM101** | Standard Open Arm — LeRobot-compatible manipulator, built from the upstream design in its 12 V variant | Parts printed, servos being commissioned (2 of 6), nothing assembled | [WayneKennedy/wk-soarm101](https://github.com/WayneKennedy/wk-soarm101) (public) · upstream [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) |

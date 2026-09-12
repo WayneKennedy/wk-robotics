@@ -83,7 +83,18 @@ tolerances, one pool of spares, and tooling that transfers between projects.
 | Servo | Rating | Bus | Used by |
 |---|---|---|---|
 | **STS3215** | 12 V, ~30 kg·cm, positional feedback | STS serial bus | SO-ARM101 (all joints) · koala-bot (hip roll + pitch, shoulder pitch + roll, elbow) |
-| **STS3032M** | 6 V, 4.5 kg·cm, positional feedback | STS serial bus (separate 6 V bus) | koala-bot (3-RPS neck) |
+| **STS3032M** | 6 V, 4.5 kg·cm, positional feedback | STS serial bus (separate 6 V bus). **Fixed single lead, no pass-through port** — chains through the 3-port connector boards and link cable supplied in the 4-pack | koala-bot (3-RPS neck) |
+
+**Servo holdings, 2026-09-12 — every V1 servo the family has planned is now in hand:**
+
+| Servo | Qty | Where | Source |
+|---|---|---|---|
+| Waveshare ST3215 12 V (Feetech STS3215 rebadge) | 2 | SO-ARM101, IDs 1–2 | Amazon, 2026-09-07 ([wk-soarm101 `servos.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/servos.md)) |
+| Feetech STS3215 12 V | 12 | koala-bot, twelve limb joints, no spare | RCmall, ordered 2026-09-01, arrived 2026-09-12 ([koala-bot `sourcing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/sourcing.md)) |
+| Feetech STS3032M 6 V | 4 | koala-bot, three neck + one spare | same order |
+
+SO-ARM101 still needs four more STS3215 with no source decided (wk-soarm101 OQ-01); the
+koala-bot twelve are fully allocated, so they are not that source.
 
 koala-bot's **knee is not a servo joint**: it is a wheel on a 12 V geared DC motor, and
 the V1 leg ends there. A knee servo is designed for and deferred
@@ -112,6 +123,31 @@ delivers about three-quarters of its rated 30 kg·cm. A pack sagging toward its 
 therefore reads as a weakening arm, not as a tuning problem — worth knowing before chasing
 the wrong fault.
 
+### Drive motors, drivers and MCUs in hand
+
+Two projects use 12 V geared DC motors with encoders rather than servos, and both drive
+them with the same board — the **Pololu Dual TB9051FTG** (2.6 A continuous / 5 A peak per
+channel, 4.5–28 V; chosen by koala-bot DEC-16, adopted by wk-devastator DEC-13). The
+family holds more of both than any project needs, so the pool is tabulated here and each
+project's BOM records only its own allocation.
+
+**Holdings, 2026-09-11:**
+
+| Part | Qty | Where |
+|---|---|---|
+| 37D 12 V 122 rpm 38 kg·cm geared motor + encoder (Pi Hut; koala-bot's CAD models it as DFRobot FIT0403) | 2 | koala-bot, rear ankle drives (DEC-43) |
+| same | 2 | **Surplus.** Bought for koala-bot's four-wheel V1 (DEC-38, 2026-09-08), which DEC-43 cancelled on 2026-09-10; delivered 2026-09-11 (koala-bot DEC-51). Earmarked for [a pure balance bot](ideas.md#a-pure-balance-bot) — not committed |
+| Pololu Dual TB9051FTG | 1 | koala-bot (DEC-16) |
+| same | 1 | wk-devastator — its own since 2026-09-11 (DEC-13, amended). It was koala-bot's board on loan from 2026-09-07; the loan is dissolved, not returned |
+| same | 1 | **Spare**, paired with the surplus motors |
+| Teensy 4.0 | 1 | koala-bot (DEC-18) — upstream micro-ROS lists it "Not tested", koala-bot OQ-14 |
+| Teensy 4.1 | 1 | wk-devastator (DEC-10) — ordered; arrival not recorded |
+| **Teensy 4.1 NE** (no-Ethernet variant) | 1 | **Unallocated**, in hand 2026-09-11 — bought for whichever project is ready for it first. Upstream-Supported for micro-ROS, so it is also koala-bot's fallback if the 4.0 fails OQ-14 |
+
+The second motor pair and the two extra drivers came in one order; its date, supplier and
+price are not recorded, and so are the spare Teensy's. Whichever project takes an
+unallocated part records the allocation in its own BOM and updates this table.
+
 ### Configuring a servo — true for every STS project
 
 The bus is a **single-wire half-duplex TTL UART**, 3-pin (V+, GND, signal), 1 Mbaud by
@@ -121,9 +157,10 @@ required, not optional.
 
 **Adapters in hand (2026-09-08):** a **Waveshare Bus Servo Adapter (A) v1.1** — the
 "Motor Control Board" in the SO-ARM100 BOM, so it is the SO-ARM101 part — and a
-**Feetech FE-URT-2**. Two **FE-URT-1** are on order, one bundled with each STS3215 6-pack
-(`koala-bot/docs/sourcing.md`, purchased 2026-09-01, not yet arrived). Whether the STS3032M
-4-pack includes one is **unrecorded**. A further equivalent, if ever needed: the *Serial
+**Feetech FE-URT-2**. Those two are the family's only adapters: the RCmall STS3215 6-packs
+were listed with an **FE-URT-1** each but shipped **without** (koala-bot `test-log.md`,
+2026-09-12), and the STS3032M 4-pack ships passive 3-port connector boards and a link cable, not a
+USB adapter. Both bring-ups therefore share the two boards. A further equivalent, if ever needed: the *Serial
 Bus Servo Driver Board* (~€5, the part in the Open Duck Mini V2 BOM).
 
 | Adapter | USB | Servo power in | Servo ports | Notes |
@@ -191,7 +228,8 @@ SUBSYSTEM=="usb-serial", DRIVER=="ftdi_sio", ATTR{latency_timer}="1"
 ```
 
 (Sourced from the Open Duck Mini V2 runtime's Pi setup, which ships exactly this rule.
-**Which USB-serial chip the FE-URT-1 presents is unverified** — check on first plug-in.)
+Neither adapter in hand is FTDI — both are CH343 — so this applies only to a future board;
+check on first plug-in.)
 
 ---
 
