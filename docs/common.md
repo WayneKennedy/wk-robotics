@@ -488,6 +488,26 @@ width to misread. The brownout half still applies; the signal-side half does not
 **Nothing in this chain has a low-voltage cutoff.** Stop at ~10.5 V on a 3S (3.5 V/cell);
 the adapter's 9 V floor is ~3.0 V/cell and already deep enough to hurt the pack.
 
+### Bench power for servo robots — open
+
+**Raised 2026-09-12.** A bench needs 12 V that behaves like a battery — stiff under a 2 A step,
+no current-limit fold-back — but stays topped up from the mains. A plain brick sags or trips
+on stalls; a bare LiPo must never be charged under load. What exists off the shelf, from a
+first look (2026-09-12, specs partly unverified — check the port ratings before buying):
+
+| Class | Example | 12 V out | UPS / charge-while-supplying | Verdict for a 6-servo bench |
+|---|---|---|---|---|
+| Portable power station (LiFePO₄) | Bluetti AC70 768 Wh (~£419); EcoFlow River 3 Plus (~£219); EcoFlow Delta Pro 3 | Regulated DC "car" port, **typically 12 V / 10 A (120 W)**; Delta Pro 3 has a **12.6 V / 30 A Anderson** | Yes — AC70 states "UPS in 20 ms"; pass-through is the normal mode for this class | **Best fit.** Battery-fed regulated DC, mains-charged, and it powers the Pi and laptop too. Confirm the car-port voltage (some sit at 13.2–13.6 V; STS3215 limit is 14 V) and its continuous rating |
+| 12 V Li-ion pack with DC out | Talentcell YB1208300 (11.1 V nominal, 8.3 Ah, **6 A max**, 12.6 V/1.5 A charger) | 12 V barrel, 6 A | Pass-through is claimed for some Talentcell models; not verified per model | Marginal — 6 A is under the 10 A target; fine for one or two servos on a bench |
+| "Mini DC UPS" for routers / CCTV | many, 12 V 2–5 A | Low | Yes | Too small |
+| Automotive DC UPS | PowerStream DC-UPS-1212 (12 A pass-through, lead-acid, 0.8 A charge, ~$135) | 12 A | Yes, < 50 µs switch | Right current, wrong chemistry and needs a separate battery; not a desk unit |
+| Build: 3S pack + BMS + power-path charger | — | whatever the pack gives | Yes if the charger has a load-sharing path | Exactly what a power station is; only worth it as a robot-mounted design, not for the desk |
+
+A power station's DC port is a DC-DC converter fed from the battery, so it is battery DC in
+the sense that matters (no mains ripple, no fold-back on transients) without being raw cell
+voltage — which is better for the servos than a sagging pack. Which unit, and whether the
+car-port rating is honest at 10 A continuous, is open; nothing bought.
+
 ### GPIO lines float when their process dies
 
 Established on the hexapod, 2026-09-09, and true of any robot that drives a peripheral
