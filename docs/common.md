@@ -89,12 +89,13 @@ tolerances, one pool of spares, and tooling that transfers between projects.
 
 | Servo | Qty | Where | Source |
 |---|---|---|---|
-| Waveshare ST3215 12 V (Feetech STS3215 rebadge) | 2 | SO-ARM101, IDs 1–2 | Amazon, 2026-09-07 ([wk-soarm101 `servos.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/servos.md)) |
-| Feetech STS3215 12 V | 12 | koala-bot, twelve limb joints, no spare | RCmall, ordered 2026-09-01, arrived 2026-09-12 ([koala-bot `sourcing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/sourcing.md)) |
+| Waveshare ST3215 12 V (Feetech STS3215 rebadge), firmware 3.9 | 2 | SO-ARM101, IDs 1 and 6 | Amazon, 2026-09-07 ([wk-soarm101 `servos.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/servos.md)) |
+| Feetech STS3215 12 V, firmware 3.10 | 4 | SO-ARM101, IDs 2–5 (wk-soarm101 DEC-09) | RCmall via koala-bot, arrived 2026-09-12 ([koala-bot `sourcing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/sourcing.md)) |
+| Feetech STS3215 12 V, firmware 3.10 (four read; the eight assumed the same batch, unverified) | 8 | koala-bot, eight of twelve limb joints — **four short** | same order |
 | Feetech STS3032M 6 V | 4 | koala-bot, three neck + one spare | same order |
 
-SO-ARM101 still needs four more STS3215 with no source decided (wk-soarm101 OQ-01); the
-koala-bot twelve are fully allocated, so they are not that source.
+SO-ARM101 has its six. koala-bot must re-order at least four STS3215 before its limbs can
+all be fitted (koala-bot OQ-16).
 
 koala-bot's **knee is not a servo joint**: it is a wheel on a 12 V geared DC motor, and
 the V1 leg ends there. A knee servo is designed for and deferred
@@ -177,6 +178,19 @@ transmitted bytes** back on RX (verified 2026-09-09) — a bus scanner need not 
 model number **777**; LeRobot 0.6.1's `FeetechMotorsBus.setup_motor()` and
 `broadcast_ping()` work through the Waveshare board unmodified. `Present_Voltage` reads
 the rail in 0.1 V units and is the quickest proof that a servo is actually powered.
+
+**Mixed STS3215 firmware collides on a shared bus (verified 2026-09-12, SO-ARM101, six
+servos).** Units ship with firmware **3.9** (the 2026-09-07 Waveshare pair) or **3.10** (the
+RCmall Feetech packs). In a `sync_read` the servos answer in the order asked; a 3.10 unit
+starts its reply too early when the unit before it is a 3.9 unit that was not the first
+responder, and its header lands on the previous checksum byte — the host sees `Incorrect
+status packet`, and `broadcast_ping()` loses IDs. `Return_Delay_Time` does not help. LeRobot
+calls 3.10 the required version and documents the upgrade (Feetech FD on Windows, *Upgrade →
+Online*). Read `Firmware_Major_Version` / `Firmware_Minor_Version` at commissioning and record
+it; on a mixed bus, assign IDs so no 3.10 unit follows a non-first 3.9 unit in the read order
+— first and last are safe places for 3.9 units. Full diagnosis:
+[wk-soarm101 `test-log.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/test-log.md)
+2026-09-12; the upgrade is its OQ-10.
 
 **Home and travel limits are a separate, later step, and they live in the servo.** Setup
 writes ID and baud only. LeRobot's `calibrate()` (after assembly) writes **`Homing_Offset`**
