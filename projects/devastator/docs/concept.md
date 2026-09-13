@@ -21,7 +21,7 @@ how much they justify the work.
 
 1. **It is a mobile base for the SO-ARM101.** (Owner, 2026-09-07.) The
    [Standard Open Arm](https://github.com/TheRobotStudio/SO-ARM100) is
-   [already being printed](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/projects.md#so-arm101)
+   [already being printed](../../../docs/projects.md#so-arm101)
    as a family project and has no base. Arm on a driving chassis is **mobile
    manipulation** — the one capability neither the hexapod nor koala-bot is aimed at, and
    the reason this chassis was dug out rather than left in its box.
@@ -32,11 +32,11 @@ how much they justify the work.
 
 2. **It is the cheapest second consumer of the family's ROS 2 stack.** The hexapod's
    SLAM and Nav2 work is
-   [portable in principle and not in practice](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/ideas.md#a-shared-ros-2-package-across-robots).
+   [portable in principle and not in practice](../../../docs/ideas.md#a-shared-ros-2-package-across-robots).
    A second body that speaks the same contract is what turns that from an assertion
    into a test — and a tracked base is the easiest body Nav2 will ever drive.
 3. **It is the first node of a fleet.** The
-   [hive-mind direction](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/ideas.md#physical-ai-and-the-hive-mind)
+   [hive-mind direction](../../../docs/ideas.md#physical-ai-and-the-hive-mind)
    needs two bodies on one contract before any of its interesting problems — map
    merging, shared world model, graceful degradation — can even be posed. This robot
    plus the hexapod is the minimum viable fleet.
@@ -86,7 +86,7 @@ is **unrecorded**.
   complete, teleoperable robot with closed-loop wheel velocity and real odometry comes
   before a single camera is mounted. This directly inverts the failure mode above.
 - **The power budget is computed before parts are bought**, not discovered afterwards.
-  The family's [power-integrity rules](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#power-integrity)
+  The family's [power-integrity rules](../../../docs/common.md#power-integrity)
   were themselves banked from an earlier build stalling on the same class of problem.
 - **Modern and standard over bespoke.** micro-ROS rather than a hand-rolled serial
   protocol; the family's topic contract rather than a private vocabulary.

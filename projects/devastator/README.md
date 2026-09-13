@@ -1,4 +1,8 @@
-# wk-devastator 🛞🤖
+# Devastator 🛞🤖
+
+> A folder in [wk-robotics](../../README.md) since 2026-09-13. Formerly the repository
+> `wk-devastator`, now archived; its history is carried here. Family-wide facts and rules are
+> one level up; this folder holds only what is true of this project.
 
 **A tracked ROS 2 robot, resurrected from a stalled build.** The chassis is a
 DFRobot Devastator; everything above it is being replaced.
@@ -54,7 +58,7 @@ carries no perception at all.
 
 This robot is one of several. The index, and everything true of more than one of them —
 the printer, the compute pattern, the topic contract, micro-ROS — is in
-[wk-robotics](https://github.com/WayneKennedy/wk-robotics). Facts that belong there are
+[wk-robotics](../../README.md). Facts that belong there are
 linked, never copied.
 
 ## Licence

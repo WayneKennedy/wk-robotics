@@ -47,7 +47,7 @@ electronics, on a powered-wheelchair base.
   AI brain, and electronics lessons at humanoid scale.
 - **New use (2026-09-09, candidate):** its existing torso is the obvious mount if the
   SO-ARM101 pair is ever tried as humanoid shoulders — see
-  [wk-soarm101 OQ-08](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/open-questions.md).
+  [wk-soarm101 OQ-08](../projects/soarm101/docs/open-questions.md).
 
 ### A printed hexapod
 
@@ -274,7 +274,7 @@ fourth tier**; they are a placement choice inside the intent tier. See
 
 - **Share a world model, not sensor streams.** Raw depth from several robots will not
   cross a LAN — a constraint already met at single-robot scale on
-  [the tank](projects.md#wk-devastator). Each robot runs its own SLAM and perception; the
+  [the tank](projects.md#devastator). Each robot runs its own SLAM and perception; the
   core receives poses, semantic observations and map fragments. "Extending the area of
   awareness" is a **map-merge** problem, not a streaming one.
 - **Map merging is the hard part.** Each robot's `map` frame is arbitrary until something
@@ -310,7 +310,7 @@ training both, but the two roles have different demands and only one is hard:
 and there is currently one partly-working robot. So this direction is the *motivation* for
 [a shared ROS 2 package](#a-shared-ros-2-package-across-robots), which is argued down
 elsewhere on this page as premature — the argument changes if the fleet is the goal rather
-than a by-product. The cheapest second node is [the tank](projects.md#wk-devastator):
+than a by-product. The cheapest second node is [the tank](projects.md#devastator):
 already owned, and a differential-drive base is the easiest body Nav2 will ever drive.
 koala-bot and the duck are **capability** projects (balance, learned locomotion) rather
 than fleet projects, and do not shorten this path.
@@ -358,7 +358,7 @@ patterns — that every robot depends on rather than reimplements.
 - **Argument against:** two robots is a thin basis for an abstraction, and koala-bot's
   ROS 2 layer is not written yet. Premature.
 - **What would change this:** a third consumer. The
-  [Devastator tank](projects.md#wk-devastator) is the strongest candidate — already owned,
+  [Devastator tank](projects.md#devastator) is the strongest candidate — already owned,
   and a differential-drive base speaks `/cmd_vel` natively with no gait or balance loop in
   the way. A modified [Open Duck Mini V2](#open-duck-mini-v2) running koala-bot's reflex
   firmware would be another, at considerably more effort.
@@ -369,8 +369,8 @@ patterns — that every robot depends on rather than reimplements.
 
 ### LeRobot and learned manipulation
 
-The SO-ARM101 now has its own repo, and the question of what it is *for* lives there as
-[wk-soarm101 OQ-08](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/open-questions.md)
+The SO-ARM101 build has its own folder, `projects/soarm101/`, and the question of what it is *for* lives there as
+[wk-soarm101 OQ-08](../projects/soarm101/docs/open-questions.md)
 — LeRobot first (its DEC-08), then a two-arm handover, humanoid shoulders, or the tank's
 manipulator. Not restated here. What remains a *family* question is the one above under
 [Physical AI and the hive mind](#physical-ai-and-the-hive-mind): how a learned component

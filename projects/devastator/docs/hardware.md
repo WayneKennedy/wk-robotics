@@ -42,7 +42,7 @@ All four dimensions and the 6 V / 133 RPM gearbox marking were **measured 2026-0
 
 **The 6 V rating is the single most consequential fact about this platform.** The family
 standard is a 12 V rail from a 3S pack
-([common.md](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#actuators));
+([common.md](../../../docs/common.md#actuators));
 a **2S LiPo alone peaks at 8.4 V**, already above the 7.5 V ceiling. These motors cannot
 be fed directly from any pack the rest of the family uses. They are replaced — DEC-11.
 
@@ -84,7 +84,7 @@ Both are cheap to replace, and both are recorded here so the reason is not lost.
   [plausible but unconfirmed](concept.md#the-first-build-and-why-it-stopped) contributor
   to the original build disappointing.
 - **The Arduino Nano cannot run micro-ROS.** It is an 8-bit AVR;
-  [micro-ROS requires a 32-bit target](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#micro-ros-how-the-mcu-joins-the-graph).
+  [micro-ROS requires a 32-bit target](../../../docs/common.md#micro-ros-how-the-mcu-joins-the-graph).
   Joining the topic contract means replacing it.
 
 ## Constraints on any motor swap — resolved 2026-09-07

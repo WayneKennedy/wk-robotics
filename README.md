@@ -3,8 +3,9 @@
 **The table of contents for my robotics and physical-AI work, and the home for
 everything those projects have in common.**
 
-Each robot lives in its own repository (the aerial one in its fleet's). This one
-holds three things they cannot hold individually:
+Most robots live in their own repository (the aerial one in its fleet's); two small
+ones live here under [`projects/`](projects/). This repository holds three things the
+projects cannot hold individually:
 
 1. **The index** — what exists, what state it is in, where it lives (below).
 2. **The shared substrate** — the printer, the actuators, the compute pattern and
@@ -21,9 +22,9 @@ moves here and they link back.
 | Project | What it is | State | Repo |
 |---|---|---|---|
 | **koala-bot** | Self-balancing, knee-wheeled companion robot; first of a printable family | Design phase — CAD started, coupons printed; all V1 servos and drive hardware in hand, nothing assembled | [WayneKennedy/koala-bot](https://github.com/WayneKennedy/koala-bot) (public) |
-| **wk-devastator** | Tracked ROS 2 robot on a DFRobot Devastator chassis; resurrection of a stalled build | Design record only — nothing built; motor question gates the rest | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) (public) |
+| **Devastator** | Tracked ROS 2 robot on a DFRobot Devastator chassis; resurrection of a stalled build | Design record; motors on back order to end of October 2026, driver and MCU in hand, nothing built | [`projects/devastator/`](projects/devastator/README.md) (here; formerly `wk-devastator`) |
 | **wk-hexapod** | ROS 2 autonomous hexapod on Freenove Big Hexapod hardware | Native ROS 2 stack verified end to end on the bench (2026-09-09): SLAM maps, Nav2 active, exploration sends goals; first battery run pending | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) (public) |
-| **SO-ARM101** | Standard Open Arm — LeRobot-compatible manipulator, built from the upstream design in its 12 V variant | Assembled, calibrated, moving under script (2026-09-12); teleop and camera next | [WayneKennedy/wk-soarm101](https://github.com/WayneKennedy/wk-soarm101) (public) · upstream [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) |
+| **SO-ARM101** | Standard Open Arm — LeRobot-compatible manipulator, built from the upstream design in its 12 V variant | Assembled, calibrated, moving under script (2026-09-12); teleop and camera next | [`projects/soarm101/`](projects/soarm101/README.md) (here; formerly `wk-soarm101`) · upstream [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) |
 | **Holybro 10"** | Aerial robot candidate: a 10" multirotor bought to carry a Pi or Jetson wired to its flight controller — the one aircraft in the drone fleet that meets the family's robot criterion | Unknown; not yet recorded | [WayneKennedy/wk-drones](https://github.com/WayneKennedy/wk-drones) `aircraft/holybro-10/` (public) |
 | **3D printing** | Creality Ender-5 S1 on Klipper — the machine every printable part comes off | Commissioned and calibrated; in production use | [WayneKennedy/3d-printing](https://github.com/WayneKennedy/3d-printing) (private) |
 
@@ -70,5 +71,6 @@ history. Durable facts live in files, not in an assistant's private memory.
 
 ## Licence
 
-Documentation, licensed [CC BY-SA 4.0](LICENSE). Each project repo carries its own
-licensing; see [`docs/common.md`](docs/common.md#licensing) for the pattern they follow.
+The index and `docs/` are documentation, licensed [CC BY-SA 4.0](LICENSE). Each project,
+whether a sibling repo or a folder under `projects/`, carries its own licensing in its
+`LICENSING.md`; see [`docs/common.md`](docs/common.md#licensing) for the pattern.

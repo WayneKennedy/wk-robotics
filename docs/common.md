@@ -89,7 +89,7 @@ tolerances, one pool of spares, and tooling that transfers between projects.
 
 | Servo | Qty | Where | Source |
 |---|---|---|---|
-| Waveshare ST3215 12 V (Feetech STS3215 rebadge), firmware 3.10 (upgraded from 3.9, 2026-09-12) | 2 | SO-ARM101, IDs 1–2 | Amazon, 2026-09-07 ([wk-soarm101 `servos.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/servos.md)) |
+| Waveshare ST3215 12 V (Feetech STS3215 rebadge), firmware 3.10 (upgraded from 3.9, 2026-09-12) | 2 | SO-ARM101, IDs 1–2 | Amazon, 2026-09-07 ([wk-soarm101 `servos.md`](../projects/soarm101/docs/servos.md)) |
 | Feetech STS3215 12 V, firmware 3.10 | 4 | SO-ARM101, IDs 3–6 (wk-soarm101 DEC-09) | RCmall via koala-bot, arrived 2026-09-12 ([koala-bot `sourcing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/sourcing.md)) |
 | Feetech STS3215 12 V, firmware 3.10 (four read; the eight assumed the same batch, unverified) | 8 | koala-bot, eight of twelve limb joints — **four short** | same order |
 | Feetech STS3032M 6 V | 4 | koala-bot, three neck + one spare | same order |
@@ -200,7 +200,7 @@ WCH's **CH343SER** VCP driver — and FD defaults to **115200 baud; set 1 000 00
 *Search* or it lists nothing. After the upgrade every read order passed 30/30 and broadcast
 ping was complete. So: read `Firmware_Major_Version` / `Firmware_Minor_Version` at
 commissioning, record it, and upgrade any 3.9 unit before it joins a bus. Full record:
-[wk-soarm101 `test-log.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/test-log.md)
+[wk-soarm101 `test-log.md`](../projects/soarm101/docs/test-log.md)
 2026-09-12, DEC-11.
 
 **Three STS3215 behaviours that bit on 2026-09-12 (SO-ARM101, LeRobot 0.6.1):** writing
@@ -209,7 +209,7 @@ goal across power and sessions**, and LeRobot's `connect()` re-enables torque wi
 resetting it, so joints lurch toward stale goals — write `Goal_Position := Present_Position`
 before torque comes on; and LeRobot's `max_relative_target` clamps to *present ± step*, so
 it follows a moving joint rather than holding it — not a safety net. Record and evidence:
-[wk-soarm101 `servos.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/servos.md)
+[wk-soarm101 `servos.md`](../projects/soarm101/docs/servos.md)
 and its `test-log.md`. These apply to every STS bus in the family.
 
 **Home and travel limits are a separate, later step, and they live in the servo.** Setup
@@ -784,4 +784,6 @@ Source files carry an `SPDX-License-Identifier:` header. Full licence texts are 
 verbatim in the repo rather than linked. Vendored third-party CAD keeps its own licence in
 its own directory — SO-ARM100 reference CAD inside koala-bot is Apache-2.0.
 
-This repository is documentation only, so it is `CC-BY-SA-4.0` throughout.
+This repository's index and `docs/` are documentation and are `CC-BY-SA-4.0` (root
+`LICENSE`). Each folder under `projects/` is a project in its own right and carries the
+tri-licence in its own `LICENSING.md` and `LICENSES/`; the root licence does not cover it.

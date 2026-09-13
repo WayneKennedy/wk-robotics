@@ -1,6 +1,6 @@
 # Contributing
 
-wk-devastator is open source and contributions are welcome. It is at the design-record
+This project is open source and contributions are welcome; it lives in the wk-robotics repository under `projects/devastator/`. It is at the design-record
 stage; nothing is built (see [`docs/open-questions.md`](docs/open-questions.md)).
 
 - **Read first:** [`AGENTS.md`](AGENTS.md) (how this repo is organised) and

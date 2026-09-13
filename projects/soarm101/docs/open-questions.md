@@ -25,7 +25,7 @@ and not yet accepted. Do not build against one without the owner deciding.
 - **OQ-03 — The 12 V supply.** Upstream specifies a **12 V, 5 A+** brick for the 12 V
   follower. The family rule for servo robots is a stiff source — a **3S LiPo** with a fuse
   and bulk capacitance — because six STS3215 stall at 16 A in total
-  ([wk-robotics `common.md` → Power integrity](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#power-integrity)).
+  ([wk-robotics `common.md` → Power integrity](../../../docs/common.md#power-integrity)).
   A desk arm on a brick and an arm riding a robot on the robot's pack are different
   answers; both may be right at different times. What powered the bench on 2026-09-09 is
   **unrecorded**; on 2026-09-12 it was a 3S LiPo, not fully charged, 11.7–11.9 V at the
@@ -64,7 +64,7 @@ and not yet accepted. Do not build against one without the owner deciding.
   **Stated purpose, 2026-09-12 (owner): a surrogate for big industrial robots, where
   operating ranges are safety issues** — defining and enforcing a box of acceptable
   movement, and more generally geometry awareness that per-joint limits cannot give
-  ([wk-robotics `common.md` → Collision awareness](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#collision-awareness--open-family-wide)).
+  ([wk-robotics `common.md` → Collision awareness](../../../docs/common.md#collision-awareness--open-family-wide)).
   This sits alongside, not instead of, the candidate below.
 
   **Leading candidate, likely but not decided (owner, 2026-09-09): two followers
@@ -77,7 +77,7 @@ and not yet accepted. Do not build against one without the owner deciding.
   |---|---|
   | Two-arm robot type | LeRobot 0.6.1 `bi_so_follower` — left and right `SOFollowerConfig`, each on its own USB port, with shared top-level cameras; `bi_so_leader` for teleop |
   | Simulation | Upstream `Simulation/SO101/` — URDF and MuJoCo MJCF with a `scene.xml`, STS3215 motor parameters from Open Duck Mini, mid-range joint zeros matching LeRobot's calibration. Gripper not yet modelled as LeRobot's linear 0–100 joint |
-  | Training compute | The family GPU workstation ([wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#the-gpu-workstation)); no ML stack installed yet |
+  | Training compute | The family GPU workstation ([wk-robotics `common.md`](../../../docs/common.md#the-gpu-workstation)); no ML stack installed yet |
 
   **Further candidate (owner, 2026-09-09): two followers as the actual shoulders of a
   humanoid torso.** Prior art and family assets, none committed to:
@@ -86,7 +86,7 @@ and not yet accepted. Do not build against one without the owner deciding.
     mobile base, with wrist cameras and a 2-DoF neck ([docs](https://xlerobot.readthedocs.io/en/latest/index.html)).
     Proof that the arm works as a shoulder-mounted pair, and a ready BOM for it.
   - **The family's ~80 %-built InMoov** — head, neck and shoulders already exist
-    ([wk-robotics `ideas.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/ideas.md#inmoov-resurrection)),
+    ([wk-robotics `ideas.md`](../../../docs/ideas.md#inmoov-resurrection)),
     shelved. A candidate torso, if the InMoov shoulder interface can carry the arm's mass
     (OQ-04) and its 12 V bus.
   - **koala-bot** has arms of its own design — 3 DoF each, shoulder pitch + roll + elbow,
@@ -118,7 +118,7 @@ and not yet accepted. Do not build against one without the owner deciding.
   | Option | How | Fits |
   |---|---|---|
   | **PC over USB** | LeRobot talks to the Waveshare board directly; no MCU | The desk / LeRobot purpose. Upstream's only supported path |
-  | **Own reflex MCU** (Teensy, RP2040/Pico, ESP32) | MCU on the board's UART header (jumpers to channel A) runs the bus; joins the family topic contract via micro-ROS | The family two-tier rule ([wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#compute-the-two-tier-split)); a standalone robot arm |
+  | **Own reflex MCU** (Teensy, RP2040/Pico, ESP32) | MCU on the board's UART header (jumpers to channel A) runs the bus; joins the family topic contract via micro-ROS | The family two-tier rule ([wk-robotics `common.md`](../../../docs/common.md#compute-the-two-tier-split)); a standalone robot arm |
   | **The tank's MCU** | wk-devastator's reflex tier (Teensy 4.1, its DEC-10) drives the arm bus as more joints; the arm has no compute of its own | The mounted purpose. Cheapest, but the arm then cannot run without the tank |
 
   **DEC-08 settles the near term:** the PC-over-USB path is used for the whole LeRobot

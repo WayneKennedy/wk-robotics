@@ -4,7 +4,7 @@ How the compute is split, how the tiers talk, and what the power has to supply.
 
 ## Three tiers
 
-The family's [two-tier split](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#compute-the-two-tier-split)
+The family's [two-tier split](../../../docs/common.md#compute-the-two-tier-split)
 plus a coordination tier above it. Each tier owns a latency band.
 
 | Tier | Where | Band | Owns |
@@ -24,7 +24,7 @@ plus a coordination tier above it. Each tier owns a latency band.
 
 This is not defensive over-engineering. The intended coordinator is a **desktop
 workstation** — see the family's
-[GPU workstation](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#the-gpu-workstation) —
+[GPU workstation](../../../docs/common.md#the-gpu-workstation) —
 which will be powered off, asleep or busy a large fraction of the time. The
 architecture is chosen so that this is a normal operating condition rather than an
 outage.
@@ -43,10 +43,10 @@ chosen. See DEC-11.
 
 ## micro-ROS, and how the tiers connect
 
-The MCU runs [micro-ROS](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#micro-ros-how-the-mcu-joins-the-graph),
+The MCU runs [micro-ROS](../../../docs/common.md#micro-ros-how-the-mcu-joins-the-graph),
 so it is a genuine ROS 2 node rather than something behind a translation layer. It
 publishes and subscribes on the family
-[topic contract](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#the-topic-contract):
+[topic contract](../../../docs/common.md#the-topic-contract):
 
 | Direction | Topic | Notes |
 |---|---|---|
@@ -87,7 +87,7 @@ The first build failed here, so this is a design input rather than something dis
 during bring-up. See [`concept.md`](concept.md#the-first-build-and-why-it-stopped) for
 the original numbers.
 
-The family's [power-integrity rules](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#power-integrity)
+The family's [power-integrity rules](../../../docs/common.md#power-integrity)
 apply in full and are not restated here. The project-specific requirements:
 
 - **A computed power budget precedes any purchase.** Motors at realistic duty, not
@@ -108,7 +108,7 @@ inherited from it.
 
 Six STS3215 on the arm bus draw ~5–8 A in realistic motion and **16.2 A** all-stalled —
 per-servo figures and the sizing rule are family facts and live
-[in wk-robotics](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#actuators).
+[in wk-robotics](../../../docs/common.md#actuators).
 At 12 V that fault case alone is **~195 W**, on top of the drive. Three consequences, all
 of which bite before a pack is bought:
 
@@ -119,7 +119,7 @@ of which bite before a pack is bought:
   the Pi and MCU; the arm bus wants its own bulk capacitance at the adapter's screw
   terminals for the same reason.
 - **The arm's servo bus is fed from the pack directly.** The
-  [Waveshare Bus Servo Adapter (A)](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#configuring-a-servo--true-for-every-sts-project)
+  [Waveshare Bus Servo Adapter (A)](../../../docs/common.md#configuring-a-servo--true-for-every-sts-project)
   is a pass-through with no regulation or protection of its own, so pack voltage *is*
   servo voltage and pack sag *is* lost torque.
 

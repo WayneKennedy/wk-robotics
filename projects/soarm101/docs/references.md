@@ -19,7 +19,7 @@
 
 ## Servos and bus
 
-- [wk-robotics `common.md` → Actuators](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#actuators)
+- [wk-robotics `common.md` → Actuators](../../../docs/common.md#actuators)
   — STS3215 electrical figures, adapter table, the configure-by-script procedure, power
   integrity. **The canonical family source; not restated here.**
 - [Feetech software](https://www.feetechrc.com/software.html) — the FD debug GUI, for
@@ -29,10 +29,10 @@
 
 ## Family
 
-- [wk-robotics](https://github.com/WayneKennedy/wk-robotics) — the index and everything
+- [wk-robotics](../../../README.md) — the index and everything
   shared.
 - [koala-bot](https://github.com/WayneKennedy/koala-bot) — same servo family; vendors the
   upstream CAD as reference; its `docs/soarm-joint-pattern.md` measures the SO-101 joint
   interfaces from upstream STEP.
-- [wk-devastator](https://github.com/WayneKennedy/wk-devastator) — intended mobile base;
+- [wk-devastator](../../../projects/devastator/README.md) — intended mobile base;
   OQ-12 there is the tipping question.

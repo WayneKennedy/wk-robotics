@@ -22,7 +22,7 @@ collects VAT plus a ~£8–12 handling fee.
 was koala-bot's single board, borrowed on 2026-09-07; koala-bot's later order delivered
 two more, so this robot now has one of its own and the loan is dissolved (DEC-13,
 amended; koala-bot DEC-51). Family drive-hardware holdings are tabulated in
-[wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#drive-motors-drivers-and-mcus-in-hand). koala-bot's Teensy 4.0 was never borrowed and is
+[wk-robotics `common.md`](../../../docs/common.md#drive-motors-drivers-and-mcus-in-hand). koala-bot's Teensy 4.0 was never borrowed and is
 moot regardless — DEC-10 buys a 4.1, and one has been ordered.
 
 ## Needed, once the gating questions close
@@ -43,5 +43,5 @@ power budget** (DEC-07) — purchases follow a budget rather than produce one.
 ## The reference the family already carries
 
 Servo, printer and power findings that apply here are in
-[wk-robotics/docs/common.md](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md).
+[wk-robotics/docs/common.md](../../../docs/common.md).
 They are not repeated here — link to them.

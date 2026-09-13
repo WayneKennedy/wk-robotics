@@ -1,13 +1,6 @@
 # Claude Code
 
-The instructions for this repository are provider-neutral and live in `AGENTS.md`.
-Read it in full — it is the whole onboarding.
+Project onboarding is provider-neutral and lives in `AGENTS.md` here; the family rules
+and the Claude-specific notes are in the repository root's `CLAUDE.md` and `AGENTS.md`.
 
 @AGENTS.md
-
-## Claude-specific
-
-- Claude's auto-memory holds **pointers only** — never a project fact, measurement or
-  decision. See *Harness independence* in the family
-  [`AGENTS.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/AGENTS.md).
-- Prefer prose and a led recommendation over an `AskUserQuestion` poll.

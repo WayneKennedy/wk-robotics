@@ -26,7 +26,7 @@ that was made. Recommendations offered and not accepted are open questions.
 - **DEC-04 — LeRobot is the path for commissioning and calibration, and every servo write
   is scripted and logged.** (What drives the bus at *runtime* is open — OQ-09.) Follows
   from DEC-01 and the family rule
-  ([wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#configuring-a-servo--true-for-every-sts-project)).
+  ([wk-robotics `common.md`](../../../docs/common.md#configuring-a-servo--true-for-every-sts-project)).
   Feetech's GUI works but leaves no record; a build that cannot say which servo is ID 3 is
   not a build record. Applied 2026-09-09 for the first two servos ([`servos.md`](servos.md)).
 
@@ -84,7 +84,7 @@ that was made. Recommendations offered and not accepted are open questions.
   the family's reflex-tier proving ground.** (Owner, 2026-09-12.) The LeRobot loop is run
   first and in full "for completeness" (DEC-08 stands), then the servo bus moves from the
   PC to a **Teensy 4.1** — the family's reflex-tier MCU pattern
-  ([wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#compute-the-two-tier-split))
+  ([wk-robotics `common.md`](../../../docs/common.md#compute-the-two-tier-split))
   — "to develop and prove our approach for other bots". This picks the *own reflex MCU* row
   of OQ-09 and adds a purpose to OQ-08: the arm is the testbed where the MCU-drives-the-bus
   approach is developed before koala-bot and wk-devastator depend on it. Not decided:

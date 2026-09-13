@@ -2,7 +2,8 @@
 
 Per-project detail. Each section says what the project is, what it runs on, where its
 documentation starts, and what it shares with the others. The authoritative record for
-any one project is that project's own repository — this page is a pointer, and is
+any one project is that project's own repository or `projects/` folder — this page is a
+pointer, and is
 accurate as of **2026-09-13**.
 
 ---
@@ -64,7 +65,7 @@ design costs; a reflex-tier retrofit is an open question there, not a plan.
 
 ---
 
-## wk-devastator
+## Devastator
 
 **A tracked, skid-steer ROS 2 robot on a purchased DFRobot Devastator chassis** — bought,
 part-built, abandoned, and now being resurrected. The chassis is kept; the electronics,
@@ -72,7 +73,7 @@ compute and software are all replaced.
 
 | | |
 |---|---|
-| Repo | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) — public |
+| Where | [`projects/devastator/`](../projects/devastator/README.md) in this repo since 2026-09-13; formerly the `wk-devastator` repo, archived |
 | State | Design record; milestone 0 (measure-and-decide) in progress. Motors and Teensy 4.1 ordered; driver in hand — its own since 2026-09-11, no longer borrowed from koala-bot (DEC-13, amended). **Motors on back order, due end of October 2026** (revised 2026-09-09) — milestone 1 waits on them |
 | Chassis | DFRobot **ROB0128**, aluminium, 225 × 220 × 108 mm, 1.3 kg, 3 kg payload |
 | Actuation | 2 × Pololu 25D 47:1 12 V gearmotors with 48 CPR encoders (DEC-11), replacing the kit's 6 V encoderless originals |
@@ -93,7 +94,7 @@ platform, so [the STS substrate](common.md#actuators) does not apply.
 **The useful history:** the first build stalled on battery limitations and over-ambitious
 scope — two depth cameras and a Pi 4 mounted before the drivetrain worked, through an
 L298N losing ~2 V of a 6 V rail. It was under-powered by design. The project's rules and
-its perception-last roadmap follow from that, and are recorded in its own repo.
+its perception-last roadmap follow from that, and are recorded in its folder.
 
 ---
 
@@ -101,12 +102,12 @@ its perception-last roadmap follow from that, and are recorded in its own repo.
 
 **A Standard Open Arm** — the LeRobot-compatible low-cost manipulator designed by The
 Robot Studio with Hugging Face, built here in its 12 V variant from the upstream design.
-No fork: upstream is cloned read-only as the design authority, and **the build record has
-its own repo** since 2026-09-09.
+No fork: upstream is cloned read-only as the design authority. The build record was its
+own repo, `wk-soarm101`, from 2026-09-09 to 2026-09-13 and is now a folder here.
 
 | | |
 |---|---|
-| Repo | [WayneKennedy/wk-soarm101](https://github.com/WayneKennedy/wk-soarm101) — public, build record |
+| Where | [`projects/soarm101/`](../projects/soarm101/README.md) in this repo — the build record; `wk-soarm101` archived |
 | Upstream | [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) — public, Apache-2.0, cloned not forked |
 | State | Parts printed (11 of 11 at least once; `Wrist_Roll_Pitch` without a usable copy yet), assembled, calibrated and moving under script 2026-09-12 (milestones 1–3 done); teleoperation, camera and the 12 V supply decision still open |
 | Actuation | Feetech STS3215 **12 V** bus servos on a Waveshare Bus Servo Adapter (A) |

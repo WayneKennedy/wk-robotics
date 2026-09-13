@@ -47,8 +47,9 @@ This rule holds across every project in the family, not just this repository.
 ## What this repository is
 
 **The table of contents for a set of robotics and physical-AI projects, and the home for
-what they have in common.** Each robot lives in its own repository; this one exists
-because some things are true of several of them at once.
+what they have in common.** Most robots live in their own repository; two small ones,
+the Devastator and the SO-ARM101 build, live here under `projects/`. This repository
+exists because some things are true of several of them at once.
 
 Three jobs, and nothing else:
 
@@ -67,7 +68,7 @@ Three jobs, and nothing else:
 
 | The fact is… | It lives… |
 |---|---|
-| True of *one* project | In that project's repo. Link to it from here; never copy it |
+| True of *one* project | In that project's repo, or its `projects/<name>/` folder here. Link to it from the index; never copy it |
 | True of *several* projects | Here, in `docs/common.md`. The project repos link back |
 | Not yet true of anything | In `docs/ideas.md`, labelled as unbuilt |
 | In flight, spanning projects | In `docs/status.md`, until it resolves or finds a home |
@@ -77,7 +78,8 @@ idea earns a repo, move it out of `ideas.md` and into the index.
 
 ### What does not belong here
 
-- **Operational detail of a single machine or robot.** That is the project repo's job.
+- **Operational detail of a single machine or robot** in the index or `docs/`. That is the
+  project repo's, or project folder's, job.
 - **Credentials, host names, network addresses, tailnet or LAN identifiers**, or anything
   else that is only in a private repo because it is private. **This repository is
   public.** Not every repo it indexes is — check before quoting. `3d-printing` is
@@ -102,29 +104,30 @@ idea earns a repo, move it out of `ideas.md` and into the index.
 
 ## The projects and where they are
 
-Full detail is in [`docs/projects.md`](docs/projects.md). Locally, sibling repos are
-checked out alongside this one:
+Full detail is in [`docs/projects.md`](docs/projects.md). Two projects are folders here;
+the rest are sibling repos checked out alongside this one:
 
 | Project | Path | Repo |
 |---|---|---|
 | koala-bot | `../koala-bot` | [WayneKennedy/koala-bot](https://github.com/WayneKennedy/koala-bot) — public |
-| SO-ARM101 (build record) | `../wk-soarm101` | [WayneKennedy/wk-soarm101](https://github.com/WayneKennedy/wk-soarm101) — public |
+| SO-ARM101 (build record) | [`projects/soarm101/`](projects/soarm101/AGENTS.md) | In this repo since 2026-09-13; `wk-soarm101` archived |
 | SO-ARM101 (design) | `../SO-ARM100` | [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) — upstream clone, read-only |
 | 3D printing | `../3d-printing` | [WayneKennedy/3d-printing](https://github.com/WayneKennedy/3d-printing) — private |
-| wk-devastator | `../wk-devastator` | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) — public |
+| Devastator | [`projects/devastator/`](projects/devastator/AGENTS.md) | In this repo since 2026-09-13; `wk-devastator` archived |
 | wk-hexapod | `../wk-hexapod` | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |
 | wk-drones | `../wk-drones` | [WayneKennedy/wk-drones](https://github.com/WayneKennedy/wk-drones) — public, the drone fleet; only its Holybro 10" is a robot |
 | Freenove hexapod (vendor) | `../freenove-hexapod` | [Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi](https://github.com/Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi) — upstream, sparse clone, read-only; recipe in wk-hexapod `docs/operations.md` |
 
-Read those repos directly rather than re-deriving their state from this one. Each carries
-its own `AGENTS.md`; this page does not override it.
+Read those repos and folders directly rather than re-deriving their state from this
+index. Each carries its own `AGENTS.md` with what is specific to it; this page is the
+family layer above them, and a project's file does not restate it.
 
 ## Sessions
 
 This repository doubles as the home for AI sessions that span more than one project — a
 design discussion touching both the arm and the printer, say, or an idea that does not
-belong to any existing robot yet. Work that belongs to a single project should be done in
-that project's repo instead.
+belong to any existing robot yet. Work that belongs to a single project is done in that
+project's repo or `projects/` folder, against that project's own `AGENTS.md`.
 
 **Leave the repository complete.** A session ends by writing what it established into a
 file — the index, `docs/common.md`, `docs/ideas.md`, or `docs/status.md` for anything

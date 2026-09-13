@@ -1,22 +1,13 @@
-# wk-devastator — agent / contributor onboarding
+# Devastator — agent / contributor onboarding
 
-**Read this first.** It is the entry point for any AI assistant or human working in
-this repository, and it is written to be complete on a first read with no prior
-context. It is **provider-neutral**: `CLAUDE.md` and `GEMINI.md` do nothing but
-point here.
+**Read this first, after the family's [`AGENTS.md`](../../AGENTS.md)** two levels up: the
+4Cs, harness independence, the placement rule and the working conventions are defined
+there once and apply here in full. This file holds only what is true of this project.
+It is provider-neutral; `CLAUDE.md` and `GEMINI.md` here do nothing but point at it.
 
-## The 4Cs — the standard every artefact meets
-
-Every artefact — docs, source, CAD, commit messages — must be:
-
-1. **Correct** — fact-based. No speculation unless labelled as such. "Unknown" and
-   "unverified" are valid answers; confident guesses are not.
-2. **Complete** — nothing essential missing.
-3. **Coherent** — everything fits together; no contradictions.
-4. **Concise** — nothing superfluous.
-
-All four hold at once: completeness never excuses bloat; brevity never excuses gaps;
-and none of the other three count if the content is wrong.
+**A folder in wk-robotics since 2026-09-13.** It was its own repository,
+[`wk-devastator`](https://github.com/WayneKennedy/wk-devastator), from its start until then; that repo is
+archived and its history is carried here unchanged.
 
 ## What this project is
 
@@ -47,30 +38,21 @@ documented as *as-found*, not as a design. Do not read
 - [`docs/test-log.md`](docs/test-log.md) — what was actually measured, including
   "no change needed" results.
 
-## This repo does not stand alone in one respect
+## Placement
 
-Facts true of **more than one** robot live in
-[wk-robotics](https://github.com/WayneKennedy/wk-robotics) — the printer and its
-profiles, the compute pattern, the topic contract, micro-ROS, power integrity, the
-GPU workstation, licensing. **Link to them; never copy them.** A fact copied here
-will drift. Facts true of *this* robot alone live here and nowhere else.
+Facts true of **more than one** robot live one level up in
+[`docs/common.md`](../../docs/common.md) — the printer and its profiles, the compute
+pattern, the topic contract, micro-ROS, power integrity, the GPU workstation, licensing.
+**Link to them; never copy them.** Facts true of *this* robot alone live in this folder
+and nowhere else.
 
-## Working conventions
+## Conventions specific to this project
 
-- **No project fact lives only in chat.** Record durable decisions in `decisions.md`;
-  put anything unresolved in `open-questions.md`. Move items between them as they
-  resolve.
-- **Distinguish decided from open.** `decisions.md` is committed; `open-questions.md`
-  is still debated. Never state an open question as settled. In particular, several
-  entries there are *recommendations made to the owner and not yet accepted* — they
-  are labelled as such and must not be promoted without a decision.
-- **Verified beats plausible.** Measured numbers carry the date and the conditions
-  they were measured under. An unverified figure is labelled as one.
-- **Docs are written AI-first** — dense, factual, cross-referenced, greppable, on the
-  assumption an AI assistant is the primary reader.
-- **This repository is public.** No credentials, host names, network addresses or
-  overlay-network identifiers. Capabilities may be described; the machines that
-  provide them may not be named.
+- Several entries in `docs/open-questions.md` are *recommendations made to the owner
+  and not yet accepted*. They are labelled as such and must not be promoted to
+  `docs/decisions.md` without a decision.
+- Capabilities of the machines involved may be described; the machines may not be
+  named (the family's public-repo rule).
 
 ## The rules this project is built to obey
 

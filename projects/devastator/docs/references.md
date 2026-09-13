@@ -31,7 +31,7 @@
 
 ## Family
 
-- [wk-robotics](https://github.com/WayneKennedy/wk-robotics) — the index, and everything
+- [wk-robotics](../../../README.md) — the index, and everything
   true of more than one robot.
 - [wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — the SLAM, Nav2 and
   RealSense work this project is intended to reuse. **The most directly relevant

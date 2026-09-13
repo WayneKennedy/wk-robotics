@@ -18,12 +18,12 @@ not accepted are open questions, not decisions**, and are marked as such there.
 
 - **DEC-02 — Target ROS 2, with the reflex tier on a 32-bit MCU running micro-ROS.**
   (Owner, 2026-09-07.) The robot joins the family
-  [topic contract](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#the-topic-contract)
+  [topic contract](../../../docs/common.md#the-topic-contract)
   rather than carrying a private protocol. Which board runs it is DEC-10.
 
 - **DEC-03 — The fitted Arduino Nano and L298N are retired.** Follows necessarily from
   DEC-02 and from the family's own sourcing rules: the Nano is an 8-bit AVR and
-  [micro-ROS requires a 32-bit target](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#micro-ros-how-the-mcu-joins-the-graph),
+  [micro-ROS requires a 32-bit target](../../../docs/common.md#micro-ros-how-the-mcu-joins-the-graph),
   and the L298N is the driver koala-bot explicitly rejected for its ~2 V drop. What
   replaces the driver is DEC-13.
 
@@ -61,7 +61,7 @@ not accepted are open questions, not decisions**, and are marked as such there.
 - **DEC-10 — The MCU is a Teensy 4.1.** (Owner, 2026-09-07.) Upstream lists the **4.1 as
   Supported** and the **4.0 as "Not tested"** — the board table and the checked date are a
   family fact and live
-  [in wk-robotics](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#micro-ros-how-the-mcu-joins-the-graph).
+  [in wk-robotics](../../../docs/common.md#micro-ros-how-the-mcu-joins-the-graph).
   Two things closed this together. **This robot must buy an MCU regardless:** koala-bot's
   Teensy 4.0 is not spare — qty 1 in its confirmed order, purchased 2026-09-01
   (`koala-bot/docs/sourcing.md`). And **the owner will not buy a second untested board**:
@@ -97,7 +97,7 @@ not accepted are open questions, not decisions**, and are marked as such there.
 
 - **DEC-12 — The rail is 12 V from a 3S LiPo.** Follows necessarily from DEC-11 and from
   the arm (OQ-12): the motors and the SO-101's STS3215 servos are both 12 V parts, and 3S
-  is [the family ceiling for the STS3215](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#actuators)
+  is [the family ceiling for the STS3215](../../../docs/common.md#actuators)
   — 12.6 V full, inside the servos' 14 V limit where 4S is not. This **closes OQ-08**:
   with no 6 V motor rail there is nothing for the as-found DC-DC converter to do, so it is
   discarded rather than identified. Capacity, fuse rating and the logic-rail regulator
@@ -121,4 +121,4 @@ not accepted are open questions, not decisions**, and are marked as such there.
   V1 delivered two more TB9051FTGs (koala-bot DEC-51). One is this robot's outright: the
   loan is dissolved, nothing goes back, and the one-board-two-robots constraint above no
   longer exists. koala-bot closed its "buy a second?" question (OQ-15) the same day.
-  Family holdings are tabulated in [wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#drive-motors-drivers-and-mcus-in-hand).
+  Family holdings are tabulated in [wk-robotics `common.md`](../../../docs/common.md#drive-motors-drivers-and-mcus-in-hand).

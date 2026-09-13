@@ -14,7 +14,7 @@ assembled per upstream's guide (DEC-01).
 The one variant choice is the **12 V servo** (DEC-02). Upstream's standard follower uses
 7.4 V STS3215s (16.5 kg·cm); this build uses the 12 V ones (~30 kg·cm), which upstream
 offers as the more powerful option and which the family already standardises on
-([wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#actuators)).
+([wk-robotics `common.md`](../../../docs/common.md#actuators)).
 Consequence: a 12 V rail, not the 5 V supply in upstream's default BOM.
 
 ## What it is for
@@ -27,7 +27,7 @@ anything else, so the arm is understood as intended before it is repurposed. Wha
 
 - **A LeRobot arm** — imitation learning end to end on the platform the design is made
   for. Needs a leader or substitute (OQ-02) and a desk.
-- **The manipulator on [wk-devastator](https://github.com/WayneKennedy/wk-devastator)**,
+- **The manipulator on [wk-devastator](../../../projects/devastator/README.md)**,
   driven by whatever drives the tank. Needs that robot's OQ-12 to close and an
   interface (OQ-06).
 - **Both**, at different times — a desk arm that is occasionally mounted.
@@ -59,7 +59,7 @@ it is designed here under the hardware licence and, if generally useful, offered
 | Fact class | Lives in |
 |---|---|
 | The design | upstream `SO-ARM100` |
-| STS3215 electrical, bus adapters, how to configure a servo, power integrity | [wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md) |
+| STS3215 electrical, bus adapters, how to configure a servo, power integrity | [wk-robotics `common.md`](../../../docs/common.md) |
 | Print jobs, slicer profiles, machine state | the family's private `3d-printing` repo |
 | Which parts exist and are usable, servo IDs, decisions, measurements | **here** |
-| The mobile base and whether it can carry the arm | [wk-devastator](https://github.com/WayneKennedy/wk-devastator) |
+| The mobile base and whether it can carry the arm | [wk-devastator](../../../projects/devastator/README.md) |

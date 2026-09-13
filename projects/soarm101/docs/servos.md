@@ -3,7 +3,7 @@
 **The servo map for this arm** — which physical servo carries which ID and joint, how each
 was set, and what calibration will add. Every write to a servo is recorded here and in
 [`test-log.md`](test-log.md). The procedure and the adapter facts are family knowledge:
-[wk-robotics `common.md` → Configuring a servo](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#configuring-a-servo--true-for-every-sts-project).
+[wk-robotics `common.md` → Configuring a servo](../../../docs/common.md#configuring-a-servo--true-for-every-sts-project).
 
 ## The SO-101 follower map
 
@@ -30,7 +30,7 @@ the toolchain. A and B are Waveshare-branded, C–F Feetech-branded; same part (
 1/345). **All six run firmware 3.10** — A and B shipped with 3.9 and were upgraded on
 2026-09-12 because mixed 3.9/3.10 firmware collides on a shared bus (DEC-11; the diagnosis
 and the upgrade are in [`test-log.md`](test-log.md); the family rule is in
-[wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#configuring-a-servo--true-for-every-sts-project)).
+[wk-robotics `common.md`](../../../docs/common.md#configuring-a-servo--true-for-every-sts-project)).
 Any servo joining this bus later is brought to 3.10 first.
 
 ## How an ID is set here

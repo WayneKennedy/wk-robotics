@@ -1,22 +1,13 @@
-# wk-soarm101 — agent / contributor onboarding
+# SO-ARM101 build — agent / contributor onboarding
 
-**Read this first.** It is the entry point for any AI assistant or human working in
-this repository, and it is written to be complete on a first read with no prior
-context. It is **provider-neutral**: `CLAUDE.md` and `GEMINI.md` do nothing but
-point here.
+**Read this first, after the family's [`AGENTS.md`](../../AGENTS.md)** two levels up: the
+4Cs, harness independence, the placement rule and the working conventions are defined
+there once and apply here in full. This file holds only what is true of this project.
+It is provider-neutral; `CLAUDE.md` and `GEMINI.md` here do nothing but point at it.
 
-## The 4Cs — the standard every artefact meets
-
-Every artefact — docs, source, CAD, commit messages — must be:
-
-1. **Correct** — fact-based. No speculation unless labelled as such. "Unknown" and
-   "unverified" are valid answers; confident guesses are not.
-2. **Complete** — nothing essential missing.
-3. **Coherent** — everything fits together; no contradictions.
-4. **Concise** — nothing superfluous.
-
-All four hold at once: completeness never excuses bloat; brevity never excuses gaps;
-and none of the other three count if the content is wrong.
+**A folder in wk-robotics since 2026-09-13.** It was its own repository,
+[`wk-soarm101`](https://github.com/WayneKennedy/wk-soarm101), from its start until then; that repo is
+archived and its history is carried here unchanged.
 
 ## What this project is
 
@@ -50,42 +41,33 @@ them here. This repo records where *this* build departs from or instantiates the
 - [`docs/test-log.md`](docs/test-log.md) — what was actually measured, dated.
 - `software/` — any host-side scripts this build needs beyond LeRobot. Empty so far.
 
-## This repo does not stand alone in one respect
+## Placement
 
-Facts true of **more than one** robot live in
-[wk-robotics](https://github.com/WayneKennedy/wk-robotics) — the printer and its
-profiles, the **STS3215 servo family and how to configure one**, the bus adapters, power
-integrity, licensing. **Link to them; never copy them.** A fact copied here will drift.
-Facts true of *this arm* alone live here and nowhere else.
+Facts true of **more than one** robot live one level up in
+[`docs/common.md`](../../docs/common.md) — the printer and its profiles, the **STS3215
+servo family and how to configure one**, the bus adapters, power integrity, licensing.
+**Link to them; never copy them.** Facts true of *this arm* alone live in this folder and
+nowhere else.
 
 Two neighbours hold facts that touch this build:
 
 - [koala-bot](https://github.com/WayneKennedy/koala-bot) shares the servo family and
   vendors the upstream CAD as reference. Its two Amazon test-fit servos became this
   arm's first two joints ([`docs/servos.md`](docs/servos.md)).
-- [wk-devastator](https://github.com/WayneKennedy/wk-devastator) is the intended
+- [Devastator](../devastator/README.md) is the intended
   mobile base. Whether it can carry the arm is its OQ-12 and needs **this arm's real
   mass** — see [`docs/open-questions.md`](docs/open-questions.md).
 
 The print jobs themselves are in the family's private `3d-printing` repo. Their
 *results* — which parts exist and whether they are usable — are recorded here.
 
-## Working conventions
+## Conventions specific to this project
 
-- **No project fact lives only in chat.** Record durable decisions in `decisions.md`;
-  put anything unresolved in `open-questions.md`. Move items between them as they
-  resolve.
-- **Distinguish decided from open.** Never state an open question as settled.
-  Recommendations offered to the owner and not yet accepted are open questions.
-- **Verified beats plausible.** Measured numbers carry the date and the conditions
-  they were measured under. An unverified figure is labelled as one.
 - **Every servo write is logged.** IDs and calibration are set by script, never by a
   GUI, and each write lands in [`docs/servos.md`](docs/servos.md) and
   [`docs/test-log.md`](docs/test-log.md). Label the servo physically at the same time.
-- **Docs are written AI-first** — dense, factual, cross-referenced, greppable.
-- **This repository is public.** No credentials, host names, network addresses or
-  overlay-network identifiers. Capabilities may be described; the machines that
-  provide them may not be named.
+- Recommendations offered to the owner and not yet accepted are open questions, not
+  decisions.
 
 ## Status
 

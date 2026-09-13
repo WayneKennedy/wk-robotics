@@ -74,27 +74,18 @@ wiring and cable reach, then validate NVMe cold boot plus concurrent inference/s
 operation. Select target workloads to assess the Jetson memory need.
 No architecture change decided.
 
-### Repository consolidation — open
-
-Raised 2026-09-13 in a critique of the estate: `wk-devastator` (docs only, 8 commits) and
-`wk-soarm101` (a build record) may be more coherent as `projects/<name>/` folders in this
-repo, with history carried over by `git subtree`. `koala-bot` (OSS, own licensing),
-`wk-hexapod` (pulled onto its Pi; a monorepo would drag everything with it),
-`3d-printing` (private) and `wk-drones` (mostly not robots, own artefact class) stay
-peers regardless. **Not decided.** If done: archive the merged repos with a pointer
-README, because GitHub redirects renamed repos but not merged ones. Independent of the
-decision, the family rules are restated in each project's `AGENTS.md` and will drift;
-the fix is a one-line link to this repo's `AGENTS.md` in each.
-
 ### Clones on the GPU workstation are stale — checked 2026-09-13
 
 - `3d-printing` there is on a pre-rewrite history: no common ancestor with origin, and its
   tree matches origin's just before the commits that redacted network and personal details.
   Nothing unpushed; but the old history still carries what was redacted. Re-clone rather
   than pull.
-- `koala-bot` there has 31 modified files uncommitted (about 2,000 lines changed) and is
-  one commit behind origin. Not looked at; not touched. Reconcile before koala-bot work
-  on either machine.
+- `koala-bot` there has a large uncommitted working tree (31 modified files at the first
+  check that day, 59 a few hours later — work in progress on that machine) and is one
+  commit behind origin. Not looked at; not touched. Its links to `wk-devastator` and
+  `wk-soarm101` were therefore **not** rewritten to the new `projects/` paths; the archived
+  repos keep those URLs alive until koala-bot is next edited. Reconcile before koala-bot
+  work on either machine.
 - `wk-robotics` and the drone repo there were clean and current (the latter still points at
   the old `wk-drone-bee35` remote name; GitHub redirects it).
 - The hexapod's Pi was unreachable that day, so its `wk-hexapod` checkout was not checked;
@@ -138,7 +129,7 @@ delete.
 
 **SO-ARM101 servo commissioning** (2026-09-09) — held here for one day while the build had
 no repo of its own. Now in
-[wk-soarm101 `docs/servos.md`](https://github.com/WayneKennedy/wk-soarm101/blob/main/docs/servos.md).
+[wk-soarm101 `docs/servos.md`](../projects/soarm101/docs/servos.md).
 
 ### Deferred, already recorded elsewhere
 
@@ -170,6 +161,16 @@ was lost. **That repo is now consumed from upstream, not forked.**
 
 **Renamed 2026-09-13:** `wk-drone-bee35` → `wk-drones`, now a fleet record with the Bee35
 under `aircraft/bee35/`; GitHub redirects the old name.
+
+**Consolidated 2026-09-13:** `wk-devastator` → [`projects/devastator/`](../projects/devastator/)
+and `wk-soarm101` → [`projects/soarm101/`](../projects/soarm101/) in this repository,
+history carried over with `git subtree add`. Reasoning: both were small, docs-led records
+that restated the family rules and linked back to this repo from a dozen files each; as
+folders they share one `AGENTS.md` layer and one clone. The old repos are **archived, not
+deleted**, with a banner in each README, because GitHub redirects renamed repos but not
+merged ones and koala-bot still links to them. `koala-bot`, `wk-hexapod`, `3d-printing`
+and `wk-drones` stay peers: OSS with its own licensing, pulled onto a Pi, private, and
+mostly-not-robots respectively.
 
 **Deleted 2026-09-13:** `WayneKennedy/fn-hexapod`, a 9 MB rewritten-history snapshot of
 Freenove's 477 MB hexapod repository, kept only so the robot's Pi could clone the ten

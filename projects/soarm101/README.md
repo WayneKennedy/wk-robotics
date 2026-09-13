@@ -1,4 +1,8 @@
-# wk-soarm101 🦾
+# SO-ARM101 build 🦾
+
+> A folder in [wk-robotics](../../README.md) since 2026-09-13. Formerly the repository
+> `wk-soarm101`, now archived; its history is carried here. Family-wide facts and rules are
+> one level up; this folder holds only what is true of this project.
 
 **A 12 V SO-101 follower arm, built from the upstream design.** The Standard Open Arm by
 The Robot Studio and Hugging Face, printed and commissioned here, with nothing changed
@@ -19,7 +23,7 @@ variant (~30 kg·cm) rather than the standard 7.4 V one, so it needs a 12 V rail
 - Design, STLs and bill of materials: [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100), cloned as a sibling, never forked.
 - Parts printed in white eSUN PLA+ on the family's Ender-5 S1.
 - Servo bus driven by a Waveshare Bus Servo Adapter (A), the upstream BOM part.
-- **Purpose and runtime controller not yet decided** (OQ-08, OQ-09): a desk LeRobot arm, the manipulator on [wk-devastator](https://github.com/WayneKennedy/wk-devastator), or both in turn.
+- **Purpose and runtime controller not yet decided** (OQ-08, OQ-09): a desk LeRobot arm, the manipulator on [wk-devastator](../../projects/devastator/README.md), or both in turn.
 
 ## Why a repo, when upstream has one
 
@@ -46,7 +50,7 @@ facts need a home that is not a chat transcript and not a private print log.
 
 This arm is one of several robots. The index, and everything true of more than one of
 them — the printer, the STS3215 servo family and how to configure one, the bus adapters,
-power — is in [wk-robotics](https://github.com/WayneKennedy/wk-robotics). Facts that
+power — is in [wk-robotics](../../README.md). Facts that
 belong there are linked, never copied.
 
 ## Licence

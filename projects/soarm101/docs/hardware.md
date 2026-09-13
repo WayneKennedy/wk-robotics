@@ -26,7 +26,7 @@ The gauges from upstream `STL/Gauges/` (`Gauge_0`, `Gauge_tight_1`) were printed
 2026-09-06: the servo is a tight friction fit in `Gauge_0`, the intended press fit. That
 and the `Base` result established the family finding that PLA+ at these settings is
 dimensionally correct with no elephant-foot compensation
-([wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#press-fits-and-supports)).
+([wk-robotics `common.md`](../../../docs/common.md#press-fits-and-supports)).
 
 **Nothing is assembled.** No part has been fastened to another; servos have only been
 test-fitted into pockets.
@@ -53,7 +53,7 @@ printed or bought yet (OQ-08, [`sourcing.md`](sourcing.md)).
 | USB webcam, bench observation | 1 | 2026-09-12 | On this host as `/dev/video0` (1280 × 720 via V4L2). Lets the assistant see the arm during bring-up; not a LeRobot policy camera. Host user needs the `video` group (added 2026-09-12; ACL granted for the session) |
 
 Adapter behaviour, pinouts and power rules are family facts:
-[wk-robotics `common.md` → Configuring a servo](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#configuring-a-servo--true-for-every-sts-project).
+[wk-robotics `common.md` → Configuring a servo](../../../docs/common.md#configuring-a-servo--true-for-every-sts-project).
 
 **Not in hand:** a decided 12 V supply (OQ-03), the
 M2×6 and M3×6 fasteners upstream's guide calls for (OQ-07). The 12 V source used on the

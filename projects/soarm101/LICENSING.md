@@ -1,8 +1,8 @@
 # Licensing
 
-wk-soarm101 is a mixed hardware / software / documentation project and uses the
+This project (`projects/soarm101/` in wk-robotics) is a mixed hardware / software / documentation project and uses the
 **tri-licence** standard for open-source hardware, matching the rest of the family
-([`common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#licensing)):
+([`common.md`](../../docs/common.md#licensing)):
 
 | Area | Covers | Licence | SPDX |
 |------|--------|---------|------|
@@ -16,4 +16,4 @@ cloned alongside as a sibling. Nothing here relicenses it; the hardware licence 
 parts designed for this build, of which there are currently none.
 
 Each source file SHOULD carry an `SPDX-License-Identifier:` header naming its licence.
-All three full licence texts are included verbatim in `LICENSES/`.
+All three full licence texts are included verbatim in `LICENSES/` in this folder. The wk-robotics root `LICENSE` (CC-BY-SA-4.0) covers the family index and `docs/`, not this folder.

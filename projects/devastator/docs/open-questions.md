@@ -28,7 +28,7 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
 
 - **OQ-06 — Which Pi for the intent tier.** A **Pi 4** is already fitted from the first
   build; the family standard is a **Pi 5**
-  ([common.md](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#compute-the-two-tier-split)).
+  ([common.md](../../../docs/common.md#compute-the-two-tier-split)).
   Milestone 1 needs no Pi at all, so this genuinely does not need deciding yet — which is
   the argument for not deciding it.
 

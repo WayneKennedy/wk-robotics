@@ -1,6 +1,6 @@
 # Contributing
 
-wk-soarm101 is open source and contributions are welcome. It is a **build record** of an
+This project is open source and contributions are welcome; it lives in the wk-robotics repository under `projects/soarm101/`. It is a **build record** of an
 upstream design: design changes belong upstream at
 [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100), not here.
 
