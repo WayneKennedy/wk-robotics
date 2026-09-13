@@ -74,22 +74,20 @@ wiring and cable reach, then validate NVMe cold boot plus concurrent inference/s
 operation. Select target workloads to assess the Jetson memory need.
 No architecture change decided.
 
-### Clones on the GPU workstation are stale — checked 2026-09-13
+### koala-bot on the GPU workstation has uncommitted work — 2026-09-13
 
-- `3d-printing` there is on a pre-rewrite history: no common ancestor with origin, and its
-  tree matches origin's just before the commits that redacted network and personal details.
-  Nothing unpushed; but the old history still carries what was redacted. Re-clone rather
-  than pull.
-- `koala-bot` there has a large uncommitted working tree (31 modified files at the first
-  check that day, 59 a few hours later — work in progress on that machine) and is one
-  commit behind origin. Not looked at; not touched. Its links to `wk-devastator` and
-  `wk-soarm101` were therefore **not** rewritten to the new `projects/` paths; the archived
-  repos keep those URLs alive until koala-bot is next edited. Reconcile before koala-bot
-  work on either machine.
-- `wk-robotics` and the drone repo there were clean and current (the latter still points at
-  the old `wk-drone-bee35` remote name; GitHub redirects it).
-- The hexapod's Pi was unreachable that day, so its `wk-hexapod` checkout was not checked;
-  the DEC-20 edits were pushed without it. Pull there before hexapod work.
+Its checkout there had 31 modified files at the first check that day and 59 a few hours
+later: work in progress on that machine, one commit behind origin. Not looked at; not
+touched. Its links to `wk-devastator` and `wk-soarm101` were therefore **not** rewritten
+to the new `projects/` paths; the archived repos keep those URLs alive until koala-bot is
+next edited. Reconcile before koala-bot work on either machine. Resolves when that work
+is committed and pushed.
+
+Everything else on that machine was brought current the same day: `wk-robotics` and
+`wk-drones` pulled (the latter renamed from its old directory name and remote), and the
+`3d-printing` clone, which sat on a pre-redaction history with no common ancestor and
+nothing local, was deleted and re-cloned. The hexapod's Pi was unreachable, so its
+`wk-hexapod` checkout was not checked; pull there before hexapod work.
 
 ### Surplus drive hardware — home undecided
 
