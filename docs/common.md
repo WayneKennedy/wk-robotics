@@ -294,6 +294,29 @@ if it dies, the intent tier is blind wherever the depth was computed. It is a pe
 of the intent tier, and where its work runs is a separate axis, covered under
 [Perception placement](#perception-placement) below.
 
+### Aircraft and the tiers
+
+A flight controller is the reflex tier: it stabilises, holds position and recovers on its
+own, at the reflex band, and it does so under a human pilot or under a computer alike.
+**An aircraft is a family robot when an intent tier commands that flight controller.**
+Where the intent tier runs is a second axis, and it decides what intent can be asked to do:
+
+| Topology | Intent tier runs | Link to the flight controller | Latency | What intent can do | Instance |
+|---|---|---|---|---|---|
+| **Onboard** | Companion computer on the airframe | Wired serial / USB | ms | Reactive: obstacle response, visual servoing, local replanning | Holybro 10" ([wk-drones](https://github.com/WayneKennedy/wk-drones)) — see [projects.md](projects.md#holybro-10-wk-drones) |
+| **Off-board** | A ground machine | Radio: ELRS MAVLink mode or a telemetry radio | 100s of ms to s | Tasking only: waypoints, modes, return-to-hold. The aircraft must self-stabilise and self-recover | Unbuilt — [ideas.md](ideas.md#roving-eyes-a-whoop-fleet) |
+
+Off-board intent is the intent tier running at the mission-planning tier's latency: the
+planner talks to the flight controller directly and the airframe carries no intent
+hardware. **A human on the sticks is neither topology**, so an FPV aircraft is not a
+robot however capable its flight controller, and an airframe can cross the line with no
+physical change the day a ground machine holds the sticks instead. Both topologies need
+two-way MAVLink from the flight controller, which means ArduPilot rather than iNav
+([Bee35 DEC-06](https://github.com/WayneKennedy/wk-drones/blob/main/aircraft/bee35/docs/decisions.md)).
+The rule applied to each aircraft in the fleet is
+[wk-drones F-DEC-01](https://github.com/WayneKennedy/wk-drones/blob/main/fleet/decisions.md).
+Decided 2026-09-13 (owner).
+
 ### micro-ROS: how the MCU joins the graph
 
 ROS 2 is a Linux system — its transport is DDS, which assumes an OS, a network stack and

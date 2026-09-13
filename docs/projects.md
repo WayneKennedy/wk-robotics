@@ -3,7 +3,7 @@
 Per-project detail. Each section says what the project is, what it runs on, where its
 documentation starts, and what it shares with the others. The authoritative record for
 any one project is that project's own repository — this page is a pointer, and is
-accurate as of **2026-09-11**.
+accurate as of **2026-09-13**.
 
 ---
 
@@ -45,9 +45,9 @@ ultrasonic sensor, giving RGB, depth and a second IMU on the pan/tilt head.
 | Compute | Raspberry Pi 5 (8 GB), ROS 2 Jazzy on Ubuntu Server 24.04, **installed natively from apt** (the Docker container was removed 2026-09-09); runs as a `systemd` service |
 | Actuation | 20 hobby servos (18 leg + 2 head) via 2× PCA9685 on I²C — direct from the Pi, no reflex MCU |
 | Sensing | RealSense D435i (RGB-D + IMU, depth computed in-camera) · MPU6050 body IMU · ADS7830 ADC for dual-battery monitoring |
-| Reference | [WayneKennedy/fn-hexapod](https://github.com/WayneKennedy/fn-hexapod) — Freenove vendor code; confirmed-working `servo.py`, `home.py`, `stand.py`, `control.py` |
+| Reference | [Freenove upstream](https://github.com/Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi) — vendor code, read directly from a sparse clone of `Code/Server/`; recipe, pinned commit and the CC BY-NC-SA caveat in its `docs/references.md` (DEC-20) |
 | Start at | `AGENTS.md`, then `docs/architecture.md` |
-| Licence | `Apache-2.0` (software and docs only; hardware is Freenove's) — adopting the tri-licence is open in its repo |
+| Licence | `Apache-2.0` (software and docs only; hardware is Freenove's) — adopting the tri-licence is open in its repo, and blocked on OQ-15 there: whether any driver is a derived work of the CC BY-NC-SA vendor code |
 
 **Progress:** milestone 0 (native stack end to end on the bench) done; milestone 1 (it
 explores a room, on the battery) current. Open in its repo: velocity semantics between
@@ -120,33 +120,32 @@ press-fit findings in [`common.md`](common.md#press-fits-and-supports).
 
 ---
 
-## wk-drone-bee35
+## Holybro 10" (wk-drones)
 
-**An aerial robot: a 3.5" ducted cinewhoop on a SpeedyBee Bee35 Pro frame**, built for
-position hold and endurance rather than speed. Reference behaviour is a DJI Neo: level
-hover, solid position hold, returns to hold when the sticks are released. The first
-airborne member of the family, and intended as a node the mission-planning tier can reach.
+**The family's aerial robot candidate: a 10" multirotor bought to carry a Raspberry Pi or
+Jetson hard-wired to its flight controller** — the onboard topology in
+[`common.md`](common.md#aircraft-and-the-tiers). It is the only aircraft in the
+[wk-drones](https://github.com/WayneKennedy/wk-drones) fleet that meets the family's robot
+criterion. The other two, a 3.5" ducted cinewhoop (Bee35, its DEC-07) and a 5" freestyle
+quad, are FPV aircraft under a human pilot and are indexed only through the fleet repo.
 
 | | |
 |---|---|
-| Repo | [WayneKennedy/wk-drone-bee35](https://github.com/WayneKennedy/wk-drone-bee35) — public |
-| State | Parts ordered 2026-09-11; nothing built, flashed or flown |
-| Airframe | Bee35 Pro, 153 mm, ducted; 4× T-Motor F2004 3000KV; HQProp 90 mm 3-blade; 4S Li-Ion (Molicel P45B 21700 packs shared across the fleet) |
-| Flight controller | MicoAir743 V2 (BMI088, 55 A AM32 ESC). Ships with ArduPilot; runs iNav first (its DEC-01, DEC-06) |
-| Sensing | MicoAir MTF-01P optical flow + 12 m lidar · Flywoo GM10 Mini V3 GPS + compass · Walksnail Avatar HD video |
-| Link | ELRS 2.4 GHz, RadioMaster RP3 V2 |
-| Start at | `AGENTS.md`, then `docs/decisions.md` and `docs/open-questions.md` |
-| Licence | `MIT` for everything, deliberately permissive; not run as an OSS project |
+| Repo | [WayneKennedy/wk-drones](https://github.com/WayneKennedy/wk-drones) `aircraft/holybro-10/` — public; the fleet record, `wk-drone-bee35` until 2026-09-13 |
+| State | **Unknown — not yet recorded.** Frame, flight controller, firmware, companion computer, wiring and build state are unwritten (its F-OQ-01) |
+| Compute | Companion Pi or Jetson (intent) wired to the flight controller (reflex); which, and how, unrecorded |
+| Start at | `AGENTS.md` in wk-drones, then `aircraft/holybro-10/README.md` |
+| Licence | `MIT`; not run as an OSS project |
 
-**Why it differs from the rest:** the flight controller is reflex and intent tier in one
-MCU — there is no on-board Pi and no ROS 2. Its initial goal is a DIY build close to the
-DJI Neo experience: reliable hands-off loiter and docile flight, on iNav. Joining the
-[topic contract](common.md#the-topic-contract) as a fleet node is a later evolution,
-once the flight envelope is predictable, and needs ArduPilot (native ROS 2 via AP_DDS,
-two-way MAVLink; iNav's MAVLink is transmit-only). Its DEC-06.
+**Why it differs from the rest:** the reflex tier is a flight controller running autopilot
+firmware, not an MCU running the family's own code, and the intent tier is a payload the
+airframe was chosen to carry. Two-way MAVLink from the flight controller is what lets
+intent command it, so the firmware choice is not free: ArduPilot, not iNav. How it joins
+the [topic contract](common.md#the-topic-contract) is unrecorded.
 
-**Shares with the rest:** the printer, for TPU sensor mounts and PETG brackets. No servo,
-compute or software overlap with the ground robots.
+**Shares with the rest:** the printer, for mounts. With the other aircraft, not the ground
+robots: the fleet's ELRS link, Walksnail video and 4S Li-Ion packs (wk-drones `fleet/`).
+No servo or software overlap with the ground robots.
 
 ---
 

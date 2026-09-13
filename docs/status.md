@@ -9,7 +9,7 @@ This is a *state* document, not a log. When an item resolves, delete it; when it
 to one project, move it to that project's repo and leave a link. It is not a transcript —
 see [`AGENTS.md`](../AGENTS.md#what-does-not-belong-here).
 
-**Last reviewed: 2026-09-12.**
+**Last reviewed: 2026-09-13.**
 
 ---
 
@@ -33,13 +33,13 @@ git clone https://github.com/TheRobotStudio/SO-ARM100.git    # upstream, not a f
 git clone git@github.com:WayneKennedy/wk-soarm101.git
 git clone git@github.com:WayneKennedy/wk-devastator.git
 git clone git@github.com:WayneKennedy/wk-hexapod.git
-git clone git@github.com:WayneKennedy/wk-drone-bee35.git
-git clone git@github.com:WayneKennedy/fn-hexapod.git         # vendor reference
+git clone git@github.com:WayneKennedy/wk-drones.git
+# Hexapod vendor reference: a sparse clone of Freenove's upstream — recipe in wk-hexapod docs/operations.md
 ```
 
-`wk-hexapod` and `fn-hexapod` are checked out on the robot's own Pi, where hexapod work
-happens; on the workstation they usually are not. Clone them before doing hexapod work
-rather than reasoning from this repo's summary of them.
+`wk-hexapod` and its vendor reference are checked out on the robot's own Pi, where hexapod
+work happens; on the workstation they usually are not. Clone them before doing hexapod
+work rather than reasoning from this repo's summary of them.
 
 Nothing here depends on a particular AI assistant, editor or shell. The repository is the
 state; a session that adds to it is expected to leave it complete.
@@ -65,22 +65,54 @@ on 2026-09-13. The
 [capability and cost comparison](common.md#ai-compute--purchase-comparison)
 records the assessment and remaining limits, including the existing RTX workstation as
 the first ground-compute option. Owner mentioned onboard real-time inference on a Holybro
-drone; exact aircraft/project, payload, power and latency requirements are not established.
+drone: that is the Holybro 10" in wk-drones, the family's aerial-robot candidate
+([`projects.md`](projects.md#holybro-10-wk-drones)); its payload, power and latency
+requirements are not established.
 Spark is considered for ground use. **Jetson purchase remains pending:** owner is weighing
 the 8 GB Orin Nano Super against the 16 GB Orin NX. Next: confirm the intended AI HAT/SSD
 wiring and cable reach, then validate NVMe cold boot plus concurrent inference/storage
 operation. Select target workloads to assess the Jetson memory need.
 No architecture change decided.
 
-### `fn-hexapod` cannot track upstream — **resolved, moved**
+### `fn-hexapod` — retired, deletion pending
 
-Diffed 2026-09-09 on the robot: upstream's only change since the 2025-11-28 snapshot is
-`np.mat` → `np.asmatrix` in `control.py` (numpy 2 compatibility); every other
-`Code/Server` file is byte-identical, and `wk-hexapod`'s controller does not use `np.mat`.
-Nothing to port. The provenance facts (rewritten history, no shared SHAs, `master` branch)
-and the re-import question now live in
-[`wk-hexapod/docs/open-questions.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md)
-(OQ-10) and `docs/references.md` there.
+Decided 2026-09-13 (owner): the snapshot goes; the hexapod reads Freenove's upstream from
+a sparse clone instead (wk-hexapod DEC-20, which records why). Every link to it in this
+repo and in wk-hexapod was replaced the same day. The GitHub repo still exists only because
+the workstation's `gh` token lacks the `delete_repo` scope. To finish:
+
+```bash
+gh auth refresh -h github.com -s delete_repo
+gh repo delete WayneKennedy/fn-hexapod --yes
+```
+
+Resolves when deleted; then move the one-line record to *The GitHub estate* below.
+
+### Repository consolidation — open
+
+Raised 2026-09-13 in a critique of the estate: `wk-devastator` (docs only, 8 commits) and
+`wk-soarm101` (a build record) may be more coherent as `projects/<name>/` folders in this
+repo, with history carried over by `git subtree`. `koala-bot` (OSS, own licensing),
+`wk-hexapod` (pulled onto its Pi; a monorepo would drag everything with it),
+`3d-printing` (private) and `wk-drones` (mostly not robots, own artefact class) stay
+peers regardless. **Not decided.** If done: archive the merged repos with a pointer
+README, because GitHub redirects renamed repos but not merged ones. Independent of the
+decision, the family rules are restated in each project's `AGENTS.md` and will drift;
+the fix is a one-line link to this repo's `AGENTS.md` in each.
+
+### Clones on the GPU workstation are stale — checked 2026-09-13
+
+- `3d-printing` there is on a pre-rewrite history: no common ancestor with origin, and its
+  tree matches origin's just before the commits that redacted network and personal details.
+  Nothing unpushed; but the old history still carries what was redacted. Re-clone rather
+  than pull.
+- `koala-bot` there has 31 modified files uncommitted (about 2,000 lines changed) and is
+  one commit behind origin. Not looked at; not touched. Reconcile before koala-bot work
+  on either machine.
+- `wk-robotics` and the drone repo there were clean and current (the latter still points at
+  the old `wk-drone-bee35` remote name; GitHub redirects it).
+- The hexapod's Pi was unreachable that day, so its `wk-hexapod` checkout was not checked;
+  the DEC-20 edits were pushed without it. Pull there before hexapod work.
 
 ### Surplus drive hardware — home undecided
 
@@ -131,7 +163,7 @@ each project's own repo. Nothing is duplicated here.
 
 ## The GitHub estate
 
-Current as of 2026-09-07, after a tidy-up on that date. Robotics repos and their state are
+Current as of 2026-09-13. Robotics repos and their state are
 in [`projects.md`](projects.md); this section covers only what changed and why, so it is
 not re-derived.
 
@@ -150,6 +182,9 @@ world file processing"* was merged upstream on 2026-08-10 as commit `bcf28b57e`;
 branches were verified `ahead_by=0` with zero unique commits before deletion, so nothing
 was lost. **That repo is now consumed from upstream, not forked.**
 
+**Renamed 2026-09-13:** `wk-drone-bee35` → `wk-drones`, now a fleet record with the Bee35
+under `aircraft/bee35/`; GitHub redirects the old name. **Retired 2026-09-13:**
+`fn-hexapod`, deletion pending — see the open thread above.
+
 **Branch naming:** `main` everywhere, and `init.defaultBranch = main` is set globally on
-the workstation. One exception remains — **`fn-hexapod` is still on `master`**, which is
-undecided rather than deliberate.
+the workstation.

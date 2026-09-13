@@ -113,8 +113,8 @@ checked out alongside this one:
 | 3D printing | `../3d-printing` | [WayneKennedy/3d-printing](https://github.com/WayneKennedy/3d-printing) — private |
 | wk-devastator | `../wk-devastator` | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) — public |
 | wk-hexapod | `../wk-hexapod` | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |
-| wk-drone-bee35 | `../wk-drone-bee35` | [WayneKennedy/wk-drone-bee35](https://github.com/WayneKennedy/wk-drone-bee35) — public |
-| fn-hexapod | `../fn-hexapod` | [WayneKennedy/fn-hexapod](https://github.com/WayneKennedy/fn-hexapod) — public, vendor reference |
+| wk-drones | `../wk-drones` | [WayneKennedy/wk-drones](https://github.com/WayneKennedy/wk-drones) — public, the drone fleet; only its Holybro 10" is a robot |
+| Freenove hexapod (vendor) | `../freenove-hexapod` | [Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi](https://github.com/Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi) — upstream, sparse clone, read-only; recipe in wk-hexapod `docs/operations.md` |
 
 Read those repos directly rather than re-deriving their state from this one. Each carries
 its own `AGENTS.md`; this page does not override it.

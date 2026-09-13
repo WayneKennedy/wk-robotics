@@ -3,8 +3,8 @@
 **The table of contents for my robotics and physical-AI work, and the home for
 everything those projects have in common.**
 
-Each robot lives in its own repository. This one holds three things they cannot
-hold individually:
+Each robot lives in its own repository (the aerial one in its fleet's). This one
+holds three things they cannot hold individually:
 
 1. **The index** — what exists, what state it is in, where it lives (below).
 2. **The shared substrate** — the printer, the actuators, the compute pattern and
@@ -24,11 +24,13 @@ moves here and they link back.
 | **wk-devastator** | Tracked ROS 2 robot on a DFRobot Devastator chassis; resurrection of a stalled build | Design record only — nothing built; motor question gates the rest | [WayneKennedy/wk-devastator](https://github.com/WayneKennedy/wk-devastator) (public) |
 | **wk-hexapod** | ROS 2 autonomous hexapod on Freenove Big Hexapod hardware | Native ROS 2 stack verified end to end on the bench (2026-09-09): SLAM maps, Nav2 active, exploration sends goals; first battery run pending | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) (public) |
 | **SO-ARM101** | Standard Open Arm — LeRobot-compatible manipulator, built from the upstream design in its 12 V variant | Assembled, calibrated, moving under script (2026-09-12); teleop and camera next | [WayneKennedy/wk-soarm101](https://github.com/WayneKennedy/wk-soarm101) (public) · upstream [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) |
-| **wk-drone-bee35** | Aerial robot: 3.5" ducted cinewhoop on a SpeedyBee Bee35 Pro frame, built for position hold and endurance, not speed | Parts ordered 2026-09-11, nothing built. iNav first for a DJI-like hands-off loiter; ArduPilot and the mission-planning tier are a later evolution (its DEC-06) | [WayneKennedy/wk-drone-bee35](https://github.com/WayneKennedy/wk-drone-bee35) (public) |
+| **Holybro 10"** | Aerial robot candidate: a 10" multirotor bought to carry a Pi or Jetson wired to its flight controller — the one aircraft in the drone fleet that meets the family's robot criterion | Unknown; not yet recorded | [WayneKennedy/wk-drones](https://github.com/WayneKennedy/wk-drones) `aircraft/holybro-10/` (public) |
 | **3D printing** | Creality Ender-5 S1 on Klipper — the machine every printable part comes off | Commissioned and calibrated; in production use | [WayneKennedy/3d-printing](https://github.com/WayneKennedy/3d-printing) (private) |
 
-Supporting: [`fn-hexapod`](https://github.com/WayneKennedy/fn-hexapod) — the
-Freenove vendor code the hexapod's working reference servo/gait routines come from.
+Supporting: [`wk-drones`](https://github.com/WayneKennedy/wk-drones) — the FPV fleet
+record the Holybro lives in; its other two aircraft (a Bee35 cinewhoop and a 5" freestyle
+quad) are flown by hand and are not robots, so they appear only there. The hexapod's
+vendor reference is read from Freenove's upstream directly, not from a repo of ours.
 
 Longer per-project notes — hardware, what each one shares, where its documentation
 starts — are in [`docs/projects.md`](docs/projects.md).

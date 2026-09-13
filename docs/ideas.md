@@ -321,6 +321,32 @@ entry points already exist on this page: [the duck](#open-duck-mini-v2) for RL s
 locomotion, and [LeRobot](#lerobot-and-learned-manipulation) for learned manipulation on
 the SO-ARM101. The hive mind is the systems layer above both, not a substitute for either.
 
+### Roving eyes: a whoop fleet
+
+**Unbuilt. Raised 2026-09-13 (owner) as an aspiration, not a plan.** A fleet of tiny
+whoops sent out as roving eyes for a ground-based mission planner: the **off-board
+topology** in [`common.md`](common.md#aircraft-and-the-tiers), reflex on each airframe,
+intent on the ground, the two linked by radio rather than wire. Nothing is bought,
+designed or scheduled, and no aircraft in [wk-drones](https://github.com/WayneKennedy/wk-drones)
+is earmarked for it.
+
+What it depends on, none of it settled:
+
+- **Two-way MAVLink on a whoop-sized flight controller**, which means ArduPilot. Whether
+  ArduPilot runs on the all-in-one boards used in 65–75 mm whoops is **unverified**; the
+  working assumption is that most are small-flash F4 parts targeted only by Betaflight,
+  which would push the smallest viable roving eye up towards a 3.5" airframe. Check this
+  before anything else.
+- **The radio link.** ELRS MAVLink mode gives roughly 2.4 KB/s down and 1.2 KB/s up per
+  link at the fastest packet rate (ELRS docs, via
+  [Bee35 OQ-02](https://github.com/WayneKennedy/wk-drones/blob/main/aircraft/bee35/docs/open-questions.md)),
+  shared with RC; a fleet multiplies that across transmitters or telemetry radios.
+- **Position sensing without GPS indoors**, and a planner that treats each aircraft as
+  something that flies itself and accepts tasking, never as something it steers.
+
+Earns a folder in wk-drones when an airframe is chosen; earns a row in the index here
+when one has flown under ground-station command.
+
 ### A shared ROS 2 package across robots
 
 The [topic contract](common.md#the-topic-contract) is currently a convention held in
