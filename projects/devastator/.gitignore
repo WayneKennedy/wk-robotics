@@ -1,0 +1,21 @@
+# Build / CAD / slicer artefacts
+*.stl
+*.gcode
+/build/
+/out/
+__pycache__/
+*.pyc
+.venv/
+# CAD scratch
+*.FCStd1
+*.f3d~
+# Local-only reference material (unlicensed third-party images - kept out of the repo)
+docs/inspiration/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*Zone.Identifier
+*.swp
+.idea/
+.vscode/
