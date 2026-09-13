@@ -74,20 +74,6 @@ wiring and cable reach, then validate NVMe cold boot plus concurrent inference/s
 operation. Select target workloads to assess the Jetson memory need.
 No architecture change decided.
 
-### `fn-hexapod` — retired, deletion pending
-
-Decided 2026-09-13 (owner): the snapshot goes; the hexapod reads Freenove's upstream from
-a sparse clone instead (wk-hexapod DEC-20, which records why). Every link to it in this
-repo and in wk-hexapod was replaced the same day. The GitHub repo still exists only because
-the workstation's `gh` token lacks the `delete_repo` scope. To finish:
-
-```bash
-gh auth refresh -h github.com -s delete_repo
-gh repo delete WayneKennedy/fn-hexapod --yes
-```
-
-Resolves when deleted; then move the one-line record to *The GitHub estate* below.
-
 ### Repository consolidation — open
 
 Raised 2026-09-13 in a critique of the estate: `wk-devastator` (docs only, 8 commits) and
@@ -183,8 +169,13 @@ branches were verified `ahead_by=0` with zero unique commits before deletion, so
 was lost. **That repo is now consumed from upstream, not forked.**
 
 **Renamed 2026-09-13:** `wk-drone-bee35` → `wk-drones`, now a fleet record with the Bee35
-under `aircraft/bee35/`; GitHub redirects the old name. **Retired 2026-09-13:**
-`fn-hexapod`, deletion pending — see the open thread above.
+under `aircraft/bee35/`; GitHub redirects the old name.
+
+**Deleted 2026-09-13:** `WayneKennedy/fn-hexapod`, a 9 MB rewritten-history snapshot of
+Freenove's 477 MB hexapod repository, kept only so the robot's Pi could clone the ten
+files it needed. Replaced by a sparse clone of upstream (wk-hexapod DEC-20 records the
+reasoning and the pinned commit). Every link to it here and in wk-hexapod was replaced
+before deletion; nothing unique was lost, its content was upstream's.
 
 **Branch naming:** `main` everywhere, and `init.defaultBranch = main` is set globally on
 the workstation.
