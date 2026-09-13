@@ -3,8 +3,8 @@
 Facts true of more than one project. Anything true of only one belongs in that
 project's repo — see the placement rule in [`AGENTS.md`](../AGENTS.md#the-placement-rule).
 
-Everything below is sourced from a project repo or from a measurement taken on the
-hardware, and dated where the date matters. Nothing here is speculative.
+Sources are project repos, hardware measurements and linked manufacturer documentation,
+dated where the date matters. Untested options and unresolved compatibility are labelled.
 
 ---
 
@@ -336,7 +336,7 @@ robot:
 | Place | Examples | Costs the Pi |
 |---|---|---|
 | **In the sensor** | RealSense D4xx stereo ASIC; Sony IMX500 in the Raspberry Pi AI Camera; RealSense D555 Vision SoC V5 | Nothing but the bus |
-| **Host accelerator** | Raspberry Pi AI HAT+ (Hailo) on the Pi 5 PCIe connector | PCIe bandwidth; the single lane is shared with NVMe |
+| **Host accelerator** | Raspberry Pi AI HAT+ / AI HAT+ 2 (Hailo) on the Pi 5 PCIe connector | Competes with NVMe for the connector; sharing requires a [PCIe switch](#ai-hat-2-and-nvme) |
 | **Pi CPU** | depth-to-laserscan, `slam_toolbox`, RTAB-Map, Nav2 — everything the hexapod runs today | The whole cost |
 | **Off-robot** | GPU workstation | Ruled out for raw streams — see below |
 
@@ -368,14 +368,202 @@ far; koala-bot's CSI camera-eyes are where an in-sensor module would go.
   SLAM. Source:
   [Raspberry Pi documentation](https://www.raspberrypi.com/documentation/accessories/ai-camera.html).
 - **Raspberry Pi AI HAT+ (Hailo):** a host accelerator, not a sensor — the model runs
-  on the HAT, the frames still cross to the Pi. Whether a given HAT variant also carries
-  an M.2 slot for the NVMe it displaces is **unverified**; check before pairing one with a
-  Pi 5 that boots from NVMe.
+  on the HAT, the frames still cross to the Pi. PCIe/NVMe compatibility, including
+  AI HAT+ 2, is recorded [below](#ai-hat-2-and-nvme).
 
 **Rule of thumb:** put a stage in the sensor when the sensor's output is what the next
 stage consumes anyway (depth for laserscan, detections for behaviour), and leave a stage
 on the Pi when it needs the whole robot's state (SLAM, Nav2). No project has yet tested an
 in-sensor or accelerator stage; the table above records options, not results.
+
+### AI HAT+ 2 and NVMe
+
+**Documentation checked 2026-09-13; no hardware test.** Pi 5 exposes one PCIe lane on
+one 16-pin FFC connector. Both official AI HATs use it; neither provides an NVMe socket
+or downstream PCIe connector. An ordinary NVMe HAT and AI HAT+ 2 therefore cannot both
+connect directly. GPIO stacking does not provide another PCIe connection; a passive
+Y cable cannot replace an active PCIe switch. Sources:
+[Pi connector description](https://www.raspberrypi.com/news/m-2-hat-on-sale-now-for-12/),
+[AI HAT hardware and assembly](https://www.raspberrypi.com/documentation/accessories/ai-hat-plus.html).
+
+**Installed adapter identified by owner, 2026-09-13:**
+[Pimoroni NVMe Base](https://thepihut.com/products/nvme-base-for-raspberry-pi-5-nvme-base)
+(single-drive model). It mounts beneath the Pi and leaves its GPIO header free;
+[Pimoroni's assembly guide](https://learn.pimoroni.com/article/getting-started-with-nvme-base)
+explicitly accommodates a HAT above. This helps mechanical placement but does not remove
+the PCIe conflict. Exact SSD models, cases and configured link speeds remain unknown.
+
+**Base-specific cable constraint:** Pimoroni uses a 16-contact Pi end and an 18-contact
+Base end, so a generic 16-to-16 ribbon is not a replacement. Its
+[cable range](https://shop.pimoroni.com/products/pcie-flex-cable-for-nvme-base-and-raspberry-pi-5)
+includes the stock 35 mm Pipe and a longer 50 mm Pipe. A switch-to-Base connection would
+need the appropriate Pimoroni cable, with downstream socket orientation, reach and power
+provision checked against the assembled stack. No cable/stack combination is validated.
+
+**Candidate for retaining an existing NVMe HAT:**
+[Waveshare PCIe TO 2-CH PCIe HAT](https://www.waveshare.com/product/modules/others/pcie-to-2-ch-pcie-hat.htm)
+(SKU 30490) provides two downstream FFC connectors:
+
+```text
+Pi 5 PCIe → active switch ┬→ existing NVMe HAT → SSD
+                         └→ AI HAT+ 2
+```
+
+- **Compatibility remains unverified for AI HAT+ 2.** The
+  [vendor FAQ](https://www.waveshare.com/wiki/PCIe_TO_2-CH_PCIe_HAT) confirms Hailo-8,
+  not Hailo-10H. The topology is a candidate, not a validated purchase combination.
+- **Gen 2 x1 only, shared bandwidth.** The upstream link has a 500 MB/s ceiling per
+  direction after line encoding, before PCIe transaction overhead. Both devices contend
+  for it during simultaneous transfers; bandwidth is not permanently divided in half.
+  Any current Gen 3 SSD setup would drop to Gen 2 with this switch. Pi 5's optional
+  [Gen 3 mode is not certified](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#pcie-gen-3-0).
+- **Before adopting:** establish exact SSD models, GPIO and power requirements,
+  cable routing and heatsink clearance; verify cold boot from NVMe and concurrent SSD
+  I/O plus Hailo inference on the intended OS/firmware. None has been tested here.
+
+**Other routes:** a compatible USB 3 NVMe enclosure frees PCIe for the AI HAT+ 2, but
+replaces the installed storage connection and consumes USB capacity
+([Pi storage documentation](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html)).
+A dual-M.2 switch board with an M.2 accelerator can keep PCIe SSD storage while replacing
+the existing HAT. [Seeed documents SSD + Hailo-8 operation](https://wiki.seeedstudio.com/raspberry_pi_5_uses_pcie_hat_dual_hat/);
+that does not establish AI HAT+ 2 compatibility. The latter is a complete HAT, not an
+M.2 module. Its Hailo-10H and 8 GB RAM add LLM/VLM support absent from Hailo-8;
+[Raspberry Pi rates its vision performance as comparable to the 26-TOPS AI HAT+](https://www.raspberrypi.com/products/ai-hat-plus-2/).
+
+### AI compute — purchase comparison
+
+**Researched 2026-09-13; none tested here.** Purchase state is tracked in
+[status.md](status.md#ai-compute-purchase--ai-hat-2-jetson-or-dgx-spark).
+Owner-quoted prices: **£192**
+for the HAT, **£380** for the **NVIDIA Jetson Orin Nano Super Developer Kit, 8 GB**, and
+**about £1,000** for the **Seeed reComputer Super J401 NX Bundle with Orin NX 16 GB**
+([SKU 100029661](https://www.seeedstudio.com/reComputer-Super-J401-NX-Bundle-p-6686.html)).
+The NX bundle includes a **256 GB NVMe SSD and Wi-Fi/Bluetooth module**. Do not substitute
+the older J4012 Classic, which Seeed labels as not supporting Super mode. VAT, delivery
+and the exact seller's remaining bundle contents are not independently checked.
+At these prices NX costs £620 more than Nano (~2.63x). The Nano/HAT £188 difference is
+before the HAT's NVMe workaround and Jetson storage/accessories. The existing Pi is
+already owned. NVIDIA's standard Nano kit
+[includes a 19 V supply but requires storage](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html).
+
+The fourth candidate is **NVIDIA DGX Spark**, a desktop/ground compute option. NVIDIA's
+[UK listing](https://marketplace.nvidia.com/en-gb/enterprise/personal-ai-supercomputers/dgx-spark/)
+shows **£4,200 for 128 GB / 4 TB**, out of stock direct, checked 2026-09-13. This is a
+current listing rather than an owner quote; partner pricing/availability may differ.
+
+| Capability | Pi 5 + AI HAT+ 2 | Orin Nano Super developer kit | Super J401 NX 16 GB bundle | NVIDIA DGX Spark |
+|---|---|---|---|---|
+| Accelerator | Hailo-10H NPU; 40 INT4 / 20 INT8 TOPS | Ampere GPU, 1,024 CUDA cores / 32 Tensor cores | Same GPU core counts, higher clocks; adds two NVDLA engines and PVA | GB10 Grace Blackwell; 6,144 CUDA cores, fifth-generation Tensor cores and RT cores |
+| GPU sparse INT8 / total sparse INT8 | Not applicable / precision differs | 67 / 67 TOPS | 77 / 157 TOPS; remaining 80 from DLAs | Advertised up to 1 PFLOP at sparse FP4; different metric |
+| CPU | Pi 5 host | 6 Cortex-A78AE cores, up to 1.7 GHz | 8 Cortex-A78AE cores, up to 2 GHz | 20 Arm cores: 10 Cortex-X925 + 10 Cortex-A725 |
+| Memory | Pi RAM plus separate 8 GB accelerator RAM; not one combined pool | 8 GB shared LPDDR5; 102 GB/s | 16 GB shared LPDDR5; 102.4 GB/s | 128 GB coherent shared LPDDR5x; 273 GB/s |
+| Model deployment | Hailo compiled models/runtime; custom models depend on compiler support | CUDA, PyTorch and TensorRT; ARM64 builds, memory and versions constrain deployment | Same ecosystem; more memory headroom, DLA needs compatible models/software | CUDA on DGX OS; ARM64 and Blackwell-compatible builds required |
+| NVMe | [Existing Base needs a switch or changed connection](#ai-hat-2-and-nvme) | Native M.2 2280 PCIe 3 x4 and M.2 2230 PCIe 3 x2 slots | Native NVMe, 256 GB SSD included; no AI accelerator/SSD connector conflict | 4 TB NVMe included in this configuration |
+| Video encoding | HAT adds no encoder | CPU encoding; no NVENC | Hardware video encoder, including H.265 4K60 capability | NVENC and NVDEC |
+| Power figures | Hailo quotes 2.5 W typical for the accelerator, not a complete Pi/HAT/SSD system | 7–25 W module modes | 10–40 W module modes; Super MAXN is separate; not whole-system draw | 140 W GB10 chip TDP; supplied 240 W PSU rating is not measured consumption |
+
+Sources: [Hailo chip brief](https://hailo.ai/hailo-files/hailo-10h-product-brief-en/),
+[AI HAT specification](https://www.raspberrypi.com/products/ai-hat-plus-2/),
+[NVIDIA specifications](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/),
+[dense/sparse figures and software](https://developer.nvidia.com/blog/nvidia-jetson-orin-nano-developer-kit-gets-a-super-boost/),
+[Jetson connectors](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/hardware_layout.html),
+[Hailo custom-model workflow](https://github.com/hailo-ai/hailo_model_zoo/blob/master/docs/GETTING_STARTED.rst),
+[NVIDIA Orin module/compute comparison](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/),
+[Spark hardware](https://docs.nvidia.com/dgx/dgx-spark/hardware.html),
+[Spark software architecture](https://docs.nvidia.com/dgx/dgx-spark-porting-guide/overview.html).
+**TOPS are not application benchmarks:** precision, sparsity, supported operations and
+memory traffic prevent deriving a speed ratio from these figures.
+
+**Published generation examples, not a matched benchmark:**
+
+| Publisher/platform | Model | Tokens/s | Published conditions |
+|---|---|---|---|
+| Hailo GenAI model zoo / Hailo-10H | Qwen2.5-1.5B-Instruct | 7.35 | A8W4; compiled context limit 2,048; host/measurement conditions not fully specified in table |
+| Hailo GenAI model zoo / Hailo-10H | Qwen3-1.7B-Instruct | 4.78 | A8W4; compiled context limit 2,048; same qualification |
+| NVIDIA / Orin Nano Super | Llama 3.2 3B | 43.07 | INT4, MLC API; vendor benchmark published 2024-12-17 |
+| NVIDIA / Orin Nano Super | Llama 3.1 8B | 19.14 | INT4, MLC API; same publication |
+
+Sources: [Hailo models and performance](https://github.com/hailo-ai/hailo_model_zoo_genai/blob/main/docs/MODELS.rst),
+[NVIDIA benchmarks](https://developer.nvidia.com/blog/nvidia-jetson-orin-nano-developer-kit-gets-a-super-boost/).
+Hailo's listed complete LLM/VLM examples are mainly 1–2B models; capacity claims alone
+do not establish availability of a compiled model. Jetson can run selected quantised 7–8B
+models, but Nano's 8 GB shared RAM leaves limited room for simultaneous robotics workloads and
+long context. Hailo's separate RAM preserves host capacity. Raspberry Pi/Hailo identify
+[encoding, prompt processing and short responses](https://www.raspberrypi.com/news/when-and-why-you-might-need-the-raspberry-pi-ai-hat-plus-2/)
+as stronger HAT use cases than sustained text generation.
+
+**NX buys capacity and concurrency more than GPU speed.** Its GPU peak is ~15% above
+Nano's and memory bandwidth is essentially unchanged; 157/67 is not an LLM speed ratio.
+The extra RAM allows larger model/context allocations or more resident workloads. As a
+capacity estimate, 14B weights at 4 bits occupy ~7 GB before quantisation metadata, runtime
+buffers and KV cache: selected 14B-class models become plausible on 16 GB, not a promise
+of acceptable speed or of simultaneous full robotics and LLM pipelines. No matched
+NX/Nano benchmark has been established here. For onboard voice + vision + mapping,
+the RAM is the main reason to consider paying the premium. For learning or one modest
+policy/detector, Nano remains the stronger value assessment.
+
+**NX memory is shared across the whole system:** the CPU/OS, GPU and both DLA engines
+draw from the same 16 GB LPDDR5 pool; it is not 16 GB per accelerator or a fixed equal
+partition. Model weights, inference buffers and CPU applications all consume this budget
+([NVIDIA Tegra memory architecture](https://docs.nvidia.com/cuda/cuda-for-tegra-appnote/index.html)).
+Each Orin DLA also has 1 MiB of dedicated SRAM for local working data; its larger memory
+requirements use system DRAM ([DLA memory pools](https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/dla-memory-pools.html)).
+Offloading a detector to DLA can free GPU compute, but does not remove its system-memory
+requirement or provide an independent DRAM bandwidth budget.
+
+**DLA is conditional value.** It offloads supported CNN layers through TensorRT, not
+arbitrary CUDA/LLM work. [JetPack 6.2 documents a DLA stack](https://developer.nvidia.com/embedded/jetpack-sdk-62).
+Current sources conflict for newer releases: the [TensorRT guide](https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/work-with-dla.html)
+(updated 2026-09-08) says 11.3 lacks DLA, while [NVIDIA support reported a release on
+2026-09-10](https://forums.developer.nvidia.com/t/dla-runtime-unavailable-on-jetpack-7-2-l4t-r39-2-cannot-create-dla-engine/373788)
+after JetPack 7.2 failures. Validate the exact Seeed-supported image/runtime before counting
+DLA capacity in a purchase justification. The bundle's JP7.2 claim alone does not prove it.
+
+**Spark buys a much larger local model tier.** It has eight times NX's RAM but only
+~2.7 times its memory bandwidth; neither ratio predicts end-to-end performance. NVIDIA
+[advertises inference up to 200B parameters](https://www.nvidia.com/en-us/products/workstations/dgx-spark/),
+which is a capacity claim dependent on quantisation, context and runtime overhead. At
+4 bits, 70B weights alone are ~35 GB and 200B ~100 GB before overhead. This opens models
+far beyond the Jetsons' capacity, without establishing interactive speed for every model.
+The sparse FP4 peak is not comparable to the Jetsons' INT8 totals or a guarantee of faster
+small-model inference than the existing RTX workstation. No matched Spark/Jetson/RTX
+benchmark has been established here.
+
+For adaptation, NVIDIA publishes a [single-Spark NeMo 70B QLoRA recipe](https://build.nvidia.com/spark/nemo-fine-tune/instructions):
+parameter-efficient fine-tuning, not full-weight training or pretraining a 70B model.
+[Isaac Sim 6.0 lists DGX Spark support](https://docs.isaacsim.omniverse.nvidia.com/latest/installation/requirements.html)
+on DGX OS 7, with cuRobo/cuMotion unsupported there at the checked date. Simulation and
+synthetic-data development are candidates; supported execution does not establish useful
+throughput for large parallel RL runs. ARM64 software compatibility still needs checking.
+
+**Deployment assessment:** Spark is a ground/desk candidate: the
+[manufacturer specifies 1.2 kg and 150 × 150 × 50.5 mm](https://www.nvidia.com/en-us/products/workstations/dgx-spark/),
+before its external supply. An onboard companion can handle time-sensitive perception
+while a ground workstation/Spark handles large-model reasoning, training and analysis.
+Wireless transport adds variable latency and possible outages; ground inference is not a
+substitute for a validated onboard response loop. Flight control remains with the flight
+controller. Actual aircraft payload, power, cooling and latency budgets are unestablished.
+
+**Purchase assessment:** start ground experiments on the already-owned
+[RTX 5070 Ti workstation](#the-gpu-workstation). Spark becomes worth evaluating when a
+specific workload exceeds 16 GB GPU memory or needs a dedicated large-memory host; no
+evidence here justifies buying it merely for a speed increase. Nano remains the lower-cost
+general onboard experiment; NX is the option for more memory/concurrency. Neither dev-kit
+package is established as a suitable airborne installation without integration work.
+
+**Assessment for this family:** Jetson is the stronger candidate for varied on-robot
+AI experiments, LeRobot policy inference and GPU perception. NVIDIA documents
+[LeRobot on Orin Nano Super](https://developer.nvidia.com/blog/nvidia-jetson-orin-nano-developer-kit-gets-a-super-boost/),
+[GPU visual SLAM](https://nvidia-isaac-ros.github.io/repositories_and_packages/isaac_ros_visual_slam/index.html)
+and [mapping with nvblox](https://nvidia-isaac-ros.github.io/repositories_and_packages/isaac_ros_nvblox/index.html).
+Existing CPU ROS nodes do not become GPU-accelerated merely by moving hosts. Choose a
+supported JetPack/ROS/package combination; [Isaac ROS 4.6 added Orin/JetPack 7.2 support
+on 2026-08-18](https://nvidia-isaac-ros.github.io/releases/index.html).
+The HAT remains a candidate for a known supported inference pipeline where keeping the
+Pi and minimising accelerator power matter most. Jetson adoption would require new
+power/mounting and camera/GPIO compatibility work. Keep deterministic control on the MCU
+and substantial training on the [GPU workstation](#the-gpu-workstation). This comparison
+does not change the family's decided Pi intent-host architecture.
 
 ### The GPU workstation
 

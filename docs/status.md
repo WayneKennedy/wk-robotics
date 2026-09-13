@@ -48,6 +48,30 @@ state; a session that adds to it is expected to leave it complete.
 
 ## Open threads
 
+### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
+
+**Ordered from The Pi Hut, owner-confirmed 2026-09-13:** Raspberry Pi AI HAT+ 2 and
+[Waveshare 2-Channel PCIe Expander for Raspberry Pi 5](https://thepihut.com/products/2-channel-pcie-expander-for-raspberry-pi-5?variant=54400781156737),
+retailer SKU **WAV-30490**, manufacturer model PCIe TO 2-CH PCIe HAT (two downstream FFC
+connectors). Delivery and operation are not yet confirmed; AI HAT+ 2 compatibility remains
+untested.
+
+Owner considers the installed NVMe HATs essential. The identified existing adapter,
+cable constraints, connector conflict and possible
+switch/enclosure alternatives are in
+[`common.md` → AI HAT+ 2 and NVMe](common.md#ai-hat-2-and-nvme).
+Owner also raised Orin Nano Super, reComputer Super J401 NX 16 GB and NVIDIA DGX Spark
+on 2026-09-13. The
+[capability and cost comparison](common.md#ai-compute--purchase-comparison)
+records the assessment and remaining limits, including the existing RTX workstation as
+the first ground-compute option. Owner mentioned onboard real-time inference on a Holybro
+drone; exact aircraft/project, payload, power and latency requirements are not established.
+Spark is considered for ground use. **Jetson purchase remains pending:** owner is weighing
+the 8 GB Orin Nano Super against the 16 GB Orin NX. Next: confirm the intended AI HAT/SSD
+wiring and cable reach, then validate NVMe cold boot plus concurrent inference/storage
+operation. Select target workloads to assess the Jetson memory need.
+No architecture change decided.
+
 ### `fn-hexapod` cannot track upstream — **resolved, moved**
 
 Diffed 2026-09-09 on the robot: upstream's only change since the 2025-11-28 snapshot is
