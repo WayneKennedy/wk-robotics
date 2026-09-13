@@ -103,8 +103,8 @@ not accepted are open questions, not decisions**, and are marked as such there.
   discarded rather than identified. Capacity, fuse rating and the logic-rail regulator
   stay open (OQ-07).
 
-- **DEC-13 — The motor driver is koala-bot's Pololu Dual TB9051FTG, borrowed.** (Owner,
-  2026-09-07.) Resolves OQ-02. Dual channel, **2.6 A continuous and 5 A peak per motor,
+- **DEC-13 — The motor driver is a Pololu Dual TB9051FTG: koala-bot's, borrowed, until
+  2026-09-11; this robot's own since.** (Owner, 2026-09-07; amended 2026-09-11.) Resolves OQ-02. Dual channel, **2.6 A continuous and 5 A peak per motor,
   4.5–28 V** — one board drives both tracks with comfortable headroom over the motors'
   1.8 A stall (DEC-11). Arduino shield form factor, wired as a breakout to the Teensy,
   exactly as koala-bot uses it.
@@ -112,7 +112,13 @@ not accepted are open questions, not decisions**, and are marked as such there.
   **There is one in the family and it is koala-bot's** — qty 1, purchased 2026-09-01
   (`koala-bot/docs/sourcing.md`, DEC-16). Borrowing it means **the two robots cannot both
   be in drive bring-up at once.** That is affordable today, because koala-bot is still in
-  CAD and printing while this robot's motors arrive around 26 September; it stops being
+  CAD and printing while this robot's motors arrive around the end of October 2026; it stops being
   affordable the moment koala-bot reaches its own drive bring-up. **Whether a second is
   bought, and by when, is koala-bot's call and is recorded there** — this repo must not be
   read as having settled it.
+
+  **Amended 2026-09-11.** koala-bot's follow-on order for its since-cancelled four-wheel
+  V1 delivered two more TB9051FTGs (koala-bot DEC-51). One is this robot's outright: the
+  loan is dissolved, nothing goes back, and the one-board-two-robots constraint above no
+  longer exists. koala-bot closed its "buy a second?" question (OQ-15) the same day.
+  Family holdings are tabulated in [wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#drive-motors-drivers-and-mcus-in-hand).

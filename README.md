@@ -5,7 +5,7 @@ DFRobot Devastator; everything above it is being replaced.
 
 **Status:** milestone 0 — deciding and measuring. The chassis and its original
 electronics exist and are documented; the drivetrain has been measured and its
-replacement chosen (**two Pololu 25D 12 V gearmotors with encoders**, on back order).
+replacement chosen (**two Pololu 25D 12 V gearmotors with encoders**, on back order, due end of October 2026).
 No code written. See [`docs/roadmap.md`](docs/roadmap.md) for direction,
 [`docs/decisions.md`](docs/decisions.md) for what is settled, and
 [`docs/open-questions.md`](docs/open-questions.md) for what is not.

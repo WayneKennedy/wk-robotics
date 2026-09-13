@@ -26,9 +26,9 @@ Close the questions that gate everything else.
    clearance hole for the hub; nothing bottoms out. Closed OQ-11, the only risk that was
    carried into the motor purchase.
 
-**The motors are on back order, due ~26 September 2026**, so milestone 1 cannot start.
+**The motors are on back order, due end of October 2026** (supplier update 2026-09-09; was ~26 September), so milestone 1 cannot start.
 **Milestone 0 is not blocked by it:** items 3 and 4 need no motors, and neither does
-OQ-10. The Teensy 4.1 is ordered and the driver is borrowed (DEC-13), so only the measured
+OQ-10. The Teensy 4.1 is ordered and the driver is in hand (DEC-13), so only the measured
 current draw actually waits on delivery.
 
 **Exit:** a power budget on paper, and the arm's real mass measured. The MCU needs no bench
