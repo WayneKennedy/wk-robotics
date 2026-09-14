@@ -34,6 +34,9 @@ DEFAULT_URDF = Path(os.environ.get(
 CHAIN = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper", "gripper_frame_joint"]
 PAN_AXIS_X = 0.0388           # pan axis in base_link, from the URDF's shoulder_pan origin
 DESK_EDGE_X = PAN_AXIS_X + 0.025   # the desk edge is 25 mm ahead of the pan axis (owner's tape, 2026-09-14); the keep-out plane
+DESK_TOP_Z = 0.0              # the desk top in the base frame: the base plate sits on it (its underside is z = 0 in the URDF).
+                              # Behind the plane and below this is desk, whatever the cylinder says — the forearm found the
+                              # underside on 2026-09-14 (docs/test-log.md)
 UPPER_ARM_RADIUS = 0.18       # m; the upper arm's sweep about the pan axis: elbow axis at most 0.15 m from it (URDF: shoulder
                               # axis 0.035 m off the pan axis, shoulder→elbow 0.116 m) plus the link body — the keep-out cylinder
 COUNTS_PER_RAD = 4095 / (2 * np.pi)
@@ -131,15 +134,17 @@ def tool_points(frames):
 def keepout_clear(frames, plane_x=DESK_EDGE_X, margin=LINK_RADIUS, cyl_r=UPPER_ARM_RADIUS):
     """The bench keep-out (docs/hardware.md → Bench, owner's rule as settled 2026-09-14): the
     forbidden region is the half-space BEHIND the desk-edge plane MINUS a vertical cylinder about
-    the pan axis of the upper arm's sweep radius. Every part of the arm is tested against it —
-    inside the cylinder (the installer's clearance zone) a part may be anywhere; outside it, it
-    must be ahead of the plane. `margin` is the link body radius. Returns
+    the pan axis of the upper arm's sweep radius — the cylinder exemption only ABOVE the desk top,
+    since below it the space behind the plane is the desk. Every part of the arm is tested —
+    inside the cylinder and above the desk (the installer's clearance zone) a part may be
+    anywhere; otherwise it must be ahead of the plane. `margin` is the link body radius. Returns
     (clear, rearmost x of any offending-or-not point outside the cylinder, count of violating points)."""
     pts = np.vstack([link_points(frames), tool_points(frames)])
     r = np.hypot(pts[:, 0] - PAN_AXIS_X, pts[:, 1])
     outside = r + margin > cyl_r
     behind = pts[:, 0] - margin < plane_x
-    bad = outside & behind
+    under_desk = pts[:, 2] - margin < DESK_TOP_Z          # the cylinder exemption has a floor: the desk itself is behind the plane below its top
+    bad = behind & (outside | under_desk)
     rear = float(pts[outside, 0].min()) if outside.any() else float("nan")
     return not bad.any(), rear, int(bad.sum())
 

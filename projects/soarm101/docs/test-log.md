@@ -10,6 +10,38 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Stop finding: wrist done; elbow sweep found the desk underside instead
+
+**Conditions:** `software/find_stops.py` (new): the joint's `Torque_Limit` dropped to 180,
+goal stepped 1° per 0.25 s toward each stop, contact = 40 counts of lag for three
+consecutive steps (or >500 mA twice — never the trigger at this torque). Other joints hold
+at full torque. Servo limits widened for the sweep and restored after; nothing written to
+EEPROM. Owner at the bench.
+
+| Joint | Configuration of the rest | Min stop | Max stop | Zero (midpoint) | Span | Note |
+|---|---|---|---|---|---|---|
+| `wrist_flex` | forearm pointing up, gripper in free air | **881** | **3212** | **2046** (estimate was 2070, −2.1°) | 204.9° (URDF 190°) | clean both ways |
+| `elbow_flex` | **upper arm 50° forward** (assistant's choice) | 1880 (provisional) | ~~3850~~ | — | — | **the max is the desk underside, not a stop** |
+| `gripper` | — | 1289 (jaws closed) | interrupted | — | — | resumed later |
+
+**The elbow strike.** With the upper arm leaned 50° forward, the forearm folding toward the
+elbow's max swings *down and back* — elbow angle is relative to the upper arm, so at +97°
+the forearm points 147° below forward, i.e. 57° behind straight down — and it reached the
+underside of the desk at raw 3850 (owner, watching; the tool logged it as a stop). No
+protection flags, all six at status 0 afterwards; damage to desk or arm not yet reported.
+Two faults, both the assistant's: the configuration was chosen from a wrong picture of the
+sweep, and the keep-out let it happen because the cylinder exemption had no floor — the
+space behind the desk-edge plane below the desk top is desk. **Fixed:** the keep-out now
+forbids everything behind the plane that is either outside the cylinder or below the desk
+top (`DESK_TOP_Z = 0`), which flags the strike pose with 27 points; the stop finder vetoes
+any step whose capsules would touch the base and warns on other overlaps. The correct
+elbow configuration is the upper arm vertical (owner), with the wrist pitched −60° so the
+gripper points forward, which the fixed checks pass at every elbow angle to 3700 and warn
+on from 3850 (shoulder–lower arm capsules).
+
+**Changed as a result:** `kinematics.keepout_clear` gains the desk floor; the elbow's max
+and derived zero are discarded from `calibration/stops.json`; the wrist's stops stand.
+
 ### 2026-09-14 · Self-collision: capsule hit boxes from upstream's meshes, validated offline
 
 **Conditions:** no servo touched. `software/kinematics.py` gains a capsule per collision mesh

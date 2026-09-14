@@ -1,0 +1,14 @@
+{
+  "wrist_flex": {
+    "min": 881,
+    "max": 3212,
+    "date": "2026-09-14",
+    "zero": 2046,
+    "span_deg": 204.9
+  },
+  "elbow_flex": {
+    "min": 1880,
+    "date": "2026-09-14",
+    "note": "max discarded 2026-09-14: the forearm met the desk underside at raw 3850 with the upper arm 50\u00b0 forward, not a stop; min 1880 provisional (same run)"
+  }
+}

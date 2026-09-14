@@ -87,9 +87,11 @@ takes these as world constraints.
   target (−77°, the pose that struck the supply) fails with 37 points, and a reach-back
   test pose fails. Earlier readings of the rule (links' bodies ahead of the plane; the
   end-effector only) are superseded.
-  What the rule does *not* cover, and nothing models yet: the arm's own base and the desk
-  surface below the base plate — so no scripted move starts from the folded rest pose,
-  where the gripper lies against the base.
+  **The cylinder exemption has a floor (added 2026-09-14 after the forearm found the desk
+  underside): below the desk top, z = 0 in the base frame, everything behind the plane is
+  desk and is forbidden whatever the cylinder says.** The arm's own base and turret are
+  covered by the self-collision capsules (`kinematics.self_collisions`); the folded rest
+  pose is a real contact pose and is flagged, so no scripted move starts from it.
 - **Safety model (owner, 2026-09-14), two layers, as an industrial installer would draw
   them.** *(1) Physical clearance around the robot is the installer's job, not the
   software's:* a zone around the pan axis at least the upper arm's sweep radius — the
