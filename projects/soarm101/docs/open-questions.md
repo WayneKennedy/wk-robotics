@@ -127,7 +127,21 @@ and not yet accepted. Do not build against one without the owner deciding.
   agent and ROS 2 (this workstation, or a Pi 5 from the fleet), which ROS 2 distribution,
   where the geometric check runs (the keep-out and IK in `software/kinematics.py` are
   host-side Python today; the family pattern puts the joint envelope on the MCU and the
-  world check on the host), and whether the tank's MCU takes over on mounting. The three
+  world check on the host), and whether the tank's MCU takes over on mounting. **Compute budget (2026-09-14: host measured, Teensy estimated).** Host Python, per call:
+  forward kinematics 121 µs; self-collision 883 µs (13 link pairs, 75 capsule-pair tests);
+  keep-out 106 µs; numeric IK, one seed 1.4 ms; multi-seed solve with all checks 4.5 ms near
+  the working pose, ~70 ms averaged over random poses where failing seeds run to their
+  iteration cap. **Teensy 4.1 (600 MHz Cortex-M7 with FPU), same work in C — an estimate, not
+  measured:** forward kinematics and keep-out a few µs each, self-collision tens of µs, a
+  closed-form IK for this arm a few µs (the numeric solver ~0.5 ms), so a full check per
+  setpoint well under 0.1 ms. **The ceiling is the servo bus:** at 1 Mbaud each byte takes
+  10 µs, so a goal write to six servos is ~0.3 ms and a position read ~0.5–1 ms depending on
+  the servos' return delay (unmeasured) — a few hundred Hz position-only, less if current and
+  temperature are read every cycle. micro-ROS carries goals in and joint states out at
+  10–100 Hz and sits outside the servo loop. To verify: time the C port with the Teensy's
+  cycle counter, and time the bus from the Teensy, on the unallocated 4.1 NE.
+
+  The three
   architectures, for the record:
 
   | Option | How | Fits |
