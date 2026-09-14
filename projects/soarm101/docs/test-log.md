@@ -466,7 +466,14 @@ the loop streamed at 20 Hz, tool speed 5 cm/s, `Goal_Velocity` 800.
 | 12 cm cube, all 12 edges (16 traversals) | 0.30, 0, 0.06 m | 30° | 193 | 2 | 84 s | 351 | 38 | 11.8–12.0 V |
 
 Worst IK residual 1.0 mm on both; no tracking, current or temperature trip in the runs
-above. A later open-ended cube run (`--loops 0`, stopped by its stop file after two loops
+above. **Added later the same day — these shapes were exact only in the model's frame.** They
+ran on the pre-calibration zeros (pan 2046, shoulder 1866, elbow 2954, wrist 2070). Replayed
+through the zeros measured that evening, the real 12 cm cube sat about 1.6 cm further forward,
+3.2 cm to the right and 5.5 cm higher than intended, and was distorted by up to 2.8 cm, its
+1 cm steps running 7.9–11.7 mm (uncertainty ~1 cm, from the measured zeros' ±1–2°). How the
+tool traces a line, for the record: it cuts each edge into 1 cm waypoints, IK solves each, and
+the servos are streamed a joint-space interpolation between them — which strays at most
+0.16 mm from the straight line; the IK does not plan the path itself. A later open-ended cube run (`--loops 0`, stopped by its stop file after two loops
 at the owner's word: 44 s and 86 s, peaks 312 and 325 mA, 38 °C, 11.9–12.0 V) held in
 place on the stop file and torque was then released servo by servo — all six status 0,
 0 mA, 35–38 °C. **A 20 cm cube is not reachable**: every placement tried puts the near-bottom
