@@ -46,7 +46,7 @@ def plan(joints, cal, start_raw, goal_raw, deg_per_step, margin_deg=3.0):
         # commanded samples are clamped into the servos' saved range: the servo clamps there anyway,
         # and the calibration mid (2047) sits outside the elbow's shrunk range (servos.md)
         raw = {j: int(np.clip(round(start_raw[j] + (goal_raw[j] - start_raw[j]) * t), cal[j]["range_min"] + m, cal[j]["range_max"] - m)) for j in MOVING}
-        raw.update({j: start_raw[j] for j in ("wrist_roll", "gripper")})
+        raw.update({j: start_raw[j] for j in ("wrist_roll", "gripper") if j not in MOVING})
         q = K.raw_to_rad(raw); frames = K.fk(joints, q)
         # travel is judged against the MEASURED servo limits (cal_ok, below; stops ∓ 3° since 2026-09-14),
         # not the URDF's, which are narrower than this arm's real travel (shoulder by 10.5°, wrist 14.9°)
@@ -66,6 +66,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--target"); ap.add_argument("--pitch", type=float)
     ap.add_argument("--raw", help="pan,lift,elbow,wrist raw counts")
+    ap.add_argument("--roll", type=int, help="also move wrist_roll to this raw count, planned and checked with the others")
     ap.add_argument("--via-mid", action="store_true"); ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--deg-per-step", type=float, default=1.5); ap.add_argument("--rate", type=float, default=20)
     ap.add_argument("--track", type=int, default=150); ap.add_argument("--max-ma", type=float, default=900); ap.add_argument("--max-temp", type=int, default=60)
@@ -89,7 +90,8 @@ def main():
             if not all(v == 1 for v in te.values()):
                 print(f"torque not on everywhere {te} — run hold_test.py --keep first"); return 2
             goal = b.sync_read("Goal_Position", normalize=False, num_retry=5)
-            off = {m: goal[m] - present[m] for m in NAMES if abs(goal[m] - present[m]) > 30}
+            # stale goals from an earlier session differ by hundreds of counts; gravity lag under a horizontal forearm is ~30–40
+            off = {m: goal[m] - present[m] for m in NAMES if abs(goal[m] - present[m]) > 60}
             if off:
                 print(f"servo targets are not at the present pose {off} — not a verified hold, refusing"); return 2
 
@@ -112,6 +114,8 @@ def main():
     else:
         print("give --target or --raw"); return 2
 
+    if a.roll is not None:              # the roll joins the planned, checked, streamed set (MOVING is read by plan() and the executor)
+        MOVING.append("wrist_roll"); goal_raw["wrist_roll"] = a.roll
     legs = []
     if a.via_mid:
         legs.append({j: 2047 for j in MOVING})

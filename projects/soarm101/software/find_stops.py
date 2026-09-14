@@ -69,7 +69,8 @@ def main():
     present = b.sync_read("Present_Position", normalize=False, num_retry=5)
     te = {m: b.read("Torque_Enable", m, normalize=False, num_retry=5) for m in NAMES}
     goal = b.sync_read("Goal_Position", normalize=False, num_retry=5)
-    off = {m: goal[m] - present[m] for m in NAMES if abs(goal[m] - present[m]) > 30}
+    # stale goals from an earlier session differ by hundreds of counts; gravity lag under a horizontal forearm is ~30–40
+    off = {m: goal[m] - present[m] for m in NAMES if abs(goal[m] - present[m]) > 60}
     if not all(v == 1 for v in te.values()) or off:
         print(f"torque {te}, targets off present {off} — run hold_test.py --keep first"); return 2
     start = present[j]

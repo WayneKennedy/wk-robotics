@@ -10,6 +10,35 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Wrist roll: camera-top orientation, a moulded stop, and a move to the placeholder zero
+
+**Owner's observations at the bench:** with the roll at raw **1362** (−60° by the model's
+placeholder zero 2047), a wrist camera on the two placeholder screws in the mounting holes
+would sit **vertical, on top, looking horizontally forward along the forearm axis** — the
+natural roll zero. The roll has **a mechanical stop moulded into the print** ("presumably to
+protect wire stretching"), which looks to be about **three-quarters of the way round** its
+travel from that orientation. This corrects the earlier assumption that the roll is limited
+only by its cable.
+
+**Move:** `guarded_move.py` gained `--roll RAW`, which puts `wrist_roll` into the planned,
+checked and streamed set (keep-out and self-collision at every sample, since rolling swings
+the jaw). Roll 1362 → 2047 in 41 steps, reached 2035; other joints within 6 counts. Held for
+the owner to judge the camera direction against the roll's range.
+
+**Also changed:** the move tools' stale-goal precondition (goal vs present) relaxed from 30
+to 60 counts — it refused this move because the shoulder sagged 31 counts under the
+horizontal forearm, while the stale goals it exists to catch differ by hundreds. The first
+edit put the explanatory comment inside a dict expression and broke all three tools; caught
+by the next dry run before anything moved, fixed, all three compile.
+
+**Temperatures:** the shoulder read **47 °C** (others 34–36 °C) — residual heat from the
+torque-300 stop sweeps and lifting the arm off its forward stop; while holding it drew ~6 mA
+at +5 counts and stayed at 47 °C over 20 s.
+
+**Open:** the roll zero (camera-top at 1362 is the candidate) and the roll's travel — its
+stop measured with `find_stops.py`, which does not yet sweep the roll and must respect the
+encoder wrap at 0 / 4095.
+
 ### 2026-09-14 · Pan checked with a square: straight-ahead is the stop midpoint
 
 **Conditions:** arm holding at the zero pose, torque on; owner laid a square off the desk edge:
