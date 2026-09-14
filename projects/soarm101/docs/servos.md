@@ -112,3 +112,17 @@ so do not run it casually.
 produce a stream of failed and possibly corrupted reads (2026-09-12); alone, `sync_read` is
 100/100. Stop any logger or recorder before running anything else. Every tool here opens
 the port itself; none shares it.
+
+## Servo counts to URDF angles — estimated 2026-09-14, verification pending
+
+[`software/kinematics.py`](../software/kinematics.py) runs forward kinematics from upstream's
+`so101_new_calib.urdf` (zero = pan ahead, upper arm vertical, forearm horizontal forward,
+wrist in line; every joint's zero at mid-travel) and maps raw counts to URDF radians as
+`sign × (raw − raw_at_zero) × 2π / 4095`. The `raw_at_zero` values are the **midpoints of
+the 2026-09-12 hand sweep** (pre-shrink limits above): the sweep spans match the URDF's
+travel within 3–8° on every pitch joint, so its midpoint is taken as the URDF zero. Signs
+for `shoulder_lift` and `elbow_flex` follow from the folded rest pose reading at the raw
+minimum and maximum respectively (2026-09-14, [`test-log.md`](test-log.md)); pan,
+wrist_flex, wrist_roll and gripper signs and zeros are **unverified placeholders**. The
+values and their provenance are in the module's `JOINT_ZERO` table — the one place they live.
+
