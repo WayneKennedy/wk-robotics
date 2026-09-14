@@ -149,6 +149,112 @@ def within_limits(joints, q, margin_rad=np.radians(3)):
     return not bad, bad
 
 
+# ---- self-collision: capsule hit boxes per link, in the link's own frame ------------------------
+# Fitted 2026-09-14 to upstream's collision meshes (Simulation/SO101/assets/*.stl, placed by each
+# <collision><origin>): PCA axis, radius = largest perpendicular vertex distance, ends pulled in as far
+# as the caps still cover every vertex. Conservative by construction. (p0, p1, r) in metres.
+CAPSULES = {
+    "base_link": [
+        ((-0.0191, -0.0061, 0.0549), (0.0332, 0.0203, 0.0487), 0.0417),   # base_motor_holder
+        ((0.0115, -0.0006, 0.0220), (0.0206, 0.0008, 0.0175), 0.0598),     # base plate
+        ((0.0256, 0.0, 0.0470), (0.0301, 0.0, 0.0420), 0.0308),            # pan servo
+        ((-0.0289, 0.0181, 0.0478), (-0.0289, -0.0185, 0.0478), 0.0215),   # Waveshare plate
+    ],
+    "shoulder_link": [
+        ((-0.0304, 0.0021, -0.0454), (-0.0304, -0.0028, -0.0410), 0.0308),  # lift servo
+        ((-0.0338, -0.0111, -0.0242), (-0.0253, 0.0100, -0.0262), 0.0316),  # motor_holder_base
+        ((-0.0240, -0.0027, -0.0127), (-0.0102, 0.0001, 0.0191), 0.0439),   # rotation_pitch
+    ],
+    "upper_arm_link": [
+        ((-0.1126, -0.0148, 0.0154), (-0.1126, -0.0192, 0.0204), 0.0308),   # elbow servo
+        ((-0.1191, 0.0015, 0.0150), (-0.0005, -0.0006, 0.0333), 0.0475),    # upper arm
+    ],
+    "lower_arm_link": [
+        ((-0.1015, -0.0013, 0.0069), (-0.0091, 0.0001, 0.0389), 0.0536),    # under arm
+        ((-0.1043, 0.0014, 0.0024), (-0.1082, -0.0004, 0.0365), 0.0275),    # wrist motor holder
+        ((-0.1261, 0.0052, 0.0204), (-0.1217, 0.0052, 0.0154), 0.0308),     # wrist-flex servo
+    ],
+    "wrist_link": [
+        ((0.0, -0.0518, 0.0220), (0.0, -0.0505, 0.0403), 0.0293),           # roll servo
+        ((0.0018, -0.0186, 0.0339), (-0.0035, -0.0324, 0.0250), 0.0507),    # wrist_roll_pitch
+    ],
+    "gripper_link": [
+        ((0.0070, 0.0034, -0.0234), (0.0114, -0.0016, -0.0234), 0.0308),    # gripper servo
+        ((-0.0160, 0.0, -0.0960), (-0.0069, 0.0001, -0.0050), 0.0405),      # fixed jaw body
+    ],
+    "moving_jaw_so101_v1_link": [
+        ((0.0038, -0.0009, 0.0179), (-0.0069, -0.0719, 0.0192), 0.0282),    # moving jaw
+    ],
+}
+LINK_OF_JOINT = {"shoulder_pan": "shoulder_link", "shoulder_lift": "upper_arm_link", "elbow_flex": "lower_arm_link",
+                 "wrist_flex": "wrist_link", "wrist_roll": "gripper_link", "gripper": "moving_jaw_so101_v1_link"}
+LINK_ORDER = ["base_link", "shoulder_link", "upper_arm_link", "lower_arm_link", "wrist_link", "gripper_link", "moving_jaw_so101_v1_link"]
+# pairs that touch by design are never tested: joint-joined neighbours, plus two pairs whose fat
+# joint-end capsules overlap in every pose (base–upper arm −8…−12 mm, wrist–jaw −18 mm, 2026-09-14)
+ADJACENT = {frozenset(p) for p in zip(LINK_ORDER, LINK_ORDER[1:])} | {
+    frozenset(("gripper_link", "moving_jaw_so101_v1_link")),
+    frozenset(("base_link", "upper_arm_link")), frozenset(("wrist_link", "moving_jaw_so101_v1_link"))}
+SELF_MARGIN = 0.0             # the capsules already cover every mesh vertex, so overlap is the test; no extra margin …
+# … except these, whose capsules overlap slightly at poses the arm ran through contact-free on
+# 2026-09-14 (minimum along the square and cube paths: lower arm–gripper −14 mm, shoulder–lower
+# arm −17 mm, upper arm–wrist −1 mm; the folded rest pose, a real contact, reads −17 / −59 / −75)
+SELF_ALLOW = {frozenset(("lower_arm_link", "gripper_link")): -0.015, frozenset(("shoulder_link", "lower_arm_link")): -0.020,
+              frozenset(("upper_arm_link", "wrist_link")): -0.010}
+
+
+def link_frames(frames):
+    T = {"base_link": np.eye(4)}
+    T.update({LINK_OF_JOINT[j]: frames[j] for j in LINK_OF_JOINT if j in frames})
+    return T
+
+
+def world_capsules(frames):
+    out = {}
+    for link, T in link_frames(frames).items():
+        R, t = T[:3, :3], T[:3, 3]
+        out[link] = [(R @ np.asarray(p0) + t, R @ np.asarray(p1) + t, r) for p0, p1, r in CAPSULES.get(link, [])]
+    return out
+
+
+def segment_distance(p0, p1, q0, q1):
+    """Closest distance between segments p0p1 and q0q1 (Ericson, Real-Time Collision Detection 5.1.9)."""
+    d1, d2, r = p1 - p0, q1 - q0, p0 - q0
+    a, e, f = d1 @ d1, d2 @ d2, d2 @ r
+    if a <= 1e-12 and e <= 1e-12:
+        return float(np.linalg.norm(r))
+    if a <= 1e-12:
+        s, t = 0.0, np.clip(f / e, 0, 1)
+    else:
+        c = d1 @ r
+        if e <= 1e-12:
+            t, s = 0.0, np.clip(-c / a, 0, 1)
+        else:
+            b = d1 @ d2; den = a * e - b * b
+            s = np.clip((b * f - c * e) / den, 0, 1) if den > 1e-12 else 0.0
+            t = (b * s + f) / e
+            if t < 0: t, s = 0.0, np.clip(-c / a, 0, 1)
+            elif t > 1: t, s = 1.0, np.clip((b - c) / a, 0, 1)
+    return float(np.linalg.norm((p0 + d1 * s) - (q0 + d2 * t)))
+
+
+def pair_clearances(frames):
+    """{(linkA, linkB): clearance} for every non-adjacent link pair — the smallest surface gap
+    between any capsule of A and any of B (negative = overlapping)."""
+    W = world_capsules(frames); out = {}
+    for i, A in enumerate(LINK_ORDER):
+        for B in LINK_ORDER[i + 1:]:
+            if frozenset((A, B)) in ADJACENT or not W[A] or not W[B]:
+                continue
+            out[(A, B)] = min(segment_distance(a0, a1, b0, b1) - ra - rb for a0, a1, ra in W[A] for b0, b1, rb in W[B])
+    return out
+
+
+def self_collisions(frames, margin=SELF_MARGIN):
+    """[(linkA, linkB, clearance)] for every tested pair closer than its allowed minimum
+    (`margin`, or SELF_ALLOW for the two joint-crowded pairs). Empty = clear."""
+    return [(a, b, c) for (a, b), c in pair_clearances(frames).items() if c < SELF_ALLOW.get(frozenset((a, b)), margin)]
+
+
 IK_JOINTS = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex"]
 
 
@@ -199,11 +305,13 @@ def solve(joints, target_xyz, pitch=None, q0=None, plane_x=PAN_AXIS_X, margin=LI
         q, err, conv = ik(joints, target_xyz, pitch=pitch, q0=seed)
         if not conv:
             continue
-        lim_ok, _ = within_limits(joints, q); clear, rear, nbad = keepout_clear(fk(joints, q), plane_x, margin)
-        res = dict(q=q, raw=rad_to_raw(q), err=err, limits_ok=lim_ok, clear=clear, rear_x=rear, violations=nbad)
-        if lim_ok and clear:
+        f = fk(joints, q)
+        lim_ok, _ = within_limits(joints, q); clear, rear, nbad = keepout_clear(f, plane_x, margin); hits = self_collisions(f)
+        res = dict(q=q, raw=rad_to_raw(q), err=err, limits_ok=lim_ok, clear=clear, rear_x=rear, violations=nbad, self_hits=hits,
+                   ok=lim_ok and clear and not hits)
+        if res["ok"]:
             return res
-        if best is None or (lim_ok and not best["limits_ok"]) or rear > best["rear_x"]:
+        if best is None or (res["limits_ok"] + res["clear"] + (not hits)) > (best["limits_ok"] + best["clear"] + (not best["self_hits"])):
             best = res
     return best
 
@@ -238,9 +346,11 @@ def main():
     print("\n| Frame | x fwd (m) | y left (m) | z up (m) |\n|---|---|---|---|")
     for n, T in frames.items():
         print(f"| `{n}` | {T[0,3]:+.3f} | {T[1,3]:+.3f} | {T[2,3]:+.3f} |")
+    hits = self_collisions(frames)
+    print("\nself-collision: " + ("none" if not hits else "; ".join(f"{a}–{b} {c*1000:+.0f} mm" for a, b, c in hits)))
     ok, worst, nbad = keepout_clear(frames)
     print(f"\nkeep-out (behind the desk edge x = {DESK_EDGE_X:.4f} and outside the {UPPER_ARM_RADIUS} m cylinder, every part, {LINK_RADIUS} m body): {'CLEAR' if ok else f'BREACHED ({nbad} points)'} (rearmost point outside the cylinder x = {worst:+.3f} m)")
-    return 0 if ok else 1
+    return 0 if ok and not hits else 1
 
 
 if __name__ == "__main__":

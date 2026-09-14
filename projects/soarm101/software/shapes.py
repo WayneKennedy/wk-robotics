@@ -8,7 +8,8 @@ Usage:  shapes.py --shape square-yz|square-xy|square-xz|cube [--size 0.20] [--ce
 --centre is relative to the pan axis: metres forward, left, above the base plate. Every 1 cm
 along the shape is solved by IK (position + pitch, warm-started from the previous point) and must
 converge within 3 mm, sit inside the URDF and servo limits, clear the bench keep-out
-(kinematics.keepout_clear: nothing behind the desk edge outside the cylinder) and move no joint
+(kinematics.keepout_clear: nothing behind the desk edge outside the cylinder), be free of
+self-collision between the capsule hit boxes (kinematics.self_collisions) and move no joint
 more than 10° from the previous point; one failure anywhere and nothing moves. The arm first
 travels from its present pose to the shape's start on a guarded joint-space line (guarded_move.plan),
 then streams the loop at --rate Hz with joint-space interpolation between points. Guards as
@@ -72,8 +73,8 @@ def main():
     q0 = None; sols = []; worst = 0.0; rear = 9
     for i, p in enumerate(pts):
         r = K.solve(joints, p, pitch=np.radians(a.pitch), q0=q0)
-        if r is None or r["err"] > 0.003 or not r["limits_ok"] or not r["clear"]:
-            print(f"point {i} at {np.round(p, 3)}: " + ("no solution" if r is None else f"err {r['err']*1000:.1f} mm limits {r['limits_ok']} clear {r['clear']}") + " — refused"); return 1
+        if r is None or r["err"] > 0.003 or not r["ok"]:
+            print(f"point {i} at {np.round(p, 3)}: " + ("no solution" if r is None else f"err {r['err']*1000:.1f} mm limits {r['limits_ok']} keep-out {r['clear']} self-collision {[(a, b, round(c*1000)) for a, b, c in r['self_hits']]}") + " — refused"); return 1
         m = 3 / 360 * 4095
         if not all(cal[j]["range_min"] + m <= r["raw"][j] <= cal[j]["range_max"] - m for j in MOVING):
             print(f"point {i}: outside the servos' saved limits {r['raw']} — refused"); return 1

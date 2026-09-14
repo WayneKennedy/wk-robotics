@@ -677,10 +677,12 @@ The pattern that fits the family: the **reflex tier guarantees the arm cannot fo
 itself** (joint envelope + effort reflex, no perception needed, runs with the intent tier
 dead), and the **intent tier keeps it out of the world** (geometric model + perception). A
 policy or planner then commands only within what both allow. **SO-ARM101 is proving it
-first (its DEC-14, 2026-09-14):** forward kinematics from upstream's URDF, a keep-out plane
-over a capsule skeleton and a damped-least-squares IK, host-side Python in its
-`software/kinematics.py`, with a guarded move as the next step
-([roadmap](../projects/soarm101/docs/roadmap.md)). Whether MoveIt 2 or something lighter
+first (its DEC-14, 2026-09-14):** forward kinematics from upstream's URDF, a world keep-out
+(plane minus cylinder), **self-collision between capsule hit boxes fitted to upstream's
+collision meshes**, and a damped-least-squares IK, all host-side Python in its
+`software/kinematics.py`, checked at every sample of a plan before a move is commanded
+([roadmap](../projects/soarm101/docs/roadmap.md)). Capsules were chosen over meshes so the
+same test can later run on the reflex-tier MCU. Whether MoveIt 2 or something lighter
 carries the intent-tier check in the end is still open. **A split worth keeping (SO-ARM101,
 2026-09-14, after its arm reached back into a wall):** physical clearance around the robot —
 the sweep of the links nearest the base — is the *installer's* space, kept free by placement

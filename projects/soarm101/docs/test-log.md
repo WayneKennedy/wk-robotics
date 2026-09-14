@@ -10,6 +10,39 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Self-collision: capsule hit boxes from upstream's meshes, validated offline
+
+**Conditions:** no servo touched. `software/kinematics.py` gains a capsule per collision mesh
+in upstream's `so101_new_calib.urdf` (17 capsules over 7 links, fitted 2026-09-14: PCA
+axis, radius = the largest perpendicular vertex distance, ends pulled in until the caps
+just cover every vertex — so every capsule contains its whole mesh and the test is
+conservative), placed by the forward kinematics, with the closest-segment distance between
+every non-adjacent link pair. A pair "collides" when its capsules overlap.
+
+**Calibrated against poses the arm ran through contact-free today** (the first target, the
+square and the cube, sampled every 1 cm): three joint-crowded pairs overlap slightly there
+because the capsules are fat at the joints, and get an allowance — lower arm–gripper
+−14 mm seen, −15 allowed; shoulder–lower arm −17 seen, −20 allowed; upper arm–wrist −1 seen,
+−10 allowed. Two pairs overlap in every pose by construction and are not tested (base–upper
+arm, wrist–jaw). No margin on top: the capsules already cover the meshes.
+
+| Pose | Verdict |
+|---|---|
+| calibration mid, URDF zero, first target | clean |
+| 20 cm square path, 12 cm cube path (81 and 193 points) | clean — both dry runs accepted |
+| owner's turret-pointing pose (earlier entry) | **9 pairs overlapping**, worst shoulder–gripper −70 mm, base–gripper −63 mm |
+| a joint-space plan from mid to that pose | **refused at step 67 of 88**, lower arm–gripper −15 mm, before anything moves |
+| folded rest pose | 10 pairs overlapping — a real contact pose, correctly flagged |
+| 50 random in-limit poses through IK | 36 accepted, 11 refused by the checks, 70 ms per solve with all checks |
+
+The checks now run in the same place as the keep-out: IK acceptance (`solve`), every sample
+of a guarded plan, every point of a shape. Not verified live: no move was made after the
+change; the next live move is the first end-to-end run of the full check.
+
+**Changed as a result:** roadmap milestone 4 self-collision item done for one arm; what
+remains geometric is the desk surface (moves from the rest pose) and the second arm's hit
+boxes in the same check (DEC-15).
+
 ### 2026-09-14 · A hand-set pose that passes the keep-out and points the gripper into the turret
 
 **Conditions:** torque off, pose set by the owner to make the point; bench camera frame and

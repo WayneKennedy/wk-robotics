@@ -11,8 +11,9 @@ where the gripper lies against the base (docs/hardware.md → Bench).
 Precondition: torque ON and holding (hold_test.py --keep). Never toggles torque; nothing here
 writes EEPROM. Plan: straight line in joint space from the present pose to the goal (via the
 calibration mid pose first with --via-mid), sampled every --deg-per-step; every sample must be
-inside the URDF limits, inside the servos' saved (shrunk) limits less 3°, and clear of the bench
-keep-out plane (kinematics.py). A plan that fails anywhere is refused before anything moves.
+inside the URDF limits, inside the servos' saved (shrunk) limits less 3°, clear of the bench
+keep-out, and free of self-collision between the capsule hit boxes (kinematics.py). A plan that
+fails anywhere is refused before anything moves.
 Execution streams the samples as goals at --rate Hz so the servos track the checked line rather
 than each racing to the end at its own speed. Guards while moving, as extents_cycle.py: tracking
 error, current, temperature — on a trip the goal is rewritten to the present position and the
@@ -49,12 +50,12 @@ def plan(joints, cal, start_raw, goal_raw, deg_per_step, margin_deg=3.0):
         q = K.raw_to_rad(raw); frames = K.fk(joints, q)
         lim_ok, bad = K.within_limits(joints, {j: q[j] for j in MOVING})
         cal_ok = all(cal[j]["range_min"] + m <= raw[j] <= cal[j]["range_max"] - m for j in MOVING)
-        clear, rear, _ = K.keepout_clear(frames)
-        good = lim_ok and cal_ok and (clear or (k == 0))       # a breached START is tolerated only if the first step improves
-        if k == 1 and not clear and rear <= rows[0][3]:
-            good = False
+        clear, rear, _ = K.keepout_clear(frames); hits = K.self_collisions(frames)
+        good = lim_ok and cal_ok and clear and not hits
         ok &= good; samples.append(raw)
-        rows.append((k, raw, "ok" if good else ("urdf-limit " + str({j: round(v) for j, v in bad.items()}) if not lim_ok else "servo-limit" if not cal_ok else f"keep-out {rear:+.3f}"), rear))
+        why = ("ok" if good else "urdf-limit " + str({j: round(v) for j, v in bad.items()}) if not lim_ok else "servo-limit" if not cal_ok
+               else f"keep-out {rear:+.3f}" if not clear else "self-collision " + "; ".join(f"{a.split('_')[0]}–{b.split('_')[0]} {c*1000:+.0f} mm" for a, b, c in hits))
+        rows.append((k, raw, why, rear))
     return samples, rows, ok
 
 
@@ -100,7 +101,9 @@ def main():
             print("IK: no converged solution"); return 3
         print(f"IK: residual {r['err']*1000:.1f} mm, limits {'ok' if r['limits_ok'] else 'VIOLATED'}, keep-out {'clear' if r['clear'] else 'BREACHED'} (rear x {r['rear_x']:+.3f}); "
               f"q° {{{', '.join(f'{j}: {np.degrees(v):+.1f}' for j, v in r['q'].items())}}}")
-        if not (r["limits_ok"] and r["clear"]):
+        if r["self_hits"]:
+            print("IK: self-collision at the goal: " + "; ".join(f"{a}–{b} {c*1000:+.0f} mm" for a, b, c in r["self_hits"]))
+        if not r["ok"]:
             print("goal itself is not acceptable — refusing"); return 3
         goal_raw = r["raw"]
     else:
