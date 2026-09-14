@@ -9,7 +9,7 @@ rest of the family is. Upstream's BOM with prices and vendors:
 | Part | Qty | Source, date | Note |
 |---|---|---|---|
 | Waveshare ST3215 12 V servo | 2 | Amazon, 2026-09-07 | Bought for koala-bot's bench, reallocated here 2026-09-09 ([`servos.md`](servos.md)). Price not recorded |
-| Feetech STS3215 12 V servo, 1/345 | 4 | RCmall via koala-bot, arrived 2026-09-12 | Four of koala-bot's twelve, reallocated here 2026-09-12 (DEC-09); ~£17.3 each landed per koala-bot `sourcing.md`. Each came with two metal horns, M3×6 horn screws and M2×6 case screws |
+| Feetech STS3215 12 V servo, 1/345 | 4 | RCmall via koala-bot, arrived 2026-09-12 | Four of koala-bot's twelve, reallocated here 2026-09-12 (DEC-09), **permanent since 2026-09-14** (backfill 6-pack ordered for koala-bot); ~£17.3 each landed per koala-bot `sourcing.md`. Each came with two metal horns, M3×6 horn screws and M2×6 case screws |
 | Waveshare Bus Servo Adapter (A) v1.1 | 1 | Amazon, 2026-09-07 | Upstream "Motor Control Board" (DEC-03) |
 | Feetech FE-URT-2 | 1 | Amazon, 2026-09-08 | Spare bus adapter; not required by the arm |
 | All 11 printed parts, PLA+ | — | family printer, 2026-09-06 → 09 | Three still to inspect or reprint ([`hardware.md`](hardware.md)) |

@@ -56,7 +56,9 @@ that was made. Recommendations offered and not accepted are open questions.
   for koala-bot that day become this arm's `elbow_flex`, `wrist_flex`, `wrist_roll` and
   `gripper`, commissioned the same day ([`servos.md`](servos.md)). Same part number as the
   two Waveshare units (model 777, 1/345), so the arm stays one uniform servo. The cost lands
-  on koala-bot: it now holds **eight of the twelve** its V1 limbs need and must re-order
+  on koala-bot: it now holds **eight of the twelve** its V1 limbs need. **Made permanent
+  2026-09-14 (owner): a further RCmall 6-pack was ordered to backfill koala-bot, so these
+  four stay in the arm.** Koala-bot must re-order
   ([koala-bot `bom.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/bom.md),
   OQ-16). Chosen over the OQ-01 recommendation (a dedicated 6-pack) because the arm can be
   finished now and the re-order is koala-bot's, whose limbs are months from assembly.
