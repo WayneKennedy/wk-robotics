@@ -104,8 +104,8 @@ so do not run it casually.
 4. **An EEPROM write only persists if the servo's `Lock` register is 0.** LeRobot's
    `enable_torque()` sets `Lock` = 1 and `disable_torque()` sets 0 (0.6.1 source), so any
    EEPROM write made while the arm is holding after `hold_test.py` lands in RAM and is lost
-   at power-off — the leading explanation of the limits lost on `wrist_flex` and `gripper`
-   (OQ-12). Write `Lock` = 0 first, write, read back, restore `Lock` = 1. **Re-read
+   at power-off — **confirmed 2026-09-14 as the cause of the limits lost on `wrist_flex` and
+   `gripper`** (OQ-12, a canary written with `Lock` = 1 was gone after a power cycle). Write `Lock` = 0 first, write, read back, restore `Lock` = 1. **Re-read
    calibration after every power cycle** and rewrite from the JSON before moving.
 
 **One process on the bus at a time.** Two of this repo's tools on `/dev/ttyACM0` together

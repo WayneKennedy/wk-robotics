@@ -156,6 +156,14 @@ default. A generic USB-TTL cable has separate TX and RX and no direction switchi
 will not drive these servos without a tri-state buffer — a purpose-made bus adapter is
 required, not optional.
 
+**EEPROM writes need the servo's `Lock` register at 0 (proven on SO-ARM101, 2026-09-14).**
+An STS3215 EEPROM register — ID, baud, homing offset, position limits — written while
+`Lock` = 1 reads back correctly and is **lost at power-off**. LeRobot 0.6.1's
+`enable_torque()` sets `Lock` = 1 and `disable_torque()` sets 0, so anything written while a
+robot is holding under LeRobot is silently temporary. Write `Lock` = 0, write, read back,
+restore `Lock` = 1; verify across a power cycle. Evidence:
+[SO-ARM101 `test-log.md`](../projects/soarm101/docs/test-log.md) (OQ-12).
+
 **Adapters in hand (2026-09-08):** a **Waveshare Bus Servo Adapter (A) v1.1** — the
 "Motor Control Board" in the SO-ARM100 BOM, so it is the SO-ARM101 part — and a
 **Feetech FE-URT-2**. Those two are the family's only adapters: the RCmall STS3215 6-packs

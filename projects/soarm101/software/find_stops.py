@@ -23,7 +23,8 @@ self-collision is NOT a veto — that contact is one of the things being measure
 predicted capsule touch against the base stops the sweep, as does the world keep-out; other
 overlaps are printed as the stop forms. Still set the other joints first so that JOINT's sweep is sensible (docs/servos.md).
 Results are appended to --out as {joint: {min, max, zero, span_deg, date}} and printed with
-the suggested limits (stop ∓ 3°); nothing is written to a servo's EEPROM here.
+the suggested limits (stop ∓ 3°); nothing is written to a servo's EEPROM here — the temporary
+widening of the joint's limits is written with the EEPROM Lock closed, so it lives in RAM only.
 """
 import argparse
 import json
@@ -79,7 +80,11 @@ def main():
     # servo EEPROM limits would clamp the sweep short of the stop: read them, widen to the ceilings for
     # the run (RAM write of an EEPROM register — restored afterwards, and re-verified by the tools anyway)
     lim0 = (b.read("Min_Position_Limit", j, normalize=False, num_retry=5), b.read("Max_Position_Limit", j, normalize=False, num_retry=5))
-    print(f"servo limits {lim0} → widened to ({max(0, ceil['min'])}, {min(4095, ceil['max'])}) for the sweep")
+    # the widening must never persist: close the EEPROM lock first, so these writes land in RAM only
+    # and a crash followed by a power cycle brings back the saved limits (OQ-12: Lock 1 → RAM only)
+    b.write("Lock", j, 1, normalize=False, num_retry=5)
+    assert b.read("Lock", j, normalize=False, num_retry=5) == 1, "could not close the EEPROM lock — not widening limits"
+    print(f"servo limits {lim0} → widened IN RAM ONLY (Lock 1) to ({max(0, ceil['min'])}, {min(4095, ceil['max'])}) for the sweep")
     b.write("Min_Position_Limit", j, max(0, ceil["min"]), normalize=False, num_retry=5)
     b.write("Max_Position_Limit", j, min(4095, ceil["max"]), normalize=False, num_retry=5)
     b.write("Torque_Limit", j, a.torque, normalize=False, num_retry=5)

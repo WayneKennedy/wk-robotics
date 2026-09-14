@@ -145,7 +145,11 @@ and not yet accepted. Do not build against one without the owner deciding.
   bus check passes ([`test-log.md`](test-log.md)). The pitfalls were the CH343 driver
   (install WCH's VCP driver) and FD's baud, which must be set to 1 000 000 before Search.
 - **OQ-12 — Why the shrunk position limits on `wrist_flex` and `gripper` (units D and F)
-  do not persist across a power cycle.** Written 2026-09-12 with matching read-back, gone at
+  do not persist across a power cycle.** **Resolved 2026-09-14: the EEPROM `Lock` register.** A write made
+  with `Lock` = 1 reads back correctly and is lost at power-off, and LeRobot's
+  `enable_torque()` sets `Lock` = 1. Proven by a canary (written with `Lock` 1, gone after a
+  power cycle) against limits written with `Lock` 0 (kept). Rule in [`servos.md`](servos.md)
+  rule 4. History: Written 2026-09-12 with matching read-back, gone at
   the next power-up; rewritten with protection flags clear, matching read-back, gone again
   by 2026-09-14. The other four servos keep theirs, and every servo keeps its homing offset.
   `Lock` read 0 on all six that morning. Rewritten again 2026-09-14 with torque off and status 0
@@ -153,9 +157,8 @@ and not yet accepted. Do not build against one without the owner deciding.
   `enable_torque()` writes `Lock` = 1 (and `disable_torque()` 0), so an EEPROM write made
   while the arm holds lands in RAM only; all six read `Lock` = 1 after `hold_test.py`. The
   new limits were written with `Lock` = 0 explicitly. **Half confirmed 2026-09-14:** limits written with `Lock` = 0 survived a
-  power cycle on all six. **The other half is on test:** a canary written with `Lock` = 1
-  (`wrist_roll` max 4095 → 4094) should read 4095 after the next power cycle; OQ-12 closes
-  on that result ([`test-log.md`](test-log.md)). Candidates, none verified: a `Lock`-register semantics difference for these two
+  power cycle on all six. **Other half confirmed the same evening:** a canary written with
+  `Lock` = 1 (`wrist_roll` max 4095 → 4094) read 4095 after the next power cycle ([`test-log.md`](test-log.md)). Candidates, none verified: a `Lock`-register semantics difference for these two
   units; an EEPROM write window the servo needs before power-off; a write made in the
   unlogged 2026-09-13 session. The unlogged session also left `gripper`'s
   `Max_Torque_Limit` at 500 (others 1000) — intended or not is unrecorded.

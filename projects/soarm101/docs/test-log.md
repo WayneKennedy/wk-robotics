@@ -10,6 +10,29 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · OQ-12 resolved: EEPROM writes made with `Lock` = 1 are lost at power-off
+
+**Conditions:** second power cycle of the evening (owner), read-only check.
+
+**Result:** the canary — `wrist_roll` `Max_Position_Limit` written 4095 → 4094 with `Lock` = 1
+— **read 4095**: the write had lived in RAM only. Every other limit and homing offset, written
+with `Lock` = 0, still matched the JSON. Together with the first power cycle that closes
+OQ-12: **a Feetech STS3215 EEPROM register written while `Lock` = 1 reads back correctly and
+is lost at power-off, and LeRobot 0.6.1's `enable_torque()` sets `Lock` = 1** — which is how
+the 2026-09-12 shrink was lost on two servos and kept on four. At power-up `Lock` read 1 on
+all six again; three power-ups so far (0 → 0 that morning, 1 → 1 twice tonight) are
+consistent with the lock keeping its last value across power-off — consistent, not proven.
+
+**Tools audited for EEPROM writes:** `calibrate.py home` opens the lock (LeRobot's
+`disable_torque()`) — homing offsets were always safe; `calibrate.py sweep-stop` wrote limits
+without it — fixed to call `disable_torque()` first; `shrink_limits.py` never opened it —
+retired (superseded by the measured limits); `find_stops.py` now closes the lock *before* its
+temporary widening so that widening can never persist; LeRobot's `setup_motor()` (used by
+`set_servo_id.py`) disables torque first — safe.
+
+**Changed as a result:** OQ-12 resolved; `servos.md` rule 4 and wk-robotics `common.md`
+state the rule; the three tools above fixed or retired.
+
 ### 2026-09-14 · New limits survive a power cycle; a canary for the other half of OQ-12
 
 **Conditions:** supply switched off and on by the owner, arm supported. Read-only register

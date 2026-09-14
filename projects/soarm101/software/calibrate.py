@@ -128,6 +128,7 @@ def cmd_sweep_stop(a):
                                 range_min=mins[m], range_max=maxes[m])
             for m, mm in r.bus.motors.items()
         }
+        r.bus.disable_torque()                 # writes Lock = 0: EEPROM writes made with Lock 1 are lost at power-off (OQ-12)
         r.bus.write_calibration(r.calibration)
         r._save_calibration()
         print(f"calibration written to servos and saved to {r.calibration_fpath} ({sw['samples']} samples)")

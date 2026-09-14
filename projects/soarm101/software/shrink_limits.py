@@ -9,6 +9,7 @@ servos' Min/Max_Position_Limit and back to the JSON, and mirrors the JSON into
 software/calibration/. Homing offsets are untouched. Owner's rule 2026-09-12: 10 % each end.
 """
 import argparse
+import sys
 import json
 import shutil
 from pathlib import Path
@@ -19,6 +20,11 @@ HERE = Path(__file__).resolve().parent
 
 
 def main():
+    # RETIRED 2026-09-14. The blanket 10 % shrink is superseded by measured stops ∓ 3°
+    # (find_stops.py, docs/servos.md). And this tool never opened the EEPROM Lock: its writes
+    # persisted only on servos whose Lock happened to be 0 — the cause of OQ-12 on 2026-09-12.
+    print("shrink_limits.py is retired: limits are now the measured stops ∓ 3° (find_stops.py; docs/servos.md), "
+          "and this tool wrote EEPROM without opening the Lock (OQ-12)."); return 2
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--fraction", type=float, default=0.10)
     ap.add_argument("--port", default="/dev/ttyACM0")
@@ -57,4 +63,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
