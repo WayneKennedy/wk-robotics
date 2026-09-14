@@ -102,20 +102,15 @@ wiring and cable reach, then validate NVMe cold boot plus concurrent inference/s
 operation. Select target workloads to assess the Jetson memory need.
 No architecture change decided.
 
-### koala-bot on the GPU workstation has uncommitted work — 2026-09-13
+### The GPU workstation holds no robotics checkouts — 2026-09-14
 
-Its checkout there had 31 modified files at the first check that day and 59 a few hours
-later: work in progress on that machine, one commit behind origin. Not looked at; not
-touched. Its links to `wk-devastator` and `wk-soarm101` were therefore **not** rewritten
-to the new `projects/` paths; the archived repos keep those URLs alive until koala-bot is
-next edited. Reconcile before koala-bot work on either machine. Resolves when that work
-is committed and pushed.
-
-Everything else on that machine was brought current the same day: `wk-robotics` and
-`wk-drones` pulled (the latter renamed from its old directory name and remote), and the
-`3d-printing` clone, which sat on a pre-redaction history with no common ancestor and
-nothing local, was deleted and re-cloned. The hexapod's Pi was unreachable, so its
-`wk-hexapod` checkout was not checked; pull there before hexapod work.
+Owner-reported 2026-09-14: the koala-bot clone on the GPU workstation was committed,
+pushed and deleted, and that machine no longer has any robotics repo checked out. This
+workstation is now the sole working folder for every robotics repo, koala-bot included.
+`koala-bot` origin `main` is `cacc81c` (2026-09-12); nothing newer arrived, so its links
+to `wk-devastator` and `wk-soarm101` are still the archived-repo URLs and will be
+rewritten on the next koala-bot edit. The hexapod's Pi still carries its own `wk-hexapod`
+checkout; pull there before hexapod work. Resolves when the koala-bot links are rewritten.
 
 ### Surplus drive hardware — home undecided
 
