@@ -35,9 +35,15 @@ by the next dry run before anything moved, fixed, all three compile.
 torque-300 stop sweeps and lifting the arm off its forward stop; while holding it drew ~6 mA
 at +5 counts and stayed at 47 °C over 20 s.
 
-**Open:** the roll zero (camera-top at 1362 is the candidate) and the roll's travel — its
-stop measured with `find_stops.py`, which does not yet sweep the roll and must respect the
-encoder wrap at 0 / 4095.
+**At the placeholder zero (raw 2035) the owner judged the camera canted about 45°, left side
+of frame down** — consistent, by eye, with the 59° the counts put between 2035 and the
+camera-top orientation at 1362. Owner: "I don't see it being a problem" — a camera cant is a
+fixed mounting offset, correctable in software.
+
+**Open:** the roll zero should follow the URDF's definition (where the moving jaw sits at
+roll 0), with the camera recorded as an offset from it — not chosen by the camera; and the
+roll's travel — its stop measured with `find_stops.py`, which does not yet sweep the roll
+and must respect the encoder wrap at 0 / 4095.
 
 ### 2026-09-14 · Pan checked with a square: straight-ahead is the stop midpoint
 
