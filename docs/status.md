@@ -9,7 +9,7 @@ This is a *state* document, not a log. When an item resolves, delete it; when it
 to one project, move it to that project's repo and leave a link. It is not a transcript —
 see [`AGENTS.md`](../AGENTS.md#what-does-not-belong-here).
 
-**Last reviewed: 2026-09-14.**
+**Last reviewed: 2026-09-14 (evening).**
 
 ---
 
@@ -124,20 +124,26 @@ or the parts are allocated elsewhere.
 
 ### SO-ARM101 is the reflex-tier proving ground
 
-Decided 2026-09-12 (wk-soarm101 DEC-12): once the LeRobot loop has been run on the arm, its
+Decided 2026-09-12 (SO-ARM101 DEC-12) and brought forward 2026-09-14 (DEC-14: the LeRobot
+phase ends at calibration; the runtime is a Teensy 4.1 on micro-ROS into ROS 2): the arm's
 servo bus moves to a Teensy 4.1 to develop the MCU-drives-the-bus pattern before koala-bot
 and wk-devastator depend on it. Cross-project because what it proves feeds
 [`common.md` → Compute](common.md#compute-the-two-tier-split) and the topic contract. Which
-Teensy is open; the unallocated 4.1 NE in the pool is the candidate. Resolves when the
-arm moves under an MCU and the lesson lands in `common.md`.
+Teensy, the bus connection, the agent host and the ROS 2 distribution are open (the arm's
+OQ-09); the unallocated 4.1 NE in the pool is the candidate. Resolves when the arm moves
+under an MCU and the lesson lands in `common.md`.
 
-### Collision awareness — no robot here has it
+### Collision awareness — SO-ARM101 has a first, host-side version
 
 Raised 2026-09-12: joint limits cannot prevent self-collision, and no stack in the family
 models geometry at runtime. The layered picture and where each layer sits in the two-tier
 split are in [`common.md` → Collision awareness](common.md#collision-awareness--open-family-wide).
-Resolves when one robot carries a working joint envelope on its reflex tier and the lesson
-is written back here.
+**Since 2026-09-14 SO-ARM101 carries a world keep-out in host Python** — forward kinematics
+from upstream's URDF, a plane-minus-cylinder forbidden region checked on every link, IK, and
+guarded moves that traced a square and a cube ([its roadmap, milestone 4](../projects/soarm101/docs/roadmap.md)).
+Still to come there: the arm's own base modelled, and the check moved to the reflex tier.
+Resolves when one robot carries a working envelope on its reflex tier and the lesson is
+written back here.
 
 ### Untracked terrain files on the workstation
 

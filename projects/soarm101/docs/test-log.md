@@ -26,7 +26,10 @@ the loop streamed at 20 Hz, tool speed 5 cm/s, `Goal_Velocity` 800.
 | 12 cm cube, all 12 edges (16 traversals) | 0.30, 0, 0.06 m | 30° | 193 | 2 | 84 s | 351 | 38 | 11.8–12.0 V |
 
 Worst IK residual 1.0 mm on both; no tracking, current or temperature trip in the runs
-above. **A 20 cm cube is not reachable**: every placement tried puts the near-bottom
+above. A later open-ended cube run (`--loops 0`, stopped by its stop file after two loops
+at the owner's word: 44 s and 86 s, peaks 312 and 325 mA, 38 °C, 11.9–12.0 V) held in
+place on the stop file and torque was then released servo by servo — all six status 0,
+0 mA, 35–38 °C. **A 20 cm cube is not reachable**: every placement tried puts the near-bottom
 corners past the elbow's shrunk maximum (3779 with the 3° margin) or beyond reach; 15 cm
 cubes fail the same way; 12 cm at 30 cm ahead is the largest that solves. **The camera
 view was not compared against the model for these runs** — the tool positions are the
