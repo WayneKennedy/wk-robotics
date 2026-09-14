@@ -127,7 +127,14 @@ and not yet accepted. Do not build against one without the owner deciding.
   agent and ROS 2 (this workstation, or a Pi 5 from the fleet), which ROS 2 distribution,
   where the geometric check runs (the keep-out and IK in `software/kinematics.py` are
   host-side Python today; the family pattern puts the joint envelope on the MCU and the
-  world check on the host), and whether the tank's MCU takes over on mounting. **Compute budget (2026-09-14: host measured, Teensy estimated).** Host Python, per call:
+  world check on the host), and whether the tank's MCU takes over on mounting. **How the Teensy reaches the bus:** the two front ends and the 3.3 V caveat are in
+  [wk-robotics `common.md` → Configuring a servo](../../../docs/common.md#configuring-a-servo--true-for-every-sts-project).
+  **Recommendation, not decided (2026-09-14):** the Waveshare board on channel A first — in
+  hand, it does the direction switching and power, and flips back to the PC tools — once its
+  header's logic level has been metered; the Teensy's own half-duplex UART later, if the arm
+  moves onto a robot.
+
+  **Compute budget (2026-09-14: host measured, Teensy estimated).** Host Python, per call:
   forward kinematics 121 µs; self-collision 883 µs (13 link pairs, 75 capsule-pair tests);
   keep-out 106 µs; numeric IK, one seed 1.4 ms; multi-seed solve with all checks 4.5 ms near
   the working pose, ~70 ms averaged over random poses where failing seeds run to their

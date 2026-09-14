@@ -156,6 +156,19 @@ default. A generic USB-TTL cable has separate TX and RX and no direction switchi
 will not drive these servos without a tri-state buffer — a purpose-made bus adapter is
 required, not optional.
 
+**Driving the bus from an MCU — open (2026-09-14).** The STS3215 has no PWM input: an MCU
+drives the same half-duplex bus the USB adapters do, through one of two front ends. **(a)** The
+**Waveshare Bus Servo Adapter (A) with its jumpers on channel A**, the MCU's UART on the board's
+header: the board does the direction switching and keeps the 12 V power path, and moving the
+jumpers back to B returns the bus to a PC. **(b)** The **MCU's own UART in single-wire
+half-duplex mode** (Teensyduino offers one — to verify on a Teensy 4.x) through a
+level-shifting buffer, with the chain powered straight from the supply. **Teensy 4.x pins are
+3.3 V and not 5 V tolerant**, and neither the bus's idle signal level nor the Waveshare header's
+logic level is recorded here — meter both before a Teensy is wired to either. Either way the bus
+takes one master at a time: with the MCU on it, the PC tools cannot reach the servos. SO-ARM101
+is the first to do this (its OQ-09); koala-bot's plan of one Teensy UART per voltage segment
+(its DEC-22) faces the same choice.
+
 **EEPROM writes need the servo's `Lock` register at 0 (proven on SO-ARM101, 2026-09-14).**
 An STS3215 EEPROM register — ID, baud, homing offset, position limits — written while
 `Lock` = 1 reads back correctly and is **lost at power-off**. LeRobot 0.6.1's
