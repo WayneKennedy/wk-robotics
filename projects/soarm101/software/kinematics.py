@@ -21,7 +21,7 @@ matches the URDF's span yet its zero is 4.8° off its stop midpoint (level + tap
 pan ~1° (midpoint, confirmed with a square off the desk edge), shoulder ~1° (level), elbow ±1.5° (level +
 tape), wrist ±2° (level on the gripper + tape). Tape check at one pose after the corrections:
 reach 24.9 cm, exact; height within the jaw-point ambiguity. Verify against a physically set zero pose before trusting a limit to a few
-degrees; wrist_roll and gripper are placeholders. Hand-set zero pose 2026-09-14 agreed
+degrees; wrist_roll measured from the moving jaw (±3°); gripper zero = its closed stop. Hand-set zero pose 2026-09-14 agreed
 within 9° on the four pitch/pan joints and fixed the pan and wrist_flex signs
 (docs/test-log.md). Treat the zero as ±10° until a hard-stop measurement replaces it.
 """

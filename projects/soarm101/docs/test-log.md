@@ -21,21 +21,22 @@ so roll 0 is 27.2° further anticlockwise: **raw 2851**.
 roll positions, using upstream's camera URDF mount origin (119° anticlockwise of 12 o'clock at
 roll 0):
 
-| Roll raw | Model with zero 2851 (jaw / mount; 0 = up, − = anticlockwise from behind) | Owner |
+| Roll raw | Model with zero 2851 (0° = up; − = anticlockwise, seen from behind) | Owner |
 |---|---|---|
-| 1362 | model jaw +91°, mount +12° (0 = up, − = anticlockwise from behind) | mount on top (owner |
-| 2035 | model jaw +32°, mount -47° (0 = up, − = anticlockwise from behind) | jaw up-right, mount NW ~45° (owner |
-| 2542 | model jaw -13°, mount -92° (0 = up, − = anticlockwise from behind) | jaw 13° anticlockwise of 12 (owner), screws facing the bench camera |
+| 1362 | jaw +91°, mount +12° | mount on top |
+| 2035 | jaw +32°, mount −47° | jaw up and to the right; mount north-west, about 45° |
+| 2542 | jaw −13°, mount −92° | jaw 13° anticlockwise of 12 o'clock; screws facing the bench camera (about 9 o'clock) |
 
 All agree within the eye's accuracy (~5°), so the zero is good to about ±3°. **This corrects the
 previous entry**, which compared the owner's mount reading with upstream's camera *body*
 (85° anticlockwise) instead of its *mount origin*, and wrongly concluded the mounts differ;
 they match. The placeholder zero was about 70° off, not 85°.
 
-**Consequence — the encoder wrap:** the servo range 0–4095 spans -251° … +109° of roll about this zero (URDF −157…+163). So anything past +109° crosses the
-encoder wrap and cannot be commanded. Where the moulded stop sits in that range is still
-unmeasured; if the travel is wanted centred in the encoder range, the roll's homing offset
-must be rewritten (an EEPROM write — `Lock` 0 first, OQ-12).
+**Consequence — the encoder wrap:** about this zero the servo's 0–4095 spans −251° … +109° of
+roll (the URDF allows −157° … +163°), so anything past +109° crosses the encoder wrap and cannot
+be commanded. Where the moulded stop sits in that range is still unmeasured; if the travel is
+wanted centred in the encoder range, the roll's homing offset must be rewritten (an EEPROM
+write — `Lock` 0 first, OQ-12).
 
 ### 2026-09-14 · Wrist roll zero: the placeholder is ~85° off; the moving jaw is the reference
 
@@ -48,7 +49,9 @@ by roughly 85° if "up and to the right" is about 45°.
 from on top to north-west, and positive URDF roll also turns the jaw anticlockwise in the
 model — sign +1 holds; only the zero is off.
 
-**The camera is not a usable reference for the zero.** Upstream's camera URDF
+**The camera is not a usable reference for the zero** — *wrong, corrected in the next entry up:
+this compared the owner's mount reading with upstream's camera body, not its mount origin; the
+mounts match.* Upstream's camera URDF
 (`so101_new_calib_camera.urdf`) places its wrist camera 45° anticlockwise of the moving jaw;
 the owner's placeholder screws put this build's mount about 90° from the jaw. Upstream's
 camera variant uses a different mount (`wrist_camera_mount_so101_v1`) from the hex-nut

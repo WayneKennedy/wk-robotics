@@ -125,8 +125,7 @@ for `shoulder_lift` and `elbow_flex` follow from the folded rest pose reading at
 minimum and maximum respectively; pan and wrist_flex signs were fixed by a hand nudge in a
 known direction; a hand-set zero pose agreed with the sweep midpoints within 9° on all four
 (2026-09-14, [`test-log.md`](test-log.md)). **The zero is good to about ±10°** until each
-joint is measured against its hard stops. `wrist_roll` and `gripper` zeros are
-**unverified placeholders**. The values and their provenance are in the module's
+joint is measured against its hard stops. `wrist_roll`'s zero was set the same evening from the moving jaw (2851, ±3°, [`test-log.md`](test-log.md)); the gripper's zero is its closed stop, and its jaw gap is calibrated in `software/calibration/gripper_gap.json`. The values and their provenance are in the module's
 `JOINT_ZERO` table — the one place they live.
 
 The four measured zeros (pan, shoulder, elbow, wrist flex) superseded the sweep-midpoint
