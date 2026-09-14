@@ -88,6 +88,26 @@ CAD.
 
 Named as later personal builds in `koala-bot/docs/backlog.md`. Nothing decided.
 
+**Quadruped leg layouts, noted 2026-09-14** while comparing the original SpotMicro
+([KDY0523, Thingiverse thing:3445283](https://www.thingiverse.com/thing:3445283), 12 ×
+MG996R) with Orion, the read-only clone recorded in
+[`status.md`](status.md#orion-quadruped-upstream-clone--purpose-not-yet-recorded):
+
+- **SpotMicro** carries the knee servo in the upper leg and drives the shin directly off
+  its horn (per the SpotMicroAI assembly guide for the same frame). Distal mass moves
+  with every step.
+- **Orion** co-locates the femur and tibia servos at the shoulder: the femur sits on one
+  horn, the other drives a bellcrank and a long link down to the knee (`Bellcrank`,
+  `Linkage_Long`, `Linkage_Short` in its `models/`). Its firmware IK (`LegIK.c`) has to
+  add the femur angle back into the tibia servo command because of that coupling. The
+  leg below the shoulder is passive printed parts and bearings only.
+
+Relevance to koala-bot: its V1 rear knees are active with the STS3215 at the knee
+(koala-bot DEC-31), and its own sizing notes already flag distal mass as the cost.
+A shoulder-mounted knee servo with a link is the alternative; it is a closed loop, so
+[CAD motion study, not URDF](common.md#modelling-and-simulation). Not a V1 change —
+recorded so it is not re-derived.
+
 ---
 
 ## Externally designed builds
