@@ -74,8 +74,10 @@ and not yet accepted. Do not build against one without the owner deciding.
   ([wk-robotics `common.md` → Collision awareness](../../../docs/common.md#collision-awareness--open-family-wide)).
   This sits alongside, not instead of, the candidate below.
 
-  **Leading candidate, likely but not decided (owner, 2026-09-09): two followers
-  cooperating in one workspace.** Motivated by a real problem in large-scale industrial
+  **Decided 2026-09-14 (DEC-15): two arms 30 cm apart on the desk edge, coordinated by
+  planning against each other's geometry, each broadcasting its pose in ROS 2.** The
+  candidate as it stood before that, kept for its detail:
+  **Leading candidate (owner, 2026-09-09): two followers cooperating in one workspace.** Motivated by a real problem in large-scale industrial
   machinery — one arm places a pallet of components where a second arm can pick it up and
   load a machine — reproduced at desk scale and solved with current learned-policy
   ("Physical AI") methods rather than scripted coordination. What already exists for it:
@@ -152,6 +154,20 @@ and not yet accepted. Do not build against one without the owner deciding.
   units; an EEPROM write window the servo needs before power-off; a write made in the
   unlogged 2026-09-13 session. The unlogged session also left `gripper`'s
   `Max_Torque_Limit` at 500 (others 1000) — intended or not is unrecorded.
+
+- **OQ-13 — Who plans for two arms.** DEC-15 needs a move checked against both arms'
+  hit boxes along its path before it is commanded. Two shapes: **(a) one planner, one
+  planning scene, both arms as one 12-joint system on the host** — every plan sees both
+  arms' present and planned motion by construction; this is what MoveIt 2 does with a
+  planning group spanning two robots and what an industrial cell controller does; **(b)
+  two planners, one per arm, each subscribing to the other's joint states and published
+  trajectory** and re-planning on conflict — closer to "each arm knows the other's hit
+  box", but two independent planners can each yield to the other or each assume the
+  other yields. Either way each arm's reflex tier (Teensy, DEC-12) enforces its *own*
+  envelope without the host. Not decided; (a) is the recommendation because the failure
+  modes are simpler. Also open: the shared world frame between the two bases (the
+  mount spacing is a measurement, 30 cm along the desk edge), and whether the geometry
+  is capsules, convex hulls or the URDF meshes at runtime.
 
 ## Integration
 

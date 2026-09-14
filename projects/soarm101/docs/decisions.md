@@ -120,3 +120,18 @@ that was made. Recommendations offered and not accepted are open questions.
   candidate), how it reaches the bus, which host runs the agent and ROS 2, and which ROS 2
   distribution.
 
+- **DEC-15 — Endgame: two arms 30 cm apart on one desk edge, each broadcasting its pose
+  in ROS 2 and planning against the other's hit boxes.** (Owner, 2026-09-14.) Takes the
+  two-follower candidate that OQ-08 had carried as "likely but not decided" since
+  2026-09-09, reframed by DEC-14: the arms are coordinated by *planning against geometry*,
+  not by a learned policy. In the owner's terms, every part of each arm has a hit box; a
+  move is checked against every hit box — its own links, the base, and the other arm's —
+  along the interpolated path *before* it is commanded; and each arm tracks and
+  broadcasts its own position so both plan with the same picture. The mount spacing puts
+  each arm well inside the other's reach, so the check is not optional. What this fixes:
+  a second follower is now needed ([`sourcing.md`](sourcing.md)); the geometry work is
+  the path to it, with self-collision the next item ([`roadmap.md`](roadmap.md)). What
+  it leaves open: who plans — one planner over both arms as a single system, or two
+  planners that exchange trajectories (OQ-13); the second arm's identity and bus; and the
+  shared frame between the two bases.
+

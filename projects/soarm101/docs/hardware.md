@@ -122,4 +122,6 @@ takes these as world constraints.
   garage's light swings widely, so expect to retune
   ([wk-robotics `common.md` → Environment](../../../docs/common.md#environment)).
 - **Supply:** Eventek KPS3010D bench supply at 12.0 V, above.
+- **Intended layout (DEC-15):** a second arm on the same desk edge, **30 cm** from this one
+  along the edge — inside each other's reach. Not yet built.
 
