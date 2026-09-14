@@ -30,7 +30,10 @@ wrap. Roll zero **2455** (2851 − 396); camera-on-top ≈ 1101.
 
 **Limits:** servo `Min/Max_Position_Limit` 0–4095 → **134–3883** (stops ∓ 3°), written with
 `Lock` 0, read back matching, `Lock` 1 restored; both calibration JSONs updated; the model now
-takes the roll's limits from them too (`LIMIT_JOINTS`). **Not yet verified across a power cycle.**
+takes the roll's limits from them too (`LIMIT_JOINTS`). **Verified across a power cycle the
+same evening** (12 V only, USB left connected): all six servos' homing offsets and limits match
+the repo JSON and LeRobot's cache; roll at 2539, inside its stops; status 0 on all six,
+11.9–12.1 V; `Lock` read 1 at power-up, as it did at the two earlier power-ups that evening.
 
 ### 2026-09-14 · Wrist roll stop: one face at raw 496; the travel runs past the encoder wrap
 
