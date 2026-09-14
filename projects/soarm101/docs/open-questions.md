@@ -36,7 +36,9 @@ and not yet accepted. Do not build against one without the owner deciding.
   Basis: upstream's 5 A minimum; measured peaks of 2 A on `shoulder_lift` lifting the arm and
   ~0.6 A on the elbow and pan; 16 A all-stalled, which is the fuse's job. The 0.9 V sag seen
   at < 1 A on the 3S pack says the current path (pack lead, terminals) needs checking whatever
-  the source.
+  the source. On 2026-09-14 the bench ran from an **Eventek KPS3010D bench supply** (30 V / 10 A
+  class, adjustable current limit) at 12.0 V, reading 11.9–12.1 V at all six servos idle
+  ([`test-log.md`](test-log.md)) — a stiff bench source, not a decision on the arm's supply.
 
 ## Parts
 

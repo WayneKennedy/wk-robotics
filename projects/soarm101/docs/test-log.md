@@ -10,6 +10,31 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Reconnect on a bench power supply
+
+**Conditions:** arm at rest, torque off, Waveshare Bus Servo Adapter (A) on this host,
+`/dev/ttyACM0`. **First run on a mains bench supply**: Eventek KPS3010D (30 V / 10 A class)
+set to 12.0 V with the current limit turned down for a first look at the draw. LeRobot 0.6.1,
+`software/ping_bus.py --expect 1,2,3,4,5,6`. Read-only; no servo written.
+
+**Result:** `broadcast_ping()` complete, `{1..6: 777}`; `sync_read` answered for all six.
+
+| ID | Joint | V | Position (raw) | °C |
+|---|---|---|---|---|
+| 1 | `shoulder_pan` | 11.9 | 1880 | 31 |
+| 2 | `shoulder_lift` | 12.0 | 734 | 31 |
+| 3 | `elbow_flex` | 12.0 | 4074 | 31 |
+| 4 | `wrist_flex` | 12.1 | 2780 | 31 |
+| 5 | `wrist_roll` | 12.0 | 1397 | 31 |
+| 6 | `gripper` | 12.0 | 1354 | 32 |
+
+The rail at the servos matches the set point to within the register's 0.1 V resolution, so
+the supply was in constant-voltage mode at idle — the idle draw sits under the current limit
+set. Positions are pre-move rest positions and carry no meaning beyond "the arm is where it
+was left". The supply's own current readout was not recorded.
+
+**Changed as a result:** OQ-03 and `hardware.md` gain the bench-supply fact; nothing decided.
+
 ### 2026-09-12 · Assembled; calibrated with LeRobot's routine, stepwise
 
 **Conditions:** arm assembled per upstream's guide the same day (milestone 2), no camera,
