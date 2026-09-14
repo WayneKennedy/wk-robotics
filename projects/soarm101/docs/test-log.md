@@ -10,6 +10,20 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Pan checked with a square: straight-ahead is the stop midpoint
+
+**Conditions:** arm holding at the zero pose, torque on; owner laid a square off the desk edge:
+"the arm is as close to perpendicular to the edge as I can measure". Pan read **1985**.
+
+**Result:** the model puts that at **+0.35°** from the pan zero 1981 (the stop midpoint), so
+straight out from the desk edge *is* the stop midpoint, within the square's resolution (about a
+degree). The owner's earlier by-eye straight-ahead (2036) was the one that was off, by 4.8°. It
+also confirms what the keep-out assumes: the base is clamped square to the desk edge, so the
+desk-edge plane is perpendicular to the model's forward axis.
+
+**All four arm zeros are now checked against the world:** pan ~1° (square), shoulder ~1° (level),
+elbow ±1.5° (level + tape), wrist ±2° (level + tape).
+
 ### 2026-09-14 · Spirit level on the gripper: wrist zero moved +2.1°; all four arm zeros now checked
 
 **Conditions:** same zero pose, iPhone level along the long flat edge of the gripper's fixed
@@ -32,7 +46,7 @@ reach is exact at these zeros.
 
 | Joint | Zero | How | Good to |
 |---|---|---|---|
-| `shoulder_pan` | 1981 | stop midpoint | ±1.3° (the owner's by-eye straight-ahead read 2036, 4.8° away — unresolved) |
+| `shoulder_pan` | 1981 | stop midpoint, confirmed by a square off the desk edge (next entry up) | ~1° |
 | `shoulder_lift` | 1925 | stop midpoint, refined by the level | ~1° |
 | `elbow_flex` | 3031 | level on the forearm + tape | ±1.5° |
 | `wrist_flex` | 2070 | level on the gripper + tape | ±2° |

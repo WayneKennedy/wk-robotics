@@ -18,7 +18,7 @@ joint's mechanical stops found by find_stops.py, taken as the URDF zero by upstr
 new-calibration convention (zero at mid-travel) — then CHECKED with a spirit level at the zero
 pose the same evening. Equal span does not make the midpoint the zero: the elbow's travel
 matches the URDF's span yet its zero is 4.8° off its stop midpoint (level + tape agree). Now:
-pan ±1.3° (midpoint, span 2.6° over the URDF), shoulder ~1° (level), elbow ±1.5° (level +
+pan ~1° (midpoint, confirmed with a square off the desk edge), shoulder ~1° (level), elbow ±1.5° (level +
 tape), wrist ±2° (level on the gripper + tape). Tape check at one pose after the corrections:
 reach 24.9 cm, exact; height within the jaw-point ambiguity. Verify against a physically set zero pose before trusting a limit to a few
 degrees; wrist_roll and gripper are placeholders. Hand-set zero pose 2026-09-14 agreed
@@ -48,7 +48,7 @@ COUNTS_PER_RAD = 4095 / (2 * np.pi)
 
 # (raw count at URDF zero, sign, provenance)
 JOINT_ZERO = {
-    "shoulder_pan":  (1981, +1, "MEASURED 2026-09-14: midpoint of the mechanical stops 715 / 3247 (find_stops.py; span 222.6° vs URDF 220°). Was the sweep midpoint 2046; the owner's by-eye straight-ahead read 2036 — 4.8° from this, unresolved; sign verified 2026-09-14"),
+    "shoulder_pan":  (1981, +1, "MEASURED 2026-09-14: midpoint of the mechanical stops 715 / 3247 (find_stops.py; span 222.6° vs URDF 220°), CONFIRMED by a square off the desk edge — the arm perpendicular to the edge read within 0.4° of it. ~1°. The owner's earlier by-eye straight-ahead (2036) was 4.8° off; sign verified 2026-09-14"),
     "shoulder_lift": (1925, +1, "MEASURED 2026-09-14: stop midpoint 1920 (stops 723 / 3118), refined by a spirit level on the upper arm at the zero pose — 3.0° forward where 1920 predicted 3.4°. ~1° (iPhone level); sign from the rest pose"),
     "elbow_flex":    (3031, +1, "MEASURED 2026-09-14: NOT the stop midpoint 2976 — a spirit level on the forearm (+2° front up at the zero pose) and the tape reach (24.9 cm at the first target) both put the zero 3.4–6.2° above it; 3031 (+4.8°) is the middle of that band, ±1.5°. So the stops 1879 / 4074 sit at −101° / +92°: the travel has the URDF's span but is not centred on its zero"),
     "wrist_flex":    (2070, +1, "MEASURED 2026-09-14: NOT the stop midpoint 2046 (stops 881 / 3212) — a spirit level on the gripper's fixed jaw (+4° front up at the zero pose) and the tape reach (24.9 cm exactly) both want 2070 (+2.1°), ±2° (whether the jaw edge runs along the approach axis is unverified; the tape bounds it). Coincides with the 2026-09-12 sweep midpoint"),

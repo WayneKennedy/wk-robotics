@@ -53,9 +53,9 @@ gripper into the turret is refused before anything moves ([`test-log.md`](test-l
 Capsules were the owner's call: the links are regular enough, and a capsule test is what a
 Teensy can run. **Also done 2026-09-14:** mechanical stops measured on five joints and the
 servo limits set to stop ∓ 3° (replacing the blanket 10 % shrink); zeros from the stop
-midpoints — then checked with a spirit level: shoulder confirmed to ~1°, elbow moved +4.8° off its stop midpoint (±1.5°, level and tape agree), pan ±1.3°, wrist moved +2.1° (±2°, level and tape agree); the desk edge measured (25 mm ahead of the pan axis); the extents cycle retired
+midpoints — then checked with a spirit level: shoulder confirmed to ~1°, elbow moved +4.8° off its stop midpoint (±1.5°, level and tape agree), pan confirmed with a square off the desk edge, wrist moved +2.1° (±2°, level and tape agree); the desk edge measured (25 mm ahead of the pan axis); the extents cycle retired
 rather than rewritten. What remains for the milestone: a first live move with the full check
-(none made since the self-collision check went in); the pan zero's 4.8° disagreement with straight-ahead resolved (a set square off the desk edge); the desk surface modelled so moves can
+(none made since the self-collision check went in); the desk surface modelled so moves can
 start from the folded rest pose; the `wrist_roll` and `gripper` mappings, including the jaw
 gap in millimetres.
 
