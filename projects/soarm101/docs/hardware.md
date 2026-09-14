@@ -73,16 +73,17 @@ takes these as world constraints.
 
 - **Mount:** base clamped to a desk edge, free air in front of and below the base. The desk
   surface and whatever is on it lie behind.
-- **Keep-out (owner's rule, 2026-09-14): nothing on the arm goes behind the vertical plane
-  that rises from the base along the desk edge.** The plane is fixed in the world, not in
-  the pan frame — at ±90° pan the arm runs along it. **The desk edge is 25 mm ahead of the
-  pan axis** (owner's tape, 2026-09-14), so in the URDF base frame the plane is at
-  x = 0.0638 m (`kinematics.DESK_EDGE_X`). The upper arm's root straddles that plane in
-  every pose by construction of the mount; the check ignores a 50 mm region around the
-  shoulder pivot. **Open (owner to say): whether the rule means the link *bodies* stay
-  ahead of the edge (a 30 mm capsule margin — a vertical upper arm then overhangs by ~13 mm
-  and is refused; the arm must lean ≥14° forward) or the link *centrelines* do (a vertical
-  upper arm is allowed, its rear face ~2 cm over the desk).** The tools default to bodies. At the calibrated mid pose (all joints
+- **Keep-out (owner's rule, 2026-09-14, clarified the same day): the end-effector does
+  not reach behind the vertical plane that rises from the desk edge.** It is a rule on the
+  gripper, not on the links — the shoulder may tilt the upper arm behind the pan axis and
+  the forearm may follow. The plane is fixed in the world, not in the pan frame. **The desk
+  edge is 25 mm ahead of the pan axis** (owner's tape), so in the URDF base frame the plane
+  is x = 0.0638 m (`kinematics.DESK_EDGE_X`); `kinematics.keepout_clear` tests the tool
+  frame, the jaw tip and the moving-jaw hinge with a 30 mm body margin. Under this reading
+  the rest, mid, URDF-zero and first-target poses all pass, and a reach-back pose fails.
+  What the rule does *not* cover, and nothing models yet: the arm's own base and the desk
+  surface below the base plate — so no scripted move starts from the folded rest pose,
+  where the gripper lies against the base. At the calibrated mid pose (all joints
   2047) the upper arm leans ~20° *forward* into free air with the wrist and gripper above
   and ahead of the base (owner, confirmed on the bench camera 2026-09-14), so the park pose
   and the extents cycle stay clear of the plane. **No tool enforces the rule yet**; a

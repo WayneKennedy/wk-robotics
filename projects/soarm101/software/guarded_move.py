@@ -6,6 +6,8 @@ Usage:  guarded_move.py --target X,Y,Z [--pitch DEG]        tool frame in base m
         guarded_move.py --raw pan,lift,elbow,wrist          joint goal in raw counts
         [--via-mid] [--dry-run] [--deg-per-step 1.5] [--rate 20] [--port /dev/ttyACM0] [--id wk_soarm101]
 
+Not modelled: the arm's own base and the desk surface — do not plan from the folded rest pose,
+where the gripper lies against the base (docs/hardware.md → Bench).
 Precondition: torque ON and holding (hold_test.py --keep). Never toggles torque; nothing here
 writes EEPROM. Plan: straight line in joint space from the present pose to the goal (via the
 calibration mid pose first with --via-mid), sampled every --deg-per-step; every sample must be

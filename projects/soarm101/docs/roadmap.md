@@ -35,8 +35,8 @@ proven sequence.
 Replaces the LeRobot teleoperate-record-train milestone, dropped by DEC-14. The arm's own
 geometric model, host-side Python in `software/kinematics.py`: forward kinematics from
 upstream's `so101_new_calib.urdf`, a servo-count-to-angle mapping good to ±10°
-([`servos.md`](servos.md)), a keep-out check against the bench's vertical plane
-([`hardware.md`](hardware.md) → Bench) over a capsule skeleton of the links, and a
+([`servos.md`](servos.md)), a keep-out check of the end-effector against the bench's desk-edge plane
+([`hardware.md`](hardware.md) → Bench), and a
 damped-least-squares IK for the tool frame with pitch. Done so far: FK validated against the
 camera and the rest pose; the mapping checked against a hand-set zero pose; IK round-trips
 FK within 2 mm on 47 of 50 random poses ([`test-log.md`](test-log.md) 2026-09-14). Ends
@@ -46,8 +46,8 @@ it under the bench tools' stall, current and temperature guards — **`software/
 first run 2026-09-14, an IK target reached within 10 counts** ([`test-log.md`](test-log.md));
 what remains for the milestone is a measured check of the tool position against the world. Open on the way: the zero
 to better than ±10° (hard-stop measurement per joint), the `wrist_roll` and `gripper`
-mappings, the desk edge's true offset from the pan axis, and link bodies from the URDF's
-collision meshes instead of capsules.
+mappings, the desk edge's true offset from the pan axis, and a model of the arm's own base and the desk surface, so that
+moves can be planned from the folded rest pose (the URDF's collision meshes are the source).
 
 ## Milestone 5 — A Teensy 4.1-operated arm on micro-ROS *(DEC-12, DEC-14)*
 

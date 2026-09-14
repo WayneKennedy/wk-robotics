@@ -38,11 +38,12 @@ below the top of the base plate** — forward within 2 mm, height 2 cm high in t
 this reach 2 cm is ~5° of pitch across the chain, the size of the elbow residual at the
 hand-set zero; the count-to-angle zero (±10°) is the limiting error, not the URDF. **Also
 measured: the desk edge is 25 mm ahead of the pan axis**, which moves the keep-out plane to
-x = 0.0638 m in `kinematics.py` and brings the rule's meaning to a head: with link bodies
-kept ahead of the edge (30 mm margin) the URDF zero pose is refused (its vertical upper arm
-overhangs the edge by ~13 mm) and the upper arm must lean ≥14° forward; with centrelines
-only, it passes. The calibration mid and today's target pass either way; the rest pose
-fails either way. Open, owner to say ([`hardware.md`](hardware.md) → Bench).
+x = 0.0638 m in `kinematics.py`. A first reading of the rule as "no link body behind the
+edge" would have refused a vertical upper arm (13 mm overhang); **the owner clarified the
+same day that the rule is on the end-effector only**, so the check now tests the gripper
+alone: rest, mid, URDF zero and today's target all pass (rearmost tool x +0.126, +0.193,
++0.327, +0.247 m); a reach-back test pose (shoulder −40°, elbow −60°, wrist −30°) fails at
+−0.139 m ([`hardware.md`](hardware.md) → Bench).
 
 **Also corrected:** the elbow's "gravity lag" on every return to mid in the extents cycles
 (err +59) is the servo clamping at its shrunk minimum limit 2095: the calibration mid, 2047,
