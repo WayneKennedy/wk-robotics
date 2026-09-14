@@ -10,6 +10,24 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Arm set to the measured zero pose for a spirit-level check
+
+**Conditions:** after the second power cycle the arm hung limp with the shoulder on its
+forward stop (3104–3110, past the new limit 3083). `hold_test.py --keep` ramped to 1000 with
+no drift. `guarded_move.py` to every joint's measured zero (1981 / 1920 / 2976 / 2046).
+
+**Planner change:** the first plan was refused at its own start — the shoulder at 3104 reads
++104° by the model, and the plan rejected any sample outside the URDF's ±100° (less 3°), although
+the measured stop is further out. The plan now judges travel only against the measured servo
+limits (stops ∓ 3°, less a further 3°); the URDF limits stay in IK, where they keep chosen goals
+conservative. Re-planned: 70 steps, clean.
+
+**Reached:** pan 1985 (+4 counts), elbow 2978 (+2), wrist 2044 (−2), **shoulder 1959, 39
+counts (3.4°) short of 1920** — the horizontal forearm's moment pulls the upper arm forward and
+the servo's proportional-only control leaves that as steady error (the first target, with the
+forearm near vertical, held within 4). Model at the reached pose: pan +0.4°, shoulder +3.4°,
+elbow +0.2°, wrist −0.2°. Held under torque for the owner's level, desk not level (owner).
+
 ### 2026-09-14 · OQ-12 resolved: EEPROM writes made with `Lock` = 1 are lost at power-off
 
 **Conditions:** second power cycle of the evening (owner), read-only check.

@@ -11,7 +11,7 @@ where the gripper lies against the base (docs/hardware.md → Bench).
 Precondition: torque ON and holding (hold_test.py --keep). Never toggles torque; nothing here
 writes EEPROM. Plan: straight line in joint space from the present pose to the goal (via the
 calibration mid pose first with --via-mid), sampled every --deg-per-step; every sample must be
-inside the URDF limits, inside the servos' saved (shrunk) limits less 3°, clear of the bench
+inside the servos' saved limits (the measured stops ∓ 3°) less a further 3°, clear of the bench
 keep-out, and free of self-collision between the capsule hit boxes (kinematics.py). A plan that
 fails anywhere is refused before anything moves.
 Execution streams the samples as goals at --rate Hz so the servos track the checked line rather
@@ -48,7 +48,10 @@ def plan(joints, cal, start_raw, goal_raw, deg_per_step, margin_deg=3.0):
         raw = {j: int(np.clip(round(start_raw[j] + (goal_raw[j] - start_raw[j]) * t), cal[j]["range_min"] + m, cal[j]["range_max"] - m)) for j in MOVING}
         raw.update({j: start_raw[j] for j in ("wrist_roll", "gripper")})
         q = K.raw_to_rad(raw); frames = K.fk(joints, q)
-        lim_ok, bad = K.within_limits(joints, {j: q[j] for j in MOVING})
+        # travel is judged against the MEASURED servo limits (cal_ok, below; stops ∓ 3° since 2026-09-14),
+        # not the URDF's, which are narrower than this arm's real travel (shoulder by 10.5°, wrist 14.9°)
+        # and refused a start on the shoulder's own stop. IK still chooses goals inside the URDF limits.
+        lim_ok, bad = True, {}
         cal_ok = all(cal[j]["range_min"] + m <= raw[j] <= cal[j]["range_max"] - m for j in MOVING)
         clear, rear, _ = K.keepout_clear(frames); hits = K.self_collisions(frames)
         good = lim_ok and cal_ok and clear and not hits
