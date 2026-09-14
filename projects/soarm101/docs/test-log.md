@@ -10,6 +10,25 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · New limits survive a power cycle; a canary for the other half of OQ-12
+
+**Conditions:** supply switched off and on by the owner, arm supported. Read-only register
+check against `calibration/wk_soarm101.json`, then one deliberate test write.
+
+**Result:** limits and homing offsets on all six servos **match the JSON exactly** after the
+power cycle — the limits written with `Lock` = 0 earlier the same day persisted. At power-up
+every servo read `Torque_Enable` 0, `Goal_Position` 0 (as on 2026-09-12), status 0, and
+**`Lock` 1** — where the same check that morning, also after a power-up, read `Lock` 0. The
+last value written before power-off was 1 tonight and apparently 0 the night before, so the
+lock state may persist across power cycles; unverified. The arm went limp at power-off and
+the shoulder settled at 3110, against its forward stop (3118).
+
+**Canary:** `wrist_roll` `Max_Position_Limit` written 4095 → **4094** with `Lock` = 1 and
+torque off; reads 4094 (RAM). Harmless — the roll has no stop. **Prediction if the `Lock`
+explanation is right: 4095 after the next power cycle.** If it still reads 4094 the
+explanation is wrong, and the value must be put back to 4095 either way (the JSON says 4095;
+the tools refuse on a calibration mismatch).
+
 ### 2026-09-14 · Mechanical stops measured on five joints; limits rewritten; the EEPROM Lock
 
 **Conditions:** `software/find_stops.py`, one joint at a time, the others holding at full
