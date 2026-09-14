@@ -39,8 +39,10 @@ eleven. Upstream prints it as oriented with tree supports and 40 % infill; it ne
 M3 × 8 screws into those nuts and four of the servos' M2 screws for the camera board.
 Alternatives in the same folder: a one-piece `Wrist_Roll` replacement carrying the camera,
 a plug-on variant, and RealSense D405/D435 mounts. An overhead mount that keys into the
-arm's base is there too. All assume a **32 × 32 mm USB UVC camera module**; nothing is
-printed or bought yet (OQ-08, [`sourcing.md`](sourcing.md)).
+arm's base is there too. All assume a **32 × 32 mm USB UVC camera module**. **Two
+InnoMaker UVC boards are on order (2026-09-14, [`sourcing.md`](sourcing.md))** — one for
+this wrist provision, one for a workspace view; the mount is not printed yet, and the
+boards' hole pattern against the 32 × 32 mm assumption is checked when they arrive.
 
 ## Electronics in hand
 
