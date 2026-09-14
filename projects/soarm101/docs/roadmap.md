@@ -42,7 +42,9 @@ camera and the rest pose; the mapping checked against a hand-set zero pose; IK r
 FK within 2 mm on 47 of 50 random poses ([`test-log.md`](test-log.md) 2026-09-14). Ends
 with a **guarded move**: a goal is accepted only if the whole interpolated path from the
 present pose stays inside the joint limits and clear of the keep-out, and the arm executes
-it under the bench tools' stall, current and temperature guards. Open on the way: the zero
+it under the bench tools' stall, current and temperature guards — **`software/guarded_move.py`,
+first run 2026-09-14, an IK target reached within 10 counts** ([`test-log.md`](test-log.md));
+what remains for the milestone is a measured check of the tool position against the world. Open on the way: the zero
 to better than ±10° (hard-stop measurement per joint), the `wrist_roll` and `gripper`
 mappings, the desk edge's true offset from the pan axis, and link bodies from the URDF's
 collision meshes instead of capsules.

@@ -10,6 +10,42 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · First guarded move: IK target reached under path checking
+
+**Conditions:** arm set to roughly mid by hand (owner), Eventek bench supply 12.0 V,
+`hold_test.py --keep` (two passes — the first aborted its ramp at `Torque_Limit` 150 when
+the gripper and elbow, sitting just below their minimum limits, stepped up to them; the
+second ramped to 1000 with zero drift). Then `software/guarded_move.py --target
+0.239,0,-0.05 --pitch 90`: the tool frame 20 cm ahead of the pan axis, 5 cm below the base
+plate, approach axis straight down.
+
+**Plan:** IK residual 0.3 mm, solution in limits and clear; joint-space line from the
+present pose in 62 samples of ≤1.5°, every sample inside the URDF limits, inside the servos'
+shrunk limits less 3°, and clear of the keep-out plane (rearmost skeleton point +0.069 m
+throughout). Streamed at 20 Hz, `Goal_Velocity` 600, `Acceleration` 30.
+
+| Joint | Goal (raw) | Reached | Error |
+|---|---|---|---|
+| `shoulder_pan` | 2046 | 2047 | +1 |
+| `shoulder_lift` | 2195 | 2199 | +4 |
+| `elbow_flex` | 3142 | 3132 | −10 |
+| `wrist_flex` | 2578 | 2572 | −6 |
+
+Reached in 3.5 s, peak 13 mA sampled at 20 Hz, 36 °C, rail 12.0 V. Model's tool position
+from the reached counts: x +0.247, y +0.006, z −0.050 m. No guard tripped. Arm left holding
+there under torque. **The real tool position was not measured** — a tape from the pan axis
+and the base plate would be the first check of the FK against the world.
+
+**Also corrected:** the elbow's "gravity lag" on every return to mid in the extents cycles
+(err +59) is the servo clamping at its shrunk minimum limit 2095: the calibration mid, 2047,
+lies outside the elbow's shrunk range (noted 2026-09-12, not connected until today). The
+hold-test "drift" of the gripper (1324 → 1464) and elbow (2077 → 2095) at the first ramp
+step is the same clamp. Neither is a fault.
+
+**Changed as a result:** milestone 4's guarded move exists and has run once;
+`guarded_move.py` clamps planned samples into the servo range so a start at the calibration
+mid is accepted.
+
 ### 2026-09-14 · Kinematics module validated offline
 
 **Conditions:** no servo touched. `software/kinematics.py` against upstream
@@ -109,7 +145,7 @@ no current or temperature guard trip.
 |---|---|---|---|
 | `shoulder_pan` | 6 | 156 | 592 |
 | `shoulder_lift` | 21 | 578 | 630 |
-| `elbow_flex` | 59 (return to mid, gravity lag, as before) | 384 | 592 |
+| `elbow_flex` | 59 (return to mid — the servo clamping at its shrunk minimum 2095, not gravity; see the guarded-move entry) | 384 | 592 |
 | `wrist_flex` | 4 | 416 | 169 |
 | `wrist_roll` | 7 | 176 | 52 |
 | `gripper` | 4 | 39 | 32 |
