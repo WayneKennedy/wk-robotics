@@ -676,8 +676,12 @@ would sit in the [two-tier split](#compute-the-two-tier-split):
 The pattern that fits the family: the **reflex tier guarantees the arm cannot fold into
 itself** (joint envelope + effort reflex, no perception needed, runs with the intent tier
 dead), and the **intent tier keeps it out of the world** (geometric model + perception). A
-policy or planner then commands only within what both allow. Which robot proves it first,
-and whether MoveIt 2 or something lighter carries the intent-tier check, are open.
+policy or planner then commands only within what both allow. **SO-ARM101 is proving it
+first (its DEC-14, 2026-09-14):** forward kinematics from upstream's URDF, a keep-out plane
+over a capsule skeleton and a damped-least-squares IK, host-side Python in its
+`software/kinematics.py`, with a guarded move as the next step
+([roadmap](../projects/soarm101/docs/roadmap.md)). Whether MoveIt 2 or something lighter
+carries the intent-tier check in the end is still open.
 
 ## Power integrity
 

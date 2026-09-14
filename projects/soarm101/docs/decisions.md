@@ -99,3 +99,22 @@ that was made. Recommendations offered and not accepted are open questions.
   intended teleoperator; demonstrations come from one of the substitutes in OQ-02, or are
   scripted. Nothing for a leader is printed or bought, and the two-follower candidate under
   OQ-08 loses its "two leaders" line.
+
+- **DEC-14 — The LeRobot exploration ends at milestone 3; the geometry is developed here;
+  the runtime is a Teensy 4.1 running micro-ROS into ROS 2.** (Owner, 2026-09-14.) "Without
+  building a leader arm, there's not much more value from that codebase." Supersedes
+  DEC-08's sequencing and the part of DEC-12 that ran the LeRobot loop "in full": the
+  teleoperate-record-train milestone is dropped, and with it OQ-02 (demonstration source)
+  becomes moot. What LeRobot leaves behind stays: the calibration in the servos' EEPROM,
+  the `so101_follower` ID map (DEC-07), and its Feetech bus driver, which the bench tools in
+  `software/` keep using **as a library** until the Teensy takes the bus. Three things
+  follow: **(1)** the geometry work — forward kinematics from upstream's URDF, the count-to-angle
+  mapping, the keep-out plane and inverse kinematics — is this project's own code
+  ([`servos.md`](servos.md), `software/kinematics.py`), and this arm is the family's first
+  robot to carry a geometric check ([wk-robotics `common.md` → Collision awareness](../../../docs/common.md#collision-awareness--open-family-wide));
+  **(2)** DEC-12's open "micro-ROS or bare-metal first" closes as **micro-ROS**, the
+  family rule; **(3)** the arm's runtime stack is Teensy 4.1 (reflex) ↔ micro-ROS agent ↔
+  ROS 2 (intent). Not decided (OQ-09): which Teensy 4.1 (the unallocated 4.1 NE is the
+  candidate), how it reaches the bus, which host runs the agent and ROS 2, and which ROS 2
+  distribution.
+

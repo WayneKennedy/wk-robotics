@@ -20,7 +20,8 @@ and not yet accepted. Do not build against one without the owner deciding.
   untested), and **phone** (iOS or Android pose tracking; the app and its network path are
   unexamined). A fourth route needs no teleoperator: **scripted trajectories recorded as a
   dataset**, which fits DEC-12's aim of proving the control path more than the imitation
-  loop does. None chosen; the choice is made when milestone 4 starts.
+  loop does. **Moot since DEC-14 (2026-09-14):** the record-and-train milestone is dropped,
+  so no demonstration source is needed. Kept for the record.
 
 - **OQ-03 — The 12 V supply.** Upstream specifies a **12 V, 5 A+** brick for the 12 V
   follower. The family rule for servo robots is a stiff source — a **3S LiPo** with a fuse
@@ -61,7 +62,10 @@ and not yet accepted. Do not build against one without the owner deciding.
   first and the answer is taken afterwards, informed by it. Consequences already visible:
   OQ-02 becomes a demonstration-source question (no leader, DEC-13), OQ-03 is answered "a 12 V brick"
   for the desk phase, and **cameras** join the sourcing list — LeRobot's imitation-learning
-  loop needs one or two, and none is owned or specified.
+  loop needs one or two, and none is owned or specified. **DEC-14 (2026-09-14) ends the
+  LeRobot exploration after calibration and bench moves**; the imitation-learning framing
+  of the candidates below is no longer the near-term path, the geometry and the Teensy
+  runtime are.
 
   **Stated purpose, 2026-09-12 (owner): a surrogate for big industrial robots, where
   operating ranges are safety issues** — defining and enforcing a box of acceptable
@@ -112,9 +116,15 @@ and not yet accepted. Do not build against one without the owner deciding.
 
 - **OQ-09 — What drives the servo bus at runtime.** Commissioning and calibration are
   done from a PC over USB and need nothing else (DEC-04). **Narrowed by DEC-12
-  (2026-09-12): the PC path for the LeRobot exploration, then the *own reflex MCU* row
-  with a Teensy 4.1.** Still open: which board, how it connects to the bus, micro-ROS or
-  bare-metal first, and whether the tank's MCU takes over on mounting. The three
+  (2026-09-12) and DEC-14 (2026-09-14): the *own reflex MCU* row, a Teensy 4.1 running
+  micro-ROS into ROS 2; the PC path stays only for the bench tools until then.** Still
+  open: which board (the family's unallocated Teensy 4.1 NE is the candidate —
+  [wk-robotics `common.md` → MCUs in hand](../../../docs/common.md#drive-motors-drivers-and-mcus-in-hand)), how it connects to the bus (the Waveshare
+  board's channel-A UART header, or a separate adapter), which host runs the micro-ROS
+  agent and ROS 2 (this workstation, or a Pi 5 from the fleet), which ROS 2 distribution,
+  where the geometric check runs (the keep-out and IK in `software/kinematics.py` are
+  host-side Python today; the family pattern puts the joint envelope on the MCU and the
+  world check on the host), and whether the tank's MCU takes over on mounting. The three
   architectures, for the record:
 
   | Option | How | Fits |
@@ -123,8 +133,7 @@ and not yet accepted. Do not build against one without the owner deciding.
   | **Own reflex MCU** (Teensy, RP2040/Pico, ESP32) | MCU on the board's UART header (jumpers to channel A) runs the bus; joins the family topic contract via micro-ROS | The family two-tier rule ([wk-robotics `common.md`](../../../docs/common.md#compute-the-two-tier-split)); a standalone robot arm |
   | **The tank's MCU** | wk-devastator's reflex tier (Teensy 4.1, its DEC-10) drives the arm bus as more joints; the arm has no compute of its own | The mounted purpose. Cheapest, but the arm then cannot run without the tank |
 
-  **DEC-08 settles the near term:** the PC-over-USB path is used for the whole LeRobot
-  exploration. The MCU options remain open for afterwards. If the answer
+  **DEC-14 settles the direction:** the MCU row. If the answer
   to OQ-08 is "both", the Waveshare board's A/B jumpers are exactly the switch between the
   PC and an MCU, so the arm can be moved between the two without rewiring.
 

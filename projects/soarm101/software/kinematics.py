@@ -65,6 +65,7 @@ def load_urdf(path=DEFAULT_URDF):
     for j in root.findall("joint"):
         o, a, l = j.find("origin"), j.find("axis"), j.find("limit")
         joints[j.get("name")] = dict(
+            parent=j.find("parent").get("link"), child=j.find("child").get("link"),
             xyz=np.array([float(x) for x in (o.get("xyz") if o is not None else "0 0 0").split()]),
             rpy=np.array([float(x) for x in (o.get("rpy") if o is not None else "0 0 0").split()]),
             axis=(np.array([float(x) for x in a.get("xyz").split()]) if a is not None and any(float(x) for x in a.get("xyz").split()) else None),
@@ -73,13 +74,18 @@ def load_urdf(path=DEFAULT_URDF):
 
 
 def fk(joints, q):
-    """q: {joint: radians}. Returns {frame: 4x4} in base_link for every joint origin in CHAIN."""
-    T = np.eye(4); out = {}
-    for n in CHAIN:
-        j = joints[n]; A = np.eye(4); A[:3, :3] = _rpy(*j["rpy"]); A[:3, 3] = j["xyz"]; T = T @ A
-        if j["axis"] is not None:
-            Rq = np.eye(4); Rq[:3, :3] = _rot(j["axis"], q.get(n, 0.0)); T = T @ Rq
-        out[n] = T.copy()
+    """q: {joint: radians}. Returns {joint: 4x4} — the frame of each joint's child link in
+    base_link, composed along the URDF's parent→child tree (the moving jaw and the tool
+    frame `gripper_frame_joint` are siblings under gripper_link, not a chain)."""
+    link_T = {"base_link": np.eye(4)}; out = {}
+    pending = dict(joints)
+    while pending:
+        for n in [n for n in pending if pending[n]["parent"] in link_T]:
+            j = pending.pop(n); A = np.eye(4); A[:3, :3] = _rpy(*j["rpy"]); A[:3, 3] = j["xyz"]
+            T = link_T[j["parent"]] @ A
+            if j["axis"] is not None:
+                Rq = np.eye(4); Rq[:3, :3] = _rot(j["axis"], q.get(n, 0.0)); T = T @ Rq
+            link_T[j["child"]] = T; out[n] = T
     return out
 
 
@@ -91,12 +97,96 @@ def rad_to_raw(q):
     return {j: int(round(JOINT_ZERO[j][0] + JOINT_ZERO[j][1] * a * COUNTS_PER_RAD)) for j, a in q.items()}
 
 
-def keepout_clear(frames, plane_x=PAN_AXIS_X, margin=0.0):
-    """True if every frame origin lies in front of the vertical plane x = plane_x - margin.
-    Frame origins only — link bodies are not modelled yet; a link can cross the plane between
-    two clear origins, so this is necessary, not sufficient."""
-    worst = min(T[0, 3] for T in frames.values())
-    return worst >= plane_x - margin, worst
+LINK_RADIUS = 0.03            # m; the printed links are ~40–60 mm across, so a 30 mm capsule radius
+GRIPPER_TIP = 0.05            # m beyond gripper_frame_link along the jaw, for the reach of the fingers
+
+
+def link_points(frames, step=0.01):
+    """Points along the arm's skeleton: every joint origin plus samples every `step` metres along
+    the segments between consecutive origins, and along the gripper to its tip. A capsule of
+    LINK_RADIUS around this polyline is the collision body — a first model, not the meshes."""
+    order = ["shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper_frame_joint"]   # the turret (pan) sits on the pan axis by construction
+    pts = [frames["gripper"][:3, 3]]                                                              # moving-jaw hinge, a side branch
+    for a, b in zip(order, order[1:]):
+        pa, pb = frames[a][:3, 3], frames[b][:3, 3]
+        n = max(1, int(np.linalg.norm(pb - pa) / step))
+        pts += [pa + (pb - pa) * t for t in np.linspace(0, 1, n + 1)]
+    tip = frames["gripper_frame_joint"]
+    pts += [tip[:3, 3] + tip[:3, 2] * t for t in np.linspace(0, GRIPPER_TIP, 6)]   # tool z = approach axis, out along the jaws
+    return np.array(pts)
+
+
+def keepout_clear(frames, plane_x=PAN_AXIS_X, margin=LINK_RADIUS):
+    """True if the whole capsule skeleton lies in front of the vertical plane x = plane_x, with
+    `margin` (default: the link radius) kept clear of it. Returns (clear, rearmost x of any
+    skeleton point). The plane through the pan axis is a stand-in for the desk edge, whose
+    offset from the pan axis is unmeasured (docs/hardware.md → Bench)."""
+    worst = float(link_points(frames)[:, 0].min())
+    return worst >= plane_x + margin, worst
+
+
+def within_limits(joints, q, margin_rad=np.radians(3)):
+    bad = {n: np.degrees(a) for n, a in q.items() if joints[n]["limit"] and not (joints[n]["limit"][0] + margin_rad <= a <= joints[n]["limit"][1] - margin_rad)}
+    return not bad, bad
+
+
+IK_JOINTS = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex"]
+
+
+def ik(joints, target_xyz, pitch=None, q0=None, iters=200, damping=0.02, tol=1e-3):
+    """Damped-least-squares IK for the gripper frame origin, four joints (pan, lift, elbow,
+    wrist_flex; roll and gripper held). `pitch` (radians, optional) additionally asks for the
+    gripper's approach axis to make that angle below horizontal — with pan, lift, elbow and
+    wrist there are four DOF for the four constraints. Returns (q, err_m, converged)."""
+    q = dict(q0 or {n: 0.0 for n in IK_JOINTS})
+    target = np.asarray(target_xyz, float)
+
+    def residual(q):
+        f = fk(joints, q); p = f["gripper_frame_joint"][:3, 3]
+        r = [target - p]
+        if pitch is not None:
+            z = f["gripper_frame_joint"][:3, 2]          # approach axis
+            r.append([np.arcsin(-z[2]) - pitch])         # angle below horizontal
+        return np.concatenate(r)
+
+    for _ in range(iters):
+        r = residual(q)
+        if np.linalg.norm(r[:3]) < tol and (pitch is None or abs(r[3]) < 1e-3):
+            return q, float(np.linalg.norm(r[:3])), True
+        J = np.zeros((len(r), len(IK_JOINTS))); h = 1e-5
+        for i, n in enumerate(IK_JOINTS):
+            qh = dict(q); qh[n] += h; J[:, i] = (residual(qh) - r) / h
+        dq = -J.T @ np.linalg.solve(J @ J.T + damping ** 2 * np.eye(len(r)), r)   # Newton step on r(q) ≈ r + J dq = 0
+        for i, n in enumerate(IK_JOINTS):
+            lo, hi = joints[n]["limit"]; q[n] = float(np.clip(q[n] + dq[i], lo, hi))
+    r = residual(q)
+    return q, float(np.linalg.norm(r[:3])), False
+
+
+SEEDS = [  # initial guesses for IK: zero, elbow-up ready pose, reaching down, reaching up
+    {n: 0.0 for n in IK_JOINTS},
+    {"shoulder_pan": 0.0, "shoulder_lift": 0.6, "elbow_flex": -0.9, "wrist_flex": 0.8},
+    {"shoulder_pan": 0.0, "shoulder_lift": 1.2, "elbow_flex": -0.3, "wrist_flex": 1.2},
+    {"shoulder_pan": 0.0, "shoulder_lift": 0.3, "elbow_flex": -1.4, "wrist_flex": -0.5},
+]
+
+
+def solve(joints, target_xyz, pitch=None, q0=None, plane_x=PAN_AXIS_X, margin=LINK_RADIUS):
+    """IK from several seeds (q0 first if given); returns the first converged solution that is
+    inside the joint limits and clear of the keep-out plane, else the best converged one with
+    its verdicts, else None. Result: dict(q, raw, err, limits_ok, clear, rear_x)."""
+    best = None
+    for seed in ([q0] if q0 else []) + SEEDS:
+        q, err, conv = ik(joints, target_xyz, pitch=pitch, q0=seed)
+        if not conv:
+            continue
+        lim_ok, _ = within_limits(joints, q); clear, rear = keepout_clear(fk(joints, q), plane_x, margin)
+        res = dict(q=q, raw=rad_to_raw(q), err=err, limits_ok=lim_ok, clear=clear, rear_x=rear)
+        if lim_ok and clear:
+            return res
+        if best is None or (lim_ok and not best["limits_ok"]) or rear > best["rear_x"]:
+            best = res
+    return best
 
 
 def main():
@@ -130,7 +220,7 @@ def main():
     for n, T in frames.items():
         print(f"| `{n}` | {T[0,3]:+.3f} | {T[1,3]:+.3f} | {T[2,3]:+.3f} |")
     ok, worst = keepout_clear(frames)
-    print(f"\nkeep-out plane x = {PAN_AXIS_X:.4f}: {'CLEAR' if ok else 'BREACHED'} (rearmost origin x = {worst:+.3f} m)")
+    print(f"\nkeep-out plane x = {PAN_AXIS_X:.4f} + {LINK_RADIUS} m margin: {'CLEAR' if ok else 'BREACHED'} (rearmost skeleton point x = {worst:+.3f} m)")
     return 0 if ok else 1
 
 

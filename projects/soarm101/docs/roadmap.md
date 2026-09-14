@@ -30,21 +30,33 @@ Every joint nudged ±3° and back within 1° from a hands-off hold, arm clamped,
 [`servos.md`](servos.md) were understood; `hold_test.py --keep` then `first_move.py` is the
 proven sequence.
 
-## Milestone 4 — Teleoperate, record, train, run *(DEC-08: this comes first)*
+## Milestone 4 — Geometry: kinematics, keep-out, IK *(DEC-14; in progress since 2026-09-14)*
 
-The LeRobot loop on the PC-over-USB path, **without a leader arm (DEC-13)**: a substitute
-teleoperator or scripted demonstrations (OQ-02), and cameras (OQ-08). Ends with a recorded dataset of a simple
-pick-and-place, a policy trained from it, and the follower executing it. **If the two-arm
-candidate under OQ-08 is taken, a second follower is printed and commissioned in parallel
-with this milestone**, and the single-arm result becomes the baseline for the handover.
+Replaces the LeRobot teleoperate-record-train milestone, dropped by DEC-14. The arm's own
+geometric model, host-side Python in `software/kinematics.py`: forward kinematics from
+upstream's `so101_new_calib.urdf`, a servo-count-to-angle mapping good to ±10°
+([`servos.md`](servos.md)), a keep-out check against the bench's vertical plane
+([`hardware.md`](hardware.md) → Bench) over a capsule skeleton of the links, and a
+damped-least-squares IK for the tool frame with pitch. Done so far: FK validated against the
+camera and the rest pose; the mapping checked against a hand-set zero pose; IK round-trips
+FK within 2 mm on 47 of 50 random poses ([`test-log.md`](test-log.md) 2026-09-14). Ends
+with a **guarded move**: a goal is accepted only if the whole interpolated path from the
+present pose stays inside the joint limits and clear of the keep-out, and the arm executes
+it under the bench tools' stall, current and temperature guards. Open on the way: the zero
+to better than ±10° (hard-stop measurement per joint), the `wrist_roll` and `gripper`
+mappings, the desk edge's true offset from the pan axis, and link bodies from the URDF's
+collision meshes instead of capsules.
 
-## Milestone 5 — A Teensy 4.1-operated arm *(DEC-12)*
+## Milestone 5 — A Teensy 4.1-operated arm on micro-ROS *(DEC-12, DEC-14)*
 
-The servo bus moves from the PC to a Teensy 4.1, the family's reflex-tier pattern, with
-the arm as the proving ground for koala-bot and wk-devastator. Board, bus connection and
-firmware stack are the open parts of OQ-09. Ends with the arm reproducing milestone 3's
-scripted move under the MCU, using the calibration LeRobot left in the servos. What the
-arm is ultimately *for* (OQ-08) is decided alongside, with milestone 4's experience in hand.
+The servo bus moves from the PC to a Teensy 4.1 running micro-ROS, with a micro-ROS agent
+and ROS 2 on a host — the family's two-tier pattern
+([wk-robotics `common.md`](../../../docs/common.md#compute-the-two-tier-split)), with the
+arm as the proving ground for koala-bot and wk-devastator. Board, bus connection, agent
+host and distribution are the open parts of OQ-09. Ends with the arm reproducing milestone
+4's guarded move under the MCU, using the calibration LeRobot left in the servos, with the
+joint envelope enforced on the Teensy and the keep-out check on the host. What the arm is
+ultimately *for* (OQ-08) is decided alongside.
 
 ## Milestone 6 — Mount on wk-devastator *(only if OQ-08 says so)*
 

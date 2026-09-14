@@ -10,6 +10,31 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Kinematics module validated offline
+
+**Conditions:** no servo touched. `software/kinematics.py` against upstream
+`so101_new_calib.urdf`, numpy only, on this host.
+
+**Forward kinematics.** First version composed the tool frame onto the moving jaw; the URDF
+has the jaw and the tool frame as siblings under `gripper_link`, which put the tool centre
+0.116 m off to the side. Rebuilt as a parent→child tree: at the URDF zero the tool frame is
+now 0.098 m along the wrist-roll axis from the roll origin, coaxial, approach axis +x.
+
+**Keep-out check** (capsule skeleton from the shoulder-lift origin outward, 30 mm radius,
+turret excluded because it sits on the pan axis by construction): rest pose **breached**
+(rearmost point x = −0.046 m), calibrated mid pose and URDF zero **clear** (+0.069 m).
+
+**Inverse kinematics** (damped least squares, four joints, tool position + pitch, four
+seeds): FK → IK round trip on 50 random in-limit poses, **47 of 50 within 2 mm**. Sample
+targets from the pan axis: 20 cm ahead, 5 cm below the base plate, straight down — solved
+0.3 mm, in limits, clear. 25 cm ahead, 10 cm up, 45° down — solved 0.7 mm, in limits, but
+**not clear**: every seed leans the upper arm back over the desk to get there; whether an
+elbow-up solution exists for it is unexplored (the solver does not search the null space
+for clearance). 30 cm ahead, 5 cm up, straight down — no converged solution from any seed.
+
+**Changed as a result:** milestone 4 redefined (DEC-14); `servos.md` mapping section.
+Nothing here has moved the arm; the first guarded move is the next step.
+
 ### 2026-09-14 · URDF zero pose set by hand; count-to-angle mapping checked
 
 **Conditions:** torque off, owner holding the arm against droop, bench camera side-on from
