@@ -10,7 +10,7 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
-### 2026-09-14 · Gripper gap: three measured points; the simple hinge model does not hold
+### 2026-09-14 · Gripper gap: four measured points; the simple hinge model does not hold
 
 **Conditions:** arm holding at the zero pose; owner's calipers across the jaw ends. The jaws
 were driven by `guarded_move.py --gripper RAW` (new: the gripper joins the planned and
@@ -19,7 +19,8 @@ the jaws actually reached:
 
 | Gripper raw | Opening from the closed stop | Gap at the jaw ends | Hinge model predicted |
 |---|---|---|---|
-| 1289 | 0° (closed stop) | 0 mm — **assumed, not measured** | — |
+| 1289 | 0° (closed stop) | 0 mm — assumed; **supported by the 1365 point** | — |
+| 1365 | 6.7° | **8.67 mm** | 8.6 mm (interpolated from the assumed zero and 11 mm) |
 | 1386 | 8.5° | **11 mm** | 11.3 mm (from the first point) |
 | 1472 | 16.1° | **21 mm** | — (the first point) |
 | 1591 | 26.6° | **37 mm** (owner: "at the very tip") | 33.7 mm (from the first two) |
@@ -28,9 +29,10 @@ the jaws actually reached:
 0.3 mm but missed the third by 3.3 mm — the gap grows faster at wider openings than a jaw tip
 on a simple arc would. Refitted to all three it leaves ±1 mm residuals. **The lookup is
 therefore the measured points with linear interpolation** (`software/calibration/gripper_gap.json`):
-25 mm ↔ raw 1502, 30 mm ↔ 1539. Not yet measured: a near-closed point (raw 1357 is the lowest
-the tools will command; interpolation says 7.7 mm) to test the zero-gap assumption, and
-anything wider than 37 mm.
+25 mm ↔ raw 1502, 30 mm ↔ 1539. **The near-closed point confirms the closed end:** commanded 1357 (the lowest the tools will
+command), reached 1365, measured 8.67 mm where interpolation from the assumed zero predicted
+8.6 mm — so the jaws do meet at the closed stop and the table holds from closed to 37 mm.
+Not measured: anything wider than 37 mm.
 
 ### 2026-09-14 · Wrist roll: camera-top orientation, a moulded stop, and a move to the placeholder zero
 

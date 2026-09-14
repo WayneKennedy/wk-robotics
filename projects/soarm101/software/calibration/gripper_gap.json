@@ -1,5 +1,5 @@
 {
-  "method": "tip gap across the jaw ends, owner's calipers. Lookup = piecewise-linear interpolation through the measured points, with zero gap assumed at the closed stop. A one-parameter hinge model (gap = L*sin(theta)) fitted the first two points within 0.2 mm but missed the third by 3.3 mm, so it is not used.",
+  "method": "tip gap across the jaw ends, owner's calipers. Lookup = piecewise-linear interpolation through the measured points, with zero gap at the closed stop (supported by the 1365 point). A one-parameter hinge model (gap = L*sin(theta)) fitted the first two points within 0.2 mm but missed the third by 3.3 mm, so it is not used.",
   "closed_stop_raw": 1289,
   "points": [
     {
@@ -19,6 +19,13 @@
       "date": "2026-09-14",
       "note": "owner: at the very tip",
       "predicted_mm": 33.7
+    },
+    {
+      "raw": 1365,
+      "gap_mm": 8.67,
+      "date": "2026-09-14",
+      "predicted_mm": 8.6,
+      "note": "tests the zero-gap assumption"
     }
   ],
   "fit": {
@@ -29,6 +36,6 @@
       -1.3,
       1.1
     ],
-    "assumption": "zero gap at the closed stop, unverified; lowest commandable opening is raw 1357 (servo limit 1323 + 3 deg margin)"
+    "assumption": "zero gap at the closed stop \u2014 SUPPORTED 2026-09-14: interpolation from it predicted 8.6 mm at raw 1365, measured 8.67 mm; lowest commandable opening is raw 1357 (servo limit 1323 + 3 deg margin)"
   }
 }
