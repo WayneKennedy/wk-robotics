@@ -10,6 +10,33 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Wrist roll zero set: 2851, from the moving jaw, confirmed by the camera-mount screws
+
+**Owner, seen from behind:** the roll move 2035 → 2542 (507 counts, 44.6° by the model) turned
+the wrist "about 45 degrees CCW" — sign and scale confirmed directly. At 2542 the moving jaw
+sits **13° anticlockwise of 12 o'clock**. Upstream's URDF puts it 40.2° anticlockwise at roll 0,
+so roll 0 is 27.2° further anticlockwise: **raw 2851**.
+
+**Cross-check against the camera-mount screws**, which the owner read independently at three
+roll positions, using upstream's camera URDF mount origin (119° anticlockwise of 12 o'clock at
+roll 0):
+
+| Roll raw | Model with zero 2851 (jaw / mount; 0 = up, − = anticlockwise from behind) | Owner |
+|---|---|---|
+| 1362 | model jaw +91°, mount +12° (0 = up, − = anticlockwise from behind) | mount on top (owner |
+| 2035 | model jaw +32°, mount -47° (0 = up, − = anticlockwise from behind) | jaw up-right, mount NW ~45° (owner |
+| 2542 | model jaw -13°, mount -92° (0 = up, − = anticlockwise from behind) | jaw 13° anticlockwise of 12 (owner), screws facing the bench camera |
+
+All agree within the eye's accuracy (~5°), so the zero is good to about ±3°. **This corrects the
+previous entry**, which compared the owner's mount reading with upstream's camera *body*
+(85° anticlockwise) instead of its *mount origin*, and wrongly concluded the mounts differ;
+they match. The placeholder zero was about 70° off, not 85°.
+
+**Consequence — the encoder wrap:** the servo range 0–4095 spans -251° … +109° of roll about this zero (URDF −157…+163). So anything past +109° crosses the
+encoder wrap and cannot be commanded. Where the moulded stop sits in that range is still
+unmeasured; if the travel is wanted centred in the encoder range, the roll's homing offset
+must be rewritten (an EEPROM write — `Lock` 0 first, OQ-12).
+
 ### 2026-09-14 · Wrist roll zero: the placeholder is ~85° off; the moving jaw is the reference
 
 **Owner at raw 2035 (the placeholder zero), seen from behind:** moving jaw **up and to the
