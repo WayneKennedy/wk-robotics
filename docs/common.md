@@ -681,7 +681,12 @@ first (its DEC-14, 2026-09-14):** forward kinematics from upstream's URDF, a kee
 over a capsule skeleton and a damped-least-squares IK, host-side Python in its
 `software/kinematics.py`, with a guarded move as the next step
 ([roadmap](../projects/soarm101/docs/roadmap.md)). Whether MoveIt 2 or something lighter
-carries the intent-tier check in the end is still open.
+carries the intent-tier check in the end is still open. **A split worth keeping (SO-ARM101,
+2026-09-14, after its arm reached back into a wall):** physical clearance around the robot —
+the sweep of the links nearest the base — is the *installer's* space, kept free by placement
+and not by software; the software rule bounds where the *end-effector* may go. Industrial
+practice draws the same line (ISO 10218's restricted space around the robot versus the
+operating space its tool is allowed to use).
 
 ## Power integrity
 

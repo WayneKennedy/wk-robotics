@@ -207,6 +207,17 @@ was left". The supply's own current readout was not recorded.
 
 **Changed as a result:** OQ-03 and `hardware.md` gain the bench-supply fact; nothing decided.
 
+### 2026-09-13 · Arm reached back and hit the wall behind the table (owner report)
+
+**Conditions:** unlogged driving session on the desk-edge mount; tools, poses and supply not
+recorded. **Reported 2026-09-14 by the owner:** the upper arm and lower arm both extended
+back and hit the wall behind the mounting table. Damage, servo flags and readings at the
+time: not recorded; the next morning's health check found all six servos at status 0 and
+the calibration offsets intact, and two EEPROM changes of unknown origin (`wrist_flex` and
+`gripper` limits reverted, `gripper` `Max_Torque_Limit` 500) — whether they relate to this
+is unknown. **Changed as a result:** this is the incident behind the bench keep-out rule
+([`hardware.md`](hardware.md) → Bench) and the safety model recorded there.
+
 ### 2026-09-12 · Assembled; calibrated with LeRobot's routine, stepwise
 
 **Conditions:** arm assembled per upstream's guide the same day (milestone 2), no camera,
