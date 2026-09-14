@@ -34,6 +34,8 @@ DEFAULT_URDF = Path(os.environ.get(
 CHAIN = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper", "gripper_frame_joint"]
 PAN_AXIS_X = 0.0388           # pan axis in base_link, from the URDF's shoulder_pan origin
 DESK_EDGE_X = PAN_AXIS_X + 0.025   # the desk edge is 25 mm ahead of the pan axis (owner's tape, 2026-09-14); the keep-out plane
+UPPER_ARM_RADIUS = 0.18       # m; the upper arm's sweep about the pan axis: elbow axis at most 0.15 m from it (URDF: shoulder
+                              # axis 0.035 m off the pan axis, shoulder→elbow 0.116 m) plus the link body — the keep-out cylinder
 COUNTS_PER_RAD = 4095 / (2 * np.pi)
 
 # (raw count at URDF zero, sign, provenance)
@@ -126,13 +128,20 @@ def tool_points(frames):
     return np.array(pts)
 
 
-def keepout_clear(frames, plane_x=DESK_EDGE_X, margin=LINK_RADIUS):
-    """The bench keep-out (docs/hardware.md → Bench, owner's rule as clarified 2026-09-14): the
-    END-EFFECTOR does not reach behind the vertical plane at the desk edge. The upper arm and
-    forearm may lean behind it. Returns (clear, rearmost x of any tool point); `margin` keeps the
-    gripper body, not just its centreline, ahead of the plane."""
-    worst = float(tool_points(frames)[:, 0].min())
-    return worst >= plane_x + margin, worst
+def keepout_clear(frames, plane_x=DESK_EDGE_X, margin=LINK_RADIUS, cyl_r=UPPER_ARM_RADIUS):
+    """The bench keep-out (docs/hardware.md → Bench, owner's rule as settled 2026-09-14): the
+    forbidden region is the half-space BEHIND the desk-edge plane MINUS a vertical cylinder about
+    the pan axis of the upper arm's sweep radius. Every part of the arm is tested against it —
+    inside the cylinder (the installer's clearance zone) a part may be anywhere; outside it, it
+    must be ahead of the plane. `margin` is the link body radius. Returns
+    (clear, rearmost x of any offending-or-not point outside the cylinder, count of violating points)."""
+    pts = np.vstack([link_points(frames), tool_points(frames)])
+    r = np.hypot(pts[:, 0] - PAN_AXIS_X, pts[:, 1])
+    outside = r + margin > cyl_r
+    behind = pts[:, 0] - margin < plane_x
+    bad = outside & behind
+    rear = float(pts[outside, 0].min()) if outside.any() else float("nan")
+    return not bad.any(), rear, int(bad.sum())
 
 
 def within_limits(joints, q, margin_rad=np.radians(3)):
@@ -190,8 +199,8 @@ def solve(joints, target_xyz, pitch=None, q0=None, plane_x=PAN_AXIS_X, margin=LI
         q, err, conv = ik(joints, target_xyz, pitch=pitch, q0=seed)
         if not conv:
             continue
-        lim_ok, _ = within_limits(joints, q); clear, rear = keepout_clear(fk(joints, q), plane_x, margin)
-        res = dict(q=q, raw=rad_to_raw(q), err=err, limits_ok=lim_ok, clear=clear, rear_x=rear)
+        lim_ok, _ = within_limits(joints, q); clear, rear, nbad = keepout_clear(fk(joints, q), plane_x, margin)
+        res = dict(q=q, raw=rad_to_raw(q), err=err, limits_ok=lim_ok, clear=clear, rear_x=rear, violations=nbad)
         if lim_ok and clear:
             return res
         if best is None or (lim_ok and not best["limits_ok"]) or rear > best["rear_x"]:
@@ -229,8 +238,8 @@ def main():
     print("\n| Frame | x fwd (m) | y left (m) | z up (m) |\n|---|---|---|---|")
     for n, T in frames.items():
         print(f"| `{n}` | {T[0,3]:+.3f} | {T[1,3]:+.3f} | {T[2,3]:+.3f} |")
-    ok, worst = keepout_clear(frames)
-    print(f"\nkeep-out (tool behind the desk edge, x = {DESK_EDGE_X:.4f} + {LINK_RADIUS} m margin): {'CLEAR' if ok else 'BREACHED'} (rearmost tool point x = {worst:+.3f} m)")
+    ok, worst, nbad = keepout_clear(frames)
+    print(f"\nkeep-out (behind the desk edge x = {DESK_EDGE_X:.4f} and outside the {UPPER_ARM_RADIUS} m cylinder, every part, {LINK_RADIUS} m body): {'CLEAR' if ok else f'BREACHED ({nbad} points)'} (rearmost point outside the cylinder x = {worst:+.3f} m)")
     return 0 if ok else 1
 
 

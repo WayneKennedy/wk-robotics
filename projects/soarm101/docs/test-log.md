@@ -10,6 +10,37 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Shapes on a loop under IK: a 20 cm square and a 12 cm cube
+
+**Conditions:** torque on and holding from the guarded move, Eventek at 12.0 V, bench
+camera on. `software/shapes.py`: every 1 cm along the shape solved by IK (position + pitch,
+warm-started), each point inside the URDF and servo limits and clear of the keep-out —
+which was settled during this run as *behind the desk-edge plane, minus the 0.18 m
+cylinder about the pan axis, tested on every part of the arm*
+([`hardware.md`](hardware.md) → Bench). Guarded joint-space approach to the start, then
+the loop streamed at 20 Hz, tool speed 5 cm/s, `Goal_Velocity` 800.
+
+| Shape | Centre from the pan axis (fwd, left, up) | Pitch | Points | Loops | Time | Peak mA | °C | Rail |
+|---|---|---|---|---|---|---|---|---|
+| 20 cm square, vertical, facing the arm (y–z plane) | 0.24, 0, 0.06 m | 45° | 81 | 3 | 54 s | 130 | 38–39 | 11.8–12.0 V |
+| 12 cm cube, all 12 edges (16 traversals) | 0.30, 0, 0.06 m | 30° | 193 | 2 | 84 s | 351 | 38 | 11.8–12.0 V |
+
+Worst IK residual 1.0 mm on both; no tracking, current or temperature trip in the runs
+above. **A 20 cm cube is not reachable**: every placement tried puts the near-bottom
+corners past the elbow's shrunk maximum (3779 with the 3° margin) or beyond reach; 15 cm
+cubes fail the same way; 12 cm at 30 cm ahead is the largest that solves. **The camera
+view was not compared against the model for these runs** — the tool positions are the
+model's.
+
+**False trip, fixed:** the first square attempt held after loop 1 on a temperature read of
+**130 °C one sample after 38 °C** — a corrupted `sync_read`, not the servo (the next read
+was 38 °C again). Both move tools now trip on current or temperature only when two
+consecutive samples exceed the threshold; tracking error still trips on one.
+
+**Changed as a result:** keep-out rule settled in `hardware.md`; `shapes.py` added;
+debounce in `shapes.py` and `guarded_move.py`. The extents cycle does not yet apply the
+keep-out and would repeat the supply strike; it is not to be run again until it does.
+
 ### 2026-09-14 · First guarded move: IK target reached under path checking
 
 **Conditions:** arm set to roughly mid by hand (owner), Eventek bench supply 12.0 V,

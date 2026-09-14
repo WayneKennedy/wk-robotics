@@ -49,7 +49,7 @@ def plan(joints, cal, start_raw, goal_raw, deg_per_step, margin_deg=3.0):
         q = K.raw_to_rad(raw); frames = K.fk(joints, q)
         lim_ok, bad = K.within_limits(joints, {j: q[j] for j in MOVING})
         cal_ok = all(cal[j]["range_min"] + m <= raw[j] <= cal[j]["range_max"] - m for j in MOVING)
-        clear, rear = K.keepout_clear(frames)
+        clear, rear, _ = K.keepout_clear(frames)
         good = lim_ok and cal_ok and (clear or (k == 0))       # a breached START is tolerated only if the first step improves
         if k == 1 and not clear and rear <= rows[0][3]:
             good = False
@@ -132,7 +132,7 @@ def main():
         b.write("Goal_Velocity", m, 600, normalize=False, num_retry=5)
     log = open(HERE / "logs" / f"guarded_{time.strftime('%Y%m%d_%H%M%S')}.csv", "w")
     log.write("t,step,pan,lift,elbow,wrist,pan_p,lift_p,elbow_p,wrist_p,max_mA,max_T,min_V\n")
-    peak = 0.0; dt = 1.0 / a.rate; t0 = time.time()
+    peak = 0.0; dt = 1.0 / a.rate; t0 = time.time(); over = {"ma": 0, "T": 0}   # two consecutive samples to trip: single bad reads happen
 
     def tele():
         p = b.sync_read("Present_Position", normalize=False, num_retry=5)
@@ -155,9 +155,11 @@ def main():
             lag = max(abs(p[m] - raw[m]) for m in MOVING)
             if lag > a.track:
                 hold_here(f"TRACKING: lag {lag} counts at step {k}"); return 1
-            if ma > a.max_ma:
+            over["ma"] = over["ma"] + 1 if ma > a.max_ma else 0
+            over["T"] = over["T"] + 1 if T > a.max_temp else 0
+            if over["ma"] >= 2:
                 hold_here(f"CURRENT: {ma:.0f} mA at step {k}"); return 1
-            if T > a.max_temp:
+            if over["T"] >= 2:
                 hold_here(f"TEMPERATURE: {T} °C at step {k}"); return 1
         # settle on the final goal
         t1 = time.time()
@@ -167,7 +169,7 @@ def main():
                 break
             time.sleep(0.05)
         p, ma, T, V = tele()
-        q = K.raw_to_rad(p); frames = K.fk(joints, q); clear, rear = K.keepout_clear(frames); tcp = frames["gripper_frame_joint"][:3, 3]
+        q = K.raw_to_rad(p); frames = K.fk(joints, q); clear, rear, _ = K.keepout_clear(frames); tcp = frames["gripper_frame_joint"][:3, 3]
         print("\n| Joint | goal | reached | err |\n|---|---|---|---|")
         for m in MOVING:
             print(f"| `{m}` | {goal_raw[m]} | {p[m]} | {p[m]-goal_raw[m]:+d} |")

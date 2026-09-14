@@ -73,14 +73,20 @@ takes these as world constraints.
 
 - **Mount:** base clamped to a desk edge, free air in front of and below the base. The desk
   surface and whatever is on it lie behind.
-- **Keep-out (owner's rule, 2026-09-14, clarified the same day): the end-effector does
-  not reach behind the vertical plane that rises from the desk edge.** It is a rule on the
-  gripper, not on the links — the shoulder may tilt the upper arm behind the pan axis and
-  the forearm may follow. The plane is fixed in the world, not in the pan frame. **The desk
-  edge is 25 mm ahead of the pan axis** (owner's tape), so in the URDF base frame the plane
-  is x = 0.0638 m (`kinematics.DESK_EDGE_X`); `kinematics.keepout_clear` tests the tool
-  frame, the jaw tip and the moving-jaw hinge with a 30 mm body margin. Under this reading
-  the rest, mid, URDF-zero and first-target poses all pass, and a reach-back pose fails.
+- **Keep-out (owner's rule, 2026-09-14, settled after two clarifications the same day):
+  the forbidden region is the half-space behind the vertical plane at the desk edge, minus
+  a vertical cylinder about the pan axis of the upper arm's sweep radius. Every part of
+  the arm is tested against it.** Inside the cylinder — the installer's clearance zone —
+  a part may be anywhere; outside it, every part must be ahead of the plane. The plane is
+  fixed in the world, not in the pan frame. Numbers: the desk edge is **25 mm ahead of the
+  pan axis** (owner's tape), so the plane is x = 0.0638 m in the URDF base frame; the
+  cylinder radius is **0.18 m** — the elbow axis's largest horizontal distance from the pan
+  axis (0.15 m from the URDF) plus the 30 mm link body; `kinematics.keepout_clear` tests a
+  1 cm-sampled skeleton of every link plus the gripper with the 30 mm body margin. Under
+  it the rest, mid, URDF-zero and first-target poses pass; the extents cycle's low shoulder
+  target (−77°, the pose that struck the supply) fails with 37 points, and a reach-back
+  test pose fails. Earlier readings of the rule (links' bodies ahead of the plane; the
+  end-effector only) are superseded.
   What the rule does *not* cover, and nothing models yet: the arm's own base and the desk
   surface below the base plate — so no scripted move starts from the folded rest pose,
   where the gripper lies against the base.
@@ -89,8 +95,9 @@ takes these as world constraints.
   software's:* a zone around the pan axis at least the upper arm's sweep radius — the
   shoulder-to-elbow length (113 mm) plus the folded forearm and link bodies — is kept free
   of anything the arm can damage or be damaged by, in every direction, because the links
-  are allowed to lean anywhere inside it. *(2) The software keep-out bounds the reach:* the
-  end-effector may not pass the desk-edge plane, which is what stops a full reach-back.
+  are allowed to lean anywhere inside it. *(2) The software keep-out bounds the reach:*
+  nothing outside the cylinder may pass the desk-edge plane, which is what stops a
+  reach-back.
   **The incident that set this: on 2026-09-13 the upper and lower arm both extended back
   and hit the wall behind the table**, at the arm's previous position
   ([`test-log.md`](test-log.md)). **At the desk-edge mount there is no wall behind the

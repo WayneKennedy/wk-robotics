@@ -44,7 +44,10 @@ with a **guarded move**: a goal is accepted only if the whole interpolated path 
 present pose stays inside the joint limits and clear of the keep-out, and the arm executes
 it under the bench tools' stall, current and temperature guards — **`software/guarded_move.py`,
 first run 2026-09-14, an IK target reached within 10 counts** ([`test-log.md`](test-log.md));
-what remains for the milestone is a measured check of the tool position against the world. Open on the way: the zero
+the tool position measured with a tape to 2 mm forward and 2 cm in height; and
+`software/shapes.py` traced a 20 cm square and a 12 cm cube on a loop the same day. What
+remains for the milestone: the extents cycle brought under the keep-out, a base and desk
+model so moves can start from the rest pose, and the zero tightened from ±10°. Open on the way: the zero
 to better than ±10° (hard-stop measurement per joint), the `wrist_roll` and `gripper`
 mappings, the desk edge's true offset from the pan axis, and a model of the arm's own base and the desk surface, so that
 moves can be planned from the folded rest pose (the URDF's collision meshes are the source).
