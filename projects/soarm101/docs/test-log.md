@@ -22,6 +22,12 @@ axis (the roll sits at −60°, which would tilt any edge offset into the readin
 ask for 2082–2093, but the tape then overshoots by 3–6 mm; so 2070, ±2°. It coincides with the
 2026-09-12 hand-sweep midpoint; the stop midpoint was the one that was off.
 
+**Re-read by the owner the same evening** (the phone's pressure had folded the elbow 8 counts,
+0.7°): gripper "4–5° up", forearm "still +2°", upper arm 3°. Model at that pose with the final
+zeros: gripper +3.1°, forearm +0.9° (outline) to +3.1° (horn line), upper arm 3.0° — all within
+the stated uncertainties. Zeros left unchanged: the phone level resolves ~1°, and the tape
+reach is exact at these zeros.
+
 **State of the zeros after the evening's checks:**
 
 | Joint | Zero | How | Good to |
