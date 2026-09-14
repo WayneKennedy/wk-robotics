@@ -3,9 +3,10 @@
 
 Usage: snap.py [out.jpg] [--dev /dev/video0] [--exposure 40] [--raw]
 
-The camera is mounted in portrait on the arm's left (docs/hardware.md → Bench) and its raw
-frame is mirrored, so the default rotates 90° counter-clockwise and then flips horizontally:
-upright, desk on the right, the arm's front (free air) on the left. --raw skips both.
+The camera is mounted in portrait on the arm's left (docs/hardware.md → Bench); the raw
+frame is NOT mirrored. The default rotates 90° counter-clockwise, which gives an upright
+view with the arm's front (free air, the floor mat) on the left and the desk on the right.
+--raw skips the rotation.
 Auto-exposure blows out against the garage roof; --exposure sets V4L2 manual absolute
 exposure (default 40, usable 2026-09-14).
 """
@@ -28,5 +29,5 @@ cap.release()
 if not ok:
     sys.exit(f"no frame from {dev}")
 if "--raw" not in args:
-    frame = cv2.flip(cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE), 1)
+    frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
 cv2.imwrite(out, frame); print(out, frame.shape)

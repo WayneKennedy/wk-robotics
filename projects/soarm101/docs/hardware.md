@@ -78,11 +78,13 @@ takes these as world constraints.
   and ahead of the base (owner, confirmed on the bench camera 2026-09-14), so the park pose
   and the extents cycle stay clear of the plane. **No tool enforces the rule yet**; a
   geometric check before every goal is the first job of the collision-awareness work.
-- **Camera:** on the arm's left, looking side-on, mounted in portrait, and **its raw frame
-  is mirrored** (a webcam default): `software/snap.py` rotates 90° counter-clockwise and
-  flips horizontally, which puts the desk on the right and the arm's front (free air) on
-  the left, upright. Reading the raw or merely rotated frame reverses front and back —
-  it misled the assistant once on 2026-09-14. Auto-exposure blows out against the garage
+- **Camera:** on the arm's left, looking side-on, mounted in portrait. The raw frame is
+  **not mirrored**: `software/snap.py` rotates it 90° counter-clockwise and nothing else,
+  giving an upright view with the arm's front (free air, over the black floor mat) on the
+  **left** and the desk behind the base on the **right**. Established 2026-09-14 from the
+  hand-set zero pose, whose forearm points forward by definition; an earlier guess that the
+  frame was mirrored (and a flip added on it) was wrong and is reverted. Do not take the
+  floor mat for the desk: the desk is the furniture behind the base. Auto-exposure blows out against the garage
   roof; manual exposure 40 (V4L2 absolute units) gives a usable frame in daytime — the
   garage's light swings widely, so expect to retune
   ([wk-robotics `common.md` → Environment](../../../docs/common.md#environment)).
