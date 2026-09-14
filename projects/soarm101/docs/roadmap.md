@@ -53,7 +53,7 @@ model and move tools, host-side Python in `software/`:
   one pose after calibration); everything persisted across power cycles
   ([`test-log.md`](test-log.md) 2026-09-14).
 
-**Remaining:** (1) a shape re-run on the calibrated zeros, checked against the world at two or
+**Remaining — to be closed 2026-09-15 (owner):** (1) a shape re-run on the calibrated zeros, checked against the world at two or
 three points — the validation that closes the milestone; (2) the desk surface modelled, so the
 arm can unfold itself from the folded rest pose — every session so far has started from a pose
 set by hand.
