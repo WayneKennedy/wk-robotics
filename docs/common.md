@@ -590,36 +590,23 @@ does not change the family's decided Pi intent-host architecture.
 
 ### Companion computers in hand — the Raspberry Pi 5 fleet
 
-**Audited live over SSH, 2026-09-13 (owner).** These are the physical Pi 5 boards owned,
-recorded by serial and MAC so a board is never re-identified from scratch. Every unit in
-hand is an **8 GB** Pi 5 Model B; RAM is soldered and non-upgradable. `MemTotal` varies by
-~100 MB between units purely from each install's GPU/CMA reserve — not a capacity
-difference. eth0 is present on every board but unused (Wi-Fi only); its MAC is the wlan0
-MAC minus one in the last octet.
+**Audited live over SSH, 2026-09-13 (owner).** Five Pi 5 Model B boards are owned: four in
+hand, one missing. Every unit in hand is **8 GB**; RAM is soldered and non-upgradable.
+`MemTotal` varies by ~100 MB between units purely from each install's GPU/CMA reserve — not
+a capacity difference. eth0 is present on every board but unused (Wi-Fi only).
 
-| Host | Board rev | Serial | wlan0 MAC | eth0 MAC | RAM | OS (arm64) | Tailnet IP | LAN (observed) | Notes |
-|---|---|---|---|---|---|---|---|---|---|
-| **pi5** | Rev 1.0 (`d04170`) | `990873a7a3674e9b` | `2c:cf:67:27:2b:4b` | `2c:cf:67:27:2b:4a` | 8 GB | Raspberry Pi OS (Debian 12 bookworm), **desktop** | not on tailnet | 192.168.7.177 (Wi-Fi) | NVMe boot (Kingston SNV2S500G 500 GB, [Pimoroni NVMe Base](#ai-hat-2-and-nvme)); login user `wayne`. Candidate drone intent computer — see [Aircraft and the tiers](#aircraft-and-the-tiers). **NOT orac** (see below). |
-| **zipp** | Rev 1.1 (`d04171`) | `bfb21b27f00a4395` | `88:a2:9e:7a:b5:89` | `88:a2:9e:7a:b5:88` | 8 GB | Ubuntu 24.04 LTS, desktop | 100.125.225.120 | 192.168.7.206 (Wi-Fi) | Install history renamed `ubuntu` → `zipp`. |
-| **printhub** | Rev 1.1 (`d04171`) | `b759c62b20d3055b` | `2c:cf:67:e3:63:7a` | `2c:cf:67:e3:63:78` | 8 GB | Raspberry Pi OS (Debian 12 bookworm), headless | 100.99.147.57 | 192.168.7.198 (Wi-Fi) | |
-| **spid** | Rev 1.1 (`d04171`) | `6c0c400ed7b25ba1` | `2c:cf:67:e6:02:c9` | `2c:cf:67:e6:02:c8` | 8 GB | Ubuntu 24.04 LTS, desktop | 100.121.25.60 | 192.168.4.22 (Wi-Fi) | The wk-hexapod brain; normally powered off. |
-| **orac** | unknown | unknown | unknown | unknown | unknown (listed Pi 5) | unknown (was headless Ubuntu server) | 100.124.254.114 | — | **Missing / offline.** See below. |
+| Role | Board rev | OS (arm64) | Notes |
+|---|---|---|---|
+| Desktop Pi, candidate drone intent computer | Rev 1.0 (`d04170`) | Raspberry Pi OS (Debian 12 bookworm), desktop | NVMe boot (Kingston SNV2S500G 500 GB, [Pimoroni NVMe Base](#ai-hat-2-and-nvme)); installed 2024-03-27. See [Aircraft and the tiers](#aircraft-and-the-tiers). |
+| General-purpose desktop Pi | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | |
+| 3D-printer host | Rev 1.1 (`d04171`) | Raspberry Pi OS (Debian 12 bookworm), headless | |
+| wk-hexapod brain | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | Normally powered off. |
+| Missing headless server | unknown | was headless Ubuntu server | **Offline since 2026-02-02**, whereabouts unknown. The desktop Pi above was briefly mistaken for it; both carry an NVMe hat + active cooler. |
 
-**orac is not accounted for.** Its Tailscale node (id `nx7NmDmm5811CNTRL`, tag `tag:personal`,
-IPs `100.124.254.114` / `fd7a:115c:a1e0::a601:fe88`) was created 2026-01-04 and last handshaked
-**2026-02-02**; it has been offline since. It was set up as a **headless Ubuntu server** with
-Tailscale-SSH-only access and the `wkenn` password disabled. Its recorded SSH host key is
-ed25519 `SHA256:1Bb7i7n7UMsRI/EFyMGkVH8RswQU0K8zdUPAgGPdZ/w` (also RSA
-`SHA256:kNuRnzeyZgUszh4lY6kaxw9BP+Cl//FHjPOAuTKt2D0`, ECDSA
-`SHA256:HwP+WSr/tk0RxjXJCynnIElA+SF7GVN0Xj0xIoad5/s`). No MAC or serial for orac is on record.
-
-**pi5 was mistaken for orac and is not it.** The board eero flagged as an unidentified "pi5"
-host is the desktop unit above. It is a *different* Pi 5: install dated 2024-03-27 (predates
-orac's node by ~21 months), Tailscale never installed, only ever named `raspberrypi`/`pi5`,
-and its host key (ed25519 `SHA256:iIJNW69hC7d2yeXN4k8kVqen7M3RNqKCY8l1QuUSGug`) does not match
-orac's. Both units happen to carry an NVMe hat + active cooler, which is what caused the
-confusion. Recognising orac if it returns: match the serial/MAC once known, or the host-key
-fingerprints above — not the physical hat.
+**Identifiers are not kept here.** Hostnames, serials, MACs, LAN and tailnet addresses,
+login users and SSH host-key fingerprints for every board — the data needed to recognise a
+unit without re-auditing it — live in the private `wk-inventory` repo, `docs/pi5-fleet.md`.
+This repository is public; see [What does not belong here](../AGENTS.md#what-does-not-belong-here).
 
 ### The GPU workstation
 

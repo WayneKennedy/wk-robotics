@@ -84,7 +84,9 @@ idea earns a repo, move it out of `ideas.md` and into the index.
   else that is only in a private repo because it is private. **This repository is
   public.** Not every repo it indexes is — check before quoting. `3d-printing` is
   private: its calibration and material *findings* are fine to reference here, its access
-  and infrastructure details are not.
+  and infrastructure details are not. **Machine identifiers go in the private
+  `wk-inventory` repo** ([WayneKennedy/wk-inventory](https://github.com/WayneKennedy/wk-inventory),
+  checked out at `../wk-inventory`); public docs describe a machine by role and link there.
 - **Chat transcripts.** Distil the conclusion; discard the conversation.
 
 ---
