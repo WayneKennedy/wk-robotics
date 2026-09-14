@@ -46,8 +46,11 @@ it under the bench tools' stall, current and temperature guards — **`software/
 first run 2026-09-14, an IK target reached within 10 counts** ([`test-log.md`](test-log.md));
 the tool position measured with a tape to 2 mm forward and 2 cm in height; and
 `software/shapes.py` traced a 20 cm square and a 12 cm cube on a loop the same day. What
-remains for the milestone: the extents cycle brought under the keep-out, a base and desk
-model so moves can start from the rest pose, and the zero tightened from ±10°. Open on the way: the zero
+remains for the milestone: **self-collision — every link against the base and turret, and
+non-adjacent links against each other, from upstream's collision meshes** (a keep-out-clear
+pose that points the gripper into the turret is on record, [`test-log.md`](test-log.md)
+2026-09-14); the extents cycle brought under the keep-out; a desk model so moves can start
+from the rest pose; and the zero tightened from ±10°. Open on the way: the zero
 to better than ±10° (hard-stop measurement per joint), the `wrist_roll` and `gripper`
 mappings, the desk edge's true offset from the pan axis, and a model of the arm's own base and the desk surface, so that
 moves can be planned from the folded rest pose (the URDF's collision meshes are the source).

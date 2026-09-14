@@ -10,6 +10,24 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · A hand-set pose that passes the keep-out and points the gripper into the turret
+
+**Conditions:** torque off, pose set by the owner to make the point; bench camera frame and
+`kinematics.py --live`. Raw 1994 / 1568 / 3615 / 3199 / 1362 / 1462 → model −4.6°,
+−26.2° (upper arm leaning back), +58.1° (forearm folded forward-down), **+99.3°** on
+`wrist_flex` (past the URDF's ±95°), gripper 4.6 cm above the base plate and 1.5 cm ahead
+of the pan axis, approach axis pointing at the turret. **Keep-out verdict: CLEAR, with no
+point tested** — every part is inside the 0.18 m cylinder, which is the installer's zone by
+definition. **Nothing in the tools would stop a closing elbow or wrist from driving the
+gripper into the pan carrier from here**: the joint limits do not describe it, the keep-out
+does not cover it, and the effort guards act only after contact. In the camera the gripper
+is closing on the base with the wrist servo hard against its stop.
+
+**Changed as a result:** self-collision (link against link, and every link against the base
+and turret) is the next geometry item on the roadmap. Upstream's URDF carries a collision
+mesh for every link including the base (`Simulation/SO101/assets/*.stl`), which is the
+source for it.
+
 ### 2026-09-14 · Shapes on a loop under IK: a 20 cm square and a 12 cm cube
 
 **Conditions:** torque on and holding from the guarded move, Eventek at 12.0 V, bench
