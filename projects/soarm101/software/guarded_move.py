@@ -33,6 +33,7 @@ MOVING = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex"]
 
 
 def plan(joints, cal, start_raw, goal_raw, deg_per_step, margin_deg=3.0):
+    # keep-out plane and margin: kinematics.keepout_clear defaults (desk edge + link radius)
     """Sampled joint-space line; returns (samples, report rows, ok)."""
     steps = max(1, int(np.ceil(max(abs(goal_raw[j] - start_raw[j]) for j in MOVING) / (deg_per_step / 360 * 4095))))
     rows = []; ok = True; samples = []

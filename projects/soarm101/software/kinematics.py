@@ -33,6 +33,8 @@ DEFAULT_URDF = Path(os.environ.get(
     "SO101_URDF", HERE.parents[3] / "SO-ARM100" / "Simulation" / "SO101" / "so101_new_calib.urdf"))
 CHAIN = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper", "gripper_frame_joint"]
 PAN_AXIS_X = 0.0388           # pan axis in base_link, from the URDF's shoulder_pan origin
+DESK_EDGE_X = PAN_AXIS_X + 0.025   # the desk edge is 25 mm ahead of the pan axis (owner's tape, 2026-09-14); the keep-out plane
+PIVOT_EXCLUSION = 0.05        # m around the shoulder-lift pivot left out of the keep-out test: that region sits at the edge by design
 COUNTS_PER_RAD = 4095 / (2 * np.pi)
 
 # (raw count at URDF zero, sign, provenance)
@@ -116,12 +118,15 @@ def link_points(frames, step=0.01):
     return np.array(pts)
 
 
-def keepout_clear(frames, plane_x=PAN_AXIS_X, margin=LINK_RADIUS):
-    """True if the whole capsule skeleton lies in front of the vertical plane x = plane_x, with
-    `margin` (default: the link radius) kept clear of it. Returns (clear, rearmost x of any
-    skeleton point). The plane through the pan axis is a stand-in for the desk edge, whose
-    offset from the pan axis is unmeasured (docs/hardware.md → Bench)."""
-    worst = float(link_points(frames)[:, 0].min())
+def keepout_clear(frames, plane_x=DESK_EDGE_X, margin=LINK_RADIUS):
+    """True if the capsule skeleton lies in front of the vertical plane x = plane_x (default the
+    measured desk edge) with `margin` (default the link radius, i.e. no link body over the desk)
+    kept clear of it. Points within PIVOT_EXCLUSION of the shoulder-lift pivot are ignored — the
+    upper arm's root straddles the edge in every pose, by construction of the mount. Returns
+    (clear, rearmost x of any tested skeleton point)."""
+    pts = link_points(frames); pivot = frames["shoulder_lift"][:3, 3]
+    tested = pts[np.linalg.norm(pts - pivot, axis=1) > PIVOT_EXCLUSION]
+    worst = float(tested[:, 0].min())
     return worst >= plane_x + margin, worst
 
 
@@ -220,7 +225,7 @@ def main():
     for n, T in frames.items():
         print(f"| `{n}` | {T[0,3]:+.3f} | {T[1,3]:+.3f} | {T[2,3]:+.3f} |")
     ok, worst = keepout_clear(frames)
-    print(f"\nkeep-out plane x = {PAN_AXIS_X:.4f} + {LINK_RADIUS} m margin: {'CLEAR' if ok else 'BREACHED'} (rearmost skeleton point x = {worst:+.3f} m)")
+    print(f"\nkeep-out plane (desk edge) x = {DESK_EDGE_X:.4f} + {LINK_RADIUS} m margin, pivot region excluded: {'CLEAR' if ok else 'BREACHED'} (rearmost tested point x = {worst:+.3f} m)")
     return 0 if ok else 1
 
 

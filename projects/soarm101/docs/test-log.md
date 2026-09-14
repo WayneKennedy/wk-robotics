@@ -33,8 +33,16 @@ throughout). Streamed at 20 Hz, `Goal_Velocity` 600, `Acceleration` 30.
 
 Reached in 3.5 s, peak 13 mA sampled at 20 Hz, 36 °C, rail 12.0 V. Model's tool position
 from the reached counts: x +0.247, y +0.006, z −0.050 m. No guard tripped. Arm left holding
-there under torque. **The real tool position was not measured** — a tape from the pan axis
-and the base plate would be the first check of the FK against the world.
+there under torque. **Measured with a tape (owner): 24.9 cm forward of the pan axis, ~3 cm
+below the top of the base plate** — forward within 2 mm, height 2 cm high in the model. At
+this reach 2 cm is ~5° of pitch across the chain, the size of the elbow residual at the
+hand-set zero; the count-to-angle zero (±10°) is the limiting error, not the URDF. **Also
+measured: the desk edge is 25 mm ahead of the pan axis**, which moves the keep-out plane to
+x = 0.0638 m in `kinematics.py` and brings the rule's meaning to a head: with link bodies
+kept ahead of the edge (30 mm margin) the URDF zero pose is refused (its vertical upper arm
+overhangs the edge by ~13 mm) and the upper arm must lean ≥14° forward; with centrelines
+only, it passes. The calibration mid and today's target pass either way; the rest pose
+fails either way. Open, owner to say ([`hardware.md`](hardware.md) → Bench).
 
 **Also corrected:** the elbow's "gravity lag" on every return to mid in the extents cycles
 (err +59) is the servo clamping at its shrunk minimum limit 2095: the calibration mid, 2047,
