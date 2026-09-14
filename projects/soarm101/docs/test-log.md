@@ -10,6 +10,67 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Mechanical stops measured on five joints; limits rewritten; the EEPROM Lock
+
+**Conditions:** `software/find_stops.py`, one joint at a time, the others holding at full
+torque; each joint's configuration chosen by simulating its sweep against the keep-out and
+the base first. Torque limit 180 (300 for the shoulder, so gravity does not read as a stop);
+contact = 40 counts of lag for three steps. Owner at the bench: "the only potential fragility
+being overdriving and stripping servo gears". `wrist_roll` not swept — no mechanical stop,
+only its cable.
+
+| Joint | Configuration of the rest | Min stop | Max stop | Midpoint | Span | URDF span |
+|---|---|---|---|---|---|---|
+| `shoulder_pan` | upper arm back 15°, forearm up, wrist in line (everything within 36 mm of the pan axis) | 715 | 3247 | 1981 | 222.6° | 220° |
+| `shoulder_lift` | max: forearm down-forward; min: forearm vertical, capsule veto off (torque 300) | 723 | 3118 | 1920 | 210.5° | 200° |
+| `elbow_flex` | min: upper arm vertical; max: upper arm back 32°, wrist −60° | 1879 | 4074 | 2976 | 193.0° | 193.7° |
+| `wrist_flex` | (earlier entry) | 881 | 3212 | 2046 | 204.9° | 190° |
+| `gripper` | — | 1289 (closed) | 2741 (open) | — | 127.6° | 110° |
+
+Every contact read the same way — lag under 10 counts, then position frozen while the goal
+ran on and current rose to 80–250 mA (capped by the torque limit). Repeats: the elbow min
+1879 matched 1880 from a different arm configuration (so it is the joint's own stop), the
+gripper closed 1289 matched twice. The shoulder min 723 agrees with the folded rest pose
+(736) and the 2026-09-12 hand sweep (736). **The elbow's fold stop is 21 counts from the
+encoder wrap at 4095** — the likely root of the elbow's −259° read on 2026-09-12; the tool
+now stops a sweep at the wrap instead of writing goals past it. All six at status 0 after.
+
+**Zeros.** Midpoints become the model's zeros for pan, shoulder, elbow and wrist
+(`kinematics.JOINT_ZERO`). Tight where the measured travel equals the URDF's (elbow ±0.3°,
+pan ±1.3°); the shoulder and wrist travel 10.5° and 14.9° more than the URDF, so their zeros
+are uncertain by up to ±5.2° and ±7.5°. The pan midpoint is 4.8° from the owner's by-eye
+straight-ahead (2036) — unresolved.
+
+**Tape re-check, and a correction to the guarded-move entry.** That entry compared the tape
+(24.9 cm forward of the pan axis) with the model's tool x of 0.247 m — but that x is the
+URDF base frame, whose origin is 3.9 cm behind the pan axis. **The model actually put the
+tool 20.8 cm ahead of the pan axis, 4.1 cm short, not within 2 mm.** Its z is measured
+from the base plate's underside (z = 0; the base mesh spans −2 … +70 mm), not its top. With
+the measured zeros the same pose models at **22.3 cm forward and z −3.1 cm**: forward still
+2.6 cm short, height within about 5 mm of "~3 cm below the plate". The remaining forward
+error sits inside the shoulder and wrist zero uncertainty; a spirit level on the upper arm
+(URDF zero = vertical) would pin the shoulder.
+
+**Servo limits rewritten: measured stop ∓ 3°, replacing the blanket 10 % shrink.**
+
+| Joint | Old | New | Gain in travel |
+|---|---|---|---|
+| `shoulder_pan` | 1009–3084 | 749–3212 | +34° |
+| `shoulder_lift` | 962–2771 | 757–3083 | +45° |
+| `elbow_flex` | 2095–3813 | 1913–4039 | +35° |
+| `wrist_flex` | 1216–2924 | 915–3177 | +49° |
+| `gripper` | 1469–2596 | 1323–2706 | +22° |
+
+Read back matching; `calibration/wk_soarm101.json` and LeRobot's cache copy updated. The
+first attempt refused: **every servo read `Lock` = 1**, where the morning's dump read 0.
+LeRobot 0.6.1's `enable_torque()` writes `Lock` = 1 after `Torque_Enable` and
+`disable_torque()` writes 0 — so after `hold_test.py` every EEPROM write lands in RAM only
+and is lost at power-off. The limits were written with `Lock` = 0, then 1 restored. This is
+the leading explanation of OQ-12. **Not yet verified across a power cycle.**
+
+**Also:** `extents_cycle.py` retired behind an explicit override flag — it sweeps with no
+geometry checks, struck the supply this morning, and the wider limits would make it worse.
+
 ### 2026-09-14 · Stop finding: wrist done; elbow sweep found the desk underside instead
 
 **Conditions:** `software/find_stops.py` (new): the joint's `Torque_Limit` dropped to 180,
@@ -151,7 +212,9 @@ throughout). Streamed at 20 Hz, `Goal_Velocity` 600, `Acceleration` 30.
 Reached in 3.5 s, peak 13 mA sampled at 20 Hz, 36 °C, rail 12.0 V. Model's tool position
 from the reached counts: x +0.247, y +0.006, z −0.050 m. No guard tripped. Arm left holding
 there under torque. **Measured with a tape (owner): 24.9 cm forward of the pan axis, ~3 cm
-below the top of the base plate** — forward within 2 mm, height 2 cm high in the model. At
+below the top of the base plate** — **the comparison that followed is wrong: see the correction in the stop-measurement entry
+(the model's x is the base frame, 3.9 cm behind the pan axis; the model was 4.1 cm short).**
+As first written: forward within 2 mm, height 2 cm high in the model. At
 this reach 2 cm is ~5° of pitch across the chain, the size of the elbow residual at the
 hand-set zero; the count-to-angle zero (±10°) is the limiting error, not the URDF. **Also
 measured: the desk edge is 25 mm ahead of the pan axis**, which moves the keep-out plane to

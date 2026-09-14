@@ -31,6 +31,14 @@ ORDER = ["wrist_roll", "gripper", "wrist_flex", "elbow_flex", "shoulder_pan", "s
 
 
 def main():
+    # RETIRED 2026-09-14. This tool sweeps every joint to its servo limits with no world or self
+    # check. It struck the bench supply behind the base that morning, and the servo limits were
+    # widened the same day to the measured stops ∓ 3°, which would make it worse. Use
+    # guarded_move.py or shapes.py: they check the keep-out and self-collision at every sample.
+    if "--i-accept-no-geometry-checks" not in sys.argv:
+        print("extents_cycle.py is retired (no keep-out or self-collision checks; see the comment in main()). "
+              "Use guarded_move.py or shapes.py."); return 2
+    sys.argv.remove("--i-accept-no-geometry-checks")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--port", default="/dev/ttyACM0"); ap.add_argument("--id", default="wk_soarm101")
     ap.add_argument("--cycles", type=int, default=0, help="0 = until a stop condition")

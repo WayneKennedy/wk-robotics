@@ -13,9 +13,14 @@ every joint's zero at the middle of its travel. Base frame: +x forward (away fro
 
 Servo counts → URDF radians:  rad = SIGN * (raw - RAW_AT_ZERO) * 2π / 4095.
 RAW_AT_ZERO and SIGN per joint live in JOINT_ZERO with their provenance. The 2026-09-14
-values are ESTIMATES from the 2026-09-12 hand sweep (docs/test-log.md): the sweep's span
-matches the URDF's travel within 3–8° on every pitch joint, so its midpoint is taken as the
-URDF zero. Verify against a physically set zero pose before trusting a limit to a few
+pan, shoulder, elbow and wrist-flex values are MEASURED (2026-09-14): the midpoint of each
+joint's mechanical stops found by find_stops.py, taken as the URDF zero by upstream's
+new-calibration convention (zero at mid-travel). That holds exactly only where the measured
+travel equals the URDF's: elbow (193.0° vs 193.7°, ±0.3°) and pan (±1.3°) are tight; the
+shoulder's travel is 10.5° wider and the wrist's 14.9° wider than the URDF, so their zeros
+are uncertain by up to ±5.2° and ±7.5° (how the extra travel splits between the two ends
+is unknown). Tape check at one pose (docs/test-log.md): forward reach 2.6 cm short, height
+within ~5 mm. Verify against a physically set zero pose before trusting a limit to a few
 degrees; wrist_roll and gripper are placeholders. Hand-set zero pose 2026-09-14 agreed
 within 9° on the four pitch/pan joints and fixed the pan and wrist_flex signs
 (docs/test-log.md). Treat the zero as ±10° until a hard-stop measurement replaces it.
@@ -43,12 +48,12 @@ COUNTS_PER_RAD = 4095 / (2 * np.pi)
 
 # (raw count at URDF zero, sign, provenance)
 JOINT_ZERO = {
-    "shoulder_pan":  (2046, +1, "sweep midpoint (750+3343)/2, 2026-09-12; hand zero read 2036; sign verified 2026-09-14 (toward the arm's left = raw down = URDF negative)"),
-    "shoulder_lift": (1866, +1, "sweep midpoint (736+2997)/2; hand zero read 1918; sign from the rest pose: raw min ↔ URDF lower limit"),
-    "elbow_flex":    (2954, +1, "sweep midpoint (1880+4028)/2; hand zero read 3055; sign from the rest pose: raw max ↔ URDF upper limit"),
-    "wrist_flex":    (2070, +1, "sweep midpoint (1002+3137)/2; hand zero read 2081; sign verified 2026-09-14 (gripper pitched down = raw up = URDF positive)"),
+    "shoulder_pan":  (1981, +1, "MEASURED 2026-09-14: midpoint of the mechanical stops 715 / 3247 (find_stops.py; span 222.6° vs URDF 220°). Was the sweep midpoint 2046; the owner's by-eye straight-ahead read 2036 — 4.8° from this, unresolved; sign verified 2026-09-14"),
+    "shoulder_lift": (1920, +1, "MEASURED 2026-09-14: midpoint of the mechanical stops 723 / 3118 (find_stops.py at torque 300; span 210.5° vs URDF 200°). Was the sweep midpoint 1866; sign from the rest pose"),
+    "elbow_flex":    (2976, +1, "MEASURED 2026-09-14: midpoint of the mechanical stops 1879 / 4074 (find_stops.py; span 193.0° vs URDF 193.7°). Was the sweep midpoint 2954"),
+    "wrist_flex":    (2046, +1, "MEASURED 2026-09-14: midpoint of the mechanical stops 881 / 3212 (find_stops.py; span 204.9° vs URDF 190°). Was the sweep midpoint 2070"),
     "wrist_roll":    (2047, +1, "placeholder: homing mid; unverified"),
-    "gripper":       (1328, +1, "placeholder: raw min ↔ closed (URDF 0); unverified"),
+    "gripper":       (1289, +1, "closed stop MEASURED 2026-09-14 (open stop 2741, span 127.6°); taken as URDF 0 — whether URDF 0 or −10° is the closed jaw is unverified; jaw GAP not calibrated"),
 }
 
 

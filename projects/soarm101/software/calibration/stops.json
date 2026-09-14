@@ -7,8 +7,30 @@
     "span_deg": 204.9
   },
   "elbow_flex": {
-    "min": 1880,
+    "min": 1879,
     "date": "2026-09-14",
-    "note": "max discarded 2026-09-14: the forearm met the desk underside at raw 3850 with the upper arm 50\u00b0 forward, not a stop; min 1880 provisional (same run)"
+    "max": 4074,
+    "zero": 2976,
+    "span_deg": 193.0
+  },
+  "gripper": {
+    "min": 1289,
+    "date": "2026-09-14",
+    "max": 2741,
+    "span_deg": 127.6
+  },
+  "shoulder_pan": {
+    "date": "2026-09-14",
+    "min": 715,
+    "max": 3247,
+    "span_deg": 222.6,
+    "zero": 1981
+  },
+  "shoulder_lift": {
+    "max": 3118,
+    "date": "2026-09-14",
+    "min": 723,
+    "span_deg": 210.5,
+    "zero": 1920
   }
 }

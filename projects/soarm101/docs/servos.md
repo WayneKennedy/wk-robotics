@@ -101,19 +101,19 @@ so do not run it casually.
    a joint already moving is followed, not held. Command absolute goals from a verified
    stationary pose and monitor.
 
-4. **The shrunk limits on `wrist_flex` and `gripper` do not reliably survive a power
-   cycle** — lost twice (2026-09-12, 2026-09-14), the second time after a rewrite made with
-   protection flags clear, so the flag hypothesis is not confirmed (OQ-12,
-   [`test-log.md`](test-log.md)). **Re-read calibration after every power cycle** and
-   rewrite from the JSON before moving — `first_move.py` and `extents_cycle.py` refuse on a
-   mismatch.
+4. **An EEPROM write only persists if the servo's `Lock` register is 0.** LeRobot's
+   `enable_torque()` sets `Lock` = 1 and `disable_torque()` sets 0 (0.6.1 source), so any
+   EEPROM write made while the arm is holding after `hold_test.py` lands in RAM and is lost
+   at power-off — the leading explanation of the limits lost on `wrist_flex` and `gripper`
+   (OQ-12). Write `Lock` = 0 first, write, read back, restore `Lock` = 1. **Re-read
+   calibration after every power cycle** and rewrite from the JSON before moving.
 
 **One process on the bus at a time.** Two of this repo's tools on `/dev/ttyACM0` together
 produce a stream of failed and possibly corrupted reads (2026-09-12); alone, `sync_read` is
 100/100. Stop any logger or recorder before running anything else. Every tool here opens
 the port itself; none shares it.
 
-## Servo counts to URDF angles — estimated 2026-09-14, verification pending
+## Servo counts to URDF angles — measured 2026-09-14 on four joints
 
 [`software/kinematics.py`](../software/kinematics.py) runs forward kinematics from upstream's
 `so101_new_calib.urdf` (zero = pan ahead, upper arm vertical, forearm horizontal forward,
@@ -128,4 +128,19 @@ known direction; a hand-set zero pose agreed with the sweep midpoints within 9°
 joint is measured against its hard stops. `wrist_roll` and `gripper` zeros are
 **unverified placeholders**. The values and their provenance are in the module's
 `JOINT_ZERO` table — the one place they live.
+
+The four measured zeros (pan, shoulder, elbow, wrist flex) superseded the sweep-midpoint
+estimates later on 2026-09-14: each is the midpoint of the joint's measured mechanical stops
+(below). Their accuracy and the tape check are in the module's docstring and
+[`test-log.md`](test-log.md).
+
+## Mechanical stops and servo limits — measured 2026-09-14
+
+`software/find_stops.py` drives one joint gently into each stop and records the raw count;
+results in [`software/calibration/stops.json`](../software/calibration/stops.json), method and
+table in [`test-log.md`](test-log.md). **The servos' `Min/Max_Position_Limit` are now the
+measured stops ∓ 3°**, replacing the 2026-09-12 hand sweep less 10 %. They are the hardware
+last resort; configuration-dependent contact (link against link, against the base) and the
+bench keep-out are checked in software before every move (`kinematics.py`). `wrist_roll`
+stays 0–4095: it has no stop.
 

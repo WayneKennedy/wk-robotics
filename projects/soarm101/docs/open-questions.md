@@ -148,9 +148,12 @@ and not yet accepted. Do not build against one without the owner deciding.
   do not persist across a power cycle.** Written 2026-09-12 with matching read-back, gone at
   the next power-up; rewritten with protection flags clear, matching read-back, gone again
   by 2026-09-14. The other four servos keep theirs, and every servo keeps its homing offset.
-  `Lock` reads 0 on all six. Rewritten again 2026-09-14 with torque off and status 0
-  ([`test-log.md`](test-log.md)). **Next test:** read the limits back after the supply has
-  been off. Candidates, none verified: a `Lock`-register semantics difference for these two
+  `Lock` read 0 on all six that morning. Rewritten again 2026-09-14 with torque off and status 0
+  ([`test-log.md`](test-log.md)). **Leading explanation, found later the same day:** LeRobot's
+  `enable_torque()` writes `Lock` = 1 (and `disable_torque()` 0), so an EEPROM write made
+  while the arm holds lands in RAM only; all six read `Lock` = 1 after `hold_test.py`. The
+  new limits were written with `Lock` = 0 explicitly. **Next test:** power the supply off and on, then read
+  the 2026-09-14 limits back; if they hold, OQ-12 closes on the `Lock` explanation. Candidates, none verified: a `Lock`-register semantics difference for these two
   units; an EEPROM write window the servo needs before power-off; a write made in the
   unlogged 2026-09-13 session. The unlogged session also left `gripper`'s
   `Max_Torque_Limit` at 500 (others 1000) — intended or not is unrecorded.

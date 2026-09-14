@@ -49,6 +49,8 @@ def main():
     ap.add_argument("--dwell", type=float, default=0.25); ap.add_argument("--stall", type=int, default=40)
     ap.add_argument("--stall-steps", type=int, default=3); ap.add_argument("--max-ma", type=float, default=500)
     ap.add_argument("--beyond-deg", type=float, default=20); ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--no-base-veto", action="store_true", help="let stall detection judge contact with the base: the fitted capsules are "
+                    "conservative (they enclose horn bulges) and stop some sweeps before the real contact; keep-out still applies")
     ap.add_argument("--port", default="/dev/ttyACM0"); ap.add_argument("--id", default="wk_soarm101")
     ap.add_argument("--out", default=str(HERE / "calibration" / "stops.json"))
     a = ap.parse_args()
@@ -103,8 +105,10 @@ def main():
             print(f"\n→ towards {d} (raw {'decreasing' if sgn < 0 else 'increasing'}), torque {a.torque}, {a.step_deg}° per {a.dwell}s")
             while True:
                 g = int(g + sgn * a.step_deg * CPD)
+                if not 0 <= g <= 4095:
+                    print(f"   reached the encoder wrap (goal {g}) without contact — no stop found; re-home this joint so its travel sits inside 0…4095"); break
                 if (sgn < 0 and g < ceil["min"]) or (sgn > 0 and g > ceil["max"]):
-                    print(f"   reached the sweep ceiling {g} without contact — no stop found (raise --beyond-deg only if the pan has more travel)"); break
+                    print(f"   reached the sweep ceiling {g} without contact — no stop found (the joint travels further than the URDF says: raise --beyond-deg)"); break
                 # world keep-out on the pose this step would make
                 raw_pose = dict(present); raw_pose[j] = g
                 fr = K.fk(J, K.raw_to_rad(raw_pose)); clear, rear, nbad = K.keepout_clear(fr)
@@ -115,8 +119,10 @@ def main():
                 hits = K.self_collisions(fr)
                 base_hits = [(x, y, c) for x, y, c in hits if "base_link" in (x, y)]
                 other = [(x, y, c) for x, y, c in hits if "base_link" not in (x, y)]
-                if base_hits and j != "shoulder_pan":
+                if base_hits and j != "shoulder_pan" and not a.no_base_veto:
                     print(f"   capsules would touch the base at raw {g}: " + "; ".join(f"{x.split('_')[0]}–{y.split('_')[0]} {c*1000:+.0f} mm" for x, y, c in base_hits) + " — stopping the sweep here, no stop found"); break
+                if base_hits and a.no_base_veto:
+                    other = base_hits + other
                 if other:
                     print(f"   (capsules overlapping — may be the stop forming: " + "; ".join(f"{x.split('_')[0]}–{y.split('_')[0]} {c*1000:+.0f} mm" for x, y, c in other) + ")")
                 b.write("Goal_Position", j, g, normalize=False, num_retry=5)
@@ -130,18 +136,27 @@ def main():
             back = int((stop if stop is not None else read()[0]) - sgn * 5 * CPD)
             b.write("Goal_Position", j, back, normalize=False, num_retry=5); time.sleep(0.6)
             found[d] = stop
+            if stop is not None:
+                res = json.load(open(a.out)) if Path(a.out).exists() else {}
+                rec = res.get(j, {}); rec[d] = stop; rec["date"] = time.strftime("%Y-%m-%d"); rec.pop("note", None)
+                res[j] = rec; Path(a.out).parent.mkdir(exist_ok=True); json.dump(res, open(a.out, "w"), indent=2)
             go_to(start)
             print(f"   back at {read()[0]} (start {start})")
         # report
         res = json.load(open(a.out)) if Path(a.out).exists() else {}
         rec = res.get(j, {})
-        rec.update({k: v for k, v in found.items() if v is not None}); rec["date"] = time.strftime("%Y-%m-%d")
+        rec.update({k: v for k, v in found.items() if v is not None}); rec["date"] = time.strftime("%Y-%m-%d"); rec.pop("note", None)
         if "min" in rec and "max" in rec:
-            rec["zero"] = int(round((rec["min"] + rec["max"]) / 2)); rec["span_deg"] = round((rec["max"] - rec["min"]) / CPD, 1)
+            rec["span_deg"] = round((rec["max"] - rec["min"]) / CPD, 1)
+            if j != "gripper":      # URDF zero = mid-travel for the arm joints; the gripper's URDF travel (−10…+100°) is not symmetric
+                rec["zero"] = int(round((rec["min"] + rec["max"]) / 2))
         res[j] = rec; Path(a.out).parent.mkdir(exist_ok=True); json.dump(res, open(a.out, "w"), indent=2)
         print(f"\n{j}: " + ", ".join(f"{k} {v}" for k, v in rec.items()))
-        if "zero" in rec:
-            print(f"   zero {rec['zero']} vs estimate {zero_raw} ({(rec['zero']-zero_raw)/CPD:+.1f}°); span {rec['span_deg']}° vs URDF {hi_urdf-lo_urdf:.1f}°")
+        if "span_deg" in rec:
+            if "zero" in rec:
+                print(f"   zero {rec['zero']} vs estimate {zero_raw} ({(rec['zero']-zero_raw)/CPD:+.1f}°); span {rec['span_deg']}° vs URDF {hi_urdf-lo_urdf:.1f}°")
+            else:
+                print(f"   span {rec['span_deg']}° vs URDF {hi_urdf-lo_urdf:.1f}° (no zero derived: travel not symmetric about the URDF zero)")
             print(f"   suggested servo limits (stop ∓ 3°): {int(rec['min'] + 3*CPD)} … {int(rec['max'] - 3*CPD)}   (were {lim0})")
         print(f"saved to {a.out}")
         return 0

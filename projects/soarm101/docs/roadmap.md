@@ -44,18 +44,22 @@ with a **guarded move**: a goal is accepted only if the whole interpolated path 
 present pose stays inside the joint limits and clear of the keep-out, and the arm executes
 it under the bench tools' stall, current and temperature guards — **`software/guarded_move.py`,
 first run 2026-09-14, an IK target reached within 10 counts** ([`test-log.md`](test-log.md));
-the tool position measured with a tape to 2 mm forward and 2 cm in height; and
+the tool position checked with a tape (after correcting a frame error in the first comparison:
+2.6 cm short forward, height within ~5 mm, with the measured zeros); and
 `software/shapes.py` traced a 20 cm square and a 12 cm cube on a loop the same day. **Self-collision is in** (2026-09-14, later the same day): a capsule hit box per collision
 mesh from upstream's URDF, placed by the forward kinematics, every non-adjacent link pair
 tested for overlap at IK acceptance and at every sample of a plan — the pose that points the
 gripper into the turret is refused before anything moves ([`test-log.md`](test-log.md)).
 Capsules were the owner's call: the links are regular enough, and a capsule test is what a
-Teensy can run. What remains for the milestone: the extents cycle brought under both checks;
-a desk model so moves can start from the rest pose; the zero tightened from ±10°; and a
-first live move with the full check (none made since it went in). Open on the way: the zero
-to better than ±10° (hard-stop measurement per joint), the `wrist_roll` and `gripper`
-mappings, the desk edge's true offset from the pan axis, and a model of the arm's own base and the desk surface, so that
-moves can be planned from the folded rest pose (the URDF's collision meshes are the source).
+Teensy can run. **Also done 2026-09-14:** mechanical stops measured on five joints and the
+servo limits set to stop ∓ 3° (replacing the blanket 10 % shrink); zeros from the stop
+midpoints — elbow and pan to about 1°, shoulder and wrist ±5–8° because their travel exceeds
+the URDF's; the desk edge measured (25 mm ahead of the pan axis); the extents cycle retired
+rather than rewritten. What remains for the milestone: a first live move with the full check
+(none made since the self-collision check went in); the shoulder and wrist zeros pinned (a
+spirit level on the upper arm; a second tape point); the desk surface modelled so moves can
+start from the folded rest pose; the `wrist_roll` and `gripper` mappings, including the jaw
+gap in millimetres.
 
 ## Milestone 5 — A Teensy 4.1-operated arm on micro-ROS *(DEC-12, DEC-14)*
 
