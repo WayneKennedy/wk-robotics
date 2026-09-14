@@ -10,16 +10,27 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
-### 2026-09-14 · Gripper gap: first point
+### 2026-09-14 · Gripper gap: three measured points; the simple hinge model does not hold
 
-**Conditions:** arm holding at the zero pose; owner's measurement: **jaw ends 21 mm apart**
-with the gripper at raw **1472**, 16.1° open from the closed stop (1289).
+**Conditions:** arm holding at the zero pose; owner's calipers across the jaw ends. The jaws
+were driven by `guarded_move.py --gripper RAW` (new: the gripper joins the planned and
+checked set like the roll, jaw capsule tested against every link). Readings at the position
+the jaws actually reached:
 
-**Fit:** the moving jaw is a hinge, so the tip gap ≈ L·sin(θ) with θ measured from the closed
-stop; this point gives **L = 76 mm**, against upstream's moving-jaw geometry of ~72 mm
-hinge-to-end (capsule axis) — plausible. Zero gap at the closed stop is **assumed, not
-checked**. One point only: the curve is a prediction until two or three more openings are
-measured. Recorded in `software/calibration/gripper_gap.json`.
+| Gripper raw | Opening from the closed stop | Gap at the jaw ends | Hinge model predicted |
+|---|---|---|---|
+| 1289 | 0° (closed stop) | 0 mm — **assumed, not measured** | — |
+| 1386 | 8.5° | **11 mm** | 11.3 mm (from the first point) |
+| 1472 | 16.1° | **21 mm** | — (the first point) |
+| 1591 | 26.6° | **37 mm** (owner: "at the very tip") | 33.7 mm (from the first two) |
+
+**Result:** a one-parameter hinge model (gap = L·sin θ) predicted the second point within
+0.3 mm but missed the third by 3.3 mm — the gap grows faster at wider openings than a jaw tip
+on a simple arc would. Refitted to all three it leaves ±1 mm residuals. **The lookup is
+therefore the measured points with linear interpolation** (`software/calibration/gripper_gap.json`):
+25 mm ↔ raw 1502, 30 mm ↔ 1539. Not yet measured: a near-closed point (raw 1357 is the lowest
+the tools will command; interpolation says 7.7 mm) to test the zero-gap assumption, and
+anything wider than 37 mm.
 
 ### 2026-09-14 · Wrist roll: camera-top orientation, a moulded stop, and a move to the placeholder zero
 

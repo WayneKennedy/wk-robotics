@@ -67,6 +67,7 @@ def main():
     ap.add_argument("--target"); ap.add_argument("--pitch", type=float)
     ap.add_argument("--raw", help="pan,lift,elbow,wrist raw counts")
     ap.add_argument("--roll", type=int, help="also move wrist_roll to this raw count, planned and checked with the others")
+    ap.add_argument("--gripper", type=int, help="also move the gripper to this raw count (jaw capsule checked like every other link)")
     ap.add_argument("--via-mid", action="store_true"); ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--deg-per-step", type=float, default=1.5); ap.add_argument("--rate", type=float, default=20)
     ap.add_argument("--track", type=int, default=150); ap.add_argument("--max-ma", type=float, default=900); ap.add_argument("--max-temp", type=int, default=60)
@@ -116,6 +117,8 @@ def main():
 
     if a.roll is not None:              # the roll joins the planned, checked, streamed set (MOVING is read by plan() and the executor)
         MOVING.append("wrist_roll"); goal_raw["wrist_roll"] = a.roll
+    if a.gripper is not None:
+        MOVING.append("gripper"); goal_raw["gripper"] = a.gripper
     legs = []
     if a.via_mid:
         legs.append({j: 2047 for j in MOVING})
