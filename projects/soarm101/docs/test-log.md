@@ -10,6 +10,35 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Spirit-level check at the zero pose: shoulder confirmed, elbow zero moved +4.8°
+
+**Conditions:** arm holding at the measured zero pose (previous entry), raw 1985 / 1959 /
+2978 / 2044. iPhone level (owner), readings front-to-back along the arm's forward axis.
+
+| Surface | Level | Model with stop-midpoint zeros |
+|---|---|---|
+| Desk top at the base | 0° (level in this axis) | — |
+| Upper arm, long edge | 3° from vertical, top forward | 3.4° (joint) / 2.4° (body axis) |
+| Forearm, long edge | **+2°, front end up** (owner: "a net 94 degrees at elbow") | **−1.4° (horn line) / −3.6° (outline)** |
+
+**Shoulder:** confirmed; 1920 → 1925 makes the model read the 3.0° measured. **Elbow:** the
+forearm reads 3.4–6.2° higher than the model (the range is the model's uncertainty about which
+physical line the phone sat on). **Cross-check against the independent tape measurement**
+(first guarded move, 24.9 cm forward): the same elbow shift takes the model's reach there from
+22.3 cm to 23.7–24.9 cm. Both agree, so the elbow zero moves to **3031 (+4.8°, ±1.5°)**, and
+the model then reaches 24.3 cm (0.6 cm short). Height does not discriminate — "midway between
+the jaws" is uncertain along the downward-pointing jaw.
+
+**What this corrects:** the stop-measurement entry called the elbow's midpoint zero tight
+(±0.3°) because its span matched the URDF's. Equal span only says the travel is the right
+length; this elbow's travel is not centred on the URDF zero — its stops are at −101° / +92°.
+Because the URDF's +97° fold limit then lies beyond the real stop, **the model's joint limits
+are now the measured servo limits** (`kinematics.apply_measured_limits`), not the URDF's.
+
+**Changed as a result:** `JOINT_ZERO` shoulder 1925, elbow 3031; model limits from the
+calibration file. Wrist zero (±7.5°) not yet checked — a level on the gripper at this pose
+would do it.
+
 ### 2026-09-14 · Arm set to the measured zero pose for a spirit-level check
 
 **Conditions:** after the second power cycle the arm hung limp with the shoulder on its
@@ -96,7 +125,8 @@ encoder wrap at 4095** — the likely root of the elbow's −259° read on 2026-
 now stops a sweep at the wrap instead of writing goals past it. All six at status 0 after.
 
 **Zeros.** Midpoints become the model's zeros for pan, shoulder, elbow and wrist
-(`kinematics.JOINT_ZERO`). Tight where the measured travel equals the URDF's (elbow ±0.3°,
+(`kinematics.JOINT_ZERO`). **Corrected by the level check the same evening — equal span does not make the midpoint the
+zero; the elbow's was 4.8° out.** As first written: tight where the measured travel equals the URDF's (elbow ±0.3°,
 pan ±1.3°); the shoulder and wrist travel 10.5° and 14.9° more than the URDF, so their zeros
 are uncertain by up to ±5.2° and ±7.5°. The pan midpoint is 4.8° from the owner's by-eye
 straight-ahead (2036) — unresolved.

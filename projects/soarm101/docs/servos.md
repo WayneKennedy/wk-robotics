@@ -130,7 +130,9 @@ joint is measured against its hard stops. `wrist_roll` and `gripper` zeros are
 `JOINT_ZERO` table — the one place they live.
 
 The four measured zeros (pan, shoulder, elbow, wrist flex) superseded the sweep-midpoint
-estimates later on 2026-09-14: each is the midpoint of the joint's measured mechanical stops
+estimates later on 2026-09-14 — and a spirit-level check that evening confirmed the shoulder and
+moved the elbow 4.8° off its stop midpoint, so the stop midpoint is a starting point, not the
+zero: each is the midpoint of the joint's measured mechanical stops
 (below). Their accuracy and the tape check are in the module's docstring and
 [`test-log.md`](test-log.md).
 
