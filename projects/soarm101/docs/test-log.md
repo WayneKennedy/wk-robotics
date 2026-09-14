@@ -10,6 +10,28 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Wrist roll stop: one face at raw 496; the travel runs past the encoder wrap
+
+**Conditions:** `find_stops.py wrist_roll --beyond-deg 100` (the roll is now sweepable; no
+midpoint zero is derived for it — its zero comes from the jaw), torque 180, arm at the zero
+pose, jaws near closed. Ceilings at the encoder range, so the wrap check is the outer limit.
+
+**Result:** clockwise (raw decreasing, seen from behind) — **contact at raw 496, −207° from
+the zero (2851)**, the clean stall signature (position frozen, current 70–120 mA). Anticlockwise
+— **no contact up to the encoder wrap at 4095 (+109°)**. The roll has a single moulded stop
+(owner: to protect the wire), so its other face lies past the wrap: the travel is **at least
+316°**, face to face. The camera-on-top position (raw ~1497, −119°) sits 88° from the
+clockwise face — about three-quarters of the way round from the other, as the owner judged.
+
+**Hazard found:** the part of the travel past the wrap reads as raw 0 up to the far face. If
+the roll ever sits there — turned by hand with torque off, say — any ordinary goal drives it
+the "wrong" way, into the stop at full torque; servo limits cannot prevent it. **Recommended:
+re-home the roll so the whole travel lies inside 0–4095**: `Homing_Offset` 40 → **436** moves
+the clockwise face to raw 100 (zero → 2455, camera-on-top → ~1101), leaving room for up to
+351° of travel before the wrap; then sweep anticlockwise for the far face and set the roll's
+servo limits to the stops ∓ 3°. An EEPROM write — `Lock` 0 first, verified across a power cycle
+(OQ-12). Awaiting the owner's go.
+
 ### 2026-09-14 · Wrist roll zero set: 2851, from the moving jaw, confirmed by the camera-mount screws
 
 **Owner, seen from behind:** the roll move 2035 → 2542 (507 counts, 44.6° by the model) turned

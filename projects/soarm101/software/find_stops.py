@@ -44,7 +44,7 @@ CPD = 4095 / 360.0   # counts per degree
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("joint", choices=NAMES[:4] + ["gripper"])
+    ap.add_argument("joint", choices=NAMES)
     ap.add_argument("--dir", choices=["min", "max", "both"], default="both")
     ap.add_argument("--torque", type=int, default=180); ap.add_argument("--step-deg", type=float, default=1.0)
     ap.add_argument("--dwell", type=float, default=0.25); ap.add_argument("--stall", type=int, default=40)
@@ -154,7 +154,7 @@ def main():
         rec.update({k: v for k, v in found.items() if v is not None}); rec["date"] = time.strftime("%Y-%m-%d"); rec.pop("note", None)
         if "min" in rec and "max" in rec:
             rec["span_deg"] = round((rec["max"] - rec["min"]) / CPD, 1)
-            if j != "gripper":      # URDF zero = mid-travel for the arm joints; the gripper's URDF travel (−10…+100°) is not symmetric
+            if j not in ("gripper", "wrist_roll"):   # URDF zero = mid-travel for the arm joints; not for the gripper (asymmetric URDF travel) or the roll (zero set from the jaw)
                 rec["zero"] = int(round((rec["min"] + rec["max"]) / 2))
         res[j] = rec; Path(a.out).parent.mkdir(exist_ok=True); json.dump(res, open(a.out, "w"), indent=2)
         print(f"\n{j}: " + ", ".join(f"{k} {v}" for k, v in rec.items()))
