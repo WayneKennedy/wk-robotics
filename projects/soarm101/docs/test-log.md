@@ -172,7 +172,13 @@ differ.
 
 **Verdict: the arm is healthy after the relocation.** Sensing, calibration offsets, the
 safe torque-on sequence, tracking, thermal and rail behaviour all match or better the
-2026-09-12 run.
+2026-09-12 run. **But the bench was not: the Eventek supply, sitting on the desk behind
+the base, was struck during these warm-up moves and now lies on its side** (owner, reported
+later the same day). The tools did not detect it. Likely candidate, unverified: the
+`shoulder_lift` move to its lower target 996 (−77°, upper arm swept far back over the desk),
+which reached 1017 with the run's largest tracking error (+21) in cycle 1 and 986 (−10) in
+cycle 2. The extents cycle sweeps every joint's full shrunk range and has no world model;
+layer (1) of the safety model in [`hardware.md`](hardware.md) → Bench was not met.
 
 **State left:** parked at mid (all joints ~2047), `Torque_Enable` 1, `Torque_Limit` 1000,
 status 0, 0–1 mA. Limits in the servos match the JSON on all six. **Whether the
@@ -211,7 +217,8 @@ was left". The supply's own current readout was not recorded.
 
 **Conditions:** unlogged driving session on the desk-edge mount; tools, poses and supply not
 recorded. **Reported 2026-09-14 by the owner:** the upper arm and lower arm both extended
-back and hit the wall behind the mounting table. Damage, servo flags and readings at the
+back and hit the wall behind the mounting table — at the arm's position before the
+desk-edge relocation; the new mount has no wall behind it. Damage, servo flags and readings at the
 time: not recorded; the next morning's health check found all six servos at status 0 and
 the calibration offsets intact, and two EEPROM changes of unknown origin (`wrist_flex` and
 `gripper` limits reverted, `gripper` `Max_Torque_Limit` 500) — whether they relate to this

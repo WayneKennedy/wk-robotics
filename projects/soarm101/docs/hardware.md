@@ -92,9 +92,14 @@ takes these as world constraints.
   are allowed to lean anywhere inside it. *(2) The software keep-out bounds the reach:* the
   end-effector may not pass the desk-edge plane, which is what stops a full reach-back.
   **The incident that set this: on 2026-09-13 the upper and lower arm both extended back
-  and hit the wall behind the table** ([`test-log.md`](test-log.md)). The wall's distance
-  behind the desk edge is **not measured**; with the plane at the edge it does not enter the
-  check, but it bounds how far layer (1) can extend behind the arm. At the calibrated mid pose (all joints
+  and hit the wall behind the table**, at the arm's previous position
+  ([`test-log.md`](test-log.md)). **At the desk-edge mount there is no wall behind the
+  base (owner, 2026-09-14); what is there is the bench camera's arm and the Eventek supply,
+  and the supply was struck during the warm-up tests and now lies on its side.** So layer
+  (1) is not yet satisfied at this mount: the shoulder's swept range reaches −77° at the
+  extents cycle's lower target, which carries the upper arm and folded forearm well back
+  over the desk. Until the zone behind the base is cleared to the elbow's full sweep, either
+  keep objects out of it or keep the shoulder's backward travel out of the tools. At the calibrated mid pose (all joints
   2047) the upper arm leans ~20° *forward* into free air with the wrist and gripper above
   and ahead of the base (owner, confirmed on the bench camera 2026-09-14), so the park pose
   and the extents cycle stay clear of the plane. **No tool enforces the rule yet**; a
