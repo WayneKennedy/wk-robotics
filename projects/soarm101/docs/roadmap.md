@@ -30,34 +30,33 @@ Every joint nudged ±3° and back within 1° from a hands-off hold, arm clamped,
 [`servos.md`](servos.md) were understood; `hold_test.py --keep` then `first_move.py` is the
 proven sequence.
 
-## Milestone 4 — Geometry: kinematics, keep-out, IK *(DEC-14; in progress since 2026-09-14)*
+## Milestone 4 — Geometry: kinematics, keep-out, self-collision, IK *(DEC-14; nearly done, 2026-09-14)*
 
-Replaces the LeRobot teleoperate-record-train milestone, dropped by DEC-14. The arm's own
-geometric model, host-side Python in `software/kinematics.py`: forward kinematics from
-upstream's `so101_new_calib.urdf`, a servo-count-to-angle mapping good to ±10°
-([`servos.md`](servos.md)), a keep-out check of the end-effector against the bench's desk-edge plane
-([`hardware.md`](hardware.md) → Bench), and a
-damped-least-squares IK for the tool frame with pitch. Done so far: FK validated against the
-camera and the rest pose; the mapping checked against a hand-set zero pose; IK round-trips
-FK within 2 mm on 47 of 50 random poses ([`test-log.md`](test-log.md) 2026-09-14). Ends
-with a **guarded move**: a goal is accepted only if the whole interpolated path from the
-present pose stays inside the joint limits and clear of the keep-out, and the arm executes
-it under the bench tools' stall, current and temperature guards — **`software/guarded_move.py`,
-first run 2026-09-14, an IK target reached within 10 counts** ([`test-log.md`](test-log.md));
-the tool position checked with a tape (after correcting a frame error in the first comparison:
-2.6 cm short forward, height within ~5 mm, with the measured zeros); and
-`software/shapes.py` traced a 20 cm square and a 12 cm cube on a loop the same day. **Self-collision is in** (2026-09-14, later the same day): a capsule hit box per collision
-mesh from upstream's URDF, placed by the forward kinematics, every non-adjacent link pair
-tested for overlap at IK acceptance and at every sample of a plan — the pose that points the
-gripper into the turret is refused before anything moves ([`test-log.md`](test-log.md)).
-Capsules were the owner's call: the links are regular enough, and a capsule test is what a
-Teensy can run. **Also done 2026-09-14:** mechanical stops measured on five joints and the
-servo limits set to stop ∓ 3° (replacing the blanket 10 % shrink); zeros from the stop
-midpoints — then checked with a spirit level: shoulder confirmed to ~1°, elbow moved +4.8° off its stop midpoint (±1.5°, level and tape agree), pan confirmed with a square off the desk edge, wrist moved +2.1° (±2°, level and tape agree); the desk edge measured (25 mm ahead of the pan axis); the extents cycle retired
-rather than rewritten. What remains for the milestone: a first live move with the full check
-(none made since the self-collision check went in); the desk surface modelled so moves can
-start from the folded rest pose; the `wrist_roll` and `gripper` mappings, including the jaw
-gap in millimetres.
+Replaces the LeRobot teleoperate-record-train milestone (DEC-14). The arm's own geometric
+model and move tools, host-side Python in `software/`:
+
+- **`kinematics.py`** — forward kinematics from upstream's `so101_new_calib.urdf`; count-to-angle
+  zeros measured on all six joints ([`servos.md`](servos.md): pan and shoulder ~1°, elbow ±1.5°,
+  wrist flex ±2°, roll ±3°); model limits = the measured servo limits; the bench keep-out
+  (behind the desk-edge plane, minus a 0.18 m cylinder, floored at the desk top, tested on every
+  link — [`hardware.md`](hardware.md) → Bench); capsule self-collision fitted to upstream's
+  collision meshes; damped-least-squares IK for the tool frame with pitch.
+- **`guarded_move.py`** — a joint or IK goal (roll and gripper optional) is accepted only if every
+  sample of the joint-space path passes the measured limits, the keep-out and self-collision;
+  streamed at 20 Hz under tracking, current and temperature guards.
+- **`shapes.py`** — Cartesian shapes as 1 cm IK waypoints, each checked; a 20 cm square and a
+  12 cm cube ran 2026-09-14, on pre-calibration zeros (their real error is in the test log).
+- **`find_stops.py`** — mechanical stops by gentle contact; servo limits are the stops ∓ 3° on
+  every joint; the roll re-homed so its 335.6° travel sits inside the encoder range; the gripper
+  gap calibrated from closed to 37 mm.
+- **Validated against the world** — zeros by spirit level and square, tool reach by tape (exact at
+  one pose after calibration); everything persisted across power cycles
+  ([`test-log.md`](test-log.md) 2026-09-14).
+
+**Remaining:** (1) a shape re-run on the calibrated zeros, checked against the world at two or
+three points — the validation that closes the milestone; (2) the desk surface modelled, so the
+arm can unfold itself from the folded rest pose — every session so far has started from a pose
+set by hand.
 
 ## Milestone 5 — A Teensy 4.1-operated arm on micro-ROS *(DEC-12, DEC-14)*
 
@@ -66,8 +65,9 @@ and ROS 2 on a host — the family's two-tier pattern
 ([wk-robotics `common.md`](../../../docs/common.md#compute-the-two-tier-split)), with the
 arm as the proving ground for koala-bot and wk-devastator. Board, bus connection, agent
 host and distribution are the open parts of OQ-09. Ends with the arm reproducing milestone
-4's guarded move under the MCU, using the calibration LeRobot left in the servos, with the
-joint envelope enforced on the Teensy and the keep-out check on the host. What the arm is
+4's guarded move under the MCU, using the calibration now in the servos (homing offsets
+and measured limits), with the joint envelope enforced on the Teensy (how the checks split
+between tiers is open: OQ-09, and OQ-13 for two arms). What the arm is
 ultimately *for* (OQ-08) is decided alongside.
 
 ## Milestone 6 — Mount on wk-devastator *(only if OQ-08 says so)*
