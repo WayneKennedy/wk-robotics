@@ -20,15 +20,18 @@ pose, jaws near closed. Ceilings at the encoder range, so the wrap check is the 
 the zero (2851)**, the clean stall signature (position frozen, current 70–120 mA). Anticlockwise
 — **no contact up to the encoder wrap at 4095 (+109°)**. The roll has a single moulded stop
 (owner: to protect the wire), so its other face lies past the wrap: the travel is **at least
-316°**, face to face. The camera-on-top position (raw ~1497, −119°) sits 88° from the
+316°**, face to face. **Owner, watching the anticlockwise sweep: it "reversed about 5 mm from
+the stop"** — the wrap came just short of the far face. At a stop radius of 15–30 mm (not
+measured) that is 10–19° of roll, so the far face is at about +119° to +128° and the travel
+about **326–335°**. The camera-on-top position (raw ~1497, −119°) sits 88° from the
 clockwise face — about three-quarters of the way round from the other, as the owner judged.
 
 **Hazard found:** the part of the travel past the wrap reads as raw 0 up to the far face. If
 the roll ever sits there — turned by hand with torque off, say — any ordinary goal drives it
 the "wrong" way, into the stop at full torque; servo limits cannot prevent it. **Recommended:
 re-home the roll so the whole travel lies inside 0–4095**: `Homing_Offset` 40 → **436** moves
-the clockwise face to raw 100 (zero → 2455, camera-on-top → ~1101), leaving room for up to
-351° of travel before the wrap; then sweep anticlockwise for the far face and set the roll's
+the clockwise face to raw 100 (zero → 2455, camera-on-top → ~1101), putting the far face at
+about raw 3810–3920 — inside the encoder range with at least 15° to spare; then sweep anticlockwise for the far face and set the roll's
 servo limits to the stops ∓ 3°. An EEPROM write — `Lock` 0 first, verified across a power cycle
 (OQ-12). Awaiting the owner's go.
 
