@@ -10,6 +10,28 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Wrist roll re-homed: travel now inside the encoder range, both stops measured
+
+**Why:** the roll's travel ran 10–19° past the encoder wrap (previous entry), so part of it was
+uncommandable and a roll left there could be driven into its stop. Owner: go.
+
+**Offset change:** on the roll only, `Torque_Limit` 10 → `Lock` 0 → `Homing_Offset` 40 → **436**
+→ `Goal_Position` := the new present (2152) → `Lock` 1. Physical shift during the change: **0
+counts**. **But on raising the torque limit to 150 the roll turned 386 counts (34°) to 2538** —
+the old goal's number (2542) read in the new frame — although the goal register read 2152. The
+goal written at `Torque_Limit` 10 right after the EEPROM write had not become the servo's motion
+target. The ramp's drift check stopped it at 150; re-anchoring (goal := present with torque on)
+then held, and the ramp to 1000 showed 0 drift. No contact — the roll's travel is wide there.
+
+**Stops re-measured in the new frame** (`find_stops.py wrist_roll`, torque 180): clockwise face
+**100** (exactly 496 − 396), far face **3918**, +128.6° from the zero — the face the old frame
+could not reach, 5 mm past the wrap as the owner saw. **Travel 335.6°**, 177 counts clear of the
+wrap. Roll zero **2455** (2851 − 396); camera-on-top ≈ 1101.
+
+**Limits:** servo `Min/Max_Position_Limit` 0–4095 → **134–3883** (stops ∓ 3°), written with
+`Lock` 0, read back matching, `Lock` 1 restored; both calibration JSONs updated; the model now
+takes the roll's limits from them too (`LIMIT_JOINTS`). **Not yet verified across a power cycle.**
+
 ### 2026-09-14 · Wrist roll stop: one face at raw 496; the travel runs past the encoder wrap
 
 **Conditions:** `find_stops.py wrist_roll --beyond-deg 100` (the roll is now sweepable; no

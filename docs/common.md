@@ -164,6 +164,17 @@ robot is holding under LeRobot is silently temporary. Write `Lock` = 0, write, r
 restore `Lock` = 1; verify across a power cycle. Evidence:
 [SO-ARM101 `test-log.md`](../projects/soarm101/docs/test-log.md) (OQ-12).
 
+**Zero every servo when its ID is set, and assemble each joint at mid-travel (owner,
+2026-09-14).** A factory STS3215 can sit anywhere on its encoder when it is bolted in, and the
+servo can only be commanded within 0–4095 without crossing the wrap. On SO-ARM101 the elbow's
+fold stop landed 21 counts from the wrap (the likely root of a −259° read), and the wrist roll's
+travel ran 10–19° past it, so part of the roll's travel was uncommandable and a hand-turned roll
+could be driven into its stop — fixed only by re-homing after assembly (an EEPROM write, with
+its own pitfalls: see OQ-12 and the goal-adoption rule above). The practice: when the ID is set,
+also centre the servo (command 2047, or write the homing offset so it reads 2047), then fit the
+horn with the joint at the middle of its mechanical travel — so every joint's stops sit well
+inside 0–4095 from day one. Evidence: [SO-ARM101 `test-log.md`](../projects/soarm101/docs/test-log.md).
+
 **A joint's measured stop midpoint is a starting point, not its zero (SO-ARM101,
 2026-09-14).** Upstream URDFs that put zero at mid-travel invite taking the midpoint of the
 mechanical stops as the zero. On SO-ARM101 two of four joints were 2–5° off it — including the

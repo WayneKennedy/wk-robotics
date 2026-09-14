@@ -108,6 +108,12 @@ so do not run it casually.
    `gripper`** (OQ-12, a canary written with `Lock` = 1 was gone after a power cycle). Write `Lock` = 0 first, write, read back, restore `Lock` = 1. **Re-read
    calibration after every power cycle** and rewrite from the JSON before moving.
 
+5. **After a `Homing_Offset` change the servo chases its old goal number.** On 2026-09-14 the
+   roll's offset was changed with zero physical shift and the goal rewritten to the new
+   present at a 1 % torque limit, yet on raising the limit the roll turned 34° to the old goal's
+   number read in the new frame. Change an offset only at a weak torque limit, then re-anchor
+   the goal (goal := present, torque on), watch it settle, and only then ramp the limit up.
+
 **One process on the bus at a time.** Two of this repo's tools on `/dev/ttyACM0` together
 produce a stream of failed and possibly corrupted reads (2026-09-12); alone, `sync_read` is
 100/100. Stop any logger or recorder before running anything else. Every tool here opens

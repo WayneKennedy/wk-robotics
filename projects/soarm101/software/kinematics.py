@@ -52,7 +52,7 @@ JOINT_ZERO = {
     "shoulder_lift": (1925, +1, "MEASURED 2026-09-14: stop midpoint 1920 (stops 723 / 3118), refined by a spirit level on the upper arm at the zero pose — 3.0° forward where 1920 predicted 3.4°. ~1° (iPhone level); sign from the rest pose"),
     "elbow_flex":    (3031, +1, "MEASURED 2026-09-14: NOT the stop midpoint 2976 — a spirit level on the forearm (+2° front up at the zero pose) and the tape reach (24.9 cm at the first target) both put the zero 3.4–6.2° above it; 3031 (+4.8°) is the middle of that band, ±1.5°. So the stops 1879 / 4074 sit at −101° / +92°: the travel has the URDF's span but is not centred on its zero"),
     "wrist_flex":    (2070, +1, "MEASURED 2026-09-14: NOT the stop midpoint 2046 (stops 881 / 3212) — a spirit level on the gripper's fixed jaw (+4° front up at the zero pose) and the tape reach (24.9 cm exactly) both want 2070 (+2.1°), ±2° (whether the jaw edge runs along the approach axis is unverified; the tape bounds it). Coincides with the 2026-09-12 sweep midpoint"),
-    "wrist_roll":    (2851, +1, "MEASURED 2026-09-14: the moving jaw seen from behind (owner) — 13° anticlockwise of 12 o'clock at raw 2542, where the URDF puts it 40.2° anticlockwise at roll 0; cross-checked by the camera-mount screws against upstream's camera-mount origin at three roll positions within ~5°. ±3°. Sign +1 verified (507 counts turned 45° anticlockwise from behind). Was the placeholder 2047, ~70° off"),
+    "wrist_roll":    (2455, +1, "MEASURED 2026-09-14 as 2851 from the moving jaw (13° anticlockwise of 12 o'clock at raw 2542; URDF 40.2° at roll 0), cross-checked by the camera-mount screws within ~5°; ±3°. Then RE-HOMED the same evening (Homing_Offset 40 → 436, every roll reading −396) so the roll's whole travel sits inside 0–4095: zero now 2455. Sign +1 verified"),
     "gripper":       (1289, +1, "closed stop MEASURED 2026-09-14 (open stop 2741, span 127.6°); taken as URDF 0 — whether URDF 0 or −10° is the closed jaw is unverified; jaw GAP not calibrated"),
 }
 
@@ -85,7 +85,7 @@ def load_urdf(path=DEFAULT_URDF):
 
 
 CALIBRATION_JSON = HERE / "calibration" / "wk_soarm101.json"
-LIMIT_JOINTS = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex"]
+LIMIT_JOINTS = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll"]   # roll added 2026-09-14 after its re-home
 
 
 def apply_measured_limits(joints, cal_path=CALIBRATION_JSON):
