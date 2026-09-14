@@ -16,7 +16,9 @@ RAW_AT_ZERO and SIGN per joint live in JOINT_ZERO with their provenance. The 202
 values are ESTIMATES from the 2026-09-12 hand sweep (docs/test-log.md): the sweep's span
 matches the URDF's travel within 3–8° on every pitch joint, so its midpoint is taken as the
 URDF zero. Verify against a physically set zero pose before trusting a limit to a few
-degrees; wrist_roll and gripper are placeholders.
+degrees; wrist_roll and gripper are placeholders. Hand-set zero pose 2026-09-14 agreed
+within 9° on the four pitch/pan joints and fixed the pan and wrist_flex signs
+(docs/test-log.md). Treat the zero as ±10° until a hard-stop measurement replaces it.
 """
 import argparse
 import os
@@ -35,10 +37,10 @@ COUNTS_PER_RAD = 4095 / (2 * np.pi)
 
 # (raw count at URDF zero, sign, provenance)
 JOINT_ZERO = {
-    "shoulder_pan":  (2046, +1, "sweep midpoint (750+3343)/2, 2026-09-12; sign unverified"),
-    "shoulder_lift": (1866, +1, "sweep midpoint (736+2997)/2; sign from the rest pose: raw min ↔ URDF lower limit"),
-    "elbow_flex":    (2954, +1, "sweep midpoint (1880+4028)/2; sign from the rest pose: raw max ↔ URDF upper limit"),
-    "wrist_flex":    (2070, +1, "sweep midpoint (1002+3137)/2; sign unverified"),
+    "shoulder_pan":  (2046, +1, "sweep midpoint (750+3343)/2, 2026-09-12; hand zero read 2036; sign verified 2026-09-14 (toward the arm's left = raw down = URDF negative)"),
+    "shoulder_lift": (1866, +1, "sweep midpoint (736+2997)/2; hand zero read 1918; sign from the rest pose: raw min ↔ URDF lower limit"),
+    "elbow_flex":    (2954, +1, "sweep midpoint (1880+4028)/2; hand zero read 3055; sign from the rest pose: raw max ↔ URDF upper limit"),
+    "wrist_flex":    (2070, +1, "sweep midpoint (1002+3137)/2; hand zero read 2081; sign verified 2026-09-14 (gripper pitched down = raw up = URDF positive)"),
     "wrist_roll":    (2047, +1, "placeholder: homing mid; unverified"),
     "gripper":       (1328, +1, "placeholder: raw min ↔ closed (URDF 0); unverified"),
 }

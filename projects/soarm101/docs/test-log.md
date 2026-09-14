@@ -10,6 +10,41 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · URDF zero pose set by hand; count-to-angle mapping checked
+
+**Conditions:** torque off, owner holding the arm against droop, bench camera side-on from
+the arm's left (`software/snap.py`, rotation only). Reads by `software/kinematics.py --live`,
+which maps raw counts to upstream `so101_new_calib.urdf` angles using the sweep-midpoint
+zeros in its `JOINT_ZERO` table.
+
+**Pose 1 — URDF zero as described** (pan ahead, upper arm vertical, forearm horizontal
+forward, wrist in line). **Pose 2 — from pose 1, gripper pitched down ~30° and the arm
+swung ~30° toward the camera** (the arm's left), both by eye.
+
+| Joint | Pose 1 raw | Pose 1 mapped ° | Pose 2 raw | Pose 2 mapped ° |
+|---|---|---|---|---|
+| `shoulder_pan` | 2036 | −0.9 | 1659 | −34.0 |
+| `shoulder_lift` | 1918 | +4.6 | 1973 | +9.4 |
+| `elbow_flex` | 3055 | +8.9 | 3065 | +9.8 |
+| `wrist_flex` | 2081 | +1.0 | 2568 | +43.8 |
+
+**Result:** the sweep-midpoint zeros put the hand-set zero pose within 9° on every joint.
+In the frame the upper arm leans a little toward the holding hand and the forearm rises a
+little toward it, so part of the shoulder and elbow residual is the hold, and the camera is
+not level; the residual is inside by-eye accuracy and was not chased. **Signs:** URDF pan is
+positive about −z (swings the arm to its right), so toward the camera is negative — raw fell,
+sign +1 confirmed. URDF `wrist_flex` is positive about +y (pitches the gripper down) — raw
+rose, sign +1 confirmed. `shoulder_lift` and `elbow_flex` signs had already followed from the
+rest pose (raw min ↔ URDF −100°, raw max ↔ +97°). Also read at rest, earlier the same day:
+2026 / 736 / 4085 / 2922 / 1363 / 1324, which the model places at the shoulder and elbow
+travel limits, and with the elbow 46 mm behind the pan axis — the folded rest pose breaches
+the keep-out plane.
+
+**Changed as a result:** `kinematics.py` `JOINT_ZERO` provenance updated; `servos.md` gains
+the mapping section. The zero is carried as ±10° (an unmeasured stop margin at each end of
+the sweep, plus the hand pose); a hard-stop measurement per joint would tighten it.
+`wrist_roll` and `gripper` remain unmapped.
+
 ### 2026-09-14 · Health check after relocating to a desk-edge mount
 
 **Conditions:** arm clamped to a desk edge with free air in front and below (owner), set

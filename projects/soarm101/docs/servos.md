@@ -122,7 +122,10 @@ wrist in line; every joint's zero at mid-travel) and maps raw counts to URDF rad
 the 2026-09-12 hand sweep** (pre-shrink limits above): the sweep spans match the URDF's
 travel within 3–8° on every pitch joint, so its midpoint is taken as the URDF zero. Signs
 for `shoulder_lift` and `elbow_flex` follow from the folded rest pose reading at the raw
-minimum and maximum respectively (2026-09-14, [`test-log.md`](test-log.md)); pan,
-wrist_flex, wrist_roll and gripper signs and zeros are **unverified placeholders**. The
-values and their provenance are in the module's `JOINT_ZERO` table — the one place they live.
+minimum and maximum respectively; pan and wrist_flex signs were fixed by a hand nudge in a
+known direction; a hand-set zero pose agreed with the sweep midpoints within 9° on all four
+(2026-09-14, [`test-log.md`](test-log.md)). **The zero is good to about ±10°** until each
+joint is measured against its hard stops. `wrist_roll` and `gripper` zeros are
+**unverified placeholders**. The values and their provenance are in the module's
+`JOINT_ZERO` table — the one place they live.
 
