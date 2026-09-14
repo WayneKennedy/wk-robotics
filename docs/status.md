@@ -9,7 +9,7 @@ This is a *state* document, not a log. When an item resolves, delete it; when it
 to one project, move it to that project's repo and leave a link. It is not a transcript —
 see [`AGENTS.md`](../AGENTS.md#what-does-not-belong-here).
 
-**Last reviewed: 2026-09-13.**
+**Last reviewed: 2026-09-14.**
 
 ---
 
@@ -35,6 +35,7 @@ git clone git@github.com:WayneKennedy/wk-devastator.git
 git clone git@github.com:WayneKennedy/wk-hexapod.git
 git clone git@github.com:WayneKennedy/wk-drones.git
 # Hexapod vendor reference: a sparse clone of Freenove's upstream — recipe in wk-hexapod docs/operations.md
+git clone git@github.com:AshishA26/Orion-Quadruped.git      # upstream reference, read-only, ~2.7 GB; see Open threads
 ```
 
 `wk-hexapod` and its vendor reference are checked out on the robot's own Pi, where hexapod
@@ -47,6 +48,33 @@ state; a session that adds to it is expected to leave it complete.
 ---
 
 ## Open threads
+
+### Orion-Quadruped upstream clone — purpose not yet recorded
+
+Cloned to `../Orion-Quadruped` on 2026-09-14, read-only, no fork. Upstream is
+[AshishA26/Orion-Quadruped](https://github.com/AshishA26/Orion-Quadruped), default branch
+`master`, 312 commits from 2025-11-06 to 2026-09-03, 143 stars (checked 2026-09-14). **No
+licence file and no licence on GitHub** — all rights reserved by default, so nothing from
+it can be vendored or redistributed without asking the author; reading and building from
+it privately is the only safe use until that is resolved. Its three Git submodules
+(Isaac ROS common, Argus camera, rf2o laser odometry) are **not initialised**.
+
+What it is: a 12-DOF quadruped on a Jetson Orin Nano (Isaac ROS in Docker, TensorRT) with
+a custom STM32F401 FreeRTOS reflex board over UART — the family's
+[two-tier split](common.md#compute-the-two-tier-split) as built by someone else. Twelve
+270° PWM hobby servos (20 kg-class SunFounder / DSServo, per `models/Electronics/`) on a
+PCA9685; BNO055 IMU; INA3221 three-rail battery monitoring; RPLIDAR A1M8 with
+`slam_toolbox` and `nav2`; dual CSI stereo cameras; PPO locomotion training in Isaac Lab
+with a SolidWorks → URDF → USD pipeline; KiCad control and power boards. 3D-printed
+chassis with silicone-moulded feet and bearings in every joint. Its `README.md` is a
+complete map of the tree.
+
+Why it is here is unrecorded. Candidate homes: a quadruped entry under
+[`ideas.md` → Externally designed builds](ideas.md#externally-designed-builds) (the
+SpotMicro line there is the only quadruped mention today), or a reference for the pending
+[Jetson purchase](common.md#ai-compute--purchase-comparison), since it is a working
+Orin Nano robot stack. Resolves when the owner records the intent and this entry moves
+to that home.
 
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 
