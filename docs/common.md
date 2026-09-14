@@ -164,6 +164,15 @@ robot is holding under LeRobot is silently temporary. Write `Lock` = 0, write, r
 restore `Lock` = 1; verify across a power cycle. Evidence:
 [SO-ARM101 `test-log.md`](../projects/soarm101/docs/test-log.md) (OQ-12).
 
+**A joint's measured stop midpoint is a starting point, not its zero (SO-ARM101,
+2026-09-14).** Upstream URDFs that put zero at mid-travel invite taking the midpoint of the
+mechanical stops as the zero. On SO-ARM101 two of four joints were 2–5° off it — including the
+elbow, whose travel matched the URDF's span exactly (equal span says the travel is the right
+length, not that it is centred). What settled all four in minutes: hold the arm at the model's
+zero pose, read each link with a phone spirit level (correcting for the desk's own tilt), and
+cross-check against one tape-measured tool position. Method and numbers:
+[SO-ARM101 `test-log.md`](../projects/soarm101/docs/test-log.md).
+
 **Adapters in hand (2026-09-08):** a **Waveshare Bus Servo Adapter (A) v1.1** — the
 "Motor Control Board" in the SO-ARM100 BOM, so it is the SO-ARM101 part — and a
 **Feetech FE-URT-2**. Those two are the family's only adapters: the RCmall STS3215 6-packs

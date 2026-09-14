@@ -10,6 +10,31 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Spirit level on the gripper: wrist zero moved +2.1°; all four arm zeros now checked
+
+**Conditions:** same zero pose, iPhone level along the long flat edge of the gripper's fixed
+jaw (owner): **+4°, front end up.**
+
+**Result:** with the stop-midpoint wrist zero (2046) the model's approach axis reads +1.8°.
+**2070 (+2.1°) makes it read +4.0° and puts the model's reach at the tape pose at exactly
+24.9 cm** — the level and the tape agree. If the jaw edge instead followed the fixed-jaw body's
+axis (the roll sits at −60°, which would tilt any edge offset into the reading) the level would
+ask for 2082–2093, but the tape then overshoots by 3–6 mm; so 2070, ±2°. It coincides with the
+2026-09-12 hand-sweep midpoint; the stop midpoint was the one that was off.
+
+**State of the zeros after the evening's checks:**
+
+| Joint | Zero | How | Good to |
+|---|---|---|---|
+| `shoulder_pan` | 1981 | stop midpoint | ±1.3° (the owner's by-eye straight-ahead read 2036, 4.8° away — unresolved) |
+| `shoulder_lift` | 1925 | stop midpoint, refined by the level | ~1° |
+| `elbow_flex` | 3031 | level on the forearm + tape | ±1.5° |
+| `wrist_flex` | 2070 | level on the gripper + tape | ±2° |
+
+**Lesson for any arm here:** the stop midpoint is a starting point, not the zero. Two of four
+joints were 2–5° off it, including one whose span matched the URDF exactly. A phone level at
+the zero pose plus one tape measurement settled all four in minutes.
+
 ### 2026-09-14 · Spirit-level check at the zero pose: shoulder confirmed, elbow zero moved +4.8°
 
 **Conditions:** arm holding at the measured zero pose (previous entry), raw 1985 / 1959 /
