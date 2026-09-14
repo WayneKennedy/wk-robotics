@@ -10,6 +10,28 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Wrist roll zero: the placeholder is ~85° off; the moving jaw is the reference
+
+**Owner at raw 2035 (the placeholder zero), seen from behind:** moving jaw **up and to the
+right**; camera mount in the north-west quadrant, about 45°. Upstream's URDF puts the moving
+jaw's hinge **up and to the left, 40° from vertical** at roll 0 — so the placeholder is wrong,
+by roughly 85° if "up and to the right" is about 45°.
+
+**Sign verified:** raw 1362 → 2035 turned the camera mount anticlockwise (seen from behind),
+from on top to north-west, and positive URDF roll also turns the jaw anticlockwise in the
+model — sign +1 holds; only the zero is off.
+
+**The camera is not a usable reference for the zero.** Upstream's camera URDF
+(`so101_new_calib_camera.urdf`) places its wrist camera 45° anticlockwise of the moving jaw;
+the owner's placeholder screws put this build's mount about 90° from the jaw. Upstream's
+camera variant uses a different mount (`wrist_camera_mount_so101_v1`) from the hex-nut
+recess on this build's `Wrist_Roll_Follower`. The moving jaw is the same part as upstream's,
+so it defines the zero: in the model the jaw points straight up at URDF roll −40.2°, so the
+zero is the raw count where the jaw points straight up, plus 457.
+
+**Method in progress:** roll to the owner's-estimate "jaw straight up" (raw 2547) and let the
+owner report the residual.
+
 ### 2026-09-14 · Gripper gap: four measured points; the simple hinge model does not hold
 
 **Conditions:** arm holding at the zero pose; owner's calipers across the jaw ends. The jaws
