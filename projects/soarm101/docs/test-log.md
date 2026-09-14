@@ -10,6 +10,17 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Gripper gap: first point
+
+**Conditions:** arm holding at the zero pose; owner's measurement: **jaw ends 21 mm apart**
+with the gripper at raw **1472**, 16.1° open from the closed stop (1289).
+
+**Fit:** the moving jaw is a hinge, so the tip gap ≈ L·sin(θ) with θ measured from the closed
+stop; this point gives **L = 76 mm**, against upstream's moving-jaw geometry of ~72 mm
+hinge-to-end (capsule axis) — plausible. Zero gap at the closed stop is **assumed, not
+checked**. One point only: the curve is a prediction until two or three more openings are
+measured. Recorded in `software/calibration/gripper_gap.json`.
+
 ### 2026-09-14 · Wrist roll: camera-top orientation, a moulded stop, and a move to the placeholder zero
 
 **Owner's observations at the bench:** with the roll at raw **1362** (−60° by the model's

@@ -1,0 +1,15 @@
+{
+  "method": "tip gap across the jaw ends, owner's calipers; model gap = L*sin(theta), theta = (raw - closed_stop)/11.375 deg",
+  "closed_stop_raw": 1289,
+  "points": [
+    {
+      "raw": 1472,
+      "gap_mm": 21.0,
+      "date": "2026-09-14"
+    }
+  ],
+  "fit": {
+    "L_mm": 75.8,
+    "from": "one point; zero gap assumed at the closed stop (unverified)"
+  }
+}
