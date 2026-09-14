@@ -152,7 +152,11 @@ no current or temperature guard trip.
 
 Temperatures 33–35 °C throughout (43 °C peak on 2026-09-12's longer run). Rail at the
 servos 11.5–12.0 V across every move, versus 10.8 V minimum on the LiPo — the bench supply
-holds up under the shoulder's lift, the pack did not. Per-move CSV:
+holds up under the shoulder's lift, the pack did not. **Whole-arm draw on the supply's
+panel: 0.72 A peak** (owner, watching the Eventek's ammeter through these first moves; the
+panel samples a few times a second, so shorter spikes are not captured). Against the
+servos' own readings the same moves peaked at 578 mA on `shoulder_lift` alone, so the total
+is consistent with one joint working while the other five idle. Per-move CSV:
 `software/logs/extents_20260914_154116.csv`. The per-joint peak differences from
 2026-09-12 are recorded, not explained: the mount, the start pose and the run length all
 differ.
