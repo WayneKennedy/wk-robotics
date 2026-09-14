@@ -10,6 +10,69 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-14 · Health check after relocating to a desk-edge mount
+
+**Conditions:** arm clamped to a desk edge with free air in front and below (owner), set
+by hand to roughly mid-throw on every joint before torque. Eventek KPS3010D bench supply at
+12.0 V (current limit setting not recorded). Bench webcam absent from this host (no
+`/dev/video*`). One process on the bus at a time. Full sequence, in order:
+`ping_bus.py` → register dump (read-only) → limits rewrite (below) → `hold_test.py --keep`
+twice → `extents_cycle.py --cycles 2` → register read-back.
+
+**Found before moving, from the register dump:**
+
+- **Homing offsets intact** on all six (−793, 870, 1555, 1831, 40, −1539), matching the JSON.
+- **`wrist_flex` and `gripper` limits had reverted again** to the pre-shrink values
+  (1002/3137 and 1328/2737) while the other four held their shrunk limits. This is the same
+  pair as 2026-09-12, after a rewrite made with their protection flags clear and a matching
+  read-back. The "flagged servo → RAM only" hypothesis therefore does not explain it
+  (OQ-12). `Lock` reads 0 on all six. Rewritten from the JSON with torque off and status 0,
+  read back matching — see the table at the end for the state after the run.
+- **`gripper` `Max_Torque_Limit` (EEPROM) reads 500**; the other five read 1000. No entry
+  here records that write; the 2026-09-13 driving session is unlogged. Left as found. The
+  servo's effective limit is therefore 500 whatever `Torque_Limit` (RAM) is set to.
+- Every `Goal_Position` read 0 and every `Torque_Enable` 0: the servos had been power
+  cycled since last use, as the 2026-09-12 finding predicts.
+
+**Torque-on and hold** (`hold_test.py`, verified weak-torque-first sequence): first pass
+aborted its ramp at `Torque_Limit` 150 because the gripper, sitting at 1354 — below its
+freshly restored minimum of 1469 — was clamped by the servo to the limit and moved 110
+counts to 1464. Not a drift: the limit doing its job. Second pass with all joints inside
+limits: no motion at 30, no drift at 150 / 300 / 600 / 1000, then 8 s hands-off hold at
+1000 with **0–1 counts drift, 0 mA on all six**.
+
+**Extents cycle, 2 cycles, 37 moves, ~1.3 min, self-parked at mid, torque left on.**
+`Goal_Velocity` 600, `Acceleration` 30, shrunk limits −3°, `wrist_roll` ±123°. No stall,
+no current or temperature guard trip.
+
+| Joint | Max tracking error (counts) | Peak mA (this run) | Peak mA (2026-09-12, 260-move run) |
+|---|---|---|---|
+| `shoulder_pan` | 6 | 156 | 592 |
+| `shoulder_lift` | 21 | 578 | 630 |
+| `elbow_flex` | 59 (return to mid, gravity lag, as before) | 384 | 592 |
+| `wrist_flex` | 4 | 416 | 169 |
+| `wrist_roll` | 7 | 176 | 52 |
+| `gripper` | 4 | 39 | 32 |
+
+Temperatures 33–35 °C throughout (43 °C peak on 2026-09-12's longer run). Rail at the
+servos 11.5–12.0 V across every move, versus 10.8 V minimum on the LiPo — the bench supply
+holds up under the shoulder's lift, the pack did not. Per-move CSV:
+`software/logs/extents_20260914_154116.csv`. The per-joint peak differences from
+2026-09-12 are recorded, not explained: the mount, the start pose and the run length all
+differ.
+
+**Verdict: the arm is healthy after the relocation.** Sensing, calibration offsets, the
+safe torque-on sequence, tracking, thermal and rail behaviour all match or better the
+2026-09-12 run.
+
+**State left:** parked at mid (all joints ~2047), `Torque_Enable` 1, `Torque_Limit` 1000,
+status 0, 0–1 mA. Limits in the servos match the JSON on all six. **Whether the
+`wrist_flex` / `gripper` limits survive the next power cycle is the open test** (OQ-12):
+re-run the register read-back after the supply has been off.
+
+**Changed as a result:** OQ-12 opened; `servos.md` rule 4 reworded; the 2026-09-12
+hypothesis marked not confirmed.
+
 ### 2026-09-14 · Reconnect on a bench power supply
 
 **Conditions:** arm at rest, torque off, Waveshare Bus Servo Adapter (A) on this host,
@@ -185,8 +248,8 @@ ended holding the start pose under torque.
 1328/2737) while the other four kept theirs. Both were in protection state (overload /
 over-current flags) when the shrink was written; the read-back had matched. Working
 hypothesis, unverified: an EEPROM write to a servo with a latched protection flag lands in
-RAM only. Rewritten with the flags clear, verified by read-back; **confirm across the next
-power cycle.** Until then, treat any limit written to a flagged servo as unsaved.
+RAM only. Rewritten with the flags clear, verified by read-back. **Not confirmed: the same
+two servos had reverted again by 2026-09-14** despite that flag-clear rewrite (OQ-12).
 
 **Changed as a result:** roadmap milestone 3 done; `servos.md` rules extended; OQ-03 still
 open (the "decided supply" was a 3S pack both times).

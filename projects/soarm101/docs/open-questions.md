@@ -132,6 +132,16 @@ and not yet accepted. Do not build against one without the owner deciding.
   DEC-11:** both upgraded with Feetech FD 1.9.8.3 on Windows; all six read 3.10 and every
   bus check passes ([`test-log.md`](test-log.md)). The pitfalls were the CH343 driver
   (install WCH's VCP driver) and FD's baud, which must be set to 1 000 000 before Search.
+- **OQ-12 — Why the shrunk position limits on `wrist_flex` and `gripper` (units D and F)
+  do not persist across a power cycle.** Written 2026-09-12 with matching read-back, gone at
+  the next power-up; rewritten with protection flags clear, matching read-back, gone again
+  by 2026-09-14. The other four servos keep theirs, and every servo keeps its homing offset.
+  `Lock` reads 0 on all six. Rewritten again 2026-09-14 with torque off and status 0
+  ([`test-log.md`](test-log.md)). **Next test:** read the limits back after the supply has
+  been off. Candidates, none verified: a `Lock`-register semantics difference for these two
+  units; an EEPROM write window the servo needs before power-off; a write made in the
+  unlogged 2026-09-13 session. The unlogged session also left `gripper`'s
+  `Max_Torque_Limit` at 500 (others 1000) — intended or not is unrecorded.
 
 ## Integration
 
