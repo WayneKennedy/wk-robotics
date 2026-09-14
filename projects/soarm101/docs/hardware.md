@@ -50,7 +50,7 @@ printed or bought yet (OQ-08, [`sourcing.md`](sourcing.md)).
 | Feetech **STS3215 12 V** bus servo (1/345), firmware 3.10 | 4 | 2026-09-12 | From koala-bot's RCmall packs (DEC-09); this arm's IDs 3–6 ([`servos.md`](servos.md)). Each box: two metal horns, M3×6 horn screws, M2×6 case screws |
 | Waveshare **Bus Servo Adapter (A)** v1.1 | 1 | 2026-09-07 | Upstream's "Motor Control Board" (DEC-03). CH343 USB-C. Both jumpers on **B** for USB |
 | Feetech **FE-URT-2** | 1 | 2026-09-08 | Spare / bench bus adapter. Not needed for the arm |
-| USB webcam, bench observation | 1 | 2026-09-12 | On this host as `/dev/video0` (1280 × 720 via V4L2). Lets the assistant see the arm during bring-up; not a LeRobot policy camera. Host user needs the `video` group (added 2026-09-12; ACL granted for the session) |
+| USB webcam, bench observation | 1 | 2026-09-12 | On this host as `/dev/video0` (1280 × 720 via V4L2). Lets the assistant see the arm during bring-up; not a LeRobot policy camera. Host user needs the `video` group (added 2026-09-12; ACL granted for the session). Placement and settings: [Bench](#bench) below |
 
 Adapter behaviour, pinouts and power rules are family facts:
 [wk-robotics `common.md` → Configuring a servo](../../../docs/common.md#configuring-a-servo--true-for-every-sts-project).
@@ -61,3 +61,30 @@ bench on 2026-09-09 read 12.3–12.4 V at the servo and is otherwise **unrecorde
 2026-09-12 it was a **3S LiPo**, not fully charged, reading 11.7–11.9 V; a second, fuller 3S pack
 read 12.2–12.4 V for the afternoon's calibration. From 2026-09-14 the bench source is an **Eventek KPS3010D**
 bench supply (30 V / 10 A class) at 12.0 V, 11.9–12.1 V at the servos idle.
+
+## Bench
+
+The arm's physical situation since 2026-09-14 (owner). Anything that plans a motion — the
+bench tools, and the geometry work under
+[wk-robotics `common.md` → Collision awareness](../../../docs/common.md#collision-awareness--open-family-wide) —
+takes these as world constraints.
+
+- **Mount:** base clamped to a desk edge, free air in front of and below the base. The desk
+  surface and whatever is on it lie behind.
+- **Keep-out (owner's rule, 2026-09-14): nothing on the arm goes behind the vertical plane
+  that rises from the base along the desk edge.** The plane is fixed in the world, not in
+  the pan frame — at ±90° pan the arm runs along it. At the calibrated mid pose (all joints
+  2047) the upper arm leans ~20° *forward* into free air with the wrist and gripper above
+  and ahead of the base (owner, confirmed on the bench camera 2026-09-14), so the park pose
+  and the extents cycle stay clear of the plane. **No tool enforces the rule yet**; a
+  geometric check before every goal is the first job of the collision-awareness work.
+- **Camera:** on the arm's left, looking side-on, mounted in portrait, and **its raw frame
+  is mirrored** (a webcam default): `software/snap.py` rotates 90° counter-clockwise and
+  flips horizontally, which puts the desk on the right and the arm's front (free air) on
+  the left, upright. Reading the raw or merely rotated frame reverses front and back —
+  it misled the assistant once on 2026-09-14. Auto-exposure blows out against the garage
+  roof; manual exposure 40 (V4L2 absolute units) gives a usable frame in daytime — the
+  garage's light swings widely, so expect to retune
+  ([wk-robotics `common.md` → Environment](../../../docs/common.md#environment)).
+- **Supply:** Eventek KPS3010D bench supply at 12.0 V, above.
+
