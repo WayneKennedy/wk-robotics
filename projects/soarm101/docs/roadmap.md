@@ -1,6 +1,7 @@
 # Roadmap
 
-**Print, commission, assemble, calibrate, teleoperate, mount** — in that order, because
+**Print, commission, assemble, calibrate, geometry, Teensy on micro-ROS, then mount only if OQ-08
+says so** — in that order (the LeRobot teleoperate step was dropped by DEC-14), because
 each step is a precondition of the next and none can be skipped by enthusiasm. Each
 milestone ends with something that demonstrably works.
 

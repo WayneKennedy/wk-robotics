@@ -19,11 +19,13 @@ Consequence: a 12 V rail, not the 5 V supply in upstream's default BOM.
 
 ## What it is for
 
-**First, what it was designed for** (DEC-08): imitation learning with LeRobot — a leader
-arm teleoperates the follower, demonstrations are recorded with cameras, a policy is
-trained on the family's GPU workstation, and the follower runs it. That is explored before
-anything else, so the arm is understood as intended before it is repurposed. What it is for
-*ultimately* is open (OQ-08); the candidates, none chosen:
+**First, what it was designed for:** imitation learning with LeRobot — a leader arm
+teleoperates the follower, demonstrations are recorded with cameras, a policy is trained on
+the family's GPU workstation, and the follower runs it. DEC-08 set out to explore that first;
+**DEC-14 (2026-09-14) ended it at calibration** — with no leader arm (DEC-13) there was little
+more to learn from it. **What it is for is now decided in outline (DEC-15): the cooperating
+pair below**, coordinated by planning against each other's hit boxes rather than by a learned
+policy. The candidates as they stood, kept for the record:
 
 - **A LeRobot arm** — imitation learning end to end on the platform the design is made
   for. Needs a leader or substitute (OQ-02) and a desk.
