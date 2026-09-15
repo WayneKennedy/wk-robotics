@@ -35,30 +35,78 @@ NAMES = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_rol
 MOVING = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex"]
 
 
-def plan(joints, cal, start_raw, goal_raw, deg_per_step, margin_deg=3.0):
-    # keep-out plane and margin: kinematics.keepout_clear defaults (desk edge + link radius)
-    """Sampled joint-space line; returns (samples, report rows, ok)."""
+def sample_leg(cal, start_raw, goal_raw, deg_per_step, m):
+    """Raw samples along a joint-space line, clamped into the servos' saved range less m counts
+    (the servo clamps there anyway; a start outside it — e.g. a folded elbow pushed past its limit
+    by gravity — is pulled in by the first sample)."""
     steps = max(1, int(np.ceil(max(abs(goal_raw[j] - start_raw[j]) for j in MOVING) / (deg_per_step / 360 * 4095))))
-    rows = []; ok = True; samples = []
+    out = []
     for k in range(steps + 1):
         t = k / steps
-        m = round(margin_deg / 360 * 4095)
-        # commanded samples are clamped into the servos' saved range: the servo clamps there anyway,
-        # and the calibration mid (2047) sits outside the elbow's shrunk range (servos.md)
-        raw = {j: int(np.clip(round(start_raw[j] + (goal_raw[j] - start_raw[j]) * t), cal[j]["range_min"] + m, cal[j]["range_max"] - m)) for j in MOVING}
+        # no clamping: the line runs from where the arm is to a goal inside the limits, so a joint that starts
+        # outside them (a droop onto a stop) comes inward gradually; evaluate() refuses any step that goes further out
+        raw = {j: int(round(start_raw[j] + (goal_raw[j] - start_raw[j]) * t)) for j in MOVING}
         raw.update({j: start_raw[j] for j in ("wrist_roll", "gripper") if j not in MOVING})
-        q = K.raw_to_rad(raw); frames = K.fk(joints, q)
-        # travel is judged against the MEASURED servo limits (cal_ok, below; stops ∓ 3° since 2026-09-14),
-        # not the URDF's, which are narrower than this arm's real travel (shoulder by 10.5°, wrist 14.9°)
-        # and refused a start on the shoulder's own stop. IK still chooses goals inside the URDF limits.
-        lim_ok, bad = True, {}
-        cal_ok = all(cal[j]["range_min"] + m <= raw[j] <= cal[j]["range_max"] - m for j in MOVING)
-        clear, rear, _ = K.keepout_clear(frames); hits = K.self_collisions(frames)
-        good = lim_ok and cal_ok and clear and not hits
-        ok &= good; samples.append(raw)
-        why = ("ok" if good else "urdf-limit " + str({j: round(v) for j, v in bad.items()}) if not lim_ok else "servo-limit" if not cal_ok
-               else f"keep-out {rear:+.3f}" if not clear else "self-collision " + "; ".join(f"{a.split('_')[0]}–{b.split('_')[0]} {c*1000:+.0f} mm" for a, b, c in hits))
+        out.append(raw)
+    # the first sample is where the arm IS, unclamped: the step from it into the limits is then checked
+    # like every other step (a start outside the limits is pulled in by the next sample)
+    out[0] = {**out[0], **{j: start_raw[j] for j in MOVING}}
+    return out
+
+
+ESCAPE_TOL = 0.010   # m: a contact present at the start may get this much deeper than it began — the capsules enclose every
+                     # mesh vertex, so they overstate the parts; the real rest pose of 2026-09-14 needs ~5 mm (test-log)
+READY_POSE = {"shoulder_pan": 1981, "shoulder_lift": 1925, "elbow_flex": 3031, "wrist_flex": 2070}   # the measured zero pose
+ESCAPE_TORQUE = 500  # Torque_Limit while waking: any real contact is gentle on the gears
+
+
+def evaluate(joints, cal, samples, m, escape=False):
+    """Check every sample: servo limits (measured, less m), keep-out, self-collision. With
+    escape=True a path may START in contact (an unpowered arm droops into one — owner, 2026-09-15)
+    provided that, until the first clear sample, it never makes a NEW contact pair, never takes a
+    starting pair more than ESCAPE_TOL deeper than it began, never adds keep-out points, and that it
+    ends clear; after the first clear sample it must stay clear. Returns (rows, ok)."""
+    rows = []; ok = True; phase = None; prev = None; start_pairs = None
+    for k, raw in enumerate(samples):
+        frames = K.fk(joints, K.raw_to_rad(raw))
+        # limits: every sample inside the 3° planning margin, or — for a joint that started outside it (a droop
+        # onto a stop) — no further outside than the sample before; the first sample is where the arm already is
+        band = lambda j, x: max(cal[j]["range_min"] + m - x, 0, x - (cal[j]["range_max"] - m))
+        cal_ok = k == 0 or all(band(j, raw[j]) == 0 or band(j, raw[j]) <= band(j, samples[k - 1][j]) for j in MOVING)
+        clear, rear, nbad = K.keepout_clear(frames); hits = K.self_collisions(frames)
+        pairs = {(a, b): c for a, b, c in hits}; nko = 0 if clear else nbad
+        fmt = lambda ps: "; ".join(f"{a.split('_')[0]}–{b.split('_')[0]} {c*1000:+.0f} mm" for (a, b), c in ps.items())
+        if not pairs and clear:
+            good = cal_ok; why = "ok" if cal_ok else "servo-limit"; phase = "clear" if phase != "clear" and cal_ok else phase
+            if phase is None: phase = "clear"
+        elif escape and phase in (None, "escape"):
+            if phase is None:
+                good = cal_ok; why = f"start in contact, escape allowed: {fmt(pairs) or 'keep-out'}"; start_pairs = dict(pairs)
+            else:
+                pp, pn = prev
+                new = {p: c for p, c in pairs.items() if p not in start_pairs}
+                deeper = {p: c for p, c in pairs.items() if p in start_pairs and c < start_pairs[p] - ESCAPE_TOL}
+                good = cal_ok and not new and not deeper and nko <= pn
+                why = ("escaping" if good else "servo-limit" if not cal_ok else f"new contact {fmt(new)}" if new
+                       else f"contact deepening {fmt(deeper)}" if deeper else f"keep-out worsening ({nko} points)")
+            phase = "escape"; prev = (pairs, nko)
+        else:
+            good = False
+            why = "servo-limit" if not cal_ok else f"keep-out {rear:+.3f}" if not clear else "self-collision " + fmt(pairs)
+        ok &= good
         rows.append((k, raw, why, rear))
+    if escape and phase == "escape":
+        ok = False; rows[-1] = (rows[-1][0], rows[-1][1], "path ends still in contact", rows[-1][3])
+    return rows, ok
+
+
+def plan(joints, cal, start_raw, goal_raw, deg_per_step, margin_deg=3.0, escape=False):
+    """Sampled joint-space line, checked; returns (samples, report rows, ok). Travel is judged
+    against the MEASURED servo limits (stops ∓ 3° since 2026-09-14), not the URDF's; IK still
+    chooses goals inside the URDF limits."""
+    m = round(margin_deg / 360 * 4095)
+    samples = sample_leg(cal, start_raw, goal_raw, deg_per_step, m)
+    rows, ok = evaluate(joints, cal, samples, m, escape)
     return samples, rows, ok
 
 
@@ -68,6 +116,8 @@ def main():
     ap.add_argument("--raw", help="pan,lift,elbow,wrist raw counts")
     ap.add_argument("--roll", type=int, help="also move wrist_roll to this raw count, planned and checked with the others")
     ap.add_argument("--gripper", type=int, help="also move the gripper to this raw count (jaw capsule checked like every other link)")
+    ap.add_argument("--unfold", action="store_true", help="the start may be in contact (e.g. the folded rest pose): allow escaping "
+                    "out of contact; if the direct line fails, try moving the joints one at a time in every order")
     ap.add_argument("--via-mid", action="store_true"); ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--deg-per-step", type=float, default=1.5); ap.add_argument("--rate", type=float, default=20)
     ap.add_argument("--track", type=int, default=150); ap.add_argument("--max-ma", type=float, default=900); ap.add_argument("--max-temp", type=int, default=60)
@@ -112,18 +162,62 @@ def main():
         if not r["ok"]:
             print("goal itself is not acceptable — refusing"); return 3
         goal_raw = r["raw"]
+    elif a.unfold:
+        goal_raw = dict(READY_POSE); print(f"unfold: no goal given — waking to the ready pose {goal_raw}")
     else:
-        print("give --target or --raw"); return 2
+        print("give --target or --raw (or --unfold for the ready pose)"); return 2
 
     if a.roll is not None:              # the roll joins the planned, checked, streamed set (MOVING is read by plan() and the executor)
         MOVING.append("wrist_roll"); goal_raw["wrist_roll"] = a.roll
     if a.gripper is not None:
         MOVING.append("gripper"); goal_raw["gripper"] = a.gripper
-    legs = []
-    if a.via_mid:
+    if a.unfold:
+        import itertools
+        m = round(3.0 / 360 * 4095)
+        movers = [j for j in MOVING if goal_raw[j] != present[j]]
+        cands = [("direct line", [goal_raw])]
+        for perm in itertools.permutations(movers):
+            seq, cur = [], dict(present)
+            for j in perm:
+                cur = {**cur, j: goal_raw[j]}; seq.append({jj: cur[jj] for jj in MOVING})
+            cands.append(("one joint at a time: " + " → ".join(perm), seq))
+        chosen = None; first_fail = None
+        for label, seq in cands:
+            samples, start = [], dict(present)
+            for leg in seq:
+                s_ = sample_leg(cal, start, leg, a.deg_per_step, m)
+                samples += s_[1:] if samples else s_
+                start = {**start, **leg}
+            rows, ok = evaluate(joints, cal, samples, m, escape=True)
+            if ok:
+                chosen = (label, samples, rows); break
+            if first_fail is None:
+                first_fail = (label, next(r for r in rows if not (r[2] == "ok" or r[2] == "escaping" or r[2].startswith("start in contact"))))
+        if chosen is None:
+            print(f"unfold: none of {len(cands)} candidate paths escapes cleanly; direct line refused at step {first_fail[1][0]}: {first_fail[1][2]}")
+            print("plan refused — nothing moved")
+            if b is not None:
+                wid = [m for m in NAMES if (b.read("Min_Position_Limit", m, normalize=False, num_retry=5), b.read("Max_Position_Limit", m, normalize=False, num_retry=5)) != (cal[m]["range_min"], cal[m]["range_max"])]
+                if wid:
+                    print(f"WARNING: servo limits are widened in RAM on {wid} (hold_test.py --wake). Release torque or power-cycle to restore them.")
+            return 1
+        label, all_samples, rows = chosen
+        esc = [r for r in rows if r[2] == "escaping" or r[2].startswith("start in contact")]
+        print(f"unfold: {label} — {len(all_samples)-1} steps, OK; in contact for the first {len(esc)} samples, clear after")
+        print("| step | pan | lift | elbow | wrist | verdict |\n|---|---|---|---|---|---|")
+        for k, raw, verdict, rear in [r for r in rows if r[0] in (0, len(rows) - 1) or r[0] % max(1, len(rows) // 8) == 0 or (r[2] != "ok" and r[0] <= len(esc))][:20]:
+            print(f"| {k} | {raw['shoulder_pan']} | {raw['shoulder_lift']} | {raw['elbow_flex']} | {raw['wrist_flex']} | {verdict[:70]} |")
+        all_ok = True
+        if a.dry_run:
+            print("\ndry run — nothing moved"); return 0
+        legs = []
+    else:
+        legs = []
+    if a.via_mid and not a.unfold:
         legs.append({j: 2047 for j in MOVING})
     legs.append(goal_raw)
-    start = present; all_samples = []; all_ok = True
+    if not a.unfold:
+        start = present; all_samples = []; all_ok = True
     for n, leg_goal in enumerate(legs, 1):
         samples, rows, ok = plan(joints, cal, start, leg_goal, a.deg_per_step)
         all_ok &= ok
@@ -143,6 +237,8 @@ def main():
     for m in NAMES:
         b.write("Acceleration", m, 30, num_retry=5)
         b.write("Goal_Velocity", m, 600, normalize=False, num_retry=5)
+        if a.unfold:
+            b.write("Torque_Limit", m, ESCAPE_TORQUE, normalize=False, num_retry=5)
     log = open(HERE / "logs" / f"guarded_{time.strftime('%Y%m%d_%H%M%S')}.csv", "w")
     log.write("t,step,pan,lift,elbow,wrist,pan_p,lift_p,elbow_p,wrist_p,max_mA,max_T,min_V\n")
     peak = 0.0; dt = 1.0 / a.rate; t0 = time.time(); over = {"ma": 0, "T": 0}   # two consecutive samples to trip: single bad reads happen
@@ -181,6 +277,10 @@ def main():
             if all(abs(p[m] - goal_raw[m]) <= 12 for m in MOVING):
                 break
             time.sleep(0.05)
+        if a.unfold:                            # clear of contact and at the goal: back to full torque
+            for m in NAMES:
+                b.write("Torque_Limit", m, 1000, normalize=False, num_retry=5)
+            time.sleep(0.3)
         p, ma, T, V = tele()
         q = K.raw_to_rad(p); frames = K.fk(joints, q); clear, rear, _ = K.keepout_clear(frames); tcp = frames["gripper_frame_joint"][:3, 3]
         print("\n| Joint | goal | reached | err |\n|---|---|---|---|")
@@ -191,6 +291,15 @@ def main():
     except KeyboardInterrupt:
         hold_here("interrupted"); return 1
     finally:
+        if a.unfold:                                  # hold_test.py --wake may have widened limits in RAM: put the saved ones back
+            for m in NAMES:
+                try:
+                    b.write("Lock", m, 1, normalize=False, num_retry=5)
+                    b.write("Min_Position_Limit", m, cal[m]["range_min"], normalize=False, num_retry=5)
+                    b.write("Max_Position_Limit", m, cal[m]["range_max"], normalize=False, num_retry=5)
+                except Exception as e:
+                    print(m, "limit restore FAILED:", str(e)[-60:])
+            print("saved servo limits restored (RAM; EEPROM never changed)")
         log.close()
         try: b.disconnect(disable_torque=False)
         except Exception: pass

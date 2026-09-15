@@ -26,6 +26,9 @@ def main():
     ap.add_argument("--keep", action="store_true", help="leave torque on at the end")
     ap.add_argument("--weak", type=int, default=30, help="Torque_Limit at the torque-on moment")
     ap.add_argument("--force", action="store_true", help="keep ramping even if a joint drifts")
+    ap.add_argument("--wake", action="store_true", help="waking from a droop: any joint that gravity has pushed past its servo "
+                    "limit gets that limit widened IN RAM ONLY (Lock 1; EEPROM keeps the saved one) so torque-on adopts where it "
+                    "is instead of clamping it in with a jump; guarded_move.py --unfold brings it inside and restores the limits")
     a = ap.parse_args()
 
     r = SOFollower(SOFollowerRobotConfig(port=a.port, id=a.id))
@@ -44,6 +47,17 @@ def main():
         print("| Joint | Present | Stale goal | Δ |\n|---|---|---|---|")
         for m in b.motors:
             print(f"| `{m}` | {pres[m]} | {goal[m]} | {goal[m]-pres[m]:+d} |")
+        if a.wake:
+            widened = {}
+            for m in b.motors:
+                lo = b.read("Min_Position_Limit", m, normalize=False, num_retry=5); hi = b.read("Max_Position_Limit", m, normalize=False, num_retry=5)
+                if not lo <= pres[m] <= hi:
+                    b.write("Lock", m, 1, normalize=False, num_retry=5)          # RAM only: the saved limits stay in EEPROM (OQ-12)
+                    nlo, nhi = max(0, min(lo, pres[m] - 20)), min(4095, max(hi, pres[m] + 20))
+                    b.write("Min_Position_Limit", m, nlo, normalize=False, num_retry=5)
+                    b.write("Max_Position_Limit", m, nhi, normalize=False, num_retry=5)
+                    widened[m] = f"{lo}–{hi} → {nlo}–{nhi} (at {pres[m]})"
+            print("wake: " + (f"limits widened in RAM for joints past them: {widened}" if widened else "every joint inside its limits"))
         # A goal written while torque is off is stored but NOT adopted as the motion target: on
         # Torque_Enable the servo resumes its previous target (2026-09-12, elbow +134°). So: torque
         # on at a limit too weak to move anything, THEN write goals (adopted, torque is on), THEN

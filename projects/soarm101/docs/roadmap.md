@@ -54,9 +54,12 @@ model and move tools, host-side Python in `software/`:
   ([`test-log.md`](test-log.md) 2026-09-14).
 
 **Remaining — to be closed 2026-09-15 (owner):** (1) a shape re-run on the calibrated zeros, checked against the world at two or
-three points — the validation that closes the milestone; (2) the desk surface modelled, so the
-arm can unfold itself from the folded rest pose — every session so far has started from a pose
-set by hand.
+three points — the validation that closes the milestone; (2) **wake up from any contact pose** — an
+unpowered arm always droops into one, even if parked before torque-off (owner, 2026-09-15), and
+every session so far has started from a pose set by hand. Approach: a path may start in contact
+provided it only ever gets out of it (no new contact, bounded deepening of the starting ones for
+the conservative capsules, ends clear), run at reduced torque until clear, trying the direct line
+and every order of single-joint moves to a standard ready pose (`guarded_move.py --unfold`).
 
 ## Milestone 5 — A Teensy 4.1-operated arm on micro-ROS *(DEC-12, DEC-14)*
 
