@@ -59,7 +59,8 @@ unpowered arm always droops into one, even if parked before torque-off (owner, 2
 every session so far has started from a pose set by hand. Approach: a path may start in contact
 provided it only ever gets out of it (no new contact, bounded deepening of the starting ones for
 the conservative capsules, ends clear), run at reduced torque until clear, trying the direct line
-and every order of single-joint moves to a standard ready pose (`guarded_move.py --unfold`).
+and every order of single-joint moves to a standard ready pose (`guarded_move.py --unfold`). **Done 2026-09-15: the arm woke
+itself from its rest pose** ([`test-log.md`](test-log.md)).
 
 ## Milestone 5 — A Teensy 4.1-operated arm on micro-ROS *(DEC-12, DEC-14)*
 

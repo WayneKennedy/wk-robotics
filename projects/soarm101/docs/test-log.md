@@ -10,6 +10,37 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-15 · The arm woke itself from its rest pose
+
+**Requirement (owner):** an unpowered arm always droops into a contact pose, even if parked
+before torque-off, so it must be able to wake from any contact pose.
+
+**Method.** `guarded_move.py --unfold`: a path may start in contact provided it never makes a
+new contact pair, never takes a starting pair more than 10 mm deeper than it began (every
+capsule encloses its mesh, so the capsules overstate the parts), never adds keep-out points, and
+ends clear; after the first clear sample it must stay clear. It tries the direct line, then every
+order of single-joint moves, to the ready pose (the measured zero pose), at `Torque_Limit` 500
+until there, then 1000. Plan samples now start from the arm's exact position, unclamped, so a
+joint beyond its limit comes inward gradually and every step is checked. `hold_test.py --wake`:
+a joint that gravity has pushed past its servo limit gets that limit widened in RAM only
+(`Lock` 1), so torque-on adopts where it is instead of clamping it in with a jump; the wake-up
+restores the saved limits (RAM) on every exit path.
+
+**Dry runs** from four real droop poses — the rest pose this morning (elbow at 4090, past its
+4039 limit), the same after a clamp, last night's forward droop onto the shoulder stop, and
+Sunday's rest pose — all wake by the direct line, 19–23 samples in contact. Sunday's needs the
+10 mm allowance (one pair goes −2 → −7 mm). A synthetic "forward droop" tried on the way turned
+out not to be a possible pose (forearm 84 mm inside the shoulder capsule) and was discarded.
+Regressions: ordinary moves and shapes unchanged; a move from rest without `--unfold` is still
+refused.
+
+**Live**, from the rest pose (raw 1960 / 833 / 4090 / 2823): elbow limit widened in RAM to 4095;
+torque on with no motion; ramp to 500, zero drift; wake-up 64 steps, in contact for the first 21;
+ready pose reached in 5.9 s (errors −7 / +3 / +31 / +13 counts at torque 500), peak 136 mA, 38 °C;
+saved limits restored and read back equal on all six; torque 1000, `Lock` 1, status 0.
+
+**Changed as a result:** milestone 4 item (2) done.
+
 ### 2026-09-15 · Cube loop on the calibrated zeros — milestone 4 validation run
 
 **Conditions:** arm powered overnight, found upright with torque off and every goal 0 (the
