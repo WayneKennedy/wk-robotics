@@ -34,12 +34,14 @@ them here. This repo records where *this* build departs from or instantiates the
   which ID and joint, how it was set, and what calibration will add.
 - [`docs/decisions.md`](docs/decisions.md) — **banked decisions** (the durable *why*).
 - [`docs/open-questions.md`](docs/open-questions.md) — **pending decisions**.
-- [`docs/roadmap.md`](docs/roadmap.md) — print → commission → assemble → calibrate →
-  teleoperate → mount.
+- [`docs/roadmap.md`](docs/roadmap.md) — print → commission → assemble → calibrate → geometry → Teensy on micro-ROS → mount.
 - [`docs/sourcing.md`](docs/sourcing.md) — in hand versus still needed.
 - [`docs/references.md`](docs/references.md) — upstream, LeRobot, vendor docs.
 - [`docs/test-log.md`](docs/test-log.md) — what was actually measured, dated.
-- `software/` — any host-side scripts this build needs beyond LeRobot. Empty so far.
+- `software/` — the arm's own tools, host-side Python: `kinematics.py` (model, keep-out,
+  self-collision, IK), `guarded_move.py`, `shapes.py`, `find_stops.py`, `hold_test.py`, and
+  calibration data in `software/calibration/`. LeRobot's Feetech bus driver is used as a
+  library (DEC-14).
 
 ## Placement
 
@@ -71,10 +73,12 @@ The print jobs themselves are in the family's private `3d-printing` repo. Their
 
 ## Status
 
-**Parts printed, servos being commissioned, nothing assembled.** Direction: learn it as
-a LeRobot arm first (DEC-08); its ultimate purpose and runtime controller stay open
-(OQ-08, OQ-09). All 11 follower parts
-have been printed at least once; one (`Wrist_Roll_Pitch`) has no confirmed-usable copy
-yet. Two of six servos are commissioned — `shoulder_pan` ID 1 and `shoulder_lift` ID 2,
-verified together on one bus 2026-09-09. The other four servos are **not yet sourced**
-(OQ-01). Details: [`docs/hardware.md`](docs/hardware.md), [`docs/servos.md`](docs/servos.md).
+**Assembled, calibrated against the world, and moving under its own geometric checks —
+milestone 4 closed 2026-09-15.** All six servos commissioned on one bus (firmware 3.10);
+mechanical stops measured and the servo limits set to them ∓ 3°; every joint's zero checked
+with a spirit level, a square or a tape; the wrist roll re-homed; the gripper gap calibrated.
+The model agrees with a tape within 1.5 cm, and the arm wakes itself from any contact pose.
+Direction: LeRobot's role ended at calibration (DEC-14); the runtime is a Teensy 4.1 on
+micro-ROS into ROS 2 (milestone 5; open parts in OQ-09); the endgame is two arms that plan
+against each other's hit boxes (DEC-15). Details: [`docs/roadmap.md`](docs/roadmap.md),
+[`docs/test-log.md`](docs/test-log.md), [`docs/servos.md`](docs/servos.md).

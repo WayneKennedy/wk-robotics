@@ -30,7 +30,7 @@ Every joint nudged ±3° and back within 1° from a hands-off hold, arm clamped,
 [`servos.md`](servos.md) were understood; `hold_test.py --keep` then `first_move.py` is the
 proven sequence.
 
-## Milestone 4 — Geometry: kinematics, keep-out, self-collision, IK *(DEC-14; nearly done, 2026-09-14)*
+## Milestone 4 — Geometry: kinematics, keep-out, self-collision, IK *(DEC-14; done 2026-09-15)*
 
 Replaces the LeRobot teleoperate-record-train milestone (DEC-14). The arm's own geometric
 model and move tools, host-side Python in `software/`:
@@ -53,8 +53,8 @@ model and move tools, host-side Python in `software/`:
   one pose after calibration); everything persisted across power cycles
   ([`test-log.md`](test-log.md) 2026-09-14).
 
-**Remaining — to be closed 2026-09-15 (owner):** (1) a shape re-run on the calibrated zeros, checked against the world at two or
-three points — the validation that closes the milestone; (2) **wake up from any contact pose** — an
+**Closed 2026-09-15.** The last two items: (1) a shape re-run on the calibrated zeros, checked against the world at two or
+three points — the validation that closes the milestone — **done: the cube ran clean and two corners taped within 1.5 cm on every axis** ([`test-log.md`](test-log.md)); (2) **wake up from any contact pose** — an
 unpowered arm always droops into one, even if parked before torque-off (owner, 2026-09-15), and
 every session so far has started from a pose set by hand. Approach: a path may start in contact
 provided it only ever gets out of it (no new contact, bounded deepening of the starting ones for

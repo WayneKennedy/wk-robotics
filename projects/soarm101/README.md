@@ -8,8 +8,11 @@
 The Robot Studio and Hugging Face, printed and commissioned here, with nothing changed
 in the design. This repo is the build record; the design lives upstream.
 
-**Status:** assembled, calibrated, and moving under script (2026-09-12): every joint nudged
-and returned within 1° from a hands-off hold. Not yet teleoperated; no camera fitted. See
+**Status:** assembled, calibrated against the world, and moving under its own geometric checks
+(milestone 4 closed 2026-09-15): measured joint stops and zeros, a model that agrees with a tape
+within 1.5 cm, capsule self-collision and a bench keep-out on every move, and a wake-up from any
+contact pose. Next: the Teensy 4.1 on micro-ROS (milestone 5). No camera fitted yet; two are on
+order. See
 [`docs/roadmap.md`](docs/roadmap.md) for direction, [`docs/decisions.md`](docs/decisions.md)
 for what is settled, and [`docs/open-questions.md`](docs/open-questions.md) for what is not.
 
@@ -23,7 +26,7 @@ variant (~30 kg·cm) rather than the standard 7.4 V one, so it needs a 12 V rail
 - Design, STLs and bill of materials: [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100), cloned as a sibling, never forked.
 - Parts printed in white eSUN PLA+ on the family's Ender-5 S1.
 - Servo bus driven by a Waveshare Bus Servo Adapter (A), the upstream BOM part.
-- **Purpose and runtime controller not yet decided** (OQ-08, OQ-09): a desk LeRobot arm, the manipulator on [wk-devastator](../../projects/devastator/README.md), or both in turn.
+- **Endgame:** two arms 30 cm apart on one desk edge, each planning against the other's hit boxes (DEC-15). **Runtime:** a Teensy 4.1 on micro-ROS into ROS 2 (DEC-14; board, bus connection and host still open in OQ-09). Mounting on [wk-devastator](../../projects/devastator/README.md) stays possible (roadmap milestone 6).
 
 ## Why a repo, when upstream has one
 
@@ -41,7 +44,7 @@ facts need a home that is not a chat transcript and not a private print log.
 | [`docs/servos.md`](docs/servos.md) | The servo map — IDs, joints, how they were set |
 | [`docs/decisions.md`](docs/decisions.md) | Banked decisions — the durable *why* |
 | [`docs/open-questions.md`](docs/open-questions.md) | Unresolved. Never state these as settled |
-| [`docs/roadmap.md`](docs/roadmap.md) | Print → commission → assemble → calibrate → teleoperate → mount |
+| [`docs/roadmap.md`](docs/roadmap.md) | Print → commission → assemble → calibrate → geometry → Teensy on micro-ROS → mount |
 | [`docs/sourcing.md`](docs/sourcing.md) | In hand versus still needed |
 | [`docs/references.md`](docs/references.md) | Upstream, LeRobot, vendor documentation |
 | [`docs/test-log.md`](docs/test-log.md) | What was actually measured |

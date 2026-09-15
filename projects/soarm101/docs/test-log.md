@@ -10,6 +10,30 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-15 · World check of the calibrated model: corner 2 — milestone 4 closed
+
+**Conditions:** `guarded_move.py --target 0.399,0.060,0.120 --pitch 30` — the cube's opposite
+top corner; reached raw 1876 / 2161 / 2884 / 2352 (elbow 30 counts short under the extended
+arm's weight — the comparison uses the model's reading of the reached pose, so the sag does not
+enter it). Owner with tape and square; sideways measured directly this time, from a mark on
+the desk edge straight out from the middle of the base.
+
+| Reading | Tape (owner) | Model | Difference |
+|---|---|---|---|
+| Sideways, from the centreline mark | 5.8 cm left | 6.3 cm left | −0.5 cm |
+| Forward, desk edge to below the tool point | 33.5 cm | 33.1 cm | +0.4 cm |
+| Height above the desk-top plane | 12.0 cm | 10.8 cm | +1.2 cm |
+| Straight line from the pan horn centre | 37.0 cm | 36.5 cm | +0.5 cm |
+
+**Verdict: pass.** Every reading at both corners is within the 1.5 cm threshold set
+beforehand; corner 2 spans the cube's full 12 cm on all three axes from corner 1. **One
+pattern, recorded, not chased:** the model puts the tool low at both corners (+0.7 cm and
++1.2 cm) — consistent with a shoulder or elbow zero a degree or so off, inside their stated
+accuracy; a third corner or a level on the upper arm at a second pose would tell which.
+
+**Milestone 4 closed 2026-09-15** — its two remaining items (this world check of a shape run on
+the calibrated zeros; waking from a contact pose) both done today.
+
 ### 2026-09-15 · World check of the calibrated model: corner 1
 
 **Conditions:** after the wake-up, `guarded_move.py --target 0.279,-0.060,0.000 --pitch 30` —

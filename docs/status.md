@@ -9,7 +9,7 @@ This is a *state* document, not a log. When an item resolves, delete it; when it
 to one project, move it to that project's repo and leave a link. It is not a transcript —
 see [`AGENTS.md`](../AGENTS.md#what-does-not-belong-here).
 
-**Last reviewed: 2026-09-14 (evening).**
+**Last reviewed: 2026-09-15.**
 
 ---
 
@@ -141,7 +141,9 @@ split are in [`common.md` → Collision awareness](common.md#collision-awareness
 **Since 2026-09-14 SO-ARM101 carries a world keep-out in host Python** — forward kinematics
 from upstream's URDF, a plane-minus-cylinder forbidden region checked on every link, IK, and
 guarded moves that traced a square and a cube ([its roadmap, milestone 4](../projects/soarm101/docs/roadmap.md)).
-Still to come there: the arm's own base modelled, and the check moved to the reflex tier.
+The arm's own base is modelled too, it wakes itself from any contact pose, and the model checks
+against a tape within 1.5 cm (milestone 4, closed 2026-09-15). Still to come: the check moved to
+the reflex tier (milestone 5, Teensy 4.1).
 Resolves when one robot carries a working envelope on its reflex tier and the lesson is
 written back here.
 
