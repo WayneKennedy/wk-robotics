@@ -10,6 +10,24 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-15 · World check of the calibrated model: corner 1
+
+**Conditions:** after the wake-up, `guarded_move.py --target 0.279,-0.060,0.000 --pitch 30` —
+the 12 cm cube's start corner. Reached raw 2135 / 2093 / 3780 / 1510 (within 12 counts). Tool
+point = midway between the jaw ends. Owner with tape and square; the assistant's first
+instruction ("from the pan axis") was ambiguous and was replaced by readings off the desk.
+
+| Reading | Tape (owner) | Model | Difference |
+|---|---|---|---|
+| Forward, square off the desk edge to below the tool point | 22.6 cm | 21.6 cm | +1.0 cm |
+| Height above the desk-top plane | +0.5 cm | −0.2 cm | +0.7 cm |
+| Straight line, pan horn centre to the tool point | 26.0 cm | 25.4 cm | +0.6 cm (taken as a straight pull) |
+
+Both directly measured axes pass the 1.5 cm threshold set beforehand (the zeros' ±1–2° at
+~0.35 m reach). **Sideways was not measured directly**: backing it out of the straight-line
+reading is ill-conditioned here (5 mm on that reading moves it 3.5 cm), so the readings are
+merely consistent with the model's 5.3 cm to the right.
+
 ### 2026-09-15 · The arm woke itself from its rest pose
 
 **Requirement (owner):** an unpowered arm always droops into a contact pose, even if parked
