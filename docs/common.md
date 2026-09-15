@@ -631,10 +631,11 @@ does not change the family's decided Pi intent-host architecture.
 
 ### Companion computers in hand — the Raspberry Pi 5 fleet
 
-**Audited live over SSH, 2026-09-13 (owner).** Five Pi 5 Model B boards are owned: four in
-hand, one missing. Every unit in hand is **8 GB**; RAM is soldered and non-upgradable.
-`MemTotal` varies by ~100 MB between units purely from each install's GPU/CMA reserve — not
-a capacity difference. eth0 is present on every board but unused (Wi-Fi only).
+**Audited live over SSH, 2026-09-13 (owner); fifth unit 2026-09-15.** Five BCM2712
+machines are owned, all in hand: four **8 GB Pi 5 Model B** boards and one **16 GB
+Pi 500+** keyboard computer. RAM is soldered and non-upgradable on both. `MemTotal` varies
+by ~100 MB between the Pi 5 units purely from each install's GPU/CMA reserve — not a
+capacity difference. eth0 is present on every unit but unused (Wi-Fi only).
 
 | Role | Board rev | OS (arm64) | Notes |
 |---|---|---|---|
@@ -642,7 +643,7 @@ a capacity difference. eth0 is present on every board but unused (Wi-Fi only).
 | General-purpose desktop Pi | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | |
 | 3D-printer host | Rev 1.1 (`d04171`) | Raspberry Pi OS (Debian 12 bookworm), headless | |
 | wk-hexapod brain | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | Normally powered off. |
-| Missing headless server | unknown | was headless Ubuntu server | **Offline since 2026-02-02**, whereabouts unknown. The desktop Pi above was briefly mistaken for it; both carry an NVMe hat + active cooler. |
+| Desktop computer, no role assigned | Pi 500+ Rev 1.0 (`e04190`) | Ubuntu 24.04 LTS, desktop | The only 16 GB unit. Keyboard form factor, so never an on-robot host. Boots from its internal 256 GB NVMe. Offline 2026-02-02 to 2026-09-15 and briefly recorded as a missing Pi 5; the desktop Pi 5 above was mistaken for it. |
 
 **Identifiers are not kept here.** Hostnames, serials, MACs, LAN and tailnet addresses,
 login users and SSH host-key fingerprints for every board — the data needed to recognise a
