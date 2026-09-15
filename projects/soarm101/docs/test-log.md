@@ -10,6 +10,22 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-15 · Cube loop on the calibrated zeros — milestone 4 validation run
+
+**Conditions:** arm powered overnight, found upright with torque off and every goal 0 (the
+power-up state); limits and offsets exactly as calibrated; servos 38–43 °C idle — a warm
+garage. `hold_test.py --keep`: ramp to 1000, no drift. `shapes.py` cube, 12 cm, centre 30 cm
+ahead of the pan axis and 6 cm up, pitch 30°, 3 loops at 5 cm/s.
+
+**Result:** 193 points solved (worst 1.0 mm); approach 88 steps, clean; loops done at 47 / 88 /
+129 s, peak 273 mA, rail 11.9–12.0 V, no guard trip. Holding afterwards at 40–43 °C and 0–20 mA.
+The run's closing line reported 50 °C — a single bad read, absent from four samples over 15 s
+(as the 130 °C read of 2026-09-14; only the guards are debounced, the report is not).
+
+**Held at the cube's start corner for a tape check.** Commanded corner: 24.0 cm ahead of the
+pan axis, 6.0 cm to the arm's right, level with the desk top (z = 0). Model at the reached
+pose: 23.9 cm, 5.2 cm, +0.3 cm. **World measurement pending.**
+
 ### 2026-09-14 · Wrist roll re-homed: travel now inside the encoder range, both stops measured
 
 **Why:** the roll's travel ran 10–19° past the encoder wrap (previous entry), so part of it was
