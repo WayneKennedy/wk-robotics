@@ -120,7 +120,7 @@ takes these as world constraints.
   hand-set zero pose, whose forearm points forward by definition; an earlier guess that the
   frame was mirrored (and a flip added on it) was wrong and is reverted. Do not take the
   floor mat for the desk: the desk is the furniture behind the base. Auto-exposure blows out against the garage
-  roof; manual exposure 40 (V4L2 absolute units) gives a usable frame in daytime **600 at night under the ceiling bulb** (2026-09-14) and **3 on a bright morning**, when 40
+  roof; manual exposure 40 (V4L2 absolute units) gives a usable frame in daytime, **600 at night under the ceiling bulb** (2026-09-14), and **3 on a bright morning**, when 40
   saturates to white (2026-09-15; `snap.py --exposure`) — the garage's
   light swings widely, so expect to retune
   ([wk-robotics `common.md` → Environment](../../../docs/common.md#environment)).
