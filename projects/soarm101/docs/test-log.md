@@ -24,7 +24,8 @@ The run's closing line reported 50 °C — a single bad read, absent from four s
 
 **Held at the cube's start corner for a tape check.** Commanded corner: 24.0 cm ahead of the
 pan axis, 6.0 cm to the arm's right, level with the desk top (z = 0). Model at the reached
-pose: 23.9 cm, 5.2 cm, +0.3 cm. **World measurement pending.**
+pose: 23.9 cm, 5.2 cm, +0.3 cm. **Hold released at the owner's word before the tape check,
+so the world measurement is still to do** — the milestone's validation needs it at a held pose.
 
 ### 2026-09-14 · Wrist roll re-homed: travel now inside the encoder range, both stops measured
 
