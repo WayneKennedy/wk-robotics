@@ -98,14 +98,17 @@ the first ground-compute option. Owner mentioned onboard real-time inference on 
 drone: that is the Holybro 10" in wk-drones, the family's aerial-robot candidate
 ([`projects.md`](projects.md#holybro-10-wk-drones)); its payload, power and latency
 requirements are not established.
-Spark is considered for ground use. **Jetson purchase remains pending:** owner is weighing
-the 8 GB Orin Nano Super against the 16 GB Orin NX, and as of 2026-09-16 is leaning to the
-Nano — leaning, not decided. UK sourcing for the Nano is answered: RS 264-7384, part
-945-13766-0005-000 (the EU/UK region variant), £384 inc VAT, checked live 2026-09-16; the
-stockist survey, Super-mode and JetPack detail are in
+Spark is considered for ground use. **Jetson ordered 2026-09-17: the 8 GB Orin Nano Super
+Developer Kit**, not the 16 GB Orin NX — RS order 3020377767, stock no. 264-7384, qty 1
+(order confirmation read 2026-09-17). RS has not yet confirmed price or delivery date;
+the live listing was £384 inc VAT on 2026-09-16, part 945-13766-0005-000 (the EU/UK region
+variant). Not delivered. Which robot or role it serves is not recorded (the Holybro's Pi
+or Jetson choice is its own open question, wk-drones `aircraft/holybro-10` OQ-03). The kit
+ships without storage and needs an NVMe SSD; none is recorded as bought for it. Stockist
+survey, Super-mode and JetPack detail are in
 [`common.md`](common.md#ai-compute--purchase-comparison). Next: confirm the intended AI HAT/SSD
 wiring and cable reach, then validate NVMe cold boot plus concurrent inference/storage
-operation. Select target workloads to assess the Jetson memory need.
+operation. Select target workloads for the Jetson.
 No architecture change decided.
 
 ### The GPU workstation holds no robotics checkouts — 2026-09-14

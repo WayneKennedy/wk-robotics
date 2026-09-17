@@ -526,7 +526,7 @@ accepts an NX module, and in which power modes, is unverified here; RS's listing
 the kit's carrier as accommodating all Orin Nano and Orin NX modules, but that is
 distributor copy, not NVIDIA documentation.
 
-**Buying the Nano developer kit in the UK (checked 2026-09-16; nothing ordered).** The
+**Buying the Nano developer kit in the UK (checked 2026-09-16; one ordered from RS on 2026-09-17, see [status](status.md#ai-compute-purchase--ai-hat-2-jetson-or-dgx-spark)).** The
 suffix is a region/plug variant, not a hardware revision: **945-13766-0005-000 is the
 EU/UK part**, -0000-000 is US/CA/CN/JP/PH, -0007-000 is IN/TW. All are the same Super
 developer kit, and Super mode is software, so an older kit is the same hardware.
