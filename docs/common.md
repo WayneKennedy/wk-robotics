@@ -200,11 +200,11 @@ cross-check against one tape-measured tool position. Method and numbers:
 
 **Adapters in hand (2026-09-08):** a **Waveshare Bus Servo Adapter (A) v1.1** — the
 "Motor Control Board" in the SO-ARM100 BOM, so it is the SO-ARM101 part — and a
-**Feetech FE-URT-2**. *Invoice conflict (2026-09-17):* the only adapter purchase in the
-mail is Amazon 204-4524452-2059566, 2026-09-07, delivered the same day — a "Waveshare
-Serial Bus Servo Driver Board" (£9.99, taken to be the Adapter (A)) and a "Stemedu …
-**FE-URT-1**" (£15.65). No FE-URT-2 purchase was found. Which Feetech board is in hand is
-TBC against its silkscreen ([SO-ARM101 `sourcing.md`](../projects/soarm101/docs/sourcing.md)). Those two are the family's only adapters: the RCmall STS3215 6-packs
+**Feetech FE-URT-2**. Both came on Amazon 204-4524452-2059566, ordered and delivered
+2026-09-07: a "Waveshare Serial Bus Servo Driver Board" (£9.99, taken to be the Adapter (A))
+and a Stemedu listing for an **FE-URT-1** (£15.65). The board delivered is silkscreened
+**FE-URT-2** (owner, 2026-09-17), so the listing named the wrong model
+([SO-ARM101 `sourcing.md`](../projects/soarm101/docs/sourcing.md)). Those two are the family's only adapters: the RCmall STS3215 6-packs
 were listed with an **FE-URT-1** each but shipped **without** (koala-bot `test-log.md`,
 2026-09-12), and the STS3032M 4-pack ships passive 3-port connector boards and a link cable, not a
 USB adapter. Both bring-ups therefore share the two boards. A further equivalent, if ever needed: the *Serial
