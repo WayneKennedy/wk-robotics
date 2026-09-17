@@ -159,6 +159,29 @@ the reflex tier (milestone 5, Teensy 4.1).
 Resolves when one robot carries a working envelope on its reflex tier and the lesson is
 written back here.
 
+### SO-ARM101 speed work — paused 2026-09-17 on a supply and a decision
+
+**In flight and stopped cleanly.** Asked how fast the arm could trace its 12 cm cube, the answer
+is **6.67 cm/s clean, 10 cm/s trips the tracking guard**, and the ceiling is none of the obvious
+things: torque, heat, the servos' slew cap and their acceleration register were each ruled out by
+experiment. It is **proportional following error** — all six servos run Feetech defaults
+`P_Coefficient` 16, `I_Coefficient` 0, never written by any script here. Full evidence in the
+arm's [`test-log.md`](../projects/soarm101/docs/test-log.md); the decision is its **OQ-17**, open,
+with a led recommendation to raise P on the elbow alone first. **It is an EEPROM write, so it
+waits for the owner.**
+
+Blocked behind two things, in order: a **proper 12 V supply** — the arm was last run from a
+hobby 2 A brick on a barrel jack, which is at or below a single joint's measured peak (the arm's
+OQ-03, which also gained real evidence that the rail sag is the *current path*, not the source) —
+and then the OQ-17 call. **`shapes.py` was rewritten** in the process: time-parameterised speed
+profile, corner easing, deadline-held rate, a `sum_mA` column and a `--min-v` undervoltage guard
+that did not previously exist. Two measurement faults it had are fixed, and **every tool-speed
+figure logged before 2026-09-17 is ~8 % optimistic** as a result.
+
+**The arm is unplugged, weighed (810 g, its OQ-04 answered) and in storage**, clamped hanging.
+No EEPROM was written; the hardware is exactly as calibration left it. Resolves when a supply is
+chosen and OQ-17 is decided.
+
 ### Untracked terrain files on the workstation
 
 `~/Code/FirstTerrain/` and `~/Code/Terrain_2019.zip` (237 MB) are under no version

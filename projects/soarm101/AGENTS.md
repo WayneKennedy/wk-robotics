@@ -82,3 +82,11 @@ Direction: LeRobot's role ended at calibration (DEC-14); the runtime is a Teensy
 micro-ROS into ROS 2 (milestone 5; open parts in OQ-09); the endgame is two arms that plan
 against each other's hit boxes (DEC-15). Details: [`docs/roadmap.md`](docs/roadmap.md),
 [`docs/test-log.md`](docs/test-log.md), [`docs/servos.md`](docs/servos.md).
+
+**2026-09-17 — weighed at 810 g (OQ-04 answered), and its speed ceiling found.** The cube runs
+clean at 6.67 cm/s and trips the tracking guard at 10; the limit is the servos' position loop
+(`P` 16, `I` 0, factory defaults), not torque, heat, slew or acceleration — each ruled out by
+experiment. Tuning it is an EEPROM write and an open decision, **OQ-17**. `shapes.py` was
+rewritten for it, and **every tool-speed figure logged before that date is ~8 % optimistic**.
+The arm is unplugged and in storage; no EEPROM has ever been written, so the hardware is as
+calibration left it.

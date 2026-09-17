@@ -57,9 +57,23 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
   | SO-101 follower | **6 DoF**, reach **~500 mm**, payload **~500 g** ([Robotics Center](https://www.roboticscenter.ai/hardware/so-101), checked 2026-09-07) |
   | Feetech STS3215 | **55 ± 1 g** each; 6 per arm = **330 g** ([servodatabase](https://servodatabase.com/servo/feetech/sts3215), checked 2026-09-07) |
 
-  **Arm mass is the missing number.** Vendor listings quote **2.5 kg** for an SO-ARM101,
-  but that is a *shipped kit* figure — 330 g of servos plus printed PLA does not reach it.
-  Bottom-up estimate **1.0–1.3 kg, unverified**.
+  **Arm mass — measured 2026-09-17: 810 g.** Fully assembled with the serial bus driver, no
+  external wiring; weighed by the owner
+  ([SO-ARM101 `test-log.md`](../../soarm101/docs/test-log.md), its OQ-04). This **replaces the
+  1.0–1.3 kg bottom-up estimate** and lands 340 g below the ~1.15 kg midpoint the moments below
+  were computed from, so **those figures are stale and need redoing.** Vendor listings quoting
+  **2.5 kg** are shipped-kit weight, as suspected. A mounted arm will add the loom to whatever
+  drives the bus, which 810 g excludes.
+
+  **What the lighter arm does and does not buy — the mass budget improves, the tipping barely
+  does.** Arm mass sits on *both* sides of the moment balance: it overturns (its CoM is ahead of
+  the pivot) and it restores (it presses on the contact patch). Substituting 810 g for 1.15 kg
+  drops the overturning sum by ~38 kg·mm and the restoring sum by ~37 kg·mm — very nearly a
+  wash, because **the dominant overturning term is the 500 g payload at 390 mm, which has not
+  changed.** Expect the verdict below to stand. Two things to settle when the sums are redone,
+  rather than guessed at here: whether the restoring term should include the **1.3 kg chassis**
+  (the figure used, ~2.5 kg, is the *payload* line, which reads like an omission), and where the
+  arm's CoM actually sits now it can be weighed and balanced rather than estimated.
 
   **Mass budget passes; tipping does not.** Arm + Pi + battery + driver ≈ **2.2–2.5 kg**
   against a 3 kg rating: inside, but tight. Taking moments about the front of the track

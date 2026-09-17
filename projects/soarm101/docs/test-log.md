@@ -10,6 +10,142 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-17 · The assembled arm weighs 810 g — OQ-04 answered
+
+**Conditions:** fully assembled arm with the serial bus driver attached, **no external wiring
+connections**; unplugged and detached from the bench. Weighed by the owner; instrument not
+recorded.
+
+**Result: 810 g.** Against upstream's ~330 g of servos, the printed parts and fasteners come
+to ~480 g.
+
+**Changed as a result:** [OQ-04](open-questions.md) answered. It was blocking
+[OQ-06](open-questions.md) (how the arm mounts) and **wk-devastator's OQ-12** (can the chassis
+carry the arm without tipping), which was explicitly waiting on a weighed arm — that figure now
+exists. The 810 g excludes the loom to whatever drives the bus, which a mounted arm will add.
+
+### 2026-09-17 · How fast the arm can trace the cube: the ceiling is the servos' position loop
+
+**Why:** owner asked how fast the arm could work. The 12 cm cube had only ever run at 5 cm/s.
+
+**Conditions:** the validated cube — 12 cm, centre 30 cm ahead of the pan axis and 6 cm up,
+pitch 30°, 193 points, worst IK residual 1.0 mm. Guards at their defaults (`--track` 150,
+`--max-ma` 900, `--max-temp` 60). Servos 29–33 °C, a cool garage. Supply: the hobby 2 A brick
+on the barrel jack, confirmed by the owner partway through the session; every run's rail
+reading is consistent with it throughout, but **the changeover time is unrecorded**.
+
+| Run | elbow peak commanded | elbow max lag | peak single-servo | result |
+|---|---|---|---|---|
+| 5 cm/s (2026-09-15, bench PSU) | 425 counts/s | 60 | 273 mA | clean |
+| 6.67 cm/s | 552 counts/s | 103 | 280 mA | clean, 2 loops in 65 s |
+| 10 cm/s, `Goal_Velocity` 800, `Acceleration` 30 | 780 counts/s | **152** | 202 mA | trip, loop 1 point 71 |
+| 10 cm/s, **`Goal_Velocity` 2000**, `Acceleration` 30 | 727 counts/s | **152** | 104 mA | trip, loop 1 point 11 |
+| 10 cm/s, `Goal_Velocity` 2000, **`Acceleration` 150** | — | **152** | — | trip, loop 1 point 11 |
+
+**Result: the tracking guard trips at 10 cm/s and the cause is none of the obvious ones.**
+Raising the servos' own slew cap 2.5× and their acceleration 5× changed nothing — same lag,
+same point, three times over — and peak current *fell* to 104 mA, a twelfth of the guard, at
+29–33 °C against a 60 °C limit. It is not torque, not thermal, not slew, not acceleration.
+An initial reading that the elbow had saturated against `Goal_Velocity` 800 (it tripped at 780)
+was **a coincidence, refuted by the controlled re-run**; recorded because the arithmetic looked
+convincing.
+
+**What it is: proportional following error.** Lag ÷ commanded velocity is near constant at
+~1/5 s across every run, which is the steady-state error of a P controller. Read off all six
+servos the same day: **`P_Coefficient` 16, `I_Coefficient` 0, `D_Coefficient` 32** — Feetech
+factory defaults, never written by any script in this repo ([servos.md](servos.md)). With no
+integral term there is nothing to drive the error to zero, so speed is capped by loop gain
+alone. **The elbow hits the wall first and alone:** at the trip, `shoulder_pan` lagged 8 counts,
+`shoulder_lift` 23, `wrist_flex` 50, `elbow_flex` 152.
+
+**Two measurement faults found in `shapes.py` and fixed** — both mean **every tool-speed figure
+recorded before today is ~8 % optimistic**:
+
+- `--tool-speed` was **quantised**: `per_point = round(rate / tool_speed)`, minimum 1, so at
+  `--rate` 20 the only achievable speeds were 20, 10, 6.67 and 5 cm/s. Asking for 8 gave 6.67,
+  silently; asking for 40 gave 20.
+- The loop **flew at 18.4–18.5 Hz, not 20**, consistently across every historical log: `step()`
+  slept a fixed `dt` and *then* ran four `sync_read`s. The 2026-09-15 "5 cm/s" run was really
+  4.6 cm/s.
+
+`shapes.py` now time-parameterises the path (a speed profile over the waypoints, integrated to
+a time for each, sampled at `--rate`), offers corner easing (`--corner-speed`, `--tool-accel`,
+`--corner-deg`; 15 corners found in the cube's 16 traversals, costing 2.1 s a loop at 10 cm/s),
+and holds the period to a deadline. Verified: **asked 20 Hz, flew 19.9 Hz, 0 deadlines missed**,
+one loop 38.4 s at 5 cm/s — exactly 192 cm ÷ 5. `--goal-velocity` and `--acceleration` are now
+flags, and their irrelevance to the ceiling is recorded in the file's own docstring.
+
+**Changed as a result:** `shapes.py` rewritten as above; the PID question raised as
+[OQ-17](open-questions.md), **not decided** — raising `P_Coefficient` is an EEPROM write and the
+owner has not chosen. **No EEPROM was written at any point this session**; every servo write was
+SRAM (`Acceleration`, `Goal_Velocity`, `Torque_Limit`) and resets on power-down.
+
+### 2026-09-17 · Rail sag is the current path, not the supply — two supplies compared
+
+**Why:** the owner moved the arm to a hobby 2 A supply on the barrel jack to see whether a small
+brick browns out the servos or the bus driver.
+
+**Conditions:** same cube at 5 cm/s, 2 loops, clean. Rail read from the servos' own
+`Present_Voltage` at 20 Hz — an undersampled instrument for a transient, and current and voltage
+arrive on separate bus round-trips.
+
+| Supply | rail min | rail median | idle |
+|---|---|---|---|
+| Eventek KPS3010D bench, 10 A (2026-09-14) | **10.9 V** | 11.9 V | 12.3 V |
+| Eventek KPS3010D bench, 10 A (2026-09-15) | **10.4 V** | 11.9 V | 12.2 V |
+| hobby 2 A, barrel jack (2026-09-17) | **10.8 V** | 12.2 V | 12.3 V |
+
+**Result: a 10 A bench supply sags as deep as a 2 A brick, or deeper.** The transient is
+therefore **not** the source's current capability — it is downstream, in the wiring, connectors
+or the servos' own sense during their own spikes. This is direct evidence for the suspicion
+[OQ-03](open-questions.md) already carried ("the 0.9 V sag seen at < 1 A on the 3S pack says the
+current path needs checking whatever the source"), and for the bulk capacitance
+[`common.md` → Power integrity](../../../docs/common.md#power-integrity) calls not optional.
+
+**No brownout was provoked** — no comms failure, no servo reset, no retry exhaustion, status 0
+on all six afterwards. But **the 2 A supply was never stressed**: sampled sum current peaked at
+**377 mA**, ~19 % of its rating, because a cube at 6 cm up is a low-load path. OQ-03 records a
+measured **2 A peak on `shoulder_lift` lifting the arm** — one joint equal to the whole brick —
+and 16 A for six stalled. The question a 2 A supply poses is therefore **still open**; it was
+not answered by this run.
+
+**Correction to earlier entries.** The rail figures previously recorded for 2026-09-14 and
+2026-09-15 — "11.8–12.0 V" and "11.9–12.0 V" — were the **closing instantaneous sample**, which
+`shapes.py` printed under the label "V min". The true minima inside those same CSVs are
+**10.9 V and 10.4 V**. The label is fixed and the tool now reports a real minimum, the peak sum
+current, and a `sum_mA` column separate from the worst-single-servo `max_mA`.
+
+**Changed as a result:** `shapes.py` gains a **`--min-v` undervoltage guard (default 10.0 V) —
+there was none at all**, so a sagging rail went unnoticed while the arm kept commanding. The
+servos' own `Min_Voltage_Limit` reads 4.0 V, far too low to protect a run.
+
+### 2026-09-17 · Wake from a droop past the elbow limit, and a controlled power-down
+
+**Found at rest:** `elbow_flex` at 4083, **44 counts past its 4039 saved maximum**, gripper 34
+above its minimum; the arm folded on itself with its capsules overlapping up to 62 mm, so the
+parked pose was itself a self-collision and the cube's approach was refused from it.
+
+**Wake, as the 2026-09-14 method prescribes.** First `hold_test.py --keep` aborted its ramp at
+`Torque_Limit` 150 on 21 counts of elbow drift — the servo clamping the joint back toward its
+limit, indistinguishable from a collision to the script. A second pass ramped clean to 1000.
+`hold_test.py --wake` then widened the elbow limit in RAM and the elbow's holding current fell
+**32 mA → 6 mA**: it had been fighting its own clamp. `guarded_move.py --unfold` took the direct
+line, 61 steps, **18 samples in contact** (the method's dry runs predicted 19–23), reaching the
+ready pose in 5.7 s at 136 mA peak, errors +4 / +3 / +29 / +13 counts, saved limits restored on
+exit. Consistent with the 2026-09-14 live wake in every respect.
+
+**Power-down.** With the arm holding extended at the cube's start corner, `Torque_Limit` was bled
+600 → 300 → 150 → 80 → 40 → 20 (SRAM only) to let it settle under gravity. **No joint moved at
+any stage** — the tool was already bearing on the desk at z ≈ 0, drawing 6 mA at limit 20 — so
+there was no stored energy to release. `release_torque.py` then reported all six **torque off,
+0–1 mA, 29–32 °C, status 0**, positions shifted at most 15 counts. No fault was logged by any
+servo all session, including from the three guard trips.
+
+**Changed as a result:** nothing in the repo. Noted for a future tool: a staged `Torque_Limit`
+bleed before release is gentler than cutting torque from a held pose, and the checker will not
+command the arm into a folded rest pose (the capsules overstate the parts, so the fold reads as
+a self-collision) — so a park pose has to be one the arm can legally reach.
+
 ### 2026-09-15 · World check of the calibrated model: corner 2 — milestone 4 closed
 
 **Conditions:** `guarded_move.py --target 0.399,0.060,0.120 --pitch 30` — the cube's opposite

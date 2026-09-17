@@ -42,6 +42,50 @@ and not yet accepted. Do not build against one without the owner deciding.
   **0.72 A peak on its panel through the extents cycle** (one joint moving at a time)
   ([`test-log.md`](test-log.md)) — a stiff bench source, not a decision on the arm's supply.
 
+  **2026-09-17 — the sag is the current path, and this is now measured, not suspected.** The
+  owner ran the arm from a hobby **2 A** brick on the barrel jack to test for brownouts. Across
+  the same cube at 5 cm/s, the rail minima were **10.9 V and 10.4 V on the 10 A bench supply**
+  against **10.8 V on the 2 A brick** — a bench supply with five times the headroom sags as deep
+  or deeper, so the transient is downstream of the source, in wiring, connectors or the servos'
+  own sense. That is the "current path needs checking" line above, confirmed. It strengthens the
+  standing recommendation's **few thousand µF across the servo rail**, which is now the part of
+  it doing the real work. *Caveat on the instrument:* rail is read from `Present_Voltage` at
+  20 Hz, on a separate round-trip from current — undersampled for a millisecond transient.
+  **Earlier entries understated this**: the "11.8–12.0 V" figures were a mislabelled closing
+  sample, corrected in [`test-log.md`](test-log.md).
+
+  **The 2 A brick is not cleared.** It provoked no brownout, but sampled sum current peaked at
+  **377 mA** — 19 % of its rating — because the cube is a low-load path. Against the 2 A peak
+  measured on `shoulder_lift` *lifting the arm*, a 2 A supply is at or below a single joint's
+  demand, and it feeds through a barrel jack whose rating on the Waveshare board is unverified.
+  **Do not run fast or loaded moves from it.** The recommendation above is unchanged: 12.0 V
+  regulated, 10 A, into the screw terminals, with bulk capacitance.
+
+- **OQ-17 — Whether to tune the servos' position loop, and how far.** **Raised 2026-09-17.**
+  The arm's speed is capped by proportional following error, not by torque, heat, slew or
+  acceleration — all four ruled out by experiment ([`test-log.md`](test-log.md)). All six servos
+  run the Feetech defaults **`P_Coefficient` 16, `I_Coefficient` 0, `D_Coefficient` 32**, never
+  written by any script here ([`servos.md`](servos.md)). With no integral term the error cannot
+  be driven out, and the cube trips the 150-count tracking guard at 10 cm/s — about twice the
+  validated speed — with the elbow at 152 counts while no other joint exceeds 50.
+
+  **What makes it a question rather than a fix:** `P_Coefficient` is register 21, **EEPROM**, so
+  it is a durable change to the hardware, not a run-time flag, and by this repo's conventions a
+  logged, owner-approved write. Raising P stiffens the loop and risks oscillation or buzz —
+  the real hazard with I = 0 — and makes current draw spikier, which bears directly on
+  OQ-03. It is reversible: 16 goes back the same way.
+
+  **Recommendation, not decided (2026-09-17): raise P on `elbow_flex` alone first**, 16 → 32,
+  and measure. It is the only joint at the wall, so one servo isolates the oscillation risk
+  before the other five are touched, and halving the following error should bring 20 cm/s inside
+  the existing guard without loosening it. **Do it from a proper 12 V supply, not the 2 A brick**
+  (OQ-03). The alternative — raising `--track` and accepting the lag — trades away the accuracy
+  milestone 4 just bought: 152 counts is 13.4° of elbow, several cm at the tool.
+
+  Open beyond the elbow: whether the other five follow; whether a small non-zero `I` is worth
+  the wind-up risk; whether any of this survives the move to the Teensy (OQ-09), which will run
+  its own loop above the servos' and may prefer them soft.
+
 ## Parts
 
 - **OQ-05 — A usable `Wrist_Roll_Pitch`, and inspection of plate 4.** Two copies failed at
@@ -200,10 +244,12 @@ and not yet accepted. Do not build against one without the owner deciding.
 
 ## Integration
 
-- **OQ-04 — The arm's real mass.** Upstream and vendor figures give ~330 g of servos plus
-  printed parts of unknown total. wk-devastator's OQ-12 (can the chassis carry the arm
-  without tipping) is waiting on a weighed arm. **Weigh every part as it is accepted**, and
-  the assembled arm when it exists; record in [`test-log.md`](test-log.md).
+- **OQ-04 — The arm's real mass.** **Answered 2026-09-17: 810 g** — fully assembled, serial bus
+  driver attached, no external wiring connections; weighed by the owner, instrument not recorded
+  ([`test-log.md`](test-log.md)). Against upstream's ~330 g of servos, the printed parts and
+  fasteners come to ~480 g. **wk-devastator's OQ-12** (can the chassis carry the arm without
+  tipping) was waiting on this and is now unblocked, as is OQ-06 behind it. Still to add
+  when it matters: the loom from the arm to whatever drives the bus, which 810 g excludes.
 
 - **OQ-06 — How the arm mounts to wk-devastator.** No interface exists. Upstream offers an
   optional `4040_Base_Mount` and `Raised_Base`; the devastator's top plate is its own OQ-10.

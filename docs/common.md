@@ -389,6 +389,23 @@ community-contributed entry. This matters because **koala-bot has already bought
 support, so it is *expected* to work — but that expectation is **unverified**, and proving
 it on the bench is worth doing before the firmware is written rather than after.
 
+**Teensy 4.1 "NE" (no Ethernet) is the right variant for this family, and both units bought
+are NE** (2026-09-17). The standard 4.1 carries a DP83825 PHY on the board, but the RJ45
+magjack is a separate purchase, so "with Ethernet" means board *plus* magjack *plus* cable;
+the NE omits the PHY, which is soldered and not a retrofit
+([PJRC](https://www.pjrc.com/store/teensy41.html)). The reason to skip it is architectural,
+not the parts cost: **micro-ROS needs an agent host whatever the transport** — Ethernet does
+not let an MCU speak ROS 2 natively, it only moves where the agent may sit. Under the
+[two-tier split](#compute-the-two-tier-split) the reflex MCU always shares a robot with an
+intent-tier Pi 5, a ~10 cm hop carrying setpoints at 10–100 Hz, and the rule that the reflex
+loop survives losing the Pi means that link is not load-bearing. USB serial covers it, and it
+is the transport the agent command above already uses. Two supporting points: the Arduino
+native-Ethernet UDP transport arrived as a community contribution and carries a visible trail
+of open issues, where serial is the well-trodden path; and on a mobile robot a cable is a
+liability — the wireless answer is WiFi, which the Teensy has not got and the Pi has. The one
+case that would change this is a **stationary wired node with no co-located host**, which no
+project here plans, and where an ESP32 or Pi Zero would likely beat a Teensy anyway.
+
 **Raspberry Pi 5 (8 GB) is the standard intent-tier host** — hexapod brain, koala-bot
 cerebrum, and the printer's Klipper host. One board to know, one image to maintain.
 

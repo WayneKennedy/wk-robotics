@@ -151,3 +151,28 @@ last resort; configuration-dependent contact (link against link, against the bas
 bench keep-out are checked in software before every move (`kinematics.py`). `wrist_roll`
 stays 0–4095: it has no stop.
 
+
+## Tuning and protection registers — read 2026-09-17, all six at factory defaults
+
+Read off the bus with no writes ([`test-log.md`](test-log.md)). **Nothing in this repo has ever
+written any of them** — the commissioning scripts write ID, baud, `Homing_Offset` and the
+position limits only, and the move tools write `Acceleration`, `Goal_Velocity` and
+`Torque_Limit` in SRAM at run time. Recorded here because the first three turned out to set the
+arm's speed ceiling.
+
+| Register | Addr | Area | All six | Note |
+|---|---|---|---|---|
+| `P_Coefficient` | 21 | EEPROM | **16** | Feetech default. The arm's speed ceiling — [OQ-17](open-questions.md) |
+| `I_Coefficient` | 22 | EEPROM | **0** | No integral term, so following error cannot be driven out |
+| `D_Coefficient` | 23 | EEPROM | **32** | Feetech default |
+| `Min_Voltage_Limit` | 15 | EEPROM | 40 → **4.0 V** | Far below a usable rail; will not protect a run ([OQ-03](open-questions.md)) |
+| `Max_Voltage_Limit` | 14 | EEPROM | 140 → **14.0 V** | The ceiling an over-set bench supply would breach; nothing upstream of the servo clamps it |
+| `Protection_Current` | 28 | EEPROM | 310 (gripper 250) | **Scale unverified.** If it scales as `Present_Current` at 6.5 mA/count, ~2 A per servo |
+| `Max_Torque_Limit` | 16 | EEPROM | 1000 (gripper 500) | |
+| `Maximum_Acceleration` | 85 | Factory | 254 | |
+
+**The EEPROM boundary is address 40.** `Acceleration` (41), `Goal_Position` (42),
+`Goal_Velocity` (46), `Torque_Limit` (48) and `Lock` (55) are SRAM and reset on power-down —
+which is why the move tools set them freely every run, and why a session that changes only those
+leaves the hardware as it found it. Anything at 39 or below is durable and, by this project's
+conventions, a logged and owner-approved write.

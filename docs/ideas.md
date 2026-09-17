@@ -396,6 +396,68 @@ manipulator. Not restated here. What remains a *family* question is the one abov
 [Physical AI and the hive mind](#physical-ai-and-the-hive-mind): how a learned component
 from that arm gets into the mobile robots.
 
+### A bench supply with fixed rails
+
+A disused ATX PC power supply rebuilt as a hobby bench supply: **fixed 3.3 V, 5 V and 12 V
+binding posts**, plus a variable rail on a DPS-style CV/CC module, in a printed case. From a
+YouTube build the owner saw (owner, 2026-09-17).
+
+**The trigger is a safety problem, not a capability gap.** The Eventek bench supply's
+variable-voltage knob is low-friction, and a knock puts an arbitrary voltage on the servo
+bus. Nothing downstream would stop it: the Waveshare adapter is a **pass-through with no
+regulation, protection or clamp** ([common.md → Configuring a servo](common.md#configuring-a-servo--true-for-every-sts-project)),
+so the servos see whatever the supply is set to, and their `Max_Voltage_Limit` reads
+**14.0 V** (read off all six, 2026-09-17). A fixed post cannot be knocked.
+
+- **Reuses:** the printer; the [power-integrity rules](common.md#power-integrity).
+- **Unresolved:**
+  - **No donor.** Nothing matching in [wk-inventory `stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md),
+    and no bench-supply or ATX purchase in the invoices (searched 2026-09-17). Every part
+    is a purchase, including the donor PSU.
+  - **A buck module cannot boost.** "0.5–36 V" on a DPS-style panel is the module's own
+    rating; fed from an ATX 12 V rail it can only go *down*. A 36 V top end needs a boost
+    stage or a higher input — settle this before buying the module.
+  - **Donor vintage decides whether the build works at all.** ATX12VO units (2019+) carry
+    only 12 V; the 3.3 V and 5 V rails that are the point of this build are generated on the
+    motherboard, not in the PSU. Older multi-rail ATX is the right donor.
+  - Many ATX units need `PS_ON` pulled to GND to start, and a minimum load on 5 V / 3.3 V
+    to regulate.
+  - **Whether it is the right answer for robot work.** [Power integrity](common.md#power-integrity)
+    says prototype from a stiff, low-impedance source — a LiPo, not a bench PSU. This build
+    serves general electronics work; it does not supersede that.
+- **Competing for the same time:** nine unfinished projects in
+  [wk-inventory `projects.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/projects.md),
+  against the owner's stated goal of fewer unused parts and more finished projects.
+- **Cheaper answer to the immediate problem:** a fixed 12 V, 5 A+ brick removes the knob
+  hazard outright and closes the arm's long-open
+  [OQ-03](../projects/soarm101/docs/open-questions.md), independently of whether this
+  project ever happens.
+
+**A second, much smaller route — M5Dial + M5Stack PPS Module 13.2** (owner, 2026-09-17). The
+[PPS 13.2](https://docs.m5stack.com/en/module/Module13.2-PPS) is a programmable buck: 0.5–30 V
+at 0–5 A, 100 W, **±30 mV / ±5 mA readback**, isolated comms, 4 mm banana sockets, ~£25. The
+owner has an unused **M5Dial v1.1** (a gift; [wk-inventory `stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md)),
+which would give it a job.
+
+- **The catch: the Dial is not a Core.** The PPS is a Module-series part that mates over
+  **M-Bus** (two 15-pin 2.54 mm rows) and answers I2C at **0x35**; the Dial is a Stamp-S3 puck
+  with **no M-Bus**, so nothing can stack on it. It does expose I2C on Port A and Port B, so a
+  hand-wired Port-A-to-M-Bus adapter is **plausible but unverified** — including whether Port A
+  can power the module's host side, which is opto/transformer isolated from the output.
+- **It still needs a separate 9–36 V input brick.** The PPS only steps down, and with no input
+  "it will show no I2C device and will not work". So this route is module + brick + adapter +
+  firmware, not a plug-in.
+- **What it genuinely solves:** a *digital* encoder can be clamped in firmware — cap the
+  settable maximum at, say, 12.5 V and the knob physically cannot reach 20 V. An analogue pot
+  cannot do that, and that is exactly the hazard that started this. The readback would also beat
+  the instrument [OQ-03](../projects/soarm101/docs/open-questions.md) currently relies on
+  (the servos' own ADC at 20 Hz).
+- **Why it is still not the arm's supply:** a servo rail whose voltage depends on an ESP32
+  booting and running correct firmware is a worse rail than a fixed brick, and the module's
+  **power-up output behaviour is unspecified** in its documentation. For a bus with a 14.0 V
+  absolute limit and no protection upstream, that is the wrong unknown to accept. Good bench
+  instrument; not the fix for the arm.
+
 ---
 
 ## Adding an idea
