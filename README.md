@@ -28,9 +28,9 @@ moves here and they link back.
 | **Holybro 10"** | Aerial robot candidate: a Holybro X500 V2 bought to carry a Pi or Jetson wired to its Matek H743 Wing V3 flight controller — the one aircraft in the drone fleet that meets the family's robot criterion | Parts identified from invoices 2026-09-17; nothing flashed, build state unknown | [WayneKennedy/wk-drones](https://github.com/WayneKennedy/wk-drones) `aircraft/holybro-10/` (public) |
 | **3D printing** | Creality Ender-5 S1 on Klipper — the machine every printable part comes off | Commissioned and calibrated; in production use | [WayneKennedy/3d-printing](https://github.com/WayneKennedy/3d-printing) (private) |
 
-Supporting: [`wk-drones`](https://github.com/WayneKennedy/wk-drones) — the FPV fleet
-record the Holybro lives in; its other two aircraft (a Bee35 cinewhoop and a 5" freestyle
-quad) are flown by hand and are not robots, so they appear only there. The hexapod's
+Supporting: [`wk-drones`](https://github.com/WayneKennedy/wk-drones) — the aircraft fleet (drones and planes)
+record the Holybro lives in; its other aircraft (a Bee35 cinewhoop, a 5" freestyle
+quad and two planes) are flown by hand and are not robots, so they appear only there. The hexapod's
 vendor reference is read from Freenove's upstream directly, not from a repo of ours.
 
 Longer per-project notes — hardware, what each one shares, where its documentation

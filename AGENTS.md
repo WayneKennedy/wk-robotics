@@ -141,7 +141,7 @@ the rest are sibling repos checked out alongside this one:
 | 3D printing | `../3d-printing` | [WayneKennedy/3d-printing](https://github.com/WayneKennedy/3d-printing) — private |
 | Devastator | [`projects/devastator/`](projects/devastator/AGENTS.md) | In this repo since 2026-09-13; `wk-devastator` archived |
 | wk-hexapod | `../wk-hexapod` | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |
-| wk-drones | `../wk-drones` | [WayneKennedy/wk-drones](https://github.com/WayneKennedy/wk-drones) — public, the drone fleet; only its Holybro 10" is a robot |
+| wk-drones | `../wk-drones` | [WayneKennedy/wk-drones](https://github.com/WayneKennedy/wk-drones) — public, the aircraft fleet (drones and planes); only its Holybro 10" is a robot |
 | Freenove hexapod (vendor) | `../freenove-hexapod` | [Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi](https://github.com/Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi) — upstream, sparse clone, read-only; recipe in wk-hexapod `docs/operations.md` |
 
 Read those repos and folders directly rather than re-deriving their state from this
