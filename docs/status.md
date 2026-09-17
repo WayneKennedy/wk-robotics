@@ -97,7 +97,11 @@ drone: that is the Holybro 10" in wk-drones, the family's aerial-robot candidate
 ([`projects.md`](projects.md#holybro-10-wk-drones)); its payload, power and latency
 requirements are not established.
 Spark is considered for ground use. **Jetson purchase remains pending:** owner is weighing
-the 8 GB Orin Nano Super against the 16 GB Orin NX. Next: confirm the intended AI HAT/SSD
+the 8 GB Orin Nano Super against the 16 GB Orin NX, and as of 2026-09-16 is leaning to the
+Nano — leaning, not decided. UK sourcing for the Nano is answered: RS 264-7384, part
+945-13766-0005-000 (the EU/UK region variant), £384 inc VAT, checked live 2026-09-16; the
+stockist survey, Super-mode and JetPack detail are in
+[`common.md`](common.md#ai-compute--purchase-comparison). Next: confirm the intended AI HAT/SSD
 wiring and cable reach, then validate NVMe cold boot plus concurrent inference/storage
 operation. Select target workloads to assess the Jetson memory need.
 No architecture change decided.

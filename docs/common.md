@@ -498,17 +498,97 @@ M.2 module. Its Hailo-10H and 8 GB RAM add LLM/VLM support absent from Hailo-8;
 
 **Researched 2026-09-13; none tested here.** Purchase state is tracked in
 [status.md](status.md#ai-compute-purchase--ai-hat-2-jetson-or-dgx-spark).
-Owner-quoted prices: **£192**
-for the HAT, **£380** for the **NVIDIA Jetson Orin Nano Super Developer Kit, 8 GB**, and
-**about £1,000** for the **Seeed reComputer Super J401 NX Bundle with Orin NX 16 GB**
+Owner-quoted prices: **£192** for the HAT and **about £1,000** for the **Seeed
+reComputer Super J401 NX Bundle with Orin NX 16 GB**
 ([SKU 100029661](https://www.seeedstudio.com/reComputer-Super-J401-NX-Bundle-p-6686.html)).
+The **NVIDIA Jetson Orin Nano Super Developer Kit, 8 GB is £384 inc VAT**, verified on the
+live RS listing — see *Buying the Nano developer kit in the UK* below.
 The NX bundle includes a **256 GB NVMe SSD and Wi-Fi/Bluetooth module**. Do not substitute
 the older J4012 Classic, which Seeed labels as not supporting Super mode. VAT, delivery
 and the exact seller's remaining bundle contents are not independently checked.
-At these prices NX costs £620 more than Nano (~2.63x). The Nano/HAT £188 difference is
+At these prices NX costs about £616 more than Nano (~2.6x). The Nano/HAT £192 difference is
 before the HAT's NVMe workaround and Jetson storage/accessories. The existing Pi is
 already owned. NVIDIA's standard Nano kit
 [includes a 19 V supply but requires storage](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html).
+
+**A module swap is not a cheap route to 16 GB (checked 2026-09-15).** The Orin NX 16 GB
+module alone lists at
+[£995.99 inc VAT at Scan UK](https://www.scan.co.uk/products/nvidia-jetson-orin-nx-module-16gb-lpddr5-cortex-a78ae-1024-cuda-cores-157-ai-tops-1gbe-nvme-ampere)
+(module only, 1–3 weeks), about the price of the whole Seeed bundle. Nano kit now plus an
+NX module later is ~£1,380, more than the NX bundle outright; a later NX purchase adds a
+second unit rather than upgrading the first. Whether the Nano developer-kit carrier
+accepts an NX module, and in which power modes, is unverified here; RS's listing describes
+the kit's carrier as accommodating all Orin Nano and Orin NX modules, but that is
+distributor copy, not NVIDIA documentation.
+
+**Buying the Nano developer kit in the UK (checked 2026-09-16; nothing ordered).** The
+suffix is a region/plug variant, not a hardware revision: **945-13766-0005-000 is the
+EU/UK part**, -0000-000 is US/CA/CN/JP/PH, -0007-000 is IN/TW. All are the same Super
+developer kit, and Super mode is software, so an older kit is the same hardware.
+[RS UK 264-7384](https://uk.rs-online.com/web/p/processor-development-tools/2647384) is the
+main UK route (OKdo is RS's own brand): **£320.00 ex VAT, £384.00 inc VAT**, and the
+listing's manufacturer part number is 945-13766-0005-000 — both owner-checked on the live
+page 2026-09-16. Cached search
+snippets showing £215.84–£233.84 ex VAT were stale — distributors block automated fetches,
+so their prices here are only trustworthy when a person has looked. Stock state at RS not
+captured. Other stockists, unverified live:
+[Scan](https://www.scan.co.uk/shop/computer-hardware/workstations-ai/nvidia-jetson-modules)
+lists it as notify-me; The Pi Hut and Digi-Key UK do not list it; Farnell UK lists the
+US-region -0000-000; [Silicon Highway](https://www.siliconhighwaydirect.com/product-p/945-13766-0005-000.htm)
+ships from Ireland at €348 ex VAT on DAP terms, so UK import charges fall on the buyer;
+Amazon UK carries only third-party kits. Broker listings (Enrgtech, Halltronics) are best
+avoided. The kit still needs an NVMe SSD, and mains-lead provision varies by seller.
+
+**Super mode** is a set of higher power modes (up to MAXN SUPER) from JetPack 6.2,
+enabled by flashing with the Super configuration: software only, and the Nano developer
+kit gets it by reflashing. Production carriers must handle the extra power and heat, which
+is why Seeed marks its Classic J4012 (NX 16 GB) as not supporting it. Orin Nano 8 GB: GPU
+625→1,020 MHz, CPU 1.5→1.7 GHz, **memory bandwidth 68→102 GB/s**, dense INT8 20→33 TOPS,
+up to 25 W. Orin NX 16 GB: GPU 918→1,173 MHz, dense INT8 50→78 TOPS, up to 40 W;
+bandwidth 102 GB/s either way. The Nano figures in the table below assume Super mode.
+Source: [NVIDIA, JetPack 6.2 Super mode](https://developer.nvidia.com/blog/nvidia-jetpack-6-2-brings-super-mode-to-nvidia-jetson-orin-nano-and-jetson-orin-nx-modules/).
+
+**JetPack for Orin (checked 2026-09-15; nothing flashed here).** Two maintained branches:
+
+- **JetPack 7.2** ([2026-06-02](https://developer.nvidia.com/embedded/jetpack/downloads/archive-7.2);
+  [7.2.1 on 2026-08-11](https://developer.nvidia.com/embedded/jetpack/downloads)) is the
+  first 7.x release to support Orin. Ubuntu 24.04, kernel 6.8, CUDA 13.2.1, TensorRT 10.16.2.
+  It matches the family's ROS 2 Jazzy on Ubuntu 24.04 (wk-hexapod DEC-07).
+  [Isaac ROS 4.x](https://nvidia-isaac-ros.github.io/getting_started/index.html) supports
+  Jazzy only, lists only JetPack 7.2 for Jetson, and offers Docker, venv or bare-metal installs.
+  The Orin Nano developer kit now installs from a USB ISO, not an SD image, and needs UEFI
+  firmware ≥ 36.0. Early reports in NVIDIA's
+  [Orin Nano 7.2 thread](https://forums.developer.nvidia.com/t/jetpack-7-2-jetson-linux-r39-2-on-jetson-orin-nano-developer-kit-getting-started-and-feedback-thread/372151)
+  (June 2026) cover firmware-update timeouts and MAXN SUPER missing after upgrade when a
+  non-Super configuration was installed. DLA needs 7.2.1; see *DLA is conditional value* below.
+- **JetPack 6.2.x**
+  ([6.2.3, 2026-08-12](https://forums.developer.nvidia.com/t/jetpack-6-2-3-jetson-linux-36-5-2-is-now-live/379872))
+  is Ubuntu 22.04 and kernel 5.15. NVIDIA's [FAQ](https://developer.nvidia.com/embedded/faq)
+  calls it "sustaining mode"; no end-of-life date found. Ubuntu 22.04 is ROS 2 Humble's
+  platform, not Jazzy's.
+
+**Carrier vendors lag NVIDIA:** a third-party carrier needs its vendor's BSP for each
+release. Seeed [promised 7.x for its Orin carriers](https://forum.seeedstudio.com/t/nvidia-has-officially-announced-jetpack-7-2-june-1-2026-any-plans-for-j401-agx-orin-32gb-support/295471)
+on 2026-06-15 and reported J401 images by late June. Its
+[reComputer Super](https://wiki.seeedstudio.com/recomputer_jetson_super_getting_started/) and
+[Classic J401](https://wiki.seeedstudio.com/reComputer_J4012_Flash_Jetpack/) wikis list 6.2
+and 7.2. The Robotics J401 ships with JetPack 6. The Classic J401 wiki says not to enable
+MAXN SUPER with NX modules because the carrier's cooling is insufficient. NVIDIA lists
+Orin Nano and NX modules as
+[available through January 2032](https://developer.nvidia.com/embedded/lifecycle).
+
+**Seeed Orin Nano 8 GB options** (checked 2026-09-15; none handled here). All use J401
+carriers, which also take NX modules:
+
+| Product | Form | Price seen |
+|---|---|---|
+| [J401 bundle](https://www.seeedstudio.com/Jetson-Orin-Classic-Bundle.html) | Classic J401 carrier + module; other contents not confirmed | $449.82 (NX 16 GB: $1,077.02) |
+| [J401 Nano Bundle](https://openelab.io/products/seeed-studio-recomputer-j401-nano-bundle) | Carrier, 256 GB SSD, Wi-Fi, fan heatsink, 19 V adapter; listed as Super-capable | €899 inc VAT at a reseller; Seeed price not checked |
+| [reComputer Super J3011](https://www.seeedstudio.com/reComputer-Super-J3011-p-6444.html) | Enclosed, dual GbE, 128 GB SSD | $769; [€668.90 inc VAT at Botland](https://botland.store/nvidia-modules/27336-recomputer-super-j3011-nvidia-jetson-orin-nano-8gb-ram-seeedstudio-114110312-5904422388546.html) |
+| [reComputer Robotics J3011](https://www.seeedstudio.com/reComputer-Robotics-J3011-p-6503.html) | [Robotics J401](https://wiki.seeedstudio.com/recomputer_robotics_j401_getting_started/): 19–54 V XT30 input, 5 CAN, 2 GbE, 6 USB 3.2, optional 4-camera GMSL2; 115 × 115 × 38 mm, 1.1 kg; Wi-Fi sold separately | $789 |
+
+The [Super J401 carrier](https://www.seeedstudio.com/reComputer-Super-J401-Carrier-Board-p-6642.html)
+alone is $159 and supports Super MAXN mode for all four Orin Nano and NX modules.
 
 The fourth candidate is **NVIDIA DGX Spark**, a desktop/ground compute option. NVIDIA's
 [UK listing](https://marketplace.nvidia.com/en-gb/enterprise/personal-ai-supercomputers/dgx-spark/)
@@ -561,7 +641,10 @@ Nano's and memory bandwidth is essentially unchanged; 157/67 is not an LLM speed
 The extra RAM allows larger model/context allocations or more resident workloads. As a
 capacity estimate, 14B weights at 4 bits occupy ~7 GB before quantisation metadata, runtime
 buffers and KV cache: selected 14B-class models become plausible on 16 GB, not a promise
-of acceptable speed or of simultaneous full robotics and LLM pipelines. No matched
+of acceptable speed or of simultaneous full robotics and LLM pipelines. Rule of thumb,
+unmeasured here: token-by-token generation is memory-bandwidth-bound, reading roughly the
+whole weight set per token, so on the same 102 GB/s a model twice the size generates at
+roughly half the rate. No matched
 NX/Nano benchmark has been established here. For onboard voice + vision + mapping,
 the RAM is the main reason to consider paying the premium. For learning or one modest
 policy/detector, Nano remains the stronger value assessment.
@@ -577,11 +660,14 @@ requirement or provide an independent DRAM bandwidth budget.
 
 **DLA is conditional value.** It offloads supported CNN layers through TensorRT, not
 arbitrary CUDA/LLM work. [JetPack 6.2 documents a DLA stack](https://developer.nvidia.com/embedded/jetpack-sdk-62).
-Current sources conflict for newer releases: the [TensorRT guide](https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/work-with-dla.html)
-(updated 2026-09-08) says 11.3 lacks DLA, while [NVIDIA support reported a release on
-2026-09-10](https://forums.developer.nvidia.com/t/dla-runtime-unavailable-on-jetpack-7-2-l4t-r39-2-cannot-create-dla-engine/373788)
-after JetPack 7.2 failures. Validate the exact Seeed-supported image/runtime before counting
-DLA capacity in a purchase justification. The bundle's JP7.2 claim alone does not prove it.
+JetPack 7.2 shipped without DLA: per
+[NVIDIA staff on the forum](https://forums.developer.nvidia.com/t/dla-runtime-unavailable-on-jetpack-7-2-l4t-r39-2-cannot-create-dla-engine/373788)
+(2026-06-22), its unified SBSA driver leaves DLA unavailable by default. NVIDIA announced
+the fix as released on 2026-09-10; it needs **JetPack 7.2.1 + CUDA 13.4.1 + TensorRT
+11.3.0 GA**. The [TensorRT guide](https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/work-with-dla.html)
+still said 11.3 lacked DLA on 2026-09-08, two days before that announcement. Unverified on
+hardware here, and whether Seeed's BSPs cover 7.2.1 is unchecked. Validate the exact
+image/runtime before counting DLA capacity in a purchase justification.
 
 **Spark buys a much larger local model tier.** It has eight times NX's RAM but only
 ~2.7 times its memory bandwidth; neither ratio predicts end-to-end performance. NVIDIA
