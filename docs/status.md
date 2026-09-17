@@ -102,9 +102,14 @@ Spark is considered for ground use. **Jetson ordered 2026-09-17: the 8 GB Orin N
 Developer Kit**, not the 16 GB Orin NX — RS order 3020377767, stock no. 264-7384, qty 1
 (order confirmation read 2026-09-17). RS has not yet confirmed price or delivery date;
 the live listing was £384 inc VAT on 2026-09-16, part 945-13766-0005-000 (the EU/UK region
-variant). Not delivered. Which robot or role it serves is not recorded (the Holybro's Pi
-or Jetson choice is its own open question, wk-drones `aircraft/holybro-10` OQ-03). The kit
-ships without storage and needs an NVMe SSD; none is recorded as bought for it. Stockist
+variant). Not delivered. **Leaning to the Holybro X500** as its highest-value use (owner,
+2026-09-17; not decided — wk-drones `aircraft/holybro-10` OQ-03). **Storage allocated:** a
+spare WD_BLACK SN850 1 TB NVMe from the owner's parts box (owner, 2026-09-17). Per
+[NVIDIA's carrier layout](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/hardware_layout.html)
+the kit has an M.2 Key-M 2280 slot at PCIe 3.0 x4 and a Key-M 2230 slot at PCIe 3.0 x2; the
+SN850 is a 2280 PCIe 4.0 drive, so it belongs in the 2280 slot and runs at Gen 3 speed.
+The SN850 was also sold with a heatsink, which is unlikely to fit under the module;
+whether this unit has one is unrecorded. Stockist
 survey, Super-mode and JetPack detail are in
 [`common.md`](common.md#ai-compute--purchase-comparison). Next: confirm the intended AI HAT/SSD
 wiring and cable reach, then validate NVMe cold boot plus concurrent inference/storage
