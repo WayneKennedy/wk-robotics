@@ -73,7 +73,7 @@ nothing else — the balance loop koala-bot depends on, isolated from its limbs,
 CAD.
 
 - **Reuses:** the surplus 37D pair and the spare Dual TB9051FTG —
-  [what the family holds](common.md#drive-motors-drivers-and-mcus-in-hand); the family rule
+  held as unallocated stock in [wk-inventory `docs/stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md); the family rule
   that [the balance loop lives on the MCU](common.md#compute-the-two-tier-split) and
   koala-bot's reflex-tier design; the printer for the chassis.
 - **Unresolved:** everything except the motors and driver — IMU, wheels and hubs

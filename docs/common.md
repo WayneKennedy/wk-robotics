@@ -129,26 +129,23 @@ the wrong fault.
 Two projects use 12 V geared DC motors with encoders rather than servos, and both drive
 them with the same board — the **Pololu Dual TB9051FTG** (2.6 A continuous / 5 A peak per
 channel, 4.5–28 V; chosen by koala-bot DEC-16, adopted by wk-devastator DEC-13). The
-family holds more of both than any project needs, so the pool is tabulated here and each
-project's BOM records only its own allocation.
+family holds more of both than any project needs. Allocated units are tabulated here;
+**unallocated units — two surplus 37D motors, a spare driver and a Teensy 4.1 NE — are in
+the owner's private stock list, [wk-inventory `docs/stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md)** (moved there 2026-09-17). A project that takes
+one moves it into its own BOM and this table.
 
-**Holdings, 2026-09-11:**
+**Allocated, 2026-09-17:**
 
 | Part | Qty | Where |
 |---|---|---|
 | 37D 12 V 122 rpm 38 kg·cm geared motor + encoder (Pi Hut; koala-bot's CAD models it as DFRobot FIT0403) | 2 | koala-bot, rear ankle drives (DEC-43) |
-| same | 2 | **Surplus.** Bought for koala-bot's four-wheel V1 (DEC-38, 2026-09-08), which DEC-43 cancelled on 2026-09-10; delivered 2026-09-11 (koala-bot DEC-51). Earmarked for [a pure balance bot](ideas.md#a-pure-balance-bot) — not committed |
 | Pololu Dual TB9051FTG | 1 | koala-bot (DEC-16) |
 | same | 1 | wk-devastator — its own since 2026-09-11 (DEC-13, amended). It was koala-bot's board on loan from 2026-09-07; the loan is dissolved, not returned |
-| same | 1 | **Spare**, paired with the surplus motors |
 | Teensy 4.0 | 1 | koala-bot (DEC-18) — upstream micro-ROS lists it "Not tested", koala-bot OQ-14 |
 | Teensy 4.1, no-Ethernet variant | 1 | wk-devastator (DEC-10) — **ordered, not shipped**: RobotShop holds it with the back-ordered motors ([devastator `sourcing.md`](../projects/devastator/docs/sourcing.md)) |
-| **Teensy 4.1 NE** (no-Ethernet variant) | 1 | **Unallocated**, in hand 2026-09-11 — bought for whichever project is ready for it first. Upstream-Supported for micro-ROS, so it is also koala-bot's fallback if the 4.0 fails OQ-14. Obvious candidate for SO-ARM101's Teensy 4.1 phase (wk-soarm101 DEC-12) — not allocated |
 
-The second motor pair (£55.80), the two extra drivers (£61.40) and the spare Teensy 4.1 NE
-(£28.50) came in one order: The Pi Hut #1619429, ordered 2026-09-10, delivered 2026-09-11,
-£149.50 inc £3.80 shipping (invoice read 2026-09-17 ([how](../AGENTS.md#invoices-and-order-history))). Whichever project takes an
-unallocated part records the allocation in its own BOM and updates this table.
+wk-devastator's driver came on the same Pi Hut order (#1619429, 2026-09-10) as the
+unallocated units.
 
 ### Configuring a servo — true for every STS project
 

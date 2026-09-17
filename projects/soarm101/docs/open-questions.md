@@ -122,7 +122,7 @@ and not yet accepted. Do not build against one without the owner deciding.
   (2026-09-12) and DEC-14 (2026-09-14): the *own reflex MCU* row, a Teensy 4.1 running
   micro-ROS into ROS 2; the PC path stays only for the bench tools until then.** Still
   open: which board (the family's unallocated Teensy 4.1 NE is the candidate —
-  [wk-robotics `common.md` → MCUs in hand](../../../docs/common.md#drive-motors-drivers-and-mcus-in-hand)), how it connects to the bus (the Waveshare
+  [wk-inventory `docs/stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md)), how it connects to the bus (the Waveshare
   board's channel-A UART header, or a separate adapter), which host runs the micro-ROS
   agent and ROS 2 (this workstation, or a Pi 5 from the fleet), which ROS 2 distribution,
   where the geometric check runs (the keep-out and IK in `software/kinematics.py` are

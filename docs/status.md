@@ -29,9 +29,8 @@ The sibling repos are expected as **peers of this directory**, not submodules:
 cd ..
 git clone git@github.com:WayneKennedy/koala-bot.git
 git clone git@github.com:WayneKennedy/3d-printing.git        # private
+git clone git@github.com:WayneKennedy/wk-inventory.git       # private: stock, project register, machine identifiers
 git clone https://github.com/TheRobotStudio/SO-ARM100.git    # upstream, not a fork
-git clone git@github.com:WayneKennedy/wk-soarm101.git
-git clone git@github.com:WayneKennedy/wk-devastator.git
 git clone git@github.com:WayneKennedy/wk-hexapod.git
 git clone git@github.com:WayneKennedy/wk-drones.git
 # Hexapod vendor reference: a sparse clone of Freenove's upstream — recipe in wk-hexapod docs/operations.md
@@ -130,8 +129,8 @@ checkout; pull there before hexapod work. Resolves when the koala-bot links are 
 Two 37D motors and one Dual TB9051FTG arrived 2026-09-11 with no project to go to:
 koala-bot's four-wheel V1 was cancelled before its follow-on order shipped. A Teensy 4.1 NE
 arrived the same day, bought deliberately unallocated for whichever project is ready first.
-The inventory
-is in [`common.md`](common.md#drive-motors-drivers-and-mcus-in-hand); the candidate use is
+They are
+listed in [wk-inventory `docs/stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md); the candidate use is
 [a pure balance bot](ideas.md#a-pure-balance-bot). Resolves when that idea earns a repo
 or the parts are allocated elsewhere.
 

@@ -72,6 +72,7 @@ Three jobs, and nothing else:
 | True of *several* projects | Here, in `docs/common.md`. The project repos link back |
 | Not yet true of anything | In `docs/ideas.md`, labelled as unbuilt |
 | In flight, spanning projects | In `docs/status.md`, until it resolves or finds a home |
+| An item owned but allocated to no project, or the list of unfinished projects (any hobby) | In the private `wk-inventory` repo: `docs/stock.md`, `docs/projects.md`. Allocating an item moves its row into the project's BOM |
 
 When a fact stops being project-specific, move it here and replace it with a link. When an
 idea earns a repo, move it out of `ideas.md` and into the index.
@@ -87,12 +88,20 @@ idea earns a repo, move it out of `ideas.md` and into the index.
   and infrastructure details are not. **Machine identifiers go in the private
   `wk-inventory` repo** ([WayneKennedy/wk-inventory](https://github.com/WayneKennedy/wk-inventory),
   checked out at `../wk-inventory`); public docs describe a machine by role and link there.
+  The same repo holds the owner's stock list and project register: link to them, never
+  copy rows.
 - **Chat transcripts.** Distil the conclusion; discard the conversation.
 
 ---
 
 ## Working conventions
 
+- **Check what is owned before suggesting a purchase.** Read the private
+  [wk-inventory `docs/stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md)
+  and search the owner's invoices ([below](#invoices-and-order-history)), and say what was
+  found. The full rule, and the owner's goal behind it — fewer unused parts, more finished
+  projects — are in
+  [wk-inventory `AGENTS.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/AGENTS.md#before-anything-is-bought).
 - **No project fact lives only in chat.** If a session establishes something durable, it
   lands in a repo before the session ends — this one, or the project's.
 - **Distinguish decided from open.** Never state an open question as settled. Projects
