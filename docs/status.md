@@ -108,8 +108,8 @@ spare WD_BLACK SN850 1 TB NVMe from the owner's parts box (owner, 2026-09-17). P
 [NVIDIA's carrier layout](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/hardware_layout.html)
 the kit has an M.2 Key-M 2280 slot at PCIe 3.0 x4 and a Key-M 2230 slot at PCIe 3.0 x2; the
 SN850 is a 2280 PCIe 4.0 drive, so it belongs in the 2280 slot and runs at Gen 3 speed.
-The SN850 was also sold with a heatsink, which is unlikely to fit under the module;
-whether this unit has one is unrecorded. Stockist
+The SN850 was also sold with a heatsink; whether this unit has one, and whether a
+heatsinked drive clears the slot, are unchecked. Stockist
 survey, Super-mode and JetPack detail are in
 [`common.md`](common.md#ai-compute--purchase-comparison). Next: confirm the intended AI HAT/SSD
 wiring and cable reach, then validate NVMe cold boot plus concurrent inference/storage
