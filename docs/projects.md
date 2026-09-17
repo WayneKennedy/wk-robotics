@@ -127,8 +127,8 @@ press-fit findings in [`common.md`](common.md#press-fits-and-supports).
 Jetson hard-wired to its flight controller** — the onboard topology in
 [`common.md`](common.md#aircraft-and-the-tiers). It is the only aircraft in the
 [wk-drones](https://github.com/WayneKennedy/wk-drones) fleet that meets the family's robot
-criterion. The others — a 3.5" ducted cinewhoop (Bee35, its DEC-07), a 5" freestyle quad and two
-planes, an ATOMRC Swordfish and a VolantexRC Phoenix glider — fly under a human pilot and
+criterion. The others — a 3.5" ducted cinewhoop (Bee35, its DEC-07), a 5" freestyle quad and
+several planes — fly under a human pilot and
 are indexed only through the fleet repo.
 
 | | |

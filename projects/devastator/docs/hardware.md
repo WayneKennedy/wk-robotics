@@ -71,8 +71,9 @@ connector, and whether motor suppression capacitors are fitted.
 
 **Also fitted at the time of the original build, per the owner's account** (not visible
 in these photographs): a **Raspberry Pi 4** and **two Intel RealSense cameras** on top.
-Which camera models is **unrecorded** — the hexapod now runs a D435i, and whether that
-is one of these two is **not established**.
+Which camera models is **not confirmed on the hardware**: invoices show one D435i and one
+unit of unstated model ([`sourcing.md`](sourcing.md)). The hexapod now runs a D435i, and
+whether that is one of these two is **not established**.
 
 ## Two fitted parts are dead ends
 

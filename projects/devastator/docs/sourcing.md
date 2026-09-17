@@ -15,7 +15,7 @@ collects VAT plus a ~£8–12 handling fee.
 |---|---|
 | DFRobot Devastator chassis (ROB0128) | With original 6 V motors — see [`hardware.md`](hardware.md). The Pi Hut #589121, 2020-12-13, £90.00, with the L298N (£3.50) |
 | Raspberry Pi 4 | Fitted to the first build (OQ-06) |
-| 2 × Intel RealSense cameras | Models **unrecorded** (OQ-09); no RealSense purchase is in the owner's mailbox (searched 2026-09-17) |
+| 2 × Intel RealSense cameras | Models not confirmed on the hardware (OQ-09). Invoices (read 2026-09-17): two Mouser orders, both £167.47 ex VAT: #20270245 (2020-11-06), part 82635D435IDK5P — a D435i by its part number — and #20410768 (2020-11-24), part 82637BRPLHV, model not stated in the email (unverified). Full lines in the private [wk-inventory `docs/purchases/electronics.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/purchases/electronics.md) |
 | Arduino Nano, L298N, DC-DC module | Retired by DEC-03; not part of the new build |
 
 **What the family holds, checked 2026-09-11.** The Pololu Dual TB9051FTG this robot uses

@@ -99,9 +99,9 @@ drone: that is the Holybro 10" in wk-drones, the family's aerial-robot candidate
 requirements are not established.
 Spark is considered for ground use. **Jetson ordered 2026-09-17: the 8 GB Orin Nano Super
 Developer Kit**, not the 16 GB Orin NX — RS order 3020377767, stock no. 264-7384, qty 1
-(order confirmation read 2026-09-17). RS has not yet confirmed price or delivery date;
-the live listing was £384 inc VAT on 2026-09-16, part 945-13766-0005-000 (the EU/UK region
-variant). Not delivered. **Leaning to the Holybro X500** as its highest-value use (owner,
+(order confirmation read 2026-09-17). RS's follow-up notification gives £320.00 ex VAT
+(£384 inc, matching the live listing of 2026-09-16) and a delivery date of 2026-09-18;
+part 945-13766-0005-000 (the EU/UK region variant). Not delivered as of 2026-09-17. **Leaning to the Holybro X500** as its highest-value use (owner,
 2026-09-17; not decided — wk-drones `aircraft/holybro-10` OQ-03). **Storage allocated:** a
 spare WD_BLACK SN850 1 TB NVMe from the owner's parts box (owner, 2026-09-17). Per
 [NVIDIA's carrier layout](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/hardware_layout.html)

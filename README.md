@@ -30,7 +30,7 @@ moves here and they link back.
 
 Supporting: [`wk-drones`](https://github.com/WayneKennedy/wk-drones) — the aircraft fleet (drones and planes)
 record the Holybro lives in; its other aircraft (a Bee35 cinewhoop, a 5" freestyle
-quad and two planes) are flown by hand and are not robots, so they appear only there. The hexapod's
+quad and several planes) are flown by hand and are not robots, so they appear only there. The hexapod's
 vendor reference is read from Freenove's upstream directly, not from a repo of ours.
 
 Longer per-project notes — hardware, what each one shares, where its documentation
