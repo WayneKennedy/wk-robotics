@@ -89,9 +89,9 @@ tolerances, one pool of spares, and tooling that transfers between projects.
 
 | Servo | Qty | Where | Source |
 |---|---|---|---|
-| Waveshare ST3215 12 V (Feetech STS3215 rebadge), firmware 3.10 (upgraded from 3.9, 2026-09-12) | 2 | SO-ARM101, IDs 1–2 | Amazon, 2026-09-07 ([wk-soarm101 `servos.md`](../projects/soarm101/docs/servos.md)) |
+| Waveshare ST3215 12 V (Feetech STS3215 rebadge), firmware 3.10 (upgraded from 3.9, 2026-09-12) | 2 | SO-ARM101, IDs 1–2 | Amazon 204-4694570-7173960, ordered 2026-09-02, delivered 2026-09-04, £31.90 each ([`servos.md`](../projects/soarm101/docs/servos.md)) |
 | Feetech STS3215 12 V, firmware 3.10 | 4 | SO-ARM101, IDs 3–6 (wk-soarm101 DEC-09) | RCmall via koala-bot, arrived 2026-09-12 ([koala-bot `sourcing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/sourcing.md)) |
-| Feetech STS3215 12 V, firmware 3.10 (four read; the eight assumed the same batch, unverified) | 8 | koala-bot, eight of twelve limb joints — four short until a **6-pack ordered from RCmall 2026-09-14** arrives (then 14: 12 fitted, 2 spare) | same order; backfill pack's arrival not recorded |
+| Feetech STS3215 12 V, firmware 3.10 (four read; the eight assumed the same batch, unverified) | 8 | koala-bot, eight of twelve limb joints — four short until a **6-pack ordered from RCmall 2026-09-14** arrives (then 14: 12 fitted, 2 spare) | same order; backfill pack (AliExpress, £103.15) shipped 2026-09-15, not delivered as of 2026-09-17 |
 | Feetech STS3032M 6 V | 4 | koala-bot, three neck + one spare | same order |
 
 SO-ARM101 has its six. koala-bot must re-order at least four STS3215 before its limbs can
@@ -142,11 +142,12 @@ project's BOM records only its own allocation.
 | same | 1 | wk-devastator — its own since 2026-09-11 (DEC-13, amended). It was koala-bot's board on loan from 2026-09-07; the loan is dissolved, not returned |
 | same | 1 | **Spare**, paired with the surplus motors |
 | Teensy 4.0 | 1 | koala-bot (DEC-18) — upstream micro-ROS lists it "Not tested", koala-bot OQ-14 |
-| Teensy 4.1 | 1 | wk-devastator (DEC-10) — ordered; arrival not recorded |
+| Teensy 4.1, no-Ethernet variant | 1 | wk-devastator (DEC-10) — **ordered, not shipped**: RobotShop holds it with the back-ordered motors ([devastator `sourcing.md`](../projects/devastator/docs/sourcing.md)) |
 | **Teensy 4.1 NE** (no-Ethernet variant) | 1 | **Unallocated**, in hand 2026-09-11 — bought for whichever project is ready for it first. Upstream-Supported for micro-ROS, so it is also koala-bot's fallback if the 4.0 fails OQ-14. Obvious candidate for SO-ARM101's Teensy 4.1 phase (wk-soarm101 DEC-12) — not allocated |
 
-The second motor pair and the two extra drivers came in one order; its date, supplier and
-price are not recorded, and so are the spare Teensy's. Whichever project takes an
+The second motor pair (£55.80), the two extra drivers (£61.40) and the spare Teensy 4.1 NE
+(£28.50) came in one order: The Pi Hut #1619429, ordered 2026-09-10, delivered 2026-09-11,
+£149.50 inc £3.80 shipping (invoice read 2026-09-17 ([how](../AGENTS.md#invoices-and-order-history))). Whichever project takes an
 unallocated part records the allocation in its own BOM and updates this table.
 
 ### Configuring a servo — true for every STS project
@@ -199,7 +200,11 @@ cross-check against one tape-measured tool position. Method and numbers:
 
 **Adapters in hand (2026-09-08):** a **Waveshare Bus Servo Adapter (A) v1.1** — the
 "Motor Control Board" in the SO-ARM100 BOM, so it is the SO-ARM101 part — and a
-**Feetech FE-URT-2**. Those two are the family's only adapters: the RCmall STS3215 6-packs
+**Feetech FE-URT-2**. *Invoice conflict (2026-09-17):* the only adapter purchase in the
+mail is Amazon 204-4524452-2059566, 2026-09-07, delivered the same day — a "Waveshare
+Serial Bus Servo Driver Board" (£9.99, taken to be the Adapter (A)) and a "Stemedu …
+**FE-URT-1**" (£15.65). No FE-URT-2 purchase was found. Which Feetech board is in hand is
+TBC against its silkscreen ([SO-ARM101 `sourcing.md`](../projects/soarm101/docs/sourcing.md)). Those two are the family's only adapters: the RCmall STS3215 6-packs
 were listed with an **FE-URT-1** each but shipped **without** (koala-bot `test-log.md`,
 2026-09-12), and the STS3032M 4-pack ships passive 3-port connector boards and a link cable, not a
 USB adapter. Both bring-ups therefore share the two boards. A further equivalent, if ever needed: the *Serial
@@ -730,6 +735,14 @@ capacity difference. eth0 is present on every unit but unused (Wi-Fi only).
 | 3D-printer host | Rev 1.1 (`d04171`) | Raspberry Pi OS (Debian 12 bookworm), headless | |
 | wk-hexapod brain | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | Normally powered off. |
 | Desktop computer, no role assigned | Pi 500+ Rev 1.0 (`e04190`) | Ubuntu 24.04 LTS, desktop | The only 16 GB unit. Keyboard form factor, so never an on-robot host. Boots from its internal 256 GB NVMe. Offline 2026-02-02 to 2026-09-15 and briefly recorded as a missing Pi 5; the desktop Pi 5 above was mistaken for it. |
+
+**Purchases on invoice** (read 2026-09-17 ([how](../AGENTS.md#invoices-and-order-history)); which order became which board
+is not recorded): Pi 5 8 GB — The Pi Hut #1164841, 2024-03-23, £78.00, with Amazon
+202-8965289-9773916, 2024-03-26: Pimoroni NVMe Base £16.50 and Kingston SNV2S/500G £36.78,
+matching the desktop Pi's parts; Amazon 026-1806556-5848369, 2025-12-28, £84.99; The Pi
+Hut #1488946, 2026-01-05, £91.20, with a Raspberry Pi SSD 256 GB, 27 W PSU, Active Cooler
+and NVMe Base case. Pi 500+ — The Pi Hut #1431072, 2025-09-29, £172.80. **The fourth Pi 5
+has no purchase in the mail.**
 
 **Identifiers are not kept here.** Hostnames, serials, MACs, LAN and tailnet addresses,
 login users and SSH host-key fingerprints for every board — the data needed to recognise a

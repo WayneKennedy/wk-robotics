@@ -13,9 +13,9 @@ collects VAT plus a ~£8–12 handling fee.
 
 | Part | Note |
 |---|---|
-| DFRobot Devastator chassis (ROB0128) | With original 6 V motors — see [`hardware.md`](hardware.md) |
+| DFRobot Devastator chassis (ROB0128) | With original 6 V motors — see [`hardware.md`](hardware.md). The Pi Hut #589121, 2020-12-13, £90.00, with the L298N (£3.50) |
 | Raspberry Pi 4 | Fitted to the first build (OQ-06) |
-| 2 × Intel RealSense cameras | Models **unrecorded** (OQ-09) |
+| 2 × Intel RealSense cameras | Models **unrecorded** (OQ-09); no RealSense purchase is in the owner's mailbox (searched 2026-09-17) |
 | Arduino Nano, L298N, DC-DC module | Retired by DEC-03; not part of the new build |
 
 **What the family holds, checked 2026-09-11.** The Pololu Dual TB9051FTG this robot uses
@@ -32,9 +32,9 @@ power budget** (DEC-07) — purchases follow a budget rather than produce one.
 
 | Part | Depends on | Note |
 |---|---|---|
-| 2 × Pololu #4865 — 25D 47:1 MP 12V, 48 CPR encoder | — | **DEC-11. Ordered; back order, due end of October 2026 (revised 2026-09-09; was ~26 Sept).** ~£50 each, RobotShop UK. Remove the end caps on fitting — 67 mm each does not fit, 64.5 mm does |
+| 2 × Pololu #4865 — 25D 47:1 MP 12V, 48 CPR encoder | — | **DEC-11. Ordered; back order, due end of October 2026 (revised 2026-09-09; was ~26 Sept).** RobotShop UK #1496687, 2026-09-07, £41.50 each ex VAT (~£50 inc); RobotShop's back-order email that day gave 2026-10-19, and the whole order ships together. Order total £152.37 inc £21.21 shipping. Remove the end caps on fitting — 67 mm each does not fit, 64.5 mm does |
 | Pololu Dual TB9051FTG | — | **DEC-13. In hand** — this robot's own since 2026-09-11, from koala-bot's over-order; not bought by this project. 2.6 A cont. / 5 A peak per channel; one board drives both tracks |
-| Teensy 4.1 | — | **DEC-10. Ordered** for this robot — the upstream-**Supported** board, not the "Not tested" 4.0 |
+| Teensy 4.1 | — | **DEC-10. Ordered** for this robot — the upstream-**Supported** board, not the "Not tested" 4.0. On the motors' order (#1496687): the no-Ethernet variant (RB-Pjr-24), £22.77 ex VAT; **not shipped**, held for the back-ordered motors |
 | 3S LiPo + fuse + connector | OQ-07 | **12 V / 3S settled by DEC-12**; capacity and fuse rating open. Size for **stall**, not average draw |
 | Logic-rail regulator | DEC-07 | Isolated from the motor feed — family power rule |
 | Bulk capacitance | — | ~1000–2200 µF across the motor bus, per the family power rules — **and again on the arm bus** if OQ-12 resolves yes |

@@ -51,7 +51,7 @@ boards' hole pattern against the 32 × 32 mm assumption is checked when they arr
 | Waveshare **ST3215 12 V** bus servo (Feetech STS3215 rebadge, 1/345), firmware **3.10** (shipped 3.9, upgraded 2026-09-12, DEC-11) | 2 | 2026-09-07 | Amazon. Bought as koala-bot's test-fit pair; now this arm's `shoulder_pan` and `shoulder_lift` ([`servos.md`](servos.md)). Box contained M3 horn screws and M2×5 self-tapping case screws |
 | Feetech **STS3215 12 V** bus servo (1/345), firmware 3.10 | 4 | 2026-09-12 | From koala-bot's RCmall packs (DEC-09), **permanently since 2026-09-14** — a backfill 6-pack is ordered for koala-bot; this arm's IDs 3–6 ([`servos.md`](servos.md)). Each box: two metal horns, M3×6 horn screws, M2×6 case screws |
 | Waveshare **Bus Servo Adapter (A)** v1.1 | 1 | 2026-09-07 | Upstream's "Motor Control Board" (DEC-03). CH343 USB-C. Both jumpers on **B** for USB |
-| Feetech **FE-URT-2** | 1 | 2026-09-08 | Spare / bench bus adapter. Not needed for the arm |
+| Feetech **FE-URT-2** | 1 | 2026-09-08 | Spare / bench bus adapter. Not needed for the arm. Model conflicts with the invoice — see [`sourcing.md`](sourcing.md) |
 | USB webcam, bench observation | 1 | 2026-09-12 | On this host as `/dev/video0` (1280 × 720 via V4L2). Lets the assistant see the arm during bring-up; not a LeRobot policy camera. Host user needs the `video` group (added 2026-09-12; ACL granted for the session). Placement and settings: [Bench](#bench) below |
 
 Adapter behaviour, pinouts and power rules are family facts:

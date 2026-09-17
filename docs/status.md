@@ -81,8 +81,10 @@ to that home.
 **Ordered from The Pi Hut, owner-confirmed 2026-09-13:** Raspberry Pi AI HAT+ 2 and
 [Waveshare 2-Channel PCIe Expander for Raspberry Pi 5](https://thepihut.com/products/2-channel-pcie-expander-for-raspberry-pi-5?variant=54400781156737),
 retailer SKU **WAV-30490**, manufacturer model PCIe TO 2-CH PCIe HAT (two downstream FFC
-connectors). Delivery and operation are not yet confirmed; AI HAT+ 2 compatibility remains
-untested.
+connectors). **Delivered 2026-09-15** — The Pi Hut #1620881, ordered 2026-09-13: AI HAT+ 2
+£192.00, expander £14.40, plus a 52Pi Tiny M.2 PCIe Adapter £11.50 and a PCIe Cable
+Selection Pack £7.70 (with a screwdriver set; £238.40 total), per the invoice read
+2026-09-17. Operation is not confirmed; AI HAT+ 2 compatibility remains untested.
 
 Owner considers the installed NVMe HATs essential. The identified existing adapter,
 cable constraints, connector conflict and possible
