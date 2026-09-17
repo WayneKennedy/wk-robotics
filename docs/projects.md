@@ -133,8 +133,8 @@ quad, are FPV aircraft under a human pilot and are indexed only through the flee
 | | |
 |---|---|
 | Repo | [WayneKennedy/wk-drones](https://github.com/WayneKennedy/wk-drones) `aircraft/holybro-10/` — public; the fleet record, `wk-drone-bee35` until 2026-09-13 |
-| State | **Unknown — not yet recorded.** Frame, flight controller, firmware, companion computer, wiring and build state are unwritten (its F-OQ-01) |
-| Compute | Companion Pi or Jetson (intent) wired to the flight controller (reflex); which, and how, unrecorded |
+| State | Parts identified from invoices 2026-09-17: Holybro X500 V2 frame kit, Matek H743 Wing V3 flight controller. Nothing flashed; build state unknown. Its `docs/bom.md`, `docs/decisions.md` and `docs/open-questions.md` are authoritative |
+| Compute | Companion Pi or Jetson Orin Nano (intent), undecided, wired by UART or USB to the Matek H743 Wing V3 (reflex) |
 | Start at | `AGENTS.md` in wk-drones, then `aircraft/holybro-10/README.md` |
 | Licence | `MIT`; not run as an OSS project |
 

@@ -104,6 +104,30 @@ idea earns a repo, move it out of `ideas.md` and into the index.
 - **Docs are written AI-first** — dense, factual, cross-referenced, greppable, on the
   assumption an AI assistant is the primary reader.
 
+## Invoices and order history
+
+**What was bought, when, from whom and for how much is in the owner's mailbox**, and an
+assistant can read it rather than ask. The owner's mail is hosted at Fastmail, which runs
+an official MCP server at `https://api.fastmail.com/mcp`
+([Fastmail's guide](https://www.fastmail.help/hc/en-us/articles/15869557281295-Connecting-AI-tools-via-Fastmail-s-MCP-server)).
+Any MCP-capable harness can connect to it; access is granted by the owner through
+Fastmail's OAuth consent screen, in three levels: read, make changes, send. Connected to
+the owner's Claude account as a connector and verified for reading on 2026-09-17; other
+harnesses are not connected. No credential, token or address belongs in any repo.
+
+- **Use it for** supplier order confirmations and invoices: search by supplier or part
+  name, then read the confirmation for line items, prices and dates. The wk-drones
+  Holybro BOM was built this way.
+- **An invoice proves a purchase, not a fit.** Which robot a part was bought for, and
+  whether it is fitted, still comes from the owner or the hardware; record it as such.
+- **Public repos take** part, supplier, order number, price and date. **They never take**
+  postal addresses, phone numbers, email addresses or payment identifiers, all of which
+  appear in order emails.
+- **Limits:** the server has no tools for mail rules or filters; the owner changes those
+  by hand. Write and send tools are untested here; do not send or modify mail unless the
+  owner asks.
+- Screen scraping a webmail client is not an acceptable substitute (owner, 2026-09-17).
+
 ## The projects and where they are
 
 Full detail is in [`docs/projects.md`](docs/projects.md). Two projects are folders here;
