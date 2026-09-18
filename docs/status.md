@@ -101,6 +101,21 @@ D435i**, and wants each where it gives most value.
   unallocated stock.
 - **The Devastator's camera** (its OQ-09) and which spare Pi 5 it takes (its OQ-13).
 
+### A proven printed build alongside koala-bot — open (2026-09-18)
+
+koala-bot continues at background pace, throttled by the owner's frontier-AI token limits
+(its OQ-20). The owner doubts the ambition of its unique limb geometry and wants
+"something proven that you can print and assemble as easily as SO-ARM was". **Nothing is
+decided.** Candidates from the record: the tank (blocked on motors not guaranteed for
+end October); [Open Duck Mini V2](ideas.md#open-duck-mini-v2) (parked 2026-09-07; 7.4 V
+servos, a fresh order); and **LeKiwi** — the SO-101 arm on a three-omniwheel base driven
+by three 12 V STS3215s, Pi 5, LeRobot-native
+([upstream BOM](https://github.com/SIGRobotics-UIUC/LeKiwi/blob/main/BOM.md); already the
+tank's closest prior art in its `references.md`). An assistant's recommendation, not
+accepted: LeKiwi, because it reuses the finished arm, the 12 V servos and a spare Pi 5,
+and its base plate carries a Pi or Orin cage. Not yet checked against the upstream BOM,
+print list or stock.
+
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 
 **Ordered from The Pi Hut, owner-confirmed 2026-09-13:** Raspberry Pi AI HAT+ 2 and
