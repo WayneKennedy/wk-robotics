@@ -10,6 +10,100 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-18 · Tuning the position loop: 4.6 -> 7.5 cm/s, and the bus corruption nobody had counted
+
+**Supply:** a **Maplin desk PSU, selectable 12 V 3 A**, on the barrel jack, regulated and steady
+at 12.0-12.2 V idle (measured before anything moved; well under the servos' 14.0 V limit, which
+matters because nothing upstream of the servos clamps voltage). Treated as permanent unless a
+> 3 A barrier appeared. **It never did:** the worst summed draw all day was **494 mA, 16% of the
+rating**, and the plain 3-loop cube peaked at **344 mA (11%)** with the rail at 10.6 V minimum and
+no guard trip. A 3 A supply is ample for this arm's bench work. The 2 A caveats in
+[OQ-03](open-questions.md) still stand for lifting and stalling, which a cube does not do.
+
+**The jaw cycle.** `shapes.py --jaw-cycle` was added on the owner's request: the gripper runs
+closed -> 50% of travel -> closed across each of the path's 16 edges, as a triangle in edge
+fraction, normalised per edge so the commanded peak is the percentage asked for (the 1 cm samples
+straddle an edge's midpoint rather than landing on it, which otherwise gives 45.5% for 50%).
+**`K.solve` holds the gripper at its closed stop**, so a moving jaw is a link the path check had
+never seen, and the moving jaw carries its own collision capsule — every waypoint is therefore
+re-checked for self-collision and keep-out at the jaw angle it will actually be commanded to.
+All 193 passed; keep-out unchanged at x +0.182 m. Three loops at 5 cm/s: sum peak 377 mA, 35 C,
+rail 10.5 V. **The gripper became the joint nearest a guard** at lag 112 median / 116 max of 150,
+because the triangle drives it 33 counts/step against the shoulder's 22. Jaw gap in mm at that
+opening is **unmeasured** — `calibration/gripper_gap.json` stops at raw 1591 = 37 mm.
+
+**P_Coefficient 16 -> 32, elbow first, then all four arm joints** (EEPROM; owner approved
+OQ-17's recommendation). Written `Lock` 0 -> write -> read back -> `Lock` 1 per
+[`servos.md`](servos.md); nothing moved during any write, and **no buzz, hunting or oscillation
+appeared at 32** — holding current stayed 13-20 mA. Measured on the elbow, over samples above
+600 counts/s:
+
+| | elbow lag / commanded velocity | max lag |
+|---|---|---|
+| P=16, `Goal_Velocity` 800 | 0.177 s | 152 |
+| P=16, `Goal_Velocity` 2000 | 0.191 s | 152 |
+| **P=32** | **0.146 s** | **127** |
+
+**A ~20% reduction, not the 50% a proportional model predicts.** The coefficient does not map
+linearly onto loop gain; D=32, stiction and the servo's internal profile all shape the response.
+With all four joints at 32 the ratios were pan 0.072, lift 0.142, elbow 0.137, wrist 0.108.
+
+**What actually caps the speed is a joint reversal, not steady-state error.** Each trip landed
+within a point or two of a path corner. At the worst one, `shoulder_lift` runs +30 counts/step
+with a steady lag of -70, reverses, and the lag then climbs monotonically through +103, +133 to
++156 without settling. That is the servo's **turnaround time** — while it decelerates, stops and
+reverses, the command keeps advancing and the error integrates. Tool-space corner easing does not
+prevent it, because the Jacobian turns a gentle tool corner into a hard joint reversal at that
+pose. **`--max-joint-speed` was added** for this: it stretches any segment whose joint delta would
+exceed a counts/s cap, which tool-space easing cannot see.
+
+**`Acceleration` and `Goal_Velocity` retested, and still not the answer.** The 2026-09-17 null
+result was taken in the steady-state-dominated regime; turnaround-dominated is a different one,
+so 150 / 2000 was retried. It did not help, and the run ended in a false thermal trip (below).
+Both are back at their defaults, 30 and 800 — SRAM, so a power cycle clears them anyway.
+
+**Operating point reached: `--tool-speed 8 --corner-speed 4 --max-joint-speed 600`, clean, max
+lag 86 of 150**, 2 loops, peak 318 mA, 39 C, rail 10.5 V. 9 cm/s also runs clean at
+`--corner-speed 3 --max-joint-speed 500` but at lag 121 for a 1.6% gain in mean speed, so 8 is
+the sensible setting. 10 cm/s still trips, always at the same corner.
+
+| | nominal | real mean | max lag |
+|---|---|---|---|
+| Validated 2026-09-15 | 5 cm/s | **4.6 cm/s** (18.4 Hz, quantised) | 101 |
+| **Now** | 8 cm/s | **7.5 cm/s** | 86 |
+
+**A 63% gain in real tool speed**, from the P change, corner easing, the joint-speed cap and the
+honest time-parameterisation of 2026-09-17 together.
+
+**The bus corrupts 1.3-2.4% of telemetry reads, and always has.** A run tripped on
+**TEMPERATURE 63 C** while every servo sat at 37 C — the guard's two-sample debounce was defeated
+by two bad reads in a row. Counting across every `shapes.py` log ever taken:
+
+| Session | Supply | Steps | Bad reads | Rate |
+|---|---|---|---|---|
+| 2026-09-14 | Eventek bench 10 A | 5514 | 82 | 1.49% |
+| 2026-09-15 | Eventek bench 10 A | 2304 | 31 | 1.35% |
+| 2026-09-17 | 2 A brick | 2833 | 44 | 1.55% |
+| 2026-09-18 | Maplin 3 A | 5993 | 141 | 2.35% |
+
+The repo had recorded these as isolated incidents ("a corrupted `sync_read`, not the servo",
+2026-09-14) — they are a **persistent background rate on every supply**, and at that rate two in
+a row is near-certain over a 2000-step run, so **debouncing can never have protected a guard**.
+The 63 C sample also carried 78 in *both* the temperature and current columns, so frames are
+being mis-parsed rather than servos misreporting. **Fixed in `shapes.py` by a plausibility
+filter**: a servo cannot change temperature by more than a degree or two in one 50 ms step, so a
+sample that jumps more than 5 C is rejected and the last good one carried, with the count
+reported. It rejected **64 of 1070 samples (6.0%)** on the next run — the true rate is higher than
+the table's conservative estimate. Whether the corruption itself should be chased is
+[OQ-18](open-questions.md).
+
+**Changed as a result:** `shapes.py` gains `--jaw-cycle`, `--jaw-open-pct`, `--max-joint-speed`
+and the telemetry plausibility filter; `P_Coefficient` = 32 on the four arm joints
+([`servos.md`](servos.md)); OQ-17 partly answered; OQ-18 raised. **EEPROM persistence is not yet
+proven** — written with `Lock` = 0 as the procedure requires, and read back, but only a power
+cycle and re-read confirms it.
+
+
 ### 2026-09-17 · The assembled arm weighs 810 g — OQ-04 answered
 
 **Conditions:** fully assembled arm with the serial bus driver attached, **no external wiring
@@ -80,7 +174,7 @@ flags, and their irrelevance to the ceiling is recorded in the file's own docstr
 owner has not chosen. **No EEPROM was written at any point this session**; every servo write was
 SRAM (`Acceleration`, `Goal_Velocity`, `Torque_Limit`) and resets on power-down.
 
-### 2026-09-17 · Rail sag is the current path, not the supply — two supplies compared
+### 2026-09-17 · Rail sag is not the supply — two supplies compared (scope corrected 2026-09-18)
 
 **Why:** the owner moved the arm to a hobby 2 A supply on the barrel jack to see whether a small
 brick browns out the servos or the bus driver.
@@ -96,11 +190,18 @@ arrive on separate bus round-trips.
 | hobby 2 A, barrel jack (2026-09-17) | **10.8 V** | 12.2 V | 12.3 V |
 
 **Result: a 10 A bench supply sags as deep as a 2 A brick, or deeper.** The transient is
-therefore **not** the source's current capability — it is downstream, in the wiring, connectors
-or the servos' own sense during their own spikes. This is direct evidence for the suspicion
-[OQ-03](open-questions.md) already carried ("the 0.9 V sag seen at < 1 A on the 3S pack says the
-current path needs checking whatever the source"), and for the bulk capacitance
-[`common.md` → Power integrity](../../../docs/common.md#power-integrity) calls not optional.
+therefore **not** the source's current capability.
+
+**Corrected 2026-09-18 (owner's challenge), because this entry first claimed more than it shows.**
+It read as evidence that the sag is in the *current path*, and hence for the bulk capacitance
+[`common.md` → Power integrity](../../../docs/common.md#power-integrity) calls not optional. It is
+not. The rail is read by each **servo's own internal ADC, downstream of the connector**, so these
+numbers cannot separate a drop in the leads and connectors (which capacitance would fix) from a
+dip inside the servo during its own commutation or an ADC sampling artefact (which nothing
+external can fix). Three supplies look the same under either. It remains consistent with the
+suspicion [OQ-03](open-questions.md) already carried about the current path — but consistent is
+not confirmed. **A multimeter across the board's power input during a cube run separates them,
+and nothing should be fitted before that.** Upstream, for its part, asks for no capacitor at all.
 
 **No brownout was provoked** — no comms failure, no servo reset, no retry exhaustion, status 0
 on all six afterwards. But **the 2 A supply was never stressed**: sampled sum current peaked at

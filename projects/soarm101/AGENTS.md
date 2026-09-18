@@ -83,10 +83,13 @@ micro-ROS into ROS 2 (milestone 5; open parts in OQ-09); the endgame is two arms
 against each other's hit boxes (DEC-15). Details: [`docs/roadmap.md`](docs/roadmap.md),
 [`docs/test-log.md`](docs/test-log.md), [`docs/servos.md`](docs/servos.md).
 
-**2026-09-17 — weighed at 810 g (OQ-04 answered), and its speed ceiling found.** The cube runs
-clean at 6.67 cm/s and trips the tracking guard at 10; the limit is the servos' position loop
-(`P` 16, `I` 0, factory defaults), not torque, heat, slew or acceleration — each ruled out by
-experiment. Tuning it is an EEPROM write and an open decision, **OQ-17**. `shapes.py` was
-rewritten for it, and **every tool-speed figure logged before that date is ~8 % optimistic**.
-The arm is unplugged and in storage; no EEPROM has ever been written, so the hardware is as
-calibration left it.
+**2026-09-17/18 — weighed at 810 g (OQ-04 answered), and its speed ceiling found and moved.**
+The cube now runs clean at **8 cm/s commanded, 7.5 cm/s real, max lag 86 of 150** — up from a
+real 4.6 cm/s. Three things got it there: **`P_Coefficient` 16 → 32 on the four arm joints**
+(EEPROM, owner-approved, **OQ-17**; ~20 % less following error, no oscillation), corner easing,
+and a joint-space speed cap — because past ~8 cm/s the limit is a joint **reversal** at a path
+corner, not steady-state error. Torque, heat, slew and acceleration were each ruled out by
+experiment. Two cautions for anyone reading older numbers: **every tool-speed figure logged
+before 2026-09-17 is ~8 % optimistic**, and **the bus corrupts 1.3–2.4 % of telemetry reads on
+every supply** (**OQ-18**), so treat a lone extreme sample as a bad frame, not a fault.
+`P` persistence awaits a power cycle; nothing else in EEPROM has ever been written.

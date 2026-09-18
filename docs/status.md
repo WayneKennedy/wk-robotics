@@ -159,28 +159,32 @@ the reflex tier (milestone 5, Teensy 4.1).
 Resolves when one robot carries a working envelope on its reflex tier and the lesson is
 written back here.
 
-### SO-ARM101 speed work — paused 2026-09-17 on a supply and a decision
+### SO-ARM101 speed work — 4.6 to 7.5 cm/s, 2026-09-18
 
-**In flight and stopped cleanly.** Asked how fast the arm could trace its 12 cm cube, the answer
-is **6.67 cm/s clean, 10 cm/s trips the tracking guard**, and the ceiling is none of the obvious
-things: torque, heat, the servos' slew cap and their acceleration register were each ruled out by
-experiment. It is **proportional following error** — all six servos run Feetech defaults
-`P_Coefficient` 16, `I_Coefficient` 0, never written by any script here. Full evidence in the
-arm's [`test-log.md`](../projects/soarm101/docs/test-log.md); the decision is its **OQ-17**, open,
-with a led recommendation to raise P on the elbow alone first. **It is an EEPROM write, so it
-waits for the owner.**
+**Done and stopped cleanly.** The question "how fast can this arm work" is answered for the 12 cm
+cube: **8 cm/s commanded, 7.5 cm/s real, max tracking lag 86 of 150** — a **63% gain** on the
+4.6 cm/s the arm was really doing when validated (the logged 5 cm/s was 8% optimistic; see the
+arm's [`test-log.md`](../projects/soarm101/docs/test-log.md)).
 
-Blocked behind two things, in order: a **proper 12 V supply** — the arm was last run from a
-hobby 2 A brick on a barrel jack, which is at or below a single joint's measured peak (the arm's
-OQ-03, which also gained real evidence that the rail sag is the *current path*, not the source) —
-and then the OQ-17 call. **`shapes.py` was rewritten** in the process: time-parameterised speed
-profile, corner easing, deadline-held rate, a `sum_mA` column and a `--min-v` undervoltage guard
-that did not previously exist. Two measurement faults it had are fixed, and **every tool-speed
-figure logged before 2026-09-17 is ~8 % optimistic** as a result.
+Three things got it there: **`P_Coefficient` 16 -> 32 on the four arm joints** (EEPROM, owner
+approved, the arm's OQ-17 — ~20% less following error and no oscillation); **corner easing** and a
+new **joint-space speed cap**, because above ~8 cm/s the limit is a joint *reversal* at a path
+corner, not steady-state error; and the honest time-parameterisation of 2026-09-17. Supply is a
+**Maplin desk PSU, 12 V 3 A**, which never exceeded 16% of its rating — ample, and OQ-03's
+recommendation is unchanged for lifting and stalling.
 
-**The arm is unplugged, weighed (810 g, its OQ-04 answered) and in storage**, clamped hanging.
-No EEPROM was written; the hardware is exactly as calibration left it. Resolves when a supply is
-chosen and OQ-17 is decided.
+**Two corrections came out of it, both worth carrying.** A first pass claimed the rail sag was the
+*current path*; it is not established — the servos' own ADC cannot separate wiring drop from a dip
+inside the servo, so the bulk-capacitance recommendation is weaker than written, and upstream asks
+for none (OQ-03, corrected after the owner challenged it). And **the bus corrupts 1.3-2.4% of
+telemetry reads and always has**, on every supply — recorded until now as isolated incidents. That
+has caused false guard trips, is mitigated by a plausibility filter in `shapes.py`, and is raised
+as **OQ-18**; it matters before the Teensy reads telemetry at reflex-tier rates (OQ-09).
+
+**The arm is parked, torque off, on the bench.** The one thing outstanding needs the owner:
+**power-cycle the arm and re-read `P_Coefficient`** to confirm the EEPROM writes persisted. They
+were made with `Lock` = 0 as the procedure requires and read back 32, but only a power cycle
+proves it.
 
 ### Untracked terrain files on the workstation
 

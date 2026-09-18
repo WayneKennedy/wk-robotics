@@ -42,24 +42,47 @@ and not yet accepted. Do not build against one without the owner deciding.
   **0.72 A peak on its panel through the extents cycle** (one joint moving at a time)
   ([`test-log.md`](test-log.md)) — a stiff bench source, not a decision on the arm's supply.
 
-  **2026-09-17 — the sag is the current path, and this is now measured, not suspected.** The
+  **2026-09-17 — the sag is not the supply. Where it *is* remains open.** The
   owner ran the arm from a hobby **2 A** brick on the barrel jack to test for brownouts. Across
   the same cube at 5 cm/s, the rail minima were **10.9 V and 10.4 V on the 10 A bench supply**
   against **10.8 V on the 2 A brick** — a bench supply with five times the headroom sags as deep
-  or deeper, so the transient is downstream of the source, in wiring, connectors or the servos'
-  own sense. That is the "current path needs checking" line above, confirmed. It strengthens the
-  standing recommendation's **few thousand µF across the servo rail**, which is now the part of
-  it doing the real work. *Caveat on the instrument:* rail is read from `Present_Voltage` at
-  20 Hz, on a separate round-trip from current — undersampled for a millisecond transient.
-  **Earlier entries understated this**: the "11.8–12.0 V" figures were a mislabelled closing
-  sample, corrected in [`test-log.md`](test-log.md).
+  or deeper, so the transient is **not the source's current capability**. That much is settled.
+
+  **What is not settled is where the sag happens, and a first pass here overstated it** (corrected
+  2026-09-18, owner's challenge). The rail is read by each **servo's own internal ADC, downstream
+  of the connector**, so the measurement cannot separate (a) drop in the leads and connectors,
+  which bulk capacitance at the bus head would fix, from (b) a dip inside the servo during its own
+  commutation, or an artefact of when its ADC samples — which **no external capacitor can touch**.
+  Three supplies look identical under either explanation. Sampling at 20 Hz, on a separate
+  round-trip from current, cannot tell them apart either.
+
+  **The test that settles it costs nothing: a multimeter across the board's power input during a
+  cube run.** Steady 12 V there while the servos report 10.5 V means (b), and the question closes
+  with nothing bought. Until that is done, **do not fit capacitance on the strength of this
+  evidence** — see the standing recommendation's caveat below. **Earlier entries understated the
+  sag itself**: the "11.8–12.0 V" figures were a mislabelled closing sample, corrected in
+  [`test-log.md`](test-log.md).
 
   **The 2 A brick is not cleared.** It provoked no brownout, but sampled sum current peaked at
   **377 mA** — 19 % of its rating — because the cube is a low-load path. Against the 2 A peak
   measured on `shoulder_lift` *lifting the arm*, a 2 A supply is at or below a single joint's
   demand, and it feeds through a barrel jack whose rating on the Waveshare board is unverified.
-  **Do not run fast or loaded moves from it.** The recommendation above is unchanged: 12.0 V
-  regulated, 10 A, into the screw terminals, with bulk capacitance.
+  **Do not run fast or loaded moves from it.** The recommendation above is unchanged on the
+  supply: 12.0 V regulated, 10 A, into the screw terminals.
+
+  **On the bulk capacitance, the recommendation is weaker than it was written (2026-09-18).**
+  **Upstream asks for none.** `SO-ARM100`'s README specifies only "a 12V 5A+ power supply" for
+  this exact variant — a barrel-jack brick — and the repo mentions no capacitor, fuse or brownout
+  anywhere. The family rule comes from
+  [`common.md` → Power integrity](../../../docs/common.md#power-integrity), which states its own
+  provenance: *"banked from an earlier InMoov build"* — dozens of **PWM hobby servos** on a shared
+  rail. That page already records that **one InMoov failure mode does not transfer** to
+  closed-loop STS bus servos; this may be a second. Against it: this arm peaks at 377 mA summed,
+  and across three supplies and a dozen runs has never dropped a packet, reset a servo or
+  reported anything but status 0. **Settle the multimeter test first.** If capacitance is ever
+  wanted, it does **not** mean breaking into the servo loom — the board is a pass-through, so V+
+  at its power input is the same node as the servo sockets, and a capacitor goes into the same
+  screw terminals as the supply leads (owner raised the loom concern, 2026-09-18).
 
 - **OQ-17 — Whether to tune the servos' position loop, and how far.** **Raised 2026-09-17.**
   The arm's speed is capped by proportional following error, not by torque, heat, slew or
@@ -82,9 +105,42 @@ and not yet accepted. Do not build against one without the owner deciding.
   (OQ-03). The alternative — raising `--track` and accepting the lag — trades away the accuracy
   milestone 4 just bought: 152 counts is 13.4° of elbow, several cm at the tool.
 
-  Open beyond the elbow: whether the other five follow; whether a small non-zero `I` is worth
-  the wind-up risk; whether any of this survives the move to the Teensy (OQ-09), which will run
-  its own loop above the servos' and may prefer them soft.
+  **Partly answered 2026-09-18 (owner approved; done).** `P_Coefficient` 16 -> **32 on all four
+  arm joints**, `wrist_roll` and `gripper` left at 16 ([`servos.md`](servos.md),
+  [`test-log.md`](test-log.md)). **No oscillation, buzz or hunting appeared at 32**, which was the
+  feared failure mode. It bought **~20% less following error, not the 50%** a proportional model
+  predicts — the coefficient does not map linearly onto loop gain. Combined with corner easing and
+  a new joint-speed cap, the cube went from **4.6 to 7.5 cm/s real, a 63% gain**, at
+  `--tool-speed 8 --corner-speed 4 --max-joint-speed 600` with max lag 86 of 150.
+
+  **What the tuning revealed, and what is still open.** Above ~8 cm/s the limit is no longer
+  steady-state following error but a **joint reversal at a path corner**: the servo's turnaround
+  time lets error integrate while the command advances, and tool-space easing cannot see it
+  because the Jacobian makes the joint reversal sharp where the tool corner is gentle. Still open:
+  whether P above 32 helps or starts to ring; whether `wrist_roll` and `gripper` should follow
+  (the gripper reached lag 116 of 150 under `--jaw-cycle`, the closest any joint has come);
+  whether a small non-zero `I` is worth the wind-up risk; whether a joint-space *acceleration*
+  limit beats the velocity cap for reversals; and whether any of it survives the move to the
+  Teensy (OQ-09), which will run its own loop above the servos' and may prefer them soft.
+
+- **OQ-18 — Why 1.3-2.4% of telemetry reads come back corrupted, and whether to chase it.**
+  **Raised 2026-09-18.** Counted across every `shapes.py` log since 2026-09-14: **1.35-1.55% on
+  the bench PSU and the 2 A brick, 2.35% on the Maplin** — a persistent background on every
+  supply, not the occasional freak the earlier entries describe. A plausibility filter measuring
+  it directly puts the true rate nearer **6%**. It has caused at least two false guard trips
+  (130 C in 2026-09-14, **63 C on 2026-09-18 with every servo at 37 C**), and at that rate two bad
+  samples in a row is near-certain over a long run, so **the two-sample debounce never protected
+  anything**. A corrupted sample carried the same value, 78, in both the temperature and current
+  columns, so **frames are being mis-parsed, not servos misreporting**.
+
+  **Mitigated, not fixed:** `shapes.py` now rejects physically impossible temperature jumps
+  (> 5 C in one 50 ms step) and reports the count. Candidate causes, none tested: electrical noise
+  from the servo rail onto the bus under load (the mechanism
+  [`common.md` → Power integrity](../../../docs/common.md#power-integrity) describes, and a far
+  more credible symptom than the voltage sag chased under OQ-03); `Return_Delay_Time`; the
+  half-duplex turnaround on the Waveshare adapter; `num_retry` masking hard failures as soft ones.
+  Worth doing before the Teensy takes the bus (OQ-09), since a reflex tier reading corrupt
+  telemetry at 200-1000 Hz is a different proposition from a 20 Hz host loop that can shrug.
 
 ## Parts
 

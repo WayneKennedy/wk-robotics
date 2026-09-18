@@ -79,6 +79,9 @@ def main():
     ap.add_argument("--tool-accel", type=float, default=50.0, help="cm/s^2 on the ramps into and out of a corner")
     ap.add_argument("--goal-velocity", type=int, default=800, help="servo slew cap, counts/s (reg 46); ~3000 is the STS3215's free run at 12 V")
     ap.add_argument("--acceleration", type=int, default=30, help="servo acceleration register (reg 41), 0..254")
+    ap.add_argument("--max-joint-speed", type=float, default=0.0, help="cap every joint at this many counts/s by stretching the profile in time; 0 = off. Tool-space easing cannot see a joint reversal that the Jacobian makes sharp")
+    ap.add_argument("--jaw-cycle", action="store_true", help="drive the gripper closed -> open -> closed across every edge of the path")
+    ap.add_argument("--jaw-open-pct", type=float, default=50.0, help="with --jaw-cycle: opening at the middle of an edge, %% of commandable jaw TRAVEL (not gap)")
     ap.add_argument("--track", type=int, default=150); ap.add_argument("--max-ma", type=float, default=900); ap.add_argument("--max-temp", type=int, default=60)
     ap.add_argument("--min-v", type=float, default=10.0, help="trip if the rail sags below this (V); the servos' own fault level is 4.0 V, far too low to protect a run")
     ap.add_argument("--port", default="/dev/ttyACM0"); ap.add_argument("--id", default="wk_soarm101")
@@ -91,12 +94,38 @@ def main():
     stop_file = Path(a.stop_file); stop_file.unlink(missing_ok=True)
 
     # --- solve the shape
-    segs = shape_segments(a.shape, centre, a.size); pts = []
-    for p0, p1 in segs:
+    segs = shape_segments(a.shape, centre, a.size); pts = []; along = []
+    for si, (p0, p1) in enumerate(segs):
         n = max(1, int(np.ceil(np.linalg.norm(p1 - p0) / 0.01)))
-        pts += [p0 + (p1 - p0) * t for t in np.linspace(0, 1, n + 1)[:-1]]
-    pts.append(segs[-1][1])
-    q0 = None; sols = []; worst = 0.0; rear = 9
+        ts = np.linspace(0, 1, n + 1)[:-1]
+        for k, t in enumerate(ts):
+            # the fraction runs 0..1 across the samples this edge OWNS (its last sample, not the
+            # shared corner, which belongs to the next edge) so the jaw shuts exactly on it
+            pts.append(p0 + (p1 - p0) * t)
+            along.append((si, (k / (len(ts) - 1)) if len(ts) > 1 else 0.0))
+    pts.append(segs[-1][1]); along.append((len(segs) - 1, 1.0))
+
+    # --- the jaw cycle: closed -> --jaw-open-pct -> closed on every edge, as a triangle in edge fraction.
+    # Closed is the lowest commandable opening (servo limit + the 3° planning margin), which
+    # calibration/gripper_gap.json records as raw 1357; open is the same margin at the top.
+    mrg = round(3 / 360 * 4095)
+    jaw_lo = cal["gripper"]["range_min"] + mrg
+    jaw_hi = cal["gripper"]["range_max"] - mrg
+    jaw_mid = jaw_lo + (jaw_hi - jaw_lo) * max(0.0, min(1.0, a.jaw_open_pct / 100.0))
+    # an edge's 1 cm samples straddle its midpoint rather than landing on it, so the raw triangle
+    # peaks below the asked-for opening (45.5% instead of 50% on a 12-sample edge). Normalise per
+    # edge by the peak its own samples can reach, so --jaw-open-pct is what actually gets commanded.
+    _tri = lambda f: 1.0 - abs(2.0 * f - 1.0)
+    _peak = {}
+    for si, f in along:
+        _peak[si] = max(_peak.get(si, 0.0), _tri(f))
+    def jaw_at(i):
+        if not a.jaw_cycle: return None
+        si, f = along[i]
+        scale = _tri(f) / _peak[si] if _peak[si] > 0 else 0.0
+        return int(round(jaw_lo + (jaw_mid - jaw_lo) * scale))
+
+    q0 = None; sols = []; worst = 0.0; rear = 9; jaw_rear = 9
     for i, p in enumerate(pts):
         r = K.solve(joints, p, pitch=np.radians(a.pitch), q0=q0)
         if r is None or r["err"] > 0.003 or not r["ok"]:
@@ -106,8 +135,25 @@ def main():
             print(f"point {i}: outside the servos' saved limits {r['raw']} — refused"); return 1
         if q0 and max(abs(r["q"][j] - q0[j]) for j in MOVING) > np.radians(10):
             print(f"point {i}: joint jump > 10° from the previous point — refused"); return 1
+        # K.solve holds the gripper at URDF 0 — its closed stop — so a cycling jaw is a link the
+        # path check has never seen. Re-run the capsule and keep-out checks at the jaw angle this
+        # point will actually be commanded to, changing nothing else about the accepted solution.
+        if a.jaw_cycle:
+            jr = jaw_at(i)
+            if not (cal["gripper"]["range_min"] + mrg <= jr <= cal["gripper"]["range_max"] - mrg):
+                print(f"point {i}: jaw {jr} outside the gripper's saved limits — refused"); return 1
+            qj = dict(r["q"]); qj["gripper"] = K.raw_to_rad({"gripper": jr})["gripper"]
+            fj = K.fk(joints, qj); hits = K.self_collisions(fj); clr, rj, _ = K.keepout_clear(fj)
+            if hits or not clr:
+                print(f"point {i} (edge {along[i][0]}, jaw {jr}): " + ("keep-out breached" if not clr else "")
+                      + "; ".join(f"{x}–{y} {z*1000:+.0f} mm" for x, y, z in hits) + " — refused"); return 1
+            r["jaw"] = jr; jaw_rear = min(jaw_rear, rj)
         q0 = dict(r["q"]); sols.append(r); worst = max(worst, r["err"]); rear = min(rear, r["rear_x"])
     print(f"{a.shape} {a.size*100:.0f} cm, centre {np.round(centre,3)}, pitch {a.pitch}°: {len(pts)} points solved, worst {worst*1000:.1f} mm, rearmost point outside the cylinder x {rear:+.3f} m")
+    if a.jaw_cycle:
+        print(f"jaw cycle: closed {jaw_lo} -> {int(round(jaw_mid))} ({a.jaw_open_pct:.0f}% of travel) -> closed on each of {len(segs)} edges; "
+              f"capsules and keep-out re-checked at every point's own jaw angle, rearmost x {jaw_rear:+.3f} m. "
+              f"NOTE gap in mm is calibrated only to raw 1591 = 37 mm, so the opening here is unmeasured")
     first = sols[0]["raw"]
 
     # --- speed profile over the waypoints, integrated to a time for each (see the docstring)
@@ -128,6 +174,22 @@ def main():
     tw = [0.0]
     for i in range(n - 1):
         tw.append(tw[-1] + 2 * seg[i] / (vlim[i] + vlim[i + 1]))
+    # A tool-space profile says nothing about joint speed: near some poses the Jacobian turns a
+    # gentle tool corner into a hard joint reversal, which is what actually trips the tracking
+    # guard (2026-09-18, shoulder_lift reversing at a cube corner). Stretch any segment whose
+    # joint delta would exceed the cap.
+    slowed = 0
+    if a.max_joint_speed > 0:
+        jd = [max(abs(sols[i + 1]["raw"][m] - sols[i]["raw"][m]) for m in MOVING) for i in range(n - 1)]
+        tw2 = [0.0]
+        for i in range(n - 1):
+            want = jd[i] / a.max_joint_speed
+            have = tw[i + 1] - tw[i]
+            if want > have: slowed += 1
+            tw2.append(tw2[-1] + max(have, want))
+        print(f"joint-speed cap {a.max_joint_speed:.0f} counts/s: {slowed} of {n-1} segments stretched, "
+              f"loop {tw[-1]:.1f} s -> {tw2[-1]:.1f} s (mean tool speed {sum(seg)*100/tw2[-1]:.1f} cm/s)")
+        tw = tw2
     corners = sum(1 for i in range(1, n - 1) if turn[i] > a.corner_deg)
     print(f"profile: {corners} corners over {a.corner_deg:.0f}°, {min(vlim)*100:.1f}–{max(vlim)*100:.1f} cm/s, "
           f"{a.tool_accel:.0f} cm/s² ramps, Goal_Velocity {a.goal_velocity}; one loop {tw[-1]:.1f} s "
@@ -162,15 +224,29 @@ def main():
     # --- execute
     for m in NAMES:
         b.write("Acceleration", m, a.acceleration, num_retry=5); b.write("Goal_Velocity", m, a.goal_velocity, normalize=False, num_retry=5)
+    DRIVE = MOVING + ["gripper"] if a.jaw_cycle else MOVING          # the approach keeps MOVING: the jaw stays put on the way in
     log = open(HERE / "logs" / f"shapes_{time.strftime('%Y%m%d_%H%M%S')}.csv", "w", newline=""); w = csv.writer(log)
-    w.writerow(["t", "loop", "point", *MOVING, *[m + "_p" for m in MOVING], "max_mA", "sum_mA", "max_T", "min_V"])
+    w.writerow(["t", "loop", "point", *DRIVE, *[m + "_p" for m in DRIVE], "max_mA", "sum_mA", "max_T", "min_V"])
     dt = 1 / a.rate; t0 = time.time(); peak = 0.0
+
+    # ~1.5-2.4% of telemetry reads come back corrupted on this bus — measured across every run
+    # since 2026-09-14, not an occasional freak (test-log 2026-09-18). Two bad ones in a row is
+    # therefore common, so debouncing alone cannot protect a guard. A servo cannot change
+    # temperature by more than a degree or two in one 50 ms step, so reject any sample that does
+    # and carry the last good one; a real rise still trips, it just has to be physical.
+    warm = {}
+    bad_reads = {"n": 0}
 
     def tele():
         p = b.sync_read("Present_Position", normalize=False, num_retry=5)
         c = b.sync_read("Present_Current", normalize=False, num_retry=5)
         t = b.sync_read("Present_Temperature", normalize=False, num_retry=5)
         v = b.sync_read("Present_Voltage", normalize=False, num_retry=5)
+        for m, x in t.items():
+            if m in warm and abs(x - warm[m]) > 5:
+                bad_reads["n"] += 1; t[m] = warm[m]         # implausible jump: keep the last good
+            else:
+                warm[m] = x
         # max_mA is the worst single servo — the per-servo guard. sum_mA is what the SUPPLY sees,
         # and is the number that matters for sizing a brick or hunting a brownout (2026-09-17).
         return p, max(c.values()) * 6.5, max(t.values()), min(v.values()) / 10, sum(c.values()) * 6.5
@@ -185,9 +261,10 @@ def main():
     # the period is held to a deadline, so the rate asked for is the rate flown; tele() runs inside it
     clock = {"next": None, "late": 0, "lag": 0, "sum": 0.0, "v": 99.0}
 
-    def step(raw, loop, i, dt_):
+    def step(raw, loop, i, dt_, keys=None):
         nonlocal peak
-        b.sync_write("Goal_Position", {m: raw[m] for m in MOVING}, normalize=False)
+        keys = keys or MOVING
+        b.sync_write("Goal_Position", {m: raw[m] for m in keys}, normalize=False)
         now = time.time()
         clock["next"] = (now + dt_) if clock["next"] is None else (clock["next"] + dt_)
         if clock["next"] > now:
@@ -195,8 +272,8 @@ def main():
         else:
             clock["late"] += 1; clock["next"] = now
         p, ma, T, V, sm = tele()
-        w.writerow([f"{time.time()-t0:.3f}", loop, i, *[raw[m] for m in MOVING], *[p[m] for m in MOVING], f"{ma:.0f}", f"{sm:.0f}", T, f"{V:.1f}"])
-        lag = max(abs(p[m] - raw[m]) for m in MOVING)
+        w.writerow([f"{time.time()-t0:.3f}", loop, i, *[raw.get(m, p[m]) for m in DRIVE], *[p[m] for m in DRIVE], f"{ma:.0f}", f"{sm:.0f}", T, f"{V:.1f}"])
+        lag = max(abs(p[m] - raw[m]) for m in keys)
         clock["lag"] = max(clock["lag"], lag); clock["sum"] = max(clock["sum"], sm); clock["v"] = min(clock["v"], V)
         if lag > a.track: hold_here(f"TRACKING lag {lag} at loop {loop} point {i}"); return False
         over["ma"] = over["ma"] + 1 if ma > a.max_ma else 0
@@ -212,6 +289,16 @@ def main():
     try:
         for i, raw in enumerate(approach):             # the approach keeps its own safe rate whatever --rate is
             if not step({**present, **raw}, 0, i, 1 / 20): return 1
+        if a.jaw_cycle:
+            # the jaw may be anywhere (it is not in the approach plan); walk it to the cycle's
+            # start at <= 1.5 deg a step rather than jumping, which would trip the tracking guard
+            g0, g1 = present["gripper"], sols[0]["jaw"]
+            nsg = max(1, int(np.ceil(abs(g1 - g0) / 17)))
+            base = {**present, **approach[-1]}
+            print(f"jaw to the cycle start: {g0} -> {g1} in {nsg} steps")
+            for k in range(1, nsg + 1):
+                cmd = dict(base); cmd["gripper"] = int(round(g0 + (g1 - g0) * k / nsg))
+                if not step(cmd, 0, i + k, 1 / 20, DRIVE): return 1
         time.sleep(0.5); clock["next"] = None
         T_loop = tw[-1]; nst = max(1, int(np.ceil(T_loop / dt)))
         loop = 0
@@ -223,7 +310,13 @@ def main():
                 span = tw[j + 1] - tw[j]
                 u = 0.0 if span <= 0 else (tk - tw[j]) / span
                 r0, r1 = sols[j]["raw"], sols[j + 1]["raw"]
-                if not step({m: int(round(r0[m] + (r1[m] - r0[m]) * u)) for m in MOVING}, loop, j, dt): return 1
+                cmd = {m: int(round(r0[m] + (r1[m] - r0[m]) * u)) for m in MOVING}
+                if a.jaw_cycle:
+                    j0, j1 = sols[j]["jaw"], sols[j + 1]["jaw"]
+                    # at an edge join the triangle resets 1 -> 0; interpolating across it would
+                    # command a half-open jaw that belongs to neither edge, so take the new edge's value
+                    cmd["gripper"] = int(round(j0 + (j1 - j0) * u)) if along[j][0] == along[j + 1][0] else j1
+                if not step(cmd, loop, j, dt, DRIVE): return 1
             p, ma, T, V, sm = tele()
             print(f"loop {loop} done  {time.time()-t0:.1f} s  peak {peak:.0f} mA  max lag {clock['lag']} of {a.track}  {T} °C  rail min {clock['v']:.1f} V  sum peak {clock['sum']:.0f} mA"
                   + (f"  LATE {clock['late']}" if clock["late"] else ""))
@@ -233,6 +326,7 @@ def main():
         # sag by over a volt in every run logged before 2026-09-17. The true minimum is clock["v"].
         print(f"\ndone: {loop} loops, peak {peak:.0f} mA, {T} °C; rail {clock['v']:.1f} V min, {V:.1f} V at rest, "
               f"sum peak {clock['sum']:.0f} mA; tool at {np.round(tcp,3)}; holding at the shape start, torque ON")
+        print(f"telemetry: {bad_reads['n']} implausible temperature samples rejected of {loop*nst+len(approach)}")
         print(f"rate: asked {a.rate:.0f} Hz, flew {(loop*nst+len(approach))/el:.1f} Hz over {el:.1f} s, {clock['late']} deadlines missed")
         return 0
     except KeyboardInterrupt:

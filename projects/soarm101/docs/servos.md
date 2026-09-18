@@ -162,7 +162,7 @@ arm's speed ceiling.
 
 | Register | Addr | Area | All six | Note |
 |---|---|---|---|---|
-| `P_Coefficient` | 21 | EEPROM | **16** | Feetech default. The arm's speed ceiling — [OQ-17](open-questions.md) |
+| `P_Coefficient` | 21 | EEPROM | **32** on `shoulder_pan`, `shoulder_lift`, `elbow_flex`, `wrist_flex`; **16** on `wrist_roll`, `gripper` | **Changed from the factory 16 on 2026-09-18** (owner approved, [OQ-17](open-questions.md)). Cut following error ~20% and lifted the cube from 4.6 to 7.5 cm/s real. `Lock` 0 -> write -> read back -> `Lock` 1; nothing moved, no buzz at 32. **Persistence not yet confirmed by a power cycle.** Revert by writing 16 the same way |
 | `I_Coefficient` | 22 | EEPROM | **0** | No integral term, so following error cannot be driven out |
 | `D_Coefficient` | 23 | EEPROM | **32** | Feetech default |
 | `Min_Voltage_Limit` | 15 | EEPROM | 40 → **4.0 V** | Far below a usable rail; will not protect a run ([OQ-03](open-questions.md)) |
