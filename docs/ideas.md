@@ -458,6 +458,38 @@ which would give it a job.
   absolute limit and no protection upstream, that is the wrong unknown to accept. Good bench
   instrument; not the fix for the arm.
 
+### A correlated bench logger
+
+A Teensy sampling a rail through a divider at tens of kSPS, streaming to the host that is
+driving the robot, so a voltage trace and the robot's own telemetry share one time base.
+Prompted by [SO-ARM101 OQ-03](../projects/soarm101/docs/open-questions.md): its rail dips to
+~10.5 V, and the servos' own ADCs — which sit downstream of the connector and sample at 20 Hz —
+**cannot tell a real drop from an artefact of the servo measuring itself**. A basic multimeter
+cannot either; the event is milliseconds long and a cheap meter integrates over ~100 ms.
+
+- **Board: the Teensy 4.0** ([wk-inventory `stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md)),
+  freed from koala-bot 2026-09-18. Its one limitation — micro-ROS lists it "Not tested" — **does
+  not apply here**, because a logger is bare Teensyduino: ADC, DMA, a serial stream. Its header
+  kit was bought with it, so it breadboards without soldering. Same i.MX RT1062 as the 4.1, so
+  the ADC is the same silicon.
+- **Reuses:** the printer for a case; the family's Teensy toolchain, so this doubles as
+  low-stakes practice for the reflex-tier work in SO-ARM101 OQ-09.
+- **Unresolved:**
+  - **Sampling rate.** A millisecond dip needs ≥10 kSPS, ideally 100 k — DMA-driven, not an
+    `analogRead()` loop.
+  - **The shared clock, which is the real design problem.** Do not sync two free-running clocks.
+    Either have the host send one marker byte at a known `time.time()` and the logger stamp its
+    arrival (±50 ppm drift is ±3 ms over a minute), or have `shapes.py` hold the arm still for a
+    second mid-run and align the trace on the flat spot.
+  - **It answers OQ-03, not [OQ-18](../projects/soarm101/docs/open-questions.md).** The 1.3–2.4%
+    corrupted servo frames are a *serial* fault; chasing those wants a **logic analyser** on the
+    half-duplex bus, which is a different instrument. Decide which question is being bought.
+  - Whether a ~£30–80 USB scope would simply be better. Against it: a scope captures a window,
+    where what OQ-03 needs is a whole run correlated against the robot's own telemetry.
+- **Cheaper first:** log **per-servo** voltage instead of `min()` during a cube. The two idle
+  joints share the rail with the four moving ones, so if only the movers dip, the sag is internal
+  and no instrument is needed. Free, and it may close OQ-03 outright.
+
 ---
 
 ## Adding an idea

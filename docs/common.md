@@ -141,7 +141,8 @@ one moves it into its own BOM and this table.
 | 37D 12 V 122 rpm 38 kg·cm geared motor + encoder (Pi Hut; koala-bot's CAD models it as DFRobot FIT0403) | 2 | koala-bot, rear ankle drives (DEC-43) |
 | Pololu Dual TB9051FTG | 1 | koala-bot (DEC-16) |
 | same | 1 | wk-devastator — its own since 2026-09-11 (DEC-13, amended). It was koala-bot's board on loan from 2026-09-07; the loan is dissolved, not returned |
-| Teensy 4.0 | 1 | koala-bot (DEC-18) — upstream micro-ROS lists it "Not tested", koala-bot OQ-14 |
+| Teensy 4.0 | 1 | **Bench logger, from 2026-09-18** — left koala-bot when its DEC-18 was amended to a 4.1 NE. Upstream micro-ROS lists the 4.0 "Not tested", so it is off every load-bearing path; the logger uses bare Teensyduino and no micro-ROS, and the 4.0's header kit suits a breadboard instrument ([`ideas.md`](ideas.md#a-correlated-bench-logger)) |
+| Teensy 4.1 NE | 1 | **koala-bot (DEC-18 as amended, 2026-09-18) — to buy.** A third NE: one is in hand, one is on order for wk-devastator |
 | Teensy 4.1, no-Ethernet variant | 1 | wk-devastator (DEC-10) — **ordered, not shipped**: RobotShop holds it with the back-ordered motors ([devastator `sourcing.md`](../projects/devastator/docs/sourcing.md)) |
 
 wk-devastator's driver came on the same Pi Hut order (#1619429, 2026-09-10) as the
@@ -389,8 +390,14 @@ community-contributed entry. This matters because **koala-bot has already bought
 support, so it is *expected* to work — but that expectation is **unverified**, and proving
 it on the bench is worth doing before the firmware is written rather than after.
 
-**Teensy 4.1 "NE" (no Ethernet) is the right variant for this family, and both units bought
-are NE** (2026-09-17). The standard 4.1 carries a DP83825 PHY on the board, but the RJ45
+**The family standardises on the Teensy 4.1 NE for every reflex tier** (owner, 2026-09-18).
+The **4.0 is not used on a load-bearing path** — it is "Not tested" upstream, therefore in no
+one's CI, so a release can break it silently; that is a standing risk rather than something a
+bench test retires, and the two-tier rule needs the reflex tier boring and reliable. One board
+across koala-bot, wk-devastator and SO-ARM101 also buys one toolchain and one set of quirks.
+
+**Teensy 4.1 "NE" (no Ethernet) is the right variant for this family, and every unit bought
+is NE** (2026-09-17). The standard 4.1 carries a DP83825 PHY on the board, but the RJ45
 magjack is a separate purchase, so "with Ethernet" means board *plus* magjack *plus* cable;
 the NE omits the PHY, which is soldered and not a retrofit
 ([PJRC](https://www.pjrc.com/store/teensy41.html)). The reason to skip it is architectural,

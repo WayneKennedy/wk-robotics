@@ -221,7 +221,11 @@ and not yet accepted. Do not build against one without the owner deciding.
   done from a PC over USB and need nothing else (DEC-04). **Narrowed by DEC-12
   (2026-09-12) and DEC-14 (2026-09-14): the *own reflex MCU* row, a Teensy 4.1 running
   micro-ROS into ROS 2; the PC path stays only for the bench tools until then.** Still
-  open: which board (the family's unallocated Teensy 4.1 NE is the candidate —
+  open: which board (**the family's unallocated Teensy 4.1 NE, and since 2026-09-18 this project
+  is its sole claimant** — koala-bot's competing fallback claim went when its OQ-14 was closed by
+  buying a third NE rather than testing its Teensy 4.0, koala-bot DEC-18 as amended; **the family
+  now standardises on the 4.1 NE for every reflex tier**, and the 4.0 is off load-bearing paths
+  because upstream lists it "Not tested" —
   [wk-inventory `docs/stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md)), how it connects to the bus (the Waveshare
   board's channel-A UART header, or a separate adapter), which host runs the micro-ROS
   agent and ROS 2 (this workstation, or a Pi 5 from the fleet), which ROS 2 distribution,
