@@ -26,11 +26,14 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
   any robot is on a different network. The counter-argument is that a workaround is
   cheaper *today* and this robot may never leave the LAN.
 
-- **OQ-06 — Which Pi for the intent tier.** A **Pi 4** is already fitted from the first
-  build; the family standard is a **Pi 5**
-  ([common.md](../../../docs/common.md#compute-the-two-tier-split)).
-  Milestone 1 needs no Pi at all, so this genuinely does not need deciding yet — which is
-  the argument for not deciding it. The AI HAT+ 2 now allocated here (OQ-13) needs a Pi 5.
+- **OQ-06 — Which intent computer.** The first build's Pi 4 is retired (DEC-14). The
+  family standard is a **Pi 5**
+  ([common.md](../../../docs/common.md#compute-the-two-tier-split)), and the AI HAT+ 2
+  allocated here (OQ-13) needs one; two of the family's Pi 5s have no on-robot role
+  ([common.md](../../../docs/common.md#companion-computers-in-hand--the-raspberry-pi-5-fleet)).
+  Whether the Orin comes here instead is part of the family allocation thread in
+  [wk-robotics `status.md`](../../../docs/status.md). Milestone 1 needs no Pi at all, so
+  this does not need deciding yet.
 
 ## Perception
 

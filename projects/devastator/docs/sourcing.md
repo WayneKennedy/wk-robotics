@@ -14,7 +14,7 @@ collects VAT plus a ~£8–12 handling fee.
 | Part | Note |
 |---|---|
 | DFRobot Devastator chassis (ROB0128) | With original 6 V motors — see [`hardware.md`](hardware.md). The Pi Hut #589121, 2020-12-13, £90.00, with the L298N (£3.50) |
-| Raspberry Pi 4 | Fitted to the first build (OQ-06) |
+| Raspberry Pi 4 | Fitted to the first build; located 2026-09-18 and **retired** (DEC-14) |
 | 2 × Intel RealSense cameras — neither is on the tank now | **One D435i and one T265** (owner, 2026-09-17: there is only one D435i, since moved to [wk-hexapod](https://github.com/WayneKennedy/wk-hexapod)). Part 82637BRPLHV is an Intel RealSense T265 tracking camera by retailer listings, not by the hardware; recorded in [wk-drones Holybro 10" OQ-09](https://github.com/WayneKennedy/wk-drones/blob/main/aircraft/holybro-10/docs/open-questions.md). Invoices (read 2026-09-17): two Mouser orders, both £167.47 ex VAT: #20270245 (2020-11-06), part 82635D435IDK5P (D435i) and #20410768 (2020-11-24), part 82637BRPLHV (T265). The T265 is end-of-life and librealsense dropped it at v2.54.1 ([wk-robotics `common.md`](../../../docs/common.md#perception-placement)). Full lines in the private [wk-inventory `docs/purchases/electronics.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/purchases/electronics.md) |
 | Arduino Nano, L298N, DC-DC module | Retired by DEC-03; not part of the new build |
 

@@ -95,7 +95,7 @@ D435i**, and wants each where it gives most value. **Nothing below is decided.**
   the RealSense mount is owned, ArduPilot's avoidance path names the D435i, and the Orin
   is the leaning companion ([wk-drones Holybro OQ-09](https://github.com/WayneKennedy/wk-drones/blob/main/aircraft/holybro-10/docs/open-questions.md));
   unbuilt, never flown. Devastator — its roadmap plans one depth camera (its OQ-09) and the
-  AI HAT+ 2 is allocated there (its OQ-13), which needs a Pi 5 in place of its Pi 4;
+  AI HAT+ 2 is allocated there (its OQ-13), which needs a Pi 5 (its Pi 4 is retired, its DEC-14);
   blocked on motors. koala-bot — Pi 5 intent tier with an LLM "personality" (its DEC-03);
   design phase.
 - **Not a candidate:** the T265 (the other RealSense owned) — end-of-life and unsupported

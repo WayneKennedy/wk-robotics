@@ -122,3 +122,8 @@ not accepted are open questions, not decisions**, and are marked as such there.
   loan is dissolved, nothing goes back, and the one-board-two-robots constraint above no
   longer exists. koala-bot closed its "buy a second?" question (OQ-15) the same day.
   Family holdings are tabulated in [wk-robotics `common.md`](../../../docs/common.md#drive-motors-drivers-and-mcus-in-hand).
+
+- **DEC-14 — The first build's Raspberry Pi 4 is retired.** (Owner, 2026-09-18.) Located
+  the same day and declared obsolete for this robot; it returns to the owner's unallocated
+  stock (private `wk-inventory` `docs/stock.md`). The AI HAT+ 2 allocated here (OQ-13)
+  needs a Pi 5 regardless. Narrows OQ-06; which intent computer replaces it is still open.
