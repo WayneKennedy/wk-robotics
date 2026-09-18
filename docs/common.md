@@ -903,6 +903,29 @@ login users and SSH host-key fingerprints for every board — the data needed to
 unit without re-auditing it — live in the private `wk-inventory` repo, `docs/pi5-fleet.md`.
 This repository is public; see [What does not belong here](../AGENTS.md#what-does-not-belong-here).
 
+### Never boot a Pi with another Ubuntu Pi's system disk attached
+
+**Incident, 2026-09-18.** The general-purpose desktop Pi 5 was used as the bench for the
+hexapod's SSD (in a USB 3 enclosure) to edit its `config.txt`, then rebooted with the
+enclosure still attached. It came up with the hexapod's hostname: cloud-init's
+`set_hostname` wrote it to `/etc/hostname`, and the Tailscale node renamed itself to
+`<hexapod>-1`, so the desktop Pi vanished from the tailnet under its own name. The board,
+disk and Tailscale node key were all the desktop Pi's — only the name had moved.
+
+**Mechanism.** Every Ubuntu Pi image carries the same filesystem labels, `writable` and
+`system-boot`; `/etc/fstab` mounts both by label, and cloud-init's NoCloud datasource
+(`/etc/cloud/cloud.cfg.d/99-fake-cloud.cfg`, `fs_label: system-boot`) finds its seed by
+that label. With a second Ubuntu Pi disk attached at boot there are two of each, and
+which is picked is not under your control. The same machine had computed the hexapod's
+hostname once before, on 2026-09-13, without writing it. The exact read path that yielded
+the name (the cached datasource logged the NVMe seed) is not fully established.
+
+**Rules.** Unplug another Pi's system disk before rebooting the host that edited it.
+Where a Pi must keep its name regardless, set `preserve_hostname: true` in a
+`/etc/cloud/cloud.cfg.d/` drop-in (done on the desktop Pi, 2026-09-18). Recovery is
+`hostnamectl set-hostname <name>`, fix `127.0.1.1` in `/etc/hosts`, and
+`tailscale set --hostname <name>` if the tailnet name does not follow within a minute.
+
 ### The GPU workstation
 
 **Established 2026-09-07.** A workstation with an **NVIDIA GeForce RTX 5070 Ti (16 GB,
