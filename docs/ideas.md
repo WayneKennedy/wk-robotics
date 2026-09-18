@@ -137,6 +137,12 @@ heavier, at the cost of holonomic motion, which LeKiwi has and a two-arm manipul
 finds convenient. Nothing measured; kiwi-drive performance on carpet pile and thresholds
 is a reasonable doubt, not a finding.
 
+**Tasks: not yet stated** — and the owner's own test for this idea (see
+[Adding an idea](#adding-an-idea)). What XLeRobot gets right is height: head and arms at
+worktop level, where two-arm manipulation tasks such as laundry folding happen. The
+printed torso must place the SO-101 workspace at that height; the shoulder height and the
+D435i's 0.28 m minimum depth range set the neck geometry. Name the tasks first.
+
 **What it reuses:** the finished SO-ARM101 (a second arm is still to build, SO-ARM101
 DEC-15); the 12 V STS3215 pool (count against koala-bot's twelve before assuming any are
 free); a spare Pi 5 or the Orin; the D435i; LeKiwi/XLeRobot's LeRobot software.
@@ -543,3 +549,13 @@ question that has since closed.
 Append a section under the right heading. If the idea is a deferred feature of an existing
 robot, it belongs in that repo's `backlog.md` instead — only put it here if it is a
 plausible project in its own right.
+
+**State the tasks before the form** (owner, 2026-09-18). The owner's motivation is to build
+something aesthetically pleasing, which is its own reward — but designing for looks alone
+leaves the robot with nothing to *do*, and that is the failure mode for the
+[physical-AI direction](#physical-ai-and-the-hive-mind): learned behaviour is defined per
+task, so a robot without tasks has nothing to learn. The insight came from XLeRobot: its
+cart is ugly to the owner, but it puts the head and arms at worktop height, where
+household tasks (laundry folding, for one) actually are. Every new idea here names the
+practical tasks it would carry out, and the form follows from where those tasks happen.
+Entries above written before this rule gain a task statement when next touched.
