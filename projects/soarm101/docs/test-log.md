@@ -99,9 +99,14 @@ the table's conservative estimate. Whether the corruption itself should be chase
 
 **Changed as a result:** `shapes.py` gains `--jaw-cycle`, `--jaw-open-pct`, `--max-joint-speed`
 and the telemetry plausibility filter; `P_Coefficient` = 32 on the four arm joints
-([`servos.md`](servos.md)); OQ-17 partly answered; OQ-18 raised. **EEPROM persistence is not yet
-proven** — written with `Lock` = 0 as the procedure requires, and read back, but only a power
-cycle and re-read confirms it.
+([`servos.md`](servos.md)); OQ-17 partly answered; OQ-18 raised.
+
+**EEPROM persistence confirmed the same day.** The owner power-cycled the arm and all four joints
+still read `P_Coefficient` 32, with `wrist_roll` and `gripper` still 16 and `I`/`D` untouched.
+Every position limit and homing offset re-read **equal to the calibration JSON**, so writing to
+EEPROM cost nothing else, and SRAM (`Acceleration`, `Goal_Velocity`, `Torque_Enable`) had reset to
+0 with `Lock` back at 1 — confirming the experimental acceleration and slew settings are genuinely
+gone. **The `Lock` = 0 procedure works and the 2026-09-14 canary failure did not recur.**
 
 
 ### 2026-09-17 · The assembled arm weighs 810 g — OQ-04 answered
