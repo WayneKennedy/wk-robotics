@@ -230,6 +230,16 @@ Actuator identification uses Rhoban's [BAM](https://github.com/Rhoban/bam). **Tw
 pretrained walk policies are committed to the hub repo** (`BEST_WALK_ONNX.onnx`,
 `BEST_WALK_ONNX_2.onnx`), so a correct build walks without training anything.
 
+**Tasks** (owner, 2026-09-18): companionship and learning — the learning being the
+owner's, in RL sim-to-real, as much as the robot's. No manipulation, no navigation task.
+
+**Printable now, buildable now only with a servo order** (re-read 2026-09-18): the STLs
+are printable immediately in the validated PLA+, subject to the unchecked ≤ 200 × 200 mm
+part-size rule and the unproven TPU for the two foot soles. The **servos are not the
+owner's**: the design is the 7.4 V STS3215 on 2S; the family stock is the 12 V variant,
+and the 12 V-on-3S conversion is the unverified fork below. Stock build means buying 14
+7.4 V units (~€196).
+
 **Why it is interesting:** it is the only candidate on this page that delivers
 **RL sim-to-real** — a learned locomotion policy, trained in simulation and transferred to
 hardware. No current project does this: the hexapod is analytic IK, koala-bot's balance
