@@ -202,6 +202,9 @@ what the build *teaches* and what it costs to run alongside the others.
 > **Parked 2026-09-07, the day it was raised.** Considered as a pivot away from koala-bot
 > and rejected as one: koala-bot remains the active design project. Not a judgement on the
 > design — everything below was verified and still holds. This is a *when*, not a *whether*.
+>
+> **Reaffirmed 2026-09-18 (owner):** deferred because a learned walking policy is new
+> ground for the owner, and that alone is enough. Still a *when*.
 
 **A ~42 cm bipedal BDX-droid replica that walks from a reinforcement-learned policy.**
 Upstream is [`apirrone/Open_Duck_Mini`](https://github.com/apirrone/Open_Duck_Mini),
