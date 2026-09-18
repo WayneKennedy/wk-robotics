@@ -659,7 +659,7 @@ up to 25 W. Orin NX 16 GB: GPU 918→1,173 MHz, dense INT8 50→78 TOPS, up to 4
 bandwidth 102 GB/s either way. The Nano figures in the table below assume Super mode.
 Source: [NVIDIA, JetPack 6.2 Super mode](https://developer.nvidia.com/blog/nvidia-jetpack-6-2-brings-super-mode-to-nvidia-jetson-orin-nano-and-jetson-orin-nx-modules/).
 
-**JetPack for Orin (checked 2026-09-15; nothing flashed here).** Two maintained branches:
+**JetPack for Orin (checked 2026-09-15; 7.2.1 flashed 2026-09-18, see [below](#the-jetson-orin-nano)).** Two maintained branches:
 
 - **JetPack 7.2** ([2026-06-02](https://developer.nvidia.com/embedded/jetpack/downloads/archive-7.2);
   [7.2.1 on 2026-08-11](https://developer.nvidia.com/embedded/jetpack/downloads)) is the
@@ -885,6 +885,51 @@ Four constraints, all of which bite early:
 
 **16 GB of VRAM** is comfortable for MJX-scale RL training and for quantised models in the
 7–14 B class; it is the binding limit on anything larger.
+
+### The Jetson Orin Nano
+
+**Flashed 2026-09-18.** One **Orin Nano Super Developer Kit, 8 GB** (module `3767-0005`) on
+JetPack 7.2.1 / L4T R39.2.1, Ubuntu 24.04.4, desktop, root on a WD_BLACK SN850 1 TB in the
+2280 slot. Default power mode is 25W; MAXN_SUPER is mode 2. Wi-Fi only; reached over
+Tailscale SSH. Purchase and allocation are in [status.md](status.md#ai-compute-purchase--ai-hat-2-jetson-or-dgx-spark);
+identifiers in the private `wk-inventory` repo, `docs/jetsons.md`.
+
+#### Flashing a Jetson from a 24.04 host
+
+Headless, over USB-C, no monitor or SD card. NVIDIA's r36 and r39 Quick Starts list only
+Ubuntu 22.04 or 20.04 hosts, so on the 24.04 workstation the BSP runs in a **privileged
+Ubuntu 22.04 Docker container** (`--privileged --net host -v /dev:/dev`). That worked on
+the first real attempt once four host-side problems were fixed:
+
+1. **Load `nfsd` on the host** (`modprobe nfsd`), then inside the container mount
+   `/proc/fs/nfsd` and start `rpcbind`: `l4t_initrd_flash.sh` serves the images by NFS and
+   otherwise stops at "NFS server is not running".
+2. **Set `USER=root`** in the container: the image script tests `$USER`, not the UID, and
+   Docker leaves it unset ("requires root privilege").
+3. **Install `qemu-user-static` on the host**: `apply_binaries.sh` chroots into the aarch64
+   rootfs, which needs binfmt registered in the host kernel.
+4. **Check the archives** with `lbzip2 -t` before extracting: one 2 GB sample-rootfs
+   download ended at 1.44 GB with curl reporting success. No published checksum was found.
+
+Sequence (from `Linux_for_Tegra/`, as root in the container): `l4t_flash_prerequisites.sh`
+(commit the container, or it is lost), `apply_binaries.sh`, `l4t_create_default_user.sh -u
+<user> -p <pw> -n <host> --accept-license` (skips oem-config), then with the board in Force
+Recovery (FC REC jumpered to GND, `lsusb` shows `0955:7523 NVIDIA Corp. APX`):
+
+```
+./l4t_initrd_flash.sh --external-device nvme0n1p1 \
+  -c tools/kernel_flash/flash_l4t_t234_nvme.xml \
+  --showlogs --erase-all jetson-orin-nano-devkit-super external
+```
+
+About five minutes; it rewrites QSPI and the whole SSD. "Backup GPT table is corrupt" and
+"Not all of the space … used" in the log are expected; the root partition grows to fill
+the disk on first boot. After boot the board enumerates as `0955:7020` and its USB network
+comes up at `192.168.55.1`, but the host's `enx…` interface stays down until given an
+address (`192.168.55.100/24`). **The Tegra kernel lacks `CONFIG_NETFILTER_XT_CONNMARK`**,
+so Tailscale reports a connmark health warning; tailnet traffic and SSH work regardless.
+A new node must carry the same ACL tag as the other personal machines before tailnet
+policy admits SSH to it (tag named in `wk-inventory`).
 
 ### The topic contract
 

@@ -101,7 +101,13 @@ Spark is considered for ground use. **Jetson ordered 2026-09-17: the 8 GB Orin N
 Developer Kit**, not the 16 GB Orin NX — RS order 3020377767, stock no. 264-7384, qty 1
 (order confirmation read 2026-09-17). RS's follow-up notification gives £320.00 ex VAT
 (£384 inc, matching the live listing of 2026-09-16) and a delivery date of 2026-09-18;
-part 945-13766-0005-000 (the EU/UK region variant). Not delivered as of 2026-09-17. **Leaning to the Holybro X500** as its highest-value use (owner,
+part 945-13766-0005-000 (the EU/UK region variant). **Delivered and flashed 2026-09-18:**
+JetPack 7.2.1 (L4T R39.2.1, Ubuntu 24.04.4, kernel 6.8.12-1021-tegra), desktop install
+(owner), board config `jetson-orin-nano-devkit-super`, root on the NVMe (930 GB, grown on
+first boot); boots to the 25W mode by default, MAXN_SUPER available as nvpmodel mode 2 and
+not yet chosen as default. Key-only SSH, on the tailnet with Tailscale SSH; identifiers in
+wk-inventory `docs/jetsons.md`. Flash procedure and its host-side gotchas are in
+[`common.md`](common.md#flashing-a-jetson-from-a-2404-host). **Leaning to the Holybro X500** as its highest-value use (owner,
 2026-09-17; not decided — wk-drones `aircraft/holybro-10` OQ-03). **Storage allocated:** a
 spare WD_BLACK SN850 1 TB NVMe from the owner's parts box (owner, 2026-09-17). Per
 [NVIDIA's carrier layout](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/hardware_layout.html)
@@ -109,9 +115,11 @@ the kit has an M.2 Key-M 2280 slot at PCIe 3.0 x4 and a Key-M 2230 slot at PCIe 
 SN850 is a 2280 PCIe 4.0 drive, so it belongs in the 2280 slot and runs at Gen 3 speed.
 This unit has no heatsink (owner, 2026-09-17). Stockist
 survey, Super-mode and JetPack detail are in
-[`common.md`](common.md#ai-compute--purchase-comparison). Next: confirm the intended AI HAT/SSD
-wiring and cable reach, then validate NVMe cold boot plus concurrent inference/storage
-operation. Select target workloads for the Jetson.
+[`common.md`](common.md#ai-compute--purchase-comparison). NVMe cold boot is verified (2026-09-18: the first boot after flashing was from power-off);
+concurrent inference/storage load is not yet tested. Next: select target workloads for the Jetson;
+decide whether MAXN_SUPER becomes the default after a sustained-load thermal check. No DP
+cable or DP-to-HDMI adapter is in wk-inventory's stock list, so the desktop has not been
+seen on a monitor.
 No architecture change decided.
 
 **The hexapod cannot take the AI HAT+ 2 — it goes to the Devastator (owner, 2026-09-18).**
