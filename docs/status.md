@@ -95,8 +95,10 @@ D435i**, and wants each where it gives most value.
   avoidance is essential there (owner, 2026-09-17), the RealSense mount is owned, and
   ArduPilot's avoidance path names the D435i
   ([wk-drones Holybro OQ-09](https://github.com/WayneKennedy/wk-drones/blob/main/aircraft/holybro-10/docs/open-questions.md))
-  — but the owner is not sold: an unflown airframe puts both items at crash risk. Until
-  decided, both are unallocated stock.
+  — but the owner is not sold, for two reasons: an unflown airframe puts both items at
+  crash risk, and it would fly rarely — too large for the garden or the local beach, so
+  only at a flying field or on permitted private land. Until decided, both are
+  unallocated stock.
 - **The Devastator's camera** (its OQ-09) and which spare Pi 5 it takes (its OQ-13).
 
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
