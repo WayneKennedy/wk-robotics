@@ -28,7 +28,7 @@ intended mobile base for the family's
 - Aluminium tracked chassis, **225 × 220 × 108 mm**, 1.3 kg, 3 kg payload.
 - Reflex tier on a 32-bit MCU running **micro-ROS** — encoder decoding, closed-loop
   wheel velocity, safety watchdog.
-- Intent tier on a Raspberry Pi running **ROS 2** — SLAM, Nav2, mission.
+- Intent tier on a Raspberry Pi 5 with the AI HAT+ 2 and one camera, running **ROS 2** — SLAM, Nav2, mission (DEC-15). The family's second intent-tier reference, a step above the hexapod.
 - Designed from the outset to keep working when the coordination tier is unreachable.
 
 ## Why it exists

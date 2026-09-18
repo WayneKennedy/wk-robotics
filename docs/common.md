@@ -498,13 +498,22 @@ robot:
 sensor streams* ([ideas.md](ideas.md#physical-ai-and-the-hive-mind)), so perception must
 stay on the robot. The intent host is a Pi 5 on every project, so the Pi 5 is the
 perception bottleneck, and moving stages into the sensor or an accelerator is the only
-lever that does not change the host. The hexapod (D435i, all SLAM on the Pi) is the one instance
-so far; the tank's depth camera is undecided (`wk-devastator` OQ-09), and koala-bot's CSI
-camera-eyes are where an in-sensor module would go.
+lever that does not change the host. The hexapod ran the D435i with all SLAM on the Pi,
+and could not keep its loop rates (wk-hexapod OQ-02); the tank's camera is undecided
+(`wk-devastator` OQ-09), and koala-bot's CSI camera-eyes are where an in-sensor module
+would go.
+
+**What justifies a depth camera (owner, 2026-09-18).** A D4xx earns its cost over a
+standard camera by one thing: depth computed in the camera. Without a host that can use
+that depth fully, a standard camera does the job for a fraction of the price. So the
+family's one **D435i is banked as a pair with the Jetson Orin Nano**, whose GPU can use it
+fully, and it left the hexapod ([wk-hexapod DEC-25]({HX})). **Where the pair goes is open**
+(the Holybro 10" is a candidate; its at-risk cost is the objection) — see
+[`status.md`](status.md).
 
 **What the current products actually do on-device (checked 2026-09-09):**
 
-- **RealSense D4xx (the hexapod's D435i):** stereo disparity matching on the on-board
+- **RealSense D4xx (the family's D435i):** stereo disparity matching on the on-board
   ASIC; the host receives finished depth frames over USB 3. **No SLAM on-device** — the
   hexapod's `slam_toolbox` and RTAB-Map run on the Pi.
 - **RealSense T265** was the only member that ran visual-inertial SLAM on-device and

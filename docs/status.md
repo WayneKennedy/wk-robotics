@@ -78,28 +78,26 @@ to that home.
 ### The single expensive items — where each earns most (opened 2026-09-18)
 
 The owner has one each of the **Jetson Orin Nano**, the **AI HAT+ 2** and the **RealSense
-D435i**, and wants each where it gives most value. **Nothing below is decided.**
+D435i**, and wants each where it gives most value.
 
-- **The hexapod is stepping down** (owner, 2026-09-18): from focused R&D platform to a fun,
-  working curiosity, because its GPIO riser blocks the AI HAT+ 2 (wk-hexapod DEC-24) and
-  its standard-size PWM hobby servos, lugged at each end and driven from a PWM board on
-  that riser, rule out a switch to ST3215s. The owner judges a new custom hexapod more
-  feasible than remaking this one ([`ideas.md`](ideas.md#a-printed-hexapod)). Its D435i is
-  deallocated; the kit's OV5647 Pi camera (in hand) returns. Not yet recorded in
-  wk-hexapod, and open there: whether the HC-SR04 returns, and whether it keeps the ROS 2
-  stack minus SLAM and Nav2 or reverts to Freenove's app. It thereby stops being the
-  family's intent-tier reference; which robot takes that role is open.
-- **The Orin and the AI HAT+ 2 are alternatives** for one robot's intent-tier
-  accelerator, not a pair. The Orin and the D435i complement each other.
-- **Candidate homes:** Holybro 10" — depth avoidance is essential (owner, 2026-09-17),
-  the RealSense mount is owned, ArduPilot's avoidance path names the D435i, and the Orin
-  is the leaning companion ([wk-drones Holybro OQ-09](https://github.com/WayneKennedy/wk-drones/blob/main/aircraft/holybro-10/docs/open-questions.md));
-  unbuilt, never flown. Devastator — its roadmap plans one depth camera (its OQ-09) and the
-  AI HAT+ 2 is allocated there (its OQ-13), which needs a Pi 5 (its Pi 4 is retired, its DEC-14);
-  blocked on motors. koala-bot — Pi 5 intent tier with an LLM "personality" (its DEC-03);
-  design phase.
-- **Not a candidate:** the T265 (the other RealSense owned) — end-of-life and unsupported
-  by current librealsense ([`common.md`](common.md#perception-placement)).
+**Decided 2026-09-18 (owner):**
+- **The hexapod keeps ROS 2 and returns to the kit's camera and ultrasonic**; it stays the
+  family's baseline intent-tier reference, with the kit's hardware ceiling
+  ([wk-hexapod DEC-25, DEC-26](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)).
+- **The Devastator is the second intent-tier reference, a step above it:** Teensy 4.1
+  reflex tier as motor controller, Pi 5 + AI HAT+ 2 + a camera not yet chosen
+  ([its DEC-15](../projects/devastator/docs/decisions.md)).
+- **The Orin and the D435i are a pair** — in-camera depth is what justifies the D435i's
+  cost, and the Orin can use it fully ([`common.md`](common.md#perception-placement)).
+
+**Open:**
+- **Where the Orin + D435i pair goes.** The Holybro 10" is a candidate — depth
+  avoidance is essential there (owner, 2026-09-17), the RealSense mount is owned, and
+  ArduPilot's avoidance path names the D435i
+  ([wk-drones Holybro OQ-09](https://github.com/WayneKennedy/wk-drones/blob/main/aircraft/holybro-10/docs/open-questions.md))
+  — but the owner is not sold: an unflown airframe puts both items at crash risk. Until
+  decided, both are unallocated stock.
+- **The Devastator's camera** (its OQ-09) and which spare Pi 5 it takes (its OQ-13).
 
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 

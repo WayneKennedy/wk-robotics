@@ -10,7 +10,7 @@ plus a coordination tier above it. Each tier owns a latency band.
 | Tier | Where | Band | Owns |
 |---|---|---|---|
 | **Reflex** | 32-bit MCU on the robot | ~200–1000 Hz | Quadrature decoding, PID wheel-velocity loop, motor PWM, safety watchdog |
-| **Intent** | Raspberry Pi on the robot | ~1–50 Hz | SLAM, Nav2, local mission, perception |
+| **Intent** | Raspberry Pi 5 + AI HAT+ 2 + one camera (DEC-15) | ~1–50 Hz | SLAM, Nav2, local mission, perception |
 | **Coordination** | Off-robot machine | seconds | Fleet reasoning, shared world model, task assignment |
 
 ### The load-bearing rule

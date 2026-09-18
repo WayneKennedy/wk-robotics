@@ -36,16 +36,17 @@ under Apache-2.0 in `hardware/vendor/`. The two-tier reflex/intent split describ
 ## wk-hexapod
 
 **A ROS 2 autonomous hexapod**, built on Freenove Big Hexapod (FNK0052) hardware with the
-sensing substantially upgraded: an Intel RealSense D435i replaces the kit's Pi camera and
-ultrasonic sensor, giving RGB, depth and a second IMU on the pan/tilt head.
+kit's own sensors: an OV5647 Pi camera and an HC-SR04 ultrasonic on the pan/tilt head. A
+RealSense D435i replaced them from 2025-12-31 until 2026-09-18, when it was banked with the
+Orin Nano ([its DEC-25]({HX})).
 
 | | |
 |---|---|
 | Repo | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |
-| State | Native stack verified end to end on the bench, 2026-09-09 (USB power): RTAB-Map maps, Nav2 active, frontier exploration sends goals, mission API answers. First battery run of this stack pending |
+| State | Native stack verified end to end with the D435i: on the bench 2026-09-09, a frontier reached on the battery 2026-09-15. Since 2026-09-18 the code needs drivers and a mapping route for the kit's sensors (its OQ-19) |
 | Compute | Raspberry Pi 5 (8 GB), ROS 2 Jazzy on Ubuntu Server 24.04, **installed natively from apt** (the Docker container was removed 2026-09-09); runs as a `systemd` service |
 | Actuation | 20 hobby servos (18 leg + 2 head) via 2× PCA9685 on I²C — direct from the Pi, no reflex MCU |
-| Sensing | RealSense D435i (RGB-D + IMU, depth computed in-camera) · MPU6050 body IMU · ADS7830 ADC for dual-battery monitoring |
+| Sensing | OV5647 Pi camera · HC-SR04 ultrasonic · MPU6050 body IMU · ADS7830 ADC for dual-battery monitoring |
 | Reference | [Freenove upstream](https://github.com/Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi) — vendor code, read directly from a sparse clone of `Code/Server/`; recipe, pinned commit and the CC BY-NC-SA caveat in its `docs/references.md` (DEC-20) |
 | Start at | `AGENTS.md`, then `docs/architecture.md` |
 | Licence | `Apache-2.0` (software and docs only; hardware is Freenove's) — adopting the tri-licence is open in its repo, and blocked on OQ-15 there: whether any driver is a derived work of the CC BY-NC-SA vendor code |
@@ -56,9 +57,13 @@ Nav2 and the gait controller, CPU load with everything running, collision-monito
 and what an "approved" mission planner is. Its `docs/roadmap.md` is authoritative.
 
 **Shares with the rest:** the Pi 5 + ROS 2 tier and the `/cmd_vel` · `/joint_commands` ·
-`/joint_states` · `/imu` · `/odom` topic vocabulary with koala-bot. It is the
-**intent-tier reference implementation** of the family — the only robot with a working
-SLAM, navigation and mission stack — and the counter-example to the two-tier rule: every
+`/joint_states` · `/imu` · `/odom` topic vocabulary with koala-bot. It is the family's
+**baseline intent-tier reference** ([its DEC-26]({HX})) — CPU-only Pi 5, primitive
+sensors, the only robot with a navigation and mission stack that has run — with the
+Devastator as the second reference a step above it. Its hardware ceiling is the kit's: the
+GPIO riser blocks the AI HAT+ 2 and its PWM hobby servos rule out ST3215s, so new hardware
+goes to a [custom hexapod](ideas.md#a-printed-hexapod), not this one. It is also the
+counter-example to the two-tier rule: every
 device is a direct peripheral of the Pi, viable for a statically stable walker in a way it
 would not be for a balancing robot. Its `docs/architecture.md` records what that flat
 design costs; a reflex-tier retrofit is an open question there, not a plan.
@@ -77,13 +82,15 @@ compute and software are all replaced.
 | State | Design record; milestone 0 (measure-and-decide) in progress. Motors and Teensy 4.1 ordered; driver in hand — its own since 2026-09-11, no longer borrowed from koala-bot (DEC-13, amended). **Motors on back order, due end of October 2026** (revised 2026-09-09) — milestone 1 waits on them |
 | Chassis | DFRobot **ROB0128**, aluminium, 225 × 220 × 108 mm, 1.3 kg, 3 kg payload |
 | Actuation | 2 × Pololu 25D 47:1 12 V gearmotors with 48 CPR encoders (DEC-11), replacing the kit's 6 V encoderless originals |
-| Compute (planned) | 32-bit MCU running micro-ROS (reflex) · Raspberry Pi + ROS 2 (intent) |
+| Compute (decided, not built) | Teensy 4.1 on micro-ROS, the motor controller (reflex; its DEC-10) · Raspberry Pi 5 + AI HAT+ 2 + a camera not yet chosen, ROS 2 (intent; its DEC-15). The first build's Pi 4 is retired (DEC-14) |
 | Start at | `AGENTS.md`, then `docs/concept.md` |
 | Licence | Tri-licence: `CERN-OHL-S-2.0` hardware · `MIT` software · `CC-BY-SA-4.0` docs |
 
 **Why it matters to the others:** it is the simplest body in the family — statically
 stable, no gait, no balance loop — which makes it the cheapest second consumer of the
-hexapod's SLAM and Nav2 work, and the first plausible node of a fleet. See
+hexapod's navigation work, and the first plausible node of a fleet. It is the family's
+**second intent-tier reference** (its DEC-15), a step above the hexapod: it adds the
+reflex tier the hexapod lacks and an inference accelerator. See
 [`ideas.md`](ideas.md#physical-ai-and-the-hive-mind).
 
 **Shares with the rest:** the Pi + ROS 2 intent tier and the

@@ -26,14 +26,9 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
   any robot is on a different network. The counter-argument is that a workaround is
   cheaper *today* and this robot may never leave the LAN.
 
-- **OQ-06 — Which intent computer.** The first build's Pi 4 is retired (DEC-14). The
-  family standard is a **Pi 5**
-  ([common.md](../../../docs/common.md#compute-the-two-tier-split)), and the AI HAT+ 2
-  allocated here (OQ-13) needs one; two of the family's Pi 5s have no on-robot role
-  ([common.md](../../../docs/common.md#companion-computers-in-hand--the-raspberry-pi-5-fleet)).
-  Whether the Orin comes here instead is part of the family allocation thread in
-  [wk-robotics `status.md`](../../../docs/status.md). Milestone 1 needs no Pi at all, so
-  this does not need deciding yet.
+- **OQ-06 — Which intent computer.** Resolved 2026-09-18 by DEC-15: a Pi 5 with the
+  AI HAT+ 2. Which unit is open under OQ-13; two of the family's Pi 5s have no on-robot
+  role ([common.md](../../../docs/common.md#companion-computers-in-hand--the-raspberry-pi-5-fleet)).
 
 ## Perception
 
@@ -55,9 +50,11 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
 
 - **OQ-09 — Which depth camera.** The first build's pair was a D435i and a T265
   ([`sourcing.md`](sourcing.md)); neither is on the tank now. The T265 is end-of-life and
-  unsupported by current librealsense, so it is out. The family's one D435i is contested:
-  its allocation is open in [wk-robotics `status.md`](../../../docs/status.md). Roadmap
-  milestone 2 plans **one** depth camera; which, and whether it is bought, is open.
+  unsupported by current librealsense, so it is out. The family's one D435i is banked
+  with the Orin Nano, not this robot's Pi 5
+  ([common.md](../../../docs/common.md#perception-placement)). Roadmap milestone 2 plans
+  **one** camera on the Pi 5 + AI HAT+ 2 (DEC-15); which, and whether it gives depth, is
+  open.
 
 ## Mechanical
 

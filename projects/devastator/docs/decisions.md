@@ -127,3 +127,14 @@ not accepted are open questions, not decisions**, and are marked as such there.
   the same day and declared obsolete for this robot; it returns to the owner's unallocated
   stock (private `wk-inventory` `docs/stock.md`). The AI HAT+ 2 allocated here (OQ-13)
   needs a Pi 5 regardless. Narrows OQ-06; which intent computer replaces it is still open.
+
+- **DEC-15 — The intent tier is a Raspberry Pi 5 with the AI HAT+ 2 and a camera; this
+  robot is the family's second intent-tier reference.** (Owner, 2026-09-18.) Resolves
+  OQ-06. The Teensy 4.1 (DEC-10) is the reflex tier and the motor controller; a Pi 5
+  running ROS 2, with the AI HAT+ 2 and one camera (not yet chosen, OQ-09), is the intent
+  tier. It sits a step above the
+  [hexapod](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)
+  (DEC-26 there: CPU-only Pi 5, no reflex tier) by adding both a reflex tier and an
+  inference accelerator. Which of the family's spare Pi 5s, and how the HAT shares the
+  single PCIe lane with any NVMe, stay open (OQ-13). Not fitted before the drivetrain works
+  (DEC-06).

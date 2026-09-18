@@ -50,7 +50,7 @@ milestone is optional in a way this one is not.
 
 ## Milestone 2 — A robot that sees
 
-Add the intent tier: a Pi (OQ-06), **one** camera (OQ-09), SLAM.
+Add the intent tier: a Pi 5 with the AI HAT+ 2 (DEC-15), **one** camera (OQ-09), SLAM.
 
 - URDF and TF tree, camera frames included.
 - One depth camera; RTAB-Map or `slam_toolbox`, reusing the hexapod's configuration
