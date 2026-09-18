@@ -138,7 +138,22 @@ and not yet accepted. Do not build against one without the owner deciding.
   Teensy (OQ-09), which will run its own loop above the servos' and may prefer them soft.
 
 - **OQ-18 — Why 1.3-2.4% of telemetry reads come back corrupted, and whether to chase it.**
-  **Raised 2026-09-18.** Counted across every `shapes.py` log since 2026-09-14: **1.35-1.55% on
+  **Raised and largely ANSWERED 2026-09-18: it is not the bus.** `Present_Position` is
+  encoder-derived and has **0 impossible values in 82,260 readings**, while ADC-derived temperature
+  corrupts at 1.58% — over the same bus, the same transactions, the same checksum. Corruption is
+  0.00% with torque off, 0.25% holding still, 1.3-6% moving. **The STS3215's internal ADC is
+  disturbed by its own motor drive**; the servo reports a wrong value faithfully, and the frame is
+  valid ([`test-log.md`](test-log.md)). **Nothing on the bus is broken and nothing external fixes
+  it** — not baud, not `Return_Delay_Time` (0 on all six), not wiring, not capacitance.
+
+  **What remains open** is only the engineering response: whether to sample ADC channels only when
+  a joint is still, whether a median across servos is enough for every guard (`--max-ma` still
+  takes the worst single servo, the weakest guard left), and what the Teensy should do at
+  reflex-tier rates, where a raw ADC reading at 200-1000 Hz would trip constantly (OQ-09).
+  **Position is trustworthy and the control loop rests on it**, which is why the OQ-17 tuning
+  stands. Original framing below.
+
+  **Original framing.** Counted across every `shapes.py` log since 2026-09-14: **1.35-1.55% on
   the bench PSU and the 2 A brick, 2.35% on the Maplin** — a persistent background on every
   supply, not the occasional freak the earlier entries describe. A plausibility filter measuring
   it directly puts the true rate nearer **6%**. It has caused at least two false guard trips

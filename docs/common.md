@@ -297,6 +297,29 @@ acceleration limits, write the PID coefficients, `change_id`. Open Duck Mini V2'
 `scripts/configure_motor.py` (`pypot.feetech.FeetechSTS3215IO`) is a working reference;
 LeRobot's SO-ARM setup command does the same job against the same SO-101 follower spec.
 
+**Telemetry from a moving STS3215 is unreliable, and it is the servo, not the bus** (measured on
+SO-ARM101, 2026-09-18; applies to every STS project). `Present_Position` comes from a magnetic
+encoder; **temperature, voltage and current are measured by an ADC inside the servo**, and that ADC
+is disturbed by the servo's own motor drive. Measured over every logged run: **0 impossible
+position values in 82,260 readings, against 1.58 % implausible temperatures in 20,586** — same
+bus, same `sync_read`, same checksum, same instants. By drive state: **0.00 % with torque off,
+0.25 % holding still, 1.3–6 % moving.**
+
+- **The frames are valid; the values are not.** LeRobot verifies the checksum, so nothing is
+  detectable at the protocol layer — a corrupt reading looks exactly like a real one.
+- **Nothing external fixes it.** Not baud rate, not `Return_Delay_Time`, not wiring, not bulk
+  capacitance. It is internal to the servo.
+- **Never guard on a single ADC sample.** Take a median across the servos on the rail (a real
+  event moves all of them, a bad reading moves one), or reject physically impossible jumps — a
+  servo cannot gain 40 °C in 50 ms. A two-sample debounce is **not** enough: at these rates two bad
+  readings in a row is near-certain over a long run, and that has already caused a false
+  over-temperature trip with every servo at 37 °C.
+- **`min()` and `max()` select for the errors.** An extreme-value guard over six servos and a
+  thousand samples has ~6000 chances a run to find a bad frame. On SO-ARM101 that manufactured a
+  phantom "10.5 V rail sag" that survived four days and three supplies before it was caught.
+- **Position is trustworthy**, so control loops and tracking guards built on it are sound. A
+  reflex tier reading raw ADC telemetry at 200–1000 Hz would trip constantly; filter it there.
+
 **The FTDI latency trap.** If a bus adapter presents as an FTDI device, its default
 **16 ms latency timer** caps every bus round-trip — harmless during one-time ID setup,
 fatal for a fast control loop later. The fix is a udev rule:

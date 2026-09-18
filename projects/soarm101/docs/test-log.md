@@ -10,6 +10,63 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-18 · RCA: the bus is innocent. The servos' own ADC is disturbed by their own motor drive
+
+**Why:** OQ-18 had recorded 1.3–2.4% of telemetry reads coming back wrong, blamed on the bus, and
+that corruption had just been shown to have manufactured a phantom rail sag (previous entry). The
+question was what to fix — baud rate, `Return_Delay_Time`, the half-duplex turnaround, wiring.
+
+**The decisive evidence took no new hardware: compare the one channel that is not analogue.**
+`Present_Position` comes from a magnetic encoder; temperature, voltage and current are all
+measured by an ADC inside the servo. All four travel the **same bus, in the same `sync_read`
+transactions, with the same checksum, at the same baud, at the same instants.**
+
+| Channel | Source | Readings, every run ever logged | Impossible values |
+|---|---|---|---|
+| `Present_Position` | magnetic encoder | **82,260** | **0** |
+| `Present_Temperature` | internal ADC | 20,586 | **326 (1.58%)** |
+
+**Zero, in eighty-two thousand readings.** If frames were being corrupted on the wire, position
+would corrupt at the same rate. It never has. **The bus, the frames, the checksums, the wiring and
+the supply are all innocent** — and LeRobot does verify the checksum (`feetech.py` 385–392), which
+is consistent: the frames are valid, the *values* inside them are not.
+
+**Confirmed by drive state**, read-only, 2400 samples per condition:
+
+| Condition | Motor drivers | Corrupt |
+|---|---|---|
+| Torque **off**, stationary | idle | **0.00%** |
+| Torque **on**, holding still at 0 mA | essentially idle | **0.25%** |
+| Moving | actively PWM-switching | **1.3–6%** |
+
+**Root cause: the STS3215's internal ADC readings are disturbed by its own motor drive.** The
+servo measures a wrong value and reports it faithfully. That also explains every loose end — why
+it never correlated with *average* current (91 mA on corrupt samples against 84 mA on clean ones;
+it is switching edges, not load), why it looked identical on a 2 A brick and a 10 A bench supply
+(it is internal to the servo), and why one bad sample carried 78 in **both** the temperature and
+current columns (two ADC channels hit by the same switching event).
+
+**It is not fixable from outside.** Not by baud rate, not by `Return_Delay_Time` (read for the
+first time today: **0 on all six**, with baud code 0 = 1 Mbaud), not by wiring, not by bulk
+capacitance. Nothing on the bus is broken.
+
+**What this means for the guards, which is the part that matters:**
+
+- **Position telemetry is trustworthy.** The tracking guard, the lag measurements and all of the
+  OQ-17 tuning rest on position, so that work stands on solid ground.
+- **ADC telemetry is not trustworthy sample-by-sample while moving.** Never guard on a single
+  reading. `--min-v` now takes the median of six; temperature is plausibility-filtered.
+- **`--max-ma` is the weakest guard left.** It is ADC-derived and still takes the worst *single*
+  servo with only a two-sample debounce — the same fault that produced the false 63 °C trip. It has
+  never fired spuriously only because nothing has come near 900 mA.
+- **For the Teensy at reflex-tier rates (OQ-09):** trust position, filter everything analogue. A
+  200–1000 Hz loop reacting to raw ADC telemetry would trip constantly.
+
+**Changed as a result:** OQ-18 reframed and largely answered; the family-level fact recorded in
+[`common.md`](../../../docs/common.md#configuring-a-servo--true-for-every-sts-project) because it
+is true of every STS3215 project, not just this arm.
+
+
 ### 2026-09-18 · There is no rail sag. It was `min()` over a noisy bus, for four days
 
 **Why:** OQ-03 had carried a "rail dips to ~10.5 V" finding since 2026-09-14, and a recommendation
