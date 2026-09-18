@@ -116,6 +116,27 @@ accepted: LeKiwi, because it reuses the finished arm, the 12 V servos and a spar
 and its base plate carries a Pi or Orin cage. Not yet checked against the upstream BOM,
 print list or stock.
 
+**The owner's two directions for the Orin ground robot (2026-09-18).** LeKiwi is seen as
+a no-regrets immediate build, but too little "wow" for nearly $1,000 of compute and
+sensing. The two directions, both needing CAD but simpler than koala-bot's, both robots
+that would be powered up every day:
+
+1. **A quadruped remix on STS3215s** ("MicroSpot", or reluctantly Orion): the owner's
+   remix of a well-known unfinished project, given back finished. Blocker: no STS3215
+   design files for either were known. Found 2026-09-18, unverified beyond its README:
+   [`alarin/smalldog`](https://github.com/alarin/smalldog) — a 12-DoF printed quadruped
+   on 12 × ST3215, parametric CadQuery CAD, FEA, ROS 2 / MuJoCo sim and an RL policy.
+   Not a SpotMicro derivative; licence, maturity and print sizes unchecked.
+2. **A wheeled humanoid torso on the two 37D motors in stock**, two SO-ARMs and a head
+   carrying the D435i. This is the shape of upstream's own
+   [XLeRobot](https://github.com/Vector-Wangel/XLeRobot): LeKiwi base, two SO-101 arms,
+   a 2-motor head, 17 STS3215s, $660, under four hours' assembly
+   ([BOM](https://xlerobot.readthedocs.io/en/latest/hardware/getting_started/material.html)),
+   with a Jetson Orin Nano variant sold as a kit. The differences from the owner's
+   picture are the base (omniwheels on three STS3215s, not the 37Ds) and the torso (an
+   IKEA cart, not a printed humanoid). **So LeKiwi is stage one of direction 2, not an
+   alternative to it** — assistant's observation, not accepted.
+
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 
 **Ordered from The Pi Hut, owner-confirmed 2026-09-13:** Raspberry Pi AI HAT+ 2 and
