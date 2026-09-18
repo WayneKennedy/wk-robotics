@@ -128,3 +128,29 @@ takes these as world constraints.
 - **Intended layout (DEC-15):** a second arm on the same desk edge, **30 cm** from this one
   along the edge — inside each other's reach. Not yet built.
 
+## Dimensions and masses, from the URDF
+
+Computed 2026-09-18 with [`software/kinematics.py`](../software/kinematics.py) from upstream's
+`so101_new_calib.urdf` (CAD figures, not measured on this arm; the tape check of 2026-09-14
+in [`test-log.md`](test-log.md) agreed with the model within 1 cm at ~0.35 m reach).
+
+| Segment (axis to axis) | Length |
+|---|---|
+| Pan axis → shoulder-lift axis | 64.8 mm (offset: 30 mm ahead, 18 mm sideways, 54 mm up) |
+| Shoulder-lift → elbow | 116.0 mm |
+| Elbow → wrist-flex | 135.0 mm |
+| Wrist-flex → wrist-roll | 63.7 mm |
+| Wrist-roll → tool point (`gripper_frame`) | 98.4 mm |
+| Tool point → fingertip (`GRIPPER_TIP`) | 50 mm |
+
+**Straightest pose** (elbow −73°, wrist −6°): shoulder-lift axis to tool point **411 mm**,
+to fingertip **461 mm**; pan axis to tool point 471 mm. Upstream's "~500 mm reach" is this
+figure with the offsets. **Mass** beyond the pan joint **485 g**; base 147 g.
+
+**Gravity moments with the arm straight and horizontal**, no payload: **1.12 N·m about
+the pan axis** (11.4 kg·cm), 0.84 N·m about the shoulder-lift axis (8.6 kg·cm); a 500 g
+payload (upstream's figure) at the tool point adds 2.02 N·m about either. The 12 V
+STS3215 is rated 30 kg·cm = 2.94 N·m. The pan moment only exists when the pan axis is
+horizontal — the wall-mounted, hanging-arm case in
+[wk-robotics `ideas.md`](../../../docs/ideas.md#a-two-armed-wheeled-torso--the-orin-ground-robot);
+table-mounted, the pan joint carries no gravity load.

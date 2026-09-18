@@ -134,9 +134,17 @@ idea — LeKiwi base, two SO-101 arms, a head — with three owner-set departure
   a hanging pendulum, stable, and the workspace is below and in front of the shoulder —
   the floor-level workspace task 1 needs. Which torso face (front: pan = abduction;
   side: pan = flexion) is open. LeRobot's calibration is per-joint and
-  orientation-agnostic, but any learned policy is specific to this mounting. Shoulder
-  height is the arm's hanging length plus gripper clearance to the floor — read the link
-  lengths from the SO-101 CAD, not the photo.
+  orientation-agnostic, but any learned policy is specific to this mounting. **Numbers from the
+  URDF (2026-09-18, [SO-ARM101 `hardware.md`](../projects/soarm101/docs/hardware.md#dimensions-and-masses-from-the-urdf)):**
+  hanging length shoulder-lift axis to fingertip **461 mm** (to tool point 411 mm), so the
+  shoulder-lift axis sits at about **0.5 m** above the floor for a fingertip that just
+  reaches it, and the pan/base flange some 65 mm above and behind that. Arm mass beyond
+  the pan joint 485 g. Gravity moment about the horizontal pan axis with the arm swung
+  out straight and horizontal: **1.12 N·m unloaded (38 % of the servo's 2.94 N·m)**, and
+  3.1 N·m with upstream's 500 g payload at the tool point — over the rating, so the arm
+  may not carry a full payload swung out horizontally in the pan plane; task 1 lifts
+  below the shoulder, where the moment is far smaller. The shoulder-lift joint's moment
+  (0.84 N·m unloaded) is the same as on a table.
   koala-bot's shoulder work (its DEC-54: roll-first, on the torso's lateral faces) is the
   closest prior art in the family for the torso side of the joint.
 - **The head sits on a neck just above the shoulders** and carries the D435i. XLeRobot's
