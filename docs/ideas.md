@@ -137,11 +137,21 @@ heavier, at the cost of holonomic motion, which LeKiwi has and a two-arm manipul
 finds convenient. Nothing measured; kiwi-drive performance on carpet pile and thresholds
 is a reasonable doubt, not a finding.
 
-**Tasks: not yet stated** — and the owner's own test for this idea (see
-[Adding an idea](#adding-an-idea)). What XLeRobot gets right is height: head and arms at
-worktop level, where two-arm manipulation tasks such as laundry folding happen. The
-printed torso must place the SO-101 workspace at that height; the shoulder height and the
-D435i's 0.28 m minimum depth range set the neck geometry. Name the tasks first.
+**Tasks** (the owner's test for this idea, see [Adding an idea](#adding-an-idea)):
+
+1. **Pick up all the children's toys from the floor and return them to the toy chest**
+   (owner, 2026-09-18). This fixes the workspace at **floor level to toy-chest rim**, not
+   worktop height — the opposite of XLeRobot's cart, and a short robot suits it. What it
+   demands, none of it examined: a grasp for toys of many shapes and sizes within the
+   SO-101's payload (unstated here — read it from the design before assuming); a head
+   that sees the floor from above the D435i's 0.28 m minimum range; finding toys around a
+   room and navigating to the chest, which is the mapping job that earns the Orin + D435i
+   their place on this robot rather than a Pi; and, since it works among children's
+   things, koala-bot's child-safety spec (its OQ-10, audience 2–5) applies to it too.
+   The learned-policy shape is one LeRobot dataset for the pick-and-drop and a
+   conventional navigation stack around it (the hexapod's Nav2 work).
+
+Further tasks, if any, are the owner's to add; the form follows from the list.
 
 **What it reuses:** the finished SO-ARM101 (a second arm is still to build, SO-ARM101
 DEC-15); the 12 V STS3215 pool (count against koala-bot's twelve before assuming any are
