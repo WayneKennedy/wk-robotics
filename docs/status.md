@@ -114,6 +114,20 @@ wiring and cable reach, then validate NVMe cold boot plus concurrent inference/s
 operation. Select target workloads for the Jetson.
 No architecture change decided.
 
+**The hexapod cannot take the AI HAT+ 2 — it goes to the Devastator (owner, 2026-09-18).**
+From the hexapod's side ([wk-hexapod DEC-24](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)):
+on 2026-09-18 its NVMe SSD was moved into a USB 3 enclosure to free the PCIe connector
+for the HAT. The Pi booted from USB unchanged (root and boot mount by label), but the
+enclosure's Realtek RTL9210B bridge hides TRIM, and forcing it hung the disk and the host
+(negative result in [wk-hexapod `test-log.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/test-log.md)).
+The blocker is not PCIe but the header: the AI HAT+ 2 is powered through the GPIO header
+and its socket cannot be stacked on, while the Freenove shield occupies the hexapod's
+header on a riser of fixed height. The SSD is back on its PCIe base and the hexapod is
+as it was. Detail in [`common.md` → AI HAT+ 2 and NVMe](common.md#ai-hat-2-and-nvme).
+The Waveshare switch and the enclosure route are therefore moot for the hexapod; they
+remain on the table for the Devastator, which has no header conflict but needs a Pi 5
+first ([Devastator OQ-06, OQ-13](../projects/devastator/docs/open-questions.md)).
+
 ### The GPU workstation holds no robotics checkouts — 2026-09-14
 
 Owner-reported 2026-09-14: the koala-bot clone on the GPU workstation was committed,

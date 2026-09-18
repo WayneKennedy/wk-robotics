@@ -575,9 +575,30 @@ Pi 5 PCIe → active switch ┬→ existing NVMe HAT → SSD
   cable routing and heatsink clearance; verify cold boot from NVMe and concurrent SSD
   I/O plus Hailo inference on the intended OS/firmware. None has been tested here.
 
+**The HAT needs the GPIO header, not just the ribbon (established 2026-09-18).** Raspberry
+Pi's [PCIe connector standard](https://pip.raspberrypi.com/documents/RP-008298-DS-pcie-connector-standard.pdf)
+rates the ribbon's 5 V pins at 500 mA each, 1 A total, and its detect pin makes the
+bootloader probe PCIe without an ID EEPROM — so the original AI HAT+ (Hailo-8L, about
+1.5 W) is reported to run on the ribbon alone
+([forum](https://forums.raspberrypi.com/viewtopic.php?t=379842), no staff confirmation).
+The AI HAT+ 2 does not fit that budget: a third-party review
+([faceofit](https://www.faceofit.com/raspberry-pi-ai-hat-2-compatibility/), not Raspberry
+Pi) gives 1.2 W idle, 3.5–4.5 W vision, 8 W peak on LLM loads and states it draws through
+the header. No schematic or pin list for the HAT+ 2 is published, so which header pins it
+uses beyond 5 V, ground and the ID EEPROM is unknown. Its socket carries pins that do not
+protrude, so nothing stacks above it as supplied. **Consequence: any host whose header is
+occupied cannot take it** — the hexapod's Freenove shield sits on the header on a
+fixed-height riser, so the HAT is allocated to the Devastator
+([status.md](status.md#ai-compute-purchase--ai-hat-2-jetson-or-dgx-spark)).
+
 **Other routes:** a compatible USB 3 NVMe enclosure frees PCIe for the AI HAT+ 2, but
 replaces the installed storage connection and consumes USB capacity
 ([Pi storage documentation](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html)).
+**Tried on the hexapod, 2026-09-18, and abandoned:** a Realtek RTL9210B enclosure booted
+Ubuntu 24.04 first time on UAS at 5 Gbps, but the bridge clears LBPME so the kernel
+disables discard, and forcing `provisioning_mode=unmap` then `fstrim` hung the disk and
+the host until power-cycled; the filesystems survived. Do not force unmap on that bridge
+([wk-hexapod `test-log.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/test-log.md)).
 A dual-M.2 switch board with an M.2 accelerator can keep PCIe SSD storage while replacing
 the existing HAT. [Seeed documents SSD + Hailo-8 operation](https://wiki.seeedstudio.com/raspberry_pi_5_uses_pcie_hat_dual_hat/);
 that does not establish AI HAT+ 2 compatibility. The latter is a complete HAT, not an

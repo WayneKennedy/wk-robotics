@@ -30,9 +30,19 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
   build; the family standard is a **Pi 5**
   ([common.md](../../../docs/common.md#compute-the-two-tier-split)).
   Milestone 1 needs no Pi at all, so this genuinely does not need deciding yet — which is
-  the argument for not deciding it.
+  the argument for not deciding it. The AI HAT+ 2 now allocated here (OQ-13) needs a Pi 5.
 
 ## Perception
+
+- **OQ-13 — Fitting the AI HAT+ 2, allocated to this robot on 2026-09-18.** The owner's
+  AI HAT+ 2 (Hailo-10H, delivered 2026-09-15) could not go on the hexapod: it is powered
+  through the GPIO header, cannot be stacked on, and the hexapod's header is taken
+  ([wk-hexapod DEC-24](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md);
+  facts in [common.md](../../../docs/common.md#ai-hat-2-and-nvme)). Here the header is
+  free, but the HAT needs a **Pi 5** (OQ-06), a place on the single PCIe lane alongside
+  any NVMe (the family's [switch candidate](../../../docs/common.md#ai-hat-2-and-nvme) is
+  unverified for Hailo-10H), and a line in the power budget (DEC-07) of up to 8 W peak
+  on LLM loads, a third-party figure. Not before the drivetrain works (DEC-06).
 
 - **OQ-04 — Where pose and heading come from.** Wheel odometry on a tracked skid-steer
   is [weak by construction](architecture.md#odometry-is-weak-by-construction) — rotation
