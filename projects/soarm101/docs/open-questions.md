@@ -150,6 +150,15 @@ and not yet accepted. Do not build against one without the owner deciding.
   a joint is still, whether a median across servos is enough for every guard (`--max-ma` still
   takes the worst single servo, the weakest guard left), and what the Teensy should do at
   reflex-tier rates, where a raw ADC reading at 200-1000 Hz would trip constantly (OQ-09).
+
+  **Owner requirement, 2026-09-18: the Teensy must carry enough error handling to recover from a
+  telemetry trip rather than latch on it.** The arithmetic makes this a hard constraint, not a
+  nicety — at 1.58 % corruption, two bad readings in a row arrive **every 4 s at 1 kHz** and every
+  20 s at 200 Hz, so the two-sample debounce that works at 20 Hz is unusable on the reflex tier.
+  The family-level rule, the trust ranking (position authoritative, analogue channels confirmed
+  before believed) and what is still unresolved about the recovery policy are in
+  [`common.md` → Compute](../../../docs/common.md#compute-the-two-tier-split). This is a
+  requirement on milestone 5's firmware, and it belongs in its design before code is written.
   **Position is trustworthy and the control loop rests on it**, which is why the OQ-17 tuning
   stands. Original framing below.
 

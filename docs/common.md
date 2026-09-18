@@ -355,6 +355,41 @@ recorded so the two below are designed with it in mind, not because it is planne
 real-time and ROS 2 over USB adds jitter that destabilises an inverted pendulum. IMU → PID →
 output closes on the MCU; the Pi sends setpoints and reads telemetry.
 
+**The second rule: the reflex tier must recover from a telemetry fault, not latch on one**
+(owner, 2026-09-18). A bench tool with a human watching may stop and hold; the reflex tier is the
+layer that has to keep a robot safe when nobody is watching, so **losing a telemetry channel must
+not mean losing the robot.** This is not hypothetical — the STS3215's ADC channels corrupt at
+~1.58 % while driving ([above](#configuring-a-servo--true-for-every-sts-project)), and that rate
+scales brutally with loop frequency:
+
+| Loop rate | A bad ADC reading every | Two in a row every | Three in a row every |
+|---|---|---|---|
+| 20 Hz (today's host tools) | 3.2 s | 200 s | 3.5 h |
+| 200 Hz | 0.3 s | 20 s | 21 min |
+| 1000 Hz | 0.06 s | **4 s** | 4 min |
+
+**Debouncing alone cannot work at reflex rates at any practical depth** — the two-sample debounce
+that is adequate at 20 Hz would false-trip every four seconds at 1 kHz. What the reflex tier needs
+instead:
+
+- **Rank the sources by trustworthiness.** Position is encoder-derived and has never yet produced
+  a bad value, so a tracking fault is authoritative and may act immediately. Every analogue
+  channel — current, temperature, voltage — must be **confirmed before it is believed**: a median
+  across the servos on the rail, a physical-plausibility bound, or a sustained trend.
+- **Distinguish noise from signal rather than filtering both.** A genuine over-temperature rises
+  and persists; a corrupt reading is isolated and returns to the trend. Filtering hard enough to
+  hide the first is worse than the false trip it prevents.
+- **Degrade rather than halt.** If a channel becomes unusable, fall back — a thermal estimate from
+  duty cycle, a reduced envelope, a lower speed limit — and **report the degradation upward**, so
+  the intent tier knows it is flying on reduced instruments.
+- **Keep a latching path for real faults**, and make its threshold explicit. Recovery must not
+  become a robot that ignores a genuine jam.
+
+**Unresolved and deliberately not guessed at here:** the confirmation counts, the recovery
+conditions, what escalates to the intent tier versus what the reflex tier handles alone, and
+whether a fault should ever require a human to clear it. SO-ARM101 is the first project to face
+this, under its OQ-09.
+
 **What is *not* a tier: a smart sensor.** A camera that computes depth or runs a detector
 on-board closes no control loop, takes no setpoints and offers no graceful degradation —
 if it dies, the intent tier is blind wherever the depth was computed. It is a peripheral
