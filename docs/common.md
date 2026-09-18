@@ -617,6 +617,34 @@ that does not establish AI HAT+ 2 compatibility. The latter is a complete HAT, n
 M.2 module. Its Hailo-10H and 8 GB RAM add LLM/VLM support absent from Hailo-8;
 [Raspberry Pi rates its vision performance as comparable to the 26-TOPS AI HAT+](https://www.raspberrypi.com/products/ai-hat-plus-2/).
 
+#### Operating system for the HAT's Pi 5
+
+**Checked 2026-09-18 against vendor and community pages; no hardware test here.** The
+Hailo-10H needs the **HailoRT 5.x** stack (5.1–5.3 seen); the Hailo-8 era 4.x stack does
+not drive it.
+
+- **Raspberry Pi OS (bookworm, 64-bit) is the supported path:** one meta-package,
+  `hailo-h10-all` (runtime, PCIe kernel module, firmware, Python bindings, TAPPAS
+  GStreamer plugins), plus `dtparam=pciex1_gen=3` in `config.txt`. But **ROS 2 Jazzy has
+  no binary packages for Debian**, so the family's intent-tier stack would be a source
+  build or a container — the route the hexapod abandoned (its DEC-07).
+- **Ubuntu 24.04 works and is the unsupported path:** Hailo publishes arm64 `.deb`s for
+  HailoRT and the PCIe driver (DKMS, built against the running kernel) on its Developer
+  Zone (login required); community reports on Pi 5 + Ubuntu 24.04 have `/dev/hailo0` and
+  inference working, and at least one Hailo-10H LLM guide runs on Ubuntu Server 24.04.
+  What does not come across: Raspberry Pi's `hailo-h10-all` packaging, `rpicam-apps` and
+  the TAPPAS-based examples (reported not to build on Ubuntu without source changes).
+  Sources: [Canonical's guide (Hailo-8L)](https://ubuntu.com/blog/hackers-guide-to-the-raspberry-pi-ai-kit-on-ubuntu),
+  [Hailo community, Ubuntu 24.04 driver install](https://community.hailo.ai/t/hailort-driver-installation-issues-raspberry-pi-5-ubuntu-desktop-24-04-01-lts/12002),
+  [Hailo-10H on Ubuntu Server 24.04](https://pudding-entertainment.medium.com/running-local-llms-on-raspberry-pi-5-and-hailo-ai-hat-2-b999fa240319),
+  [Hailo-10H on Raspberry Pi OS](https://coreconduit.com/techlounge/guides/raspberry-pi/hailo-10h-setup.html).
+
+**Recommendation, not decided:** Ubuntu 24.04, because the intent tier is ROS 2 Jazzy
+from apt on every project, and the cost is one DKMS driver build plus doing without
+Raspberry Pi's example apps. A bench test on a spare Pi 5 settles it before the tank
+needs it; the driver version, kernel and `hailortcli fw-control identify` output belong
+in the Devastator's record when it is run.
+
 ### AI compute — purchase comparison
 
 **Researched 2026-09-13; none tested here.** Purchase state is tracked in
