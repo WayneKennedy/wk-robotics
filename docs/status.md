@@ -173,13 +173,22 @@ corner, not steady-state error; and the honest time-parameterisation of 2026-09-
 **Maplin desk PSU, 12 V 3 A**, which never exceeded 16% of its rating — ample, and OQ-03's
 recommendation is unchanged for lifting and stalling.
 
-**Two corrections came out of it, both worth carrying.** A first pass claimed the rail sag was the
-*current path*; it is not established — the servos' own ADC cannot separate wiring drop from a dip
-inside the servo, so the bulk-capacitance recommendation is weaker than written, and upstream asks
-for none (OQ-03, corrected after the owner challenged it). And **the bus corrupts 1.3-2.4% of
-telemetry reads and always has**, on every supply — recorded until now as isolated incidents. That
-has caused false guard trips, is mitigated by a plausibility filter in `shapes.py`, and is raised
-as **OQ-18**; it matters before the Teensy reads telemetry at reflex-tier rates (OQ-09).
+**The headline correction: the rail sag never existed** (OQ-03, closed 2026-09-18). It had been on
+record since 2026-09-14, with a bulk-capacitance recommendation built on it. Logging all six
+servos' voltage instead of `min()` showed **no moving servo ever below 11.4 V**, with the only low
+samples isolated single frames on the two joints that were *not* moving. The figure was `min()`
+across six servos catching corrupt frames — ~6000 chances a run — so it measured **the bus's error
+rate, not the supply**, which is why 2 A, 3 A and 10 A all "sagged" alike. True rail under load is
+11.9-12.1 V, and no capacitance is indicated.
+
+That makes **OQ-18 — the bus corrupts 1.3-2.4% of telemetry reads, on every supply, and always
+has** — the more serious thread: it does not merely trip guards, it **manufactured a finding that
+survived four days and three supplies**. Mitigated in `shapes.py` (temperature plausibility filter;
+the voltage guard now uses the median of six rather than the minimum), not diagnosed. It matters
+before the Teensy reads telemetry at reflex-tier rates (OQ-09).
+
+**Method note worth carrying to other projects: `min()` and `max()` are broken statistics on a bus
+with a known error rate**, and this repo had extreme-value guards throughout.
 
 **The arm is parked, torque off, on the bench, and the tuning is durable** — power-cycled
 2026-09-18, after which all four arm joints still read `P_Coefficient` 32 and every position limit

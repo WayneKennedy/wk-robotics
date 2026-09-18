@@ -10,6 +10,52 @@ Each entry: date · what was tested · conditions · result · what changed as a
 
 ## Entries
 
+### 2026-09-18 · There is no rail sag. It was `min()` over a noisy bus, for four days
+
+**Why:** OQ-03 had carried a "rail dips to ~10.5 V" finding since 2026-09-14, and a recommendation
+for bulk capacitance built on it. The owner challenged the recommendation as disproportionate. The
+test that settled it needed no instrument: **the four joints tracing a cube share a rail with two
+that sit still**, and each servo reports its own voltage. A real drop in the leads reaches every
+servo on that copper; a servo dipping as it commutates does not.
+
+**Method:** `shapes.py` was changed to log **all six servos' voltage** instead of only
+`min(v.values())` — the minimum was discarding exactly the information needed. Cube at 8 cm/s,
+2 loops, 1022 samples.
+
+| Servo | Role | min V | median V | samples < 11.5 V |
+|---|---|---|---|---|
+| `shoulder_pan` | **moving** | 11.8 | 11.9 | 0 |
+| `shoulder_lift` | **moving** | 11.8 | 12.0 | 0 |
+| `elbow_flex` | **moving** | 11.8 | 12.0 | 0 |
+| `wrist_flex` | **moving** | 11.4 | 12.1 | 2 |
+| `wrist_roll` | *idle* | **10.8** | 12.0 | 3 |
+| `gripper` | *idle* | **10.6** | 12.0 | 2 |
+
+**Result: no moving servo ever read below 11.4 V, and not one sample in 1022 had any moving servo
+under 11.0 V.** Every low reading was an **isolated single sample with 12.0 V on both sides of
+it** — seven in the whole run — and the two deepest were on the joints doing nothing.
+
+**The sag never existed.** The logged "rail minimum" was `min()` across six servos, and six servos
+times a thousand samples is **~6000 chances per run to catch one corrupted frame**. At the
+corruption rate of [OQ-18](open-questions.md) several land low every run. That is why a 2 A brick,
+a 3 A desk supply and a 10 A bench supply all "sagged" to the same 10.4–10.9 V regardless of load:
+**the figure was measuring the bus's corruption rate, not the supply.** The true rail under load is
+**11.9–12.1 V**, a droop of about 0.1 V.
+
+**Changed as a result:** the `--min-v` guard now trips on the **median** of the six, not the
+minimum — a real sag pulls every servo down together, a bad frame moves one, and the median is
+immune to the latter. Re-run afterwards: **rail min 11.9 V** at the default 10.0 V guard, where
+every previous run had reported 10.5. Per-servo voltage is now logged permanently. **OQ-03's sag
+question is closed and the bulk-capacitance case with it**; OQ-18 gains the knowledge that the
+corruption has been silently contaminating another measurement for four days.
+
+**Lesson worth keeping: `min()` and `max()` are broken statistics on a bus with a known error
+rate.** Every extreme-value guard in this repo was reading the noise floor, not the signal. The
+temperature guard had the same fault and was fixed the same day; the current guard (`--max-ma`,
+worst single servo) has it still, and is only safe because it is debounced and nothing has come
+near it.
+
+
 ### 2026-09-18 · Tuning the position loop: 4.6 -> 7.5 cm/s, and the bus corruption nobody had counted
 
 **Supply:** a **Maplin desk PSU, selectable 12 V 3 A**, on the barrel jack, regulated and steady

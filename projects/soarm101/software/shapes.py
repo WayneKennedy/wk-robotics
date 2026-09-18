@@ -226,7 +226,8 @@ def main():
         b.write("Acceleration", m, a.acceleration, num_retry=5); b.write("Goal_Velocity", m, a.goal_velocity, normalize=False, num_retry=5)
     DRIVE = MOVING + ["gripper"] if a.jaw_cycle else MOVING          # the approach keeps MOVING: the jaw stays put on the way in
     log = open(HERE / "logs" / f"shapes_{time.strftime('%Y%m%d_%H%M%S')}.csv", "w", newline=""); w = csv.writer(log)
-    w.writerow(["t", "loop", "point", *DRIVE, *[m + "_p" for m in DRIVE], "max_mA", "sum_mA", "max_T", "min_V"])
+    w.writerow(["t", "loop", "point", *DRIVE, *[m + "_p" for m in DRIVE], "max_mA", "sum_mA", "max_T", "min_V",
+                *[m + "_V" for m in NAMES]])
     dt = 1 / a.rate; t0 = time.time(); peak = 0.0
 
     # ~1.5-2.4% of telemetry reads come back corrupted on this bus — measured across every run
@@ -249,7 +250,16 @@ def main():
                 warm[m] = x
         # max_mA is the worst single servo — the per-servo guard. sum_mA is what the SUPPLY sees,
         # and is the number that matters for sizing a brick or hunting a brownout (2026-09-17).
-        return p, max(c.values()) * 6.5, max(t.values()), min(v.values()) / 10, sum(c.values()) * 6.5
+        # per-servo volts are kept, not just the minimum: the joints that are NOT moving share the
+        # rail with the ones that are, so comparing them separates a real drop in the leads from a
+        # servo measuring its own commutation dip (OQ-03, 2026-09-18).
+        # The GUARD uses the MEDIAN of the six, not the minimum. A real sag pulls every servo on the
+        # shared rail down together; a corrupt frame moves one. min() over six servos and a thousand
+        # samples is ~6000 chances to catch a bad frame, which is exactly what produced the phantom
+        # "10.5 V rail sag" in every run from 2026-09-14 to 2026-09-18 (OQ-03, closed). The raw
+        # minimum is still logged in min_V, and every servo's own reading in the per-servo columns.
+        vs = sorted(x / 10 for x in v.values())
+        return p, max(c.values()) * 6.5, max(t.values()), (vs[2] + vs[3]) / 2, sum(c.values()) * 6.5, v, vs[0]
 
     def hold_here(reason):
         p = b.sync_read("Present_Position", normalize=False, num_retry=5)
@@ -271,8 +281,9 @@ def main():
             time.sleep(clock["next"] - now)
         else:
             clock["late"] += 1; clock["next"] = now
-        p, ma, T, V, sm = tele()
-        w.writerow([f"{time.time()-t0:.3f}", loop, i, *[raw.get(m, p[m]) for m in DRIVE], *[p[m] for m in DRIVE], f"{ma:.0f}", f"{sm:.0f}", T, f"{V:.1f}"])
+        p, ma, T, V, sm, vall, vmin = tele()
+        w.writerow([f"{time.time()-t0:.3f}", loop, i, *[raw.get(m, p[m]) for m in DRIVE], *[p[m] for m in DRIVE], f"{ma:.0f}", f"{sm:.0f}", T, f"{vmin:.1f}",
+                    *[f"{vall[m]/10:.1f}" for m in NAMES]])
         lag = max(abs(p[m] - raw[m]) for m in keys)
         clock["lag"] = max(clock["lag"], lag); clock["sum"] = max(clock["sum"], sm); clock["v"] = min(clock["v"], V)
         if lag > a.track: hold_here(f"TRACKING lag {lag} at loop {loop} point {i}"); return False
@@ -282,7 +293,7 @@ def main():
         if over["ma"] < 2: peak = max(peak, ma) if ma <= a.max_ma else peak
         if over["ma"] >= 2: hold_here(f"CURRENT {ma:.0f} mA at loop {loop} point {i}"); return False
         if over["T"] >= 2: hold_here(f"TEMPERATURE {T} °C"); return False
-        if over["V"] >= 2: hold_here(f"RAIL {V:.1f} V (below --min-v {a.min_v}) at loop {loop} point {i}, sum {sm:.0f} mA"); return False
+        if over["V"] >= 2: hold_here(f"RAIL median {V:.1f} V (below --min-v {a.min_v}) at loop {loop} point {i}, sum {sm:.0f} mA"); return False
         if stop_file.exists(): hold_here("stop file"); return False
         return True
 
@@ -317,10 +328,10 @@ def main():
                     # command a half-open jaw that belongs to neither edge, so take the new edge's value
                     cmd["gripper"] = int(round(j0 + (j1 - j0) * u)) if along[j][0] == along[j + 1][0] else j1
                 if not step(cmd, loop, j, dt, DRIVE): return 1
-            p, ma, T, V, sm = tele()
+            p, ma, T, V, sm, _v, _vm = tele()
             print(f"loop {loop} done  {time.time()-t0:.1f} s  peak {peak:.0f} mA  max lag {clock['lag']} of {a.track}  {T} °C  rail min {clock['v']:.1f} V  sum peak {clock['sum']:.0f} mA"
                   + (f"  LATE {clock['late']}" if clock["late"] else ""))
-        p, ma, T, V, sm = tele(); tcp = K.fk(joints, K.raw_to_rad(p))["gripper_frame_joint"][:3, 3]
+        p, ma, T, V, sm, _v, _vm = tele(); tcp = K.fk(joints, K.raw_to_rad(p))["gripper_frame_joint"][:3, 3]
         el = time.time() - t0
         # {V} here is the closing sample, not a minimum — labelling it "V min" understated the rail
         # sag by over a volt in every run logged before 2026-09-17. The true minimum is clock["v"].

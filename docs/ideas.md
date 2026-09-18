@@ -462,10 +462,16 @@ which would give it a job.
 
 A Teensy sampling a rail through a divider at tens of kSPS, streaming to the host that is
 driving the robot, so a voltage trace and the robot's own telemetry share one time base.
-Prompted by [SO-ARM101 OQ-03](../projects/soarm101/docs/open-questions.md): its rail dips to
-~10.5 V, and the servos' own ADCs — which sit downstream of the connector and sample at 20 Hz —
-**cannot tell a real drop from an artefact of the servo measuring itself**. A basic multimeter
-cannot either; the event is milliseconds long and a cheap meter integrates over ~100 ms.
+**Its original justification is gone, and that is recorded here rather than quietly dropped.** It
+was prompted by SO-ARM101 OQ-03's rail sag — which **turned out not to exist** (2026-09-18): the
+dips were corrupt frames caught by a `min()` across six servos, and the rail holds 11.9–12.1 V.
+There is nothing left for a voltage logger to find there.
+
+**What remains is a different and better-posed want.** The measurement this family cannot make is
+**anything transient correlated with what a robot was doing at the time** — servo current at a
+stall, rail behaviour on a drone's arming surge, a printer's heater duty. That is a real gap and a
+reusable instrument; it is just no longer urgent, and it should not be built on the strength of a
+question that has since closed.
 
 - **Board: the Teensy 4.0** ([wk-inventory `stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md)),
   freed from koala-bot 2026-09-18. Its one limitation — micro-ROS lists it "Not tested" — **does
@@ -481,14 +487,16 @@ cannot either; the event is milliseconds long and a cheap meter integrates over 
     Either have the host send one marker byte at a known `time.time()` and the logger stamp its
     arrival (±50 ppm drift is ±3 ms over a minute), or have `shapes.py` hold the arm still for a
     second mid-run and align the trace on the flat spot.
-  - **It answers OQ-03, not [OQ-18](../projects/soarm101/docs/open-questions.md).** The 1.3–2.4%
+  - **It answers neither open question as things stand.** OQ-03 is closed, and for
+    [OQ-18](../projects/soarm101/docs/open-questions.md) the 1.3–2.4%
     corrupted servo frames are a *serial* fault; chasing those wants a **logic analyser** on the
     half-duplex bus, which is a different instrument. Decide which question is being bought.
   - Whether a ~£30–80 USB scope would simply be better. Against it: a scope captures a window,
     where what OQ-03 needs is a whole run correlated against the robot's own telemetry.
-- **Cheaper first:** log **per-servo** voltage instead of `min()` during a cube. The two idle
-  joints share the rail with the four moving ones, so if only the movers dip, the sag is internal
-  and no instrument is needed. Free, and it may close OQ-03 outright.
+- **Already done, and it closed the question:** logging per-servo voltage instead of `min()`
+  during a cube cost nothing and disproved the sag outright (2026-09-18). Worth remembering as the
+  pattern — **exhaust what the machine already measures before buying an instrument to measure
+  it.**
 
 ---
 

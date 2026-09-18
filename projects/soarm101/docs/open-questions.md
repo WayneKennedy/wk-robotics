@@ -42,6 +42,16 @@ and not yet accepted. Do not build against one without the owner deciding.
   **0.72 A peak on its panel through the extents cycle** (one joint moving at a time)
   ([`test-log.md`](test-log.md)) — a stiff bench source, not a decision on the arm's supply.
 
+  **2026-09-18 — THE SAG DOES NOT EXIST. Closed.** Logging all six servos' voltage instead of
+  `min()` showed that **no moving servo ever reads below 11.4 V**, while the only low samples are
+  **isolated single frames on the two joints that are not moving** ([`test-log.md`](test-log.md)).
+  The logged "rail minimum" was `min()` across six servos — ~6000 chances a run to catch a corrupt
+  frame at OQ-18's rate — so it measured **the bus's corruption rate, not the supply**, which is
+  why every supply from 2 A to 10 A "sagged" identically. **True rail under load: 11.9–12.1 V.**
+  **No bulk capacitance is indicated, and there is nothing for a multimeter or a logger to find
+  here.** The guard now uses the median of the six. Everything below is kept as the record of how
+  a phantom survived four days.
+
   **2026-09-17 — the sag is not the supply. Where it *is* remains open.** The
   owner ran the arm from a hobby **2 A** brick on the barrel jack to test for brownouts. Across
   the same cube at 5 cm/s, the rail minima were **10.9 V and 10.4 V on the 10 A bench supply**
@@ -70,7 +80,11 @@ and not yet accepted. Do not build against one without the owner deciding.
   **Do not run fast or loaded moves from it.** The recommendation above is unchanged on the
   supply: 12.0 V regulated, 10 A, into the screw terminals.
 
-  **On the bulk capacitance, the recommendation is weaker than it was written (2026-09-18).**
+  **On the bulk capacitance: no longer indicated at all (2026-09-18, after the sag was disproved).**
+  What follows was written when the sag was still believed real, and already argued the case was
+  weak; it is now moot for this arm. Kept because the reasoning about provenance still applies.
+
+  **The recommendation is weaker than it was written.**
   **Upstream asks for none.** `SO-ARM100`'s README specifies only "a 12V 5A+ power supply" for
   this exact variant — a barrel-jack brick — and the repo mentions no capacitor, fuse or brownout
   anywhere. The family rule comes from
@@ -132,6 +146,12 @@ and not yet accepted. Do not build against one without the owner deciding.
   samples in a row is near-certain over a long run, so **the two-sample debounce never protected
   anything**. A corrupted sample carried the same value, 78, in both the temperature and current
   columns, so **frames are being mis-parsed, not servos misreporting**.
+
+  **It silently produced a four-day phantom.** The "rail sags to 10.5 V" finding that OQ-03 carried
+  from 2026-09-14, and the bulk-capacitance case built on it, were **entirely this corruption**
+  read through a `min()` across six servos (2026-09-18). That is the strongest argument for
+  chasing it: it does not merely trip guards, it **manufactures findings**, and it did so across
+  three supplies without once looking like noise.
 
   **Mitigated, not fixed:** `shapes.py` now rejects physically impossible temperature jumps
   (> 5 C in one 50 ms step) and reports the count. Candidate causes, none tested: electrical noise
