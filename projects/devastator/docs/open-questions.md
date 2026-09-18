@@ -50,11 +50,11 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
   SLAM for global pose, which is the route the hexapod already runs (RealSense +
   RTAB-Map). Undecided, and deliberately deferred past milestone 1.
 
-- **OQ-09 — Which RealSense cameras, and whether two are viable.** The models fitted to
-  the first build are **not confirmed on the hardware**. Invoices show one D435i by part
-  number and a second unit whose model is unstated ([`sourcing.md`](sourcing.md)). Two RealSense D4xx share a single USB 3 host
-  controller on a Pi 4, a known bandwidth conflict and a **plausible, unverified** second
-  reason the original bring-up failed. **Recommendation, not accepted:** start with one.
+- **OQ-09 — Which depth camera.** The first build's pair was a D435i and a T265
+  ([`sourcing.md`](sourcing.md)); neither is on the tank now. The T265 is end-of-life and
+  unsupported by current librealsense, so it is out. The family's one D435i is contested:
+  its allocation is open in [wk-robotics `status.md`](../../../docs/status.md). Roadmap
+  milestone 2 plans **one** depth camera; which, and whether it is bought, is open.
 
 ## Mechanical
 

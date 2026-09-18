@@ -55,6 +55,9 @@ Raised by the owner on 2026-09-09 while deciding not to modify the Freenove kit'
 path (`wk-hexapod` OQ-14): any significant deviation from Freenove's design — a USB-C PD
 power path that charges with the servos live, or anything else structural — would be a
 new, printed hexapod rather than a change to that robot.
+Reinforced 2026-09-18: the kit cannot take ST3215s (standard-size PWM hobby servos, lugged
+at each end, driven from a PWM board on the GPIO riser), and the owner judges a new custom
+design more feasible than remaking it ([`status.md`](status.md)).
 
 - **Reuses:** everything above the hardware in `wk-hexapod` — controller, SLAM, Nav2,
   autonomy — which is written against the topic contract and a servo-angle interface, not

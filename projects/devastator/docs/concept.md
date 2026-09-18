@@ -61,7 +61,7 @@ The arithmetic supports that account and sharpens it:
 | Load | Draw |
 |---|---|
 | Raspberry Pi 4 under load | ~5–7 W |
-| RealSense depth camera × 2 | ~2–3.5 W each |
+| RealSense D435i + T265 | ~2–3.5 W and ~1.5 W (T265 vendor figure) |
 | Two 6 V motors at a modest 1 A each | ~12 W (**2.3 A stall apiece**) |
 | **Total demand** | **~25–30 W** |
 
@@ -73,10 +73,10 @@ a third of the supply lost to the driver before the motors saw any of it.
 is the most useful thing this repository records, because it says what the resurrection
 must do differently.
 
-**A plausible second cause, unverified:** two RealSense D4xx share a single USB 3 host
-controller on a Pi 4, which is a known bandwidth conflict. This may be why final
-bring-up never succeeded even where power allowed. Which two camera models were fitted
-is **unrecorded**.
+**A possible second cause, unverified:** both cameras shared the Pi 4's USB 3 host
+controller. The pair was a D435i and a T265 ([`sourcing.md`](sourcing.md)), not two D4xx
+depth cameras, so the known two-D4xx bandwidth conflict does not apply as stated; whether
+this pair conflicted is untested.
 
 ## What the resurrection does differently
 

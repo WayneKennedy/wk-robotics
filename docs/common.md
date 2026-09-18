@@ -498,9 +498,9 @@ robot:
 sensor streams* ([ideas.md](ideas.md#physical-ai-and-the-hive-mind)), so perception must
 stay on the robot. The intent host is a Pi 5 on every project, so the Pi 5 is the
 perception bottleneck, and moving stages into the sensor or an accelerator is the only
-lever that does not change the host. The hexapod (D435i, all SLAM on the Pi) and the tank
-(two RealSense cameras on one USB 3 host — `wk-devastator` OQ-09) are the two instances so
-far; koala-bot's CSI camera-eyes are where an in-sensor module would go.
+lever that does not change the host. The hexapod (D435i, all SLAM on the Pi) is the one instance
+so far; the tank's depth camera is undecided (`wk-devastator` OQ-09), and koala-bot's CSI
+camera-eyes are where an in-sensor module would go.
 
 **What the current products actually do on-device (checked 2026-09-09):**
 
@@ -508,7 +508,10 @@ far; koala-bot's CSI camera-eyes are where an in-sensor module would go.
   ASIC; the host receives finished depth frames over USB 3. **No SLAM on-device** — the
   hexapod's `slam_toolbox` and RTAB-Map run on the Pi.
 - **RealSense T265** was the only member that ran visual-inertial SLAM on-device and
-  emitted pose. **Discontinued.** No current RealSense does on-device SLAM.
+  emitted pose. **Discontinued.** No current RealSense does on-device SLAM. librealsense
+  removed its code at v2.54.1; the last validated release for it is v2.50.0
+  ([release notes](https://github.com/IntelRealSense/librealsense/wiki/Release-Notes)), so
+  using one means pinning a 2022-era driver. The family owns one, unused.
 - **RealSense D555 PoE:** D450 optical module, IMU, and the new *Vision SoC V5* —
   disparity, motion estimation, a vision DSP and an ISP on-device; depth to 1280 × 720 at
   60 fps. Power and data over one Ethernet cable, and it **streams to ROS 2 directly
