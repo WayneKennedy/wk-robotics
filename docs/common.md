@@ -369,8 +369,14 @@ scales brutally with loop frequency:
 | 1000 Hz | 0.06 s | **4 s** | 4 min |
 
 **Debouncing alone cannot work at reflex rates at any practical depth** — the two-sample debounce
-that is adequate at 20 Hz would false-trip every four seconds at 1 kHz. What the reflex tier needs
-instead:
+that is adequate at 20 Hz would false-trip every four seconds at 1 kHz.
+
+**Where the numbers apply.** The table is measured on **STS3215 servos**, which only **SO-ARM101**
+and **koala-bot** (its limbs) use. **wk-devastator** has a reflex tier but no servos — two DC
+motors on a driver, so its telemetry is encoders and driver current sense, whose error rates are
+**unmeasured**; the rule applies to it, the figures do not. **wk-hexapod** drives hobby PWM servos
+straight from its Pi and has no reflex tier, so neither applies. What a reflex tier needs, whatever
+its telemetry:
 
 - **Rank the sources by trustworthiness.** Position is encoder-derived and has never yet produced
   a bad value, so a tracking fault is authoritative and may act immediately. Every analogue
