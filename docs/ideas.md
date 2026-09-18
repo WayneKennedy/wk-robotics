@@ -143,7 +143,21 @@ idea — LeKiwi base, two SO-101 arms, a head — with three owner-set departure
   head is two servos; koala-bot has a 3-RPS neck design.
 
 **Locomotion is open.** The owner doubts a three-omniwheel kiwi base: its balance under a
-tall torso, and its footing on anything but flat indoor carpet. The alternative is a
+tall torso, and its footing on anything but flat indoor carpet. **Upstream reached the
+same conclusion** (read 2026-09-18): XLeRobot 0.4.0 (2025-12-02) replaced the LeKiwi
+omni base with a **dual-wheel differential base** — "more stable, higher moving speed,
+better passability, and larger torque", at the cost of "one DoF of moving left and
+right" — in two versions: the same 12 V STS3215 servos in wheel mode on 5-inch walker
+wheels (the default; upstream calls the servos noisy and limited in speed, torque and
+payload), or brushless scooter motors on the Bracket Bot platform. The same release made
+the arm base "more versatile (choose your own mounting direction)". Its assembly page is
+still marked under construction and has no BOM
+([assembly](https://xlerobot.readthedocs.io/en/latest/hardware/getting_started/assemble_2wheel.html),
+[hardware readme](https://github.com/Vector-Wangel/XLeRobot/tree/main/hardware)).
+For the record, LeKiwi's base as-is is three 12 V ST3215s (or a 5 V variant) on 4-inch
+omniwheels ([BOM](https://github.com/SIGRobotics-UIUC/LeKiwi/blob/main/BOM.md)), and
+XLeRobot 0.3.0 reused it unchanged: 17 STS3215 12 V = 12 arms + 3 base + 2 head
+([BOM](https://xlerobot.readthedocs.io/en/latest/hardware/getting_started/material.html)). The alternative is a
 differential base on the **two 37D 12 V 122 rpm gearmotors in stock** with the Pololu
 TB9051FTG beside them (private wk-inventory `docs/stock.md`), plus casters — generic and
 heavier, at the cost of holonomic motion, which LeKiwi has and a two-arm manipulator
