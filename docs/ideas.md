@@ -113,6 +113,41 @@ recorded so it is not re-derived.
 
 ---
 
+### A two-armed wheeled torso — the Orin ground robot
+
+**Raised by the owner 2026-09-18** as the direction for the Jetson Orin Nano + D435i
+pair ([`status.md`](status.md)). Agreed in principle; **no name, no repo, nothing
+decided beyond the shape.** It is [XLeRobot](https://github.com/Vector-Wangel/XLeRobot)'s
+idea — LeKiwi base, two SO-101 arms, a head — with three owner-set departures:
+
+- **A printed humanoid torso, not a cart.** The IKEA-cart body is ruled out outright.
+- **The arms hang vertically from shoulders**, not mounted flat as two table-top SO-ARMs.
+  The SO-101 was designed table-mounted with its first joint vertical; hanging it puts
+  gravity across joints 1–2 and changes the reach envelope. Unexamined. koala-bot's
+  shoulder work (its DEC-54: roll-first, on the torso's lateral faces) is the closest
+  prior art in the family.
+- **The head sits on a neck just above the shoulders** and carries the D435i. XLeRobot's
+  head is two servos; koala-bot has a 3-RPS neck design.
+
+**Locomotion is open.** The owner doubts a three-omniwheel kiwi base: its balance under a
+tall torso, and its footing on anything but flat indoor carpet. The alternative is a
+differential base on the **two 37D 12 V 122 rpm gearmotors in stock** with the Pololu
+TB9051FTG beside them (private wk-inventory `docs/stock.md`), plus casters — generic and
+heavier, at the cost of holonomic motion, which LeKiwi has and a two-arm manipulator
+finds convenient. Nothing measured; kiwi-drive performance on carpet pile and thresholds
+is a reasonable doubt, not a finding.
+
+**What it reuses:** the finished SO-ARM101 (a second arm is still to build, SO-ARM101
+DEC-15); the 12 V STS3215 pool (count against koala-bot's twelve before assuming any are
+free); a spare Pi 5 or the Orin; the D435i; LeKiwi/XLeRobot's LeRobot software.
+**What it costs:** CAD for the torso, shoulders, neck and base — simpler than koala-bot's
+limbs, all boxes and mounts — and the second arm. Powered up every day, which is the
+owner's test for the pair's home.
+
+**Ordering, assistant's recommendation, not accepted:** a LeKiwi base first if the omni
+doubt is settled in its favour (it is stage one of XLeRobot either way); otherwise the
+differential base first, since it is the part with no upstream to lean on.
+
 ## Externally designed builds
 
 Existing open designs worth building as-is, rather than projects to design. The value is

@@ -134,8 +134,10 @@ that would be powered up every day:
    ([BOM](https://xlerobot.readthedocs.io/en/latest/hardware/getting_started/material.html)),
    with a Jetson Orin Nano variant sold as a kit. The differences from the owner's
    picture are the base (omniwheels on three STS3215s, not the 37Ds) and the torso (an
-   IKEA cart, not a printed humanoid). **So LeKiwi is stage one of direction 2, not an
-   alternative to it** — assistant's observation, not accepted.
+   IKEA cart, not a printed humanoid). **Agreed in principle by the owner 2026-09-18,
+   with departures** — printed torso (no cart), arms hanging from shoulders, head on a
+   neck, and doubt about the omni base. Banked as an idea:
+   [`ideas.md`](ideas.md#a-two-armed-wheeled-torso--the-orin-ground-robot).
 
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 
