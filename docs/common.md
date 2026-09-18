@@ -623,9 +623,17 @@ M.2 module. Its Hailo-10H and 8 GB RAM add LLM/VLM support absent from Hailo-8;
 Hailo-10H needs the **HailoRT 5.x** stack (5.1–5.3 seen); the Hailo-8 era 4.x stack does
 not drive it.
 
-- **Raspberry Pi OS (bookworm, 64-bit) is the supported path:** one meta-package,
-  `hailo-h10-all` (runtime, PCIe kernel module, firmware, Python bindings, TAPPAS
-  GStreamer plugins), plus `dtparam=pciex1_gen=3` in `config.txt`. But **ROS 2 Jazzy has
+- **Raspberry Pi OS 64-bit, trixie, is the supported path** per
+  [Raspberry Pi's AI documentation](https://www.raspberrypi.com/documentation/computers/ai.html):
+  one meta-package, `hailo-h10-all` (runtime, PCIe kernel module, firmware, Python
+  bindings, TAPPAS GStreamer plugins); PCIe Gen 3 is applied automatically for this HAT;
+  `hailo-all` (AI Kit / AI HAT+) is incompatible and cannot co-exist with it; the
+  bootloader must be current (`rpi-eeprom-update -a`). A **bookworm** install is not the
+  supported base — third-party guides on bookworm exist, but the official page names
+  trixie. **No Pi 5 board-revision restriction is stated**; rev 1.0 and 1.1 differ in
+  16 GB addressing and NUMA tweaks, not in the PCIe connector
+  ([revision codes](https://github.com/raspberrypi/documentation/blob/master/documentation/asciidoc/computers/raspberry-pi/revision-codes.adoc),
+  [forum](https://forums.raspberrypi.com/viewtopic.php?t=376730)). But **ROS 2 Jazzy has
   no binary packages for Debian**, so the family's intent-tier stack would be a source
   build or a container — the route the hexapod abandoned (its DEC-07).
 - **Ubuntu 24.04 works and is the unsupported path:** Hailo publishes arm64 `.deb`s for
@@ -876,7 +884,7 @@ capacity difference. eth0 is present on every unit but unused (Wi-Fi only).
 
 | Role | Board rev | OS (arm64) | Notes |
 |---|---|---|---|
-| Desktop Pi, candidate drone intent computer | Rev 1.0 (`d04170`) | Raspberry Pi OS (Debian 12 bookworm), desktop | NVMe boot (Kingston SNV2S500G 500 GB, [Pimoroni NVMe Base](#ai-hat-2-and-nvme)); installed 2024-03-27. See [Aircraft and the tiers](#aircraft-and-the-tiers). |
+| Desktop Pi, candidate drone intent computer; **carries the AI HAT+ 2 since 2026-09-18** (owner) for bring-up ahead of the Devastator | Rev 1.0 (`d04170`) | Raspberry Pi OS (Debian 12 bookworm), desktop — a rebuild is planned; OS choice [below](#operating-system-for-the-hats-pi-5) | NVMe boot (Kingston SNV2S500G 500 GB, [Pimoroni NVMe Base](#ai-hat-2-and-nvme)); installed 2024-03-27. How the HAT and the NVMe Base share the one PCIe connector on this unit is **unrecorded** — the Waveshare 2-channel switch is in hand, untested. See [Aircraft and the tiers](#aircraft-and-the-tiers). |
 | General-purpose desktop Pi | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | |
 | 3D-printer host | Rev 1.1 (`d04171`) | Raspberry Pi OS (Debian 12 bookworm), headless | |
 | wk-hexapod brain | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | Normally powered off. |
