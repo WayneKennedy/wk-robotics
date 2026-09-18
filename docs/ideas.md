@@ -122,10 +122,19 @@ idea — LeKiwi base, two SO-101 arms, a head — with three owner-set departure
 
 - **A printed humanoid torso, not a cart.** The IKEA-cart body is ruled out outright.
 - **The arms hang vertically from shoulders**, not mounted flat as two table-top SO-ARMs.
-  The SO-101 was designed table-mounted with its first joint vertical; hanging it puts
-  gravity across joints 1–2 and changes the reach envelope. Unexamined. koala-bot's
-  shoulder work (its DEC-54: roll-first, on the torso's lateral faces) is the closest
-  prior art in the family.
+  **Demonstrated 2026-09-18, by accident:** the owner's SO-ARM101 is stored clamped by its
+  base plate under a shelf, base inverted, arm hanging, gripper reaching down into a box
+  on the floor of the shelf — exactly the proposed alignment. So the mount is a *ceiling
+  mount*: the base flange fixed upside-down at shoulder height, joint 1's axis still
+  vertical, the arm's rest pose a hanging pendulum (its lowest gravity load, unlike the
+  cantilevered table pose) and its workspace below and in front of the shoulder — the
+  floor-level workspace task 1 needs. What changes is the range the shoulder-lift servo
+  works through and which way gravity loads it, not the joint arrangement; LeRobot's
+  calibration is per-joint and orientation-agnostic, but any learned policy is specific
+  to this mounting. Shoulder height is then the arm's hanging length plus gripper
+  clearance to the floor — read the link lengths from the SO-101 CAD, not the photo.
+  koala-bot's shoulder work (its DEC-54: roll-first, on the torso's lateral faces) is the
+  closest prior art in the family for the torso side of the joint.
 - **The head sits on a neck just above the shoulders** and carries the D435i. XLeRobot's
   head is two servos; koala-bot has a 3-RPS neck design.
 
