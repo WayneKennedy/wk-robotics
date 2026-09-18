@@ -647,11 +647,27 @@ not drive it.
   [Hailo-10H on Ubuntu Server 24.04](https://pudding-entertainment.medium.com/running-local-llms-on-raspberry-pi-5-and-hailo-ai-hat-2-b999fa240319),
   [Hailo-10H on Raspberry Pi OS](https://coreconduit.com/techlounge/guides/raspberry-pi/hailo-10h-setup.html).
 
-**Recommendation, not decided:** Ubuntu 24.04, because the intent tier is ROS 2 Jazzy
-from apt on every project, and the cost is one DKMS driver build plus doing without
-Raspberry Pi's example apps. A bench test on a spare Pi 5 settles it before the tank
-needs it; the driver version, kernel and `hailortcli fw-control identify` output belong
-in the Devastator's record when it is run.
+- **A third option: Raspberry Pi OS host, ROS 2 Jazzy in a container.** The Hailo device
+  is a host kernel driver exposing `/dev/hailo0`; a container sees it with
+  `--device /dev/hailo0` and the HailoRT 5.x userland installed inside, **matching the
+  host driver's version**. An Ubuntu 24.04 base image gets ROS 2 Jazzy from apt as usual.
+  Both halves then sit on supported ground: Hailo on Raspberry Pi's packaging, ROS 2 on
+  Ubuntu's. Costs: a USB serial reflex link and USB cameras pass through trivially, but
+  the CSI camera stack (`libcamera`/`rpicam`) inside a container is awkward — a point for
+  a USB or depth camera on any robot built this way (wk-devastator OQ-09); and the
+  container must be rebuilt as a routine, with its Dockerfile in the robot's repo — the
+  hexapod's container was built once and never rebuilt, which is why it went native
+  (wk-hexapod DEC-07), an operational failure rather than a technical one. HailoRT inside
+  a container on Raspberry Pi OS is **not verified here**; Hailo documents container use
+  for its own tooling.
+
+**Recommendation, not decided (revised 2026-09-18):** Raspberry Pi OS trixie as the host
+with ROS 2 Jazzy in a container for this Pi, because it keeps the HAT on its supported
+path and the ROS 2 install on its supported base, and the hexapod's Docker lesson is a
+discipline, not a blocker. Ubuntu native remains the fallback if the container cannot
+reach the HAT. Either way the bench test on this Pi settles it before the tank needs it;
+the driver version, kernel and `hailortcli fw-control identify` output belong in the
+Devastator's record when it is run.
 
 ### AI compute — purchase comparison
 
