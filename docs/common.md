@@ -884,7 +884,7 @@ capacity difference. eth0 is present on every unit but unused (Wi-Fi only).
 
 | Role | Board rev | OS (arm64) | Notes |
 |---|---|---|---|
-| Desktop Pi, candidate drone intent computer; **carries the AI HAT+ 2 since 2026-09-18** (owner) for bring-up ahead of the Devastator | Rev 1.0 (`d04170`) | Raspberry Pi OS (Debian 12 bookworm), desktop — a rebuild is planned; OS choice [below](#operating-system-for-the-hats-pi-5) | NVMe boot (Kingston SNV2S500G 500 GB, [Pimoroni NVMe Base](#ai-hat-2-and-nvme)); installed 2024-03-27. How the HAT and the NVMe Base share the one PCIe connector on this unit is **unrecorded** — the Waveshare 2-channel switch is in hand, untested. See [Aircraft and the tiers](#aircraft-and-the-tiers). |
+| Desktop Pi, candidate drone intent computer; **carries the AI HAT+ 2 since 2026-09-18** (owner) for bring-up ahead of the Devastator | Rev 1.0 (`d04170`) | Raspberry Pi OS (Debian 12 bookworm), desktop — a rebuild is planned; OS choice [below](#operating-system-for-the-hats-pi-5) | Boots from its Kingston SNV2S500G 500 GB, since 2026-09-18 in a **USB 3 enclosure**: the Pimoroni NVMe Base was removed to give the HAT the PCIe connector (owner). Enclosure bridge chip unrecorded — if it is the RTL9210B retired from the hexapod, TRIM is off and must not be forced (wk-hexapod DEC-23, test-log 2026-09-18). Installed 2024-03-27. See [Aircraft and the tiers](#aircraft-and-the-tiers). |
 | General-purpose desktop Pi | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | |
 | 3D-printer host | Rev 1.1 (`d04171`) | Raspberry Pi OS (Debian 12 bookworm), headless | |
 | wk-hexapod brain | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | Normally powered off. |
