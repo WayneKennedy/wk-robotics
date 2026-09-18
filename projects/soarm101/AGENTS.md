@@ -92,4 +92,4 @@ corner, not steady-state error. Torque, heat, slew and acceleration were each ru
 experiment. Two cautions for anyone reading older numbers: **every tool-speed figure logged
 before 2026-09-17 is ~8 % optimistic**, and **the bus corrupts 1.3–2.4 % of telemetry reads on
 every supply** (**OQ-18**), so treat a lone extreme sample as a bad frame, not a fault.
-`P` persistence awaits a power cycle; nothing else in EEPROM has ever been written.
+`P` = 32 survived a power cycle (2026-09-18) with all limits and homing offsets intact; nothing else in EEPROM has ever been written.

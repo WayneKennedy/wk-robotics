@@ -181,10 +181,9 @@ telemetry reads and always has**, on every supply — recorded until now as isol
 has caused false guard trips, is mitigated by a plausibility filter in `shapes.py`, and is raised
 as **OQ-18**; it matters before the Teensy reads telemetry at reflex-tier rates (OQ-09).
 
-**The arm is parked, torque off, on the bench.** The one thing outstanding needs the owner:
-**power-cycle the arm and re-read `P_Coefficient`** to confirm the EEPROM writes persisted. They
-were made with `Lock` = 0 as the procedure requires and read back 32, but only a power cycle
-proves it.
+**The arm is parked, torque off, on the bench, and the tuning is durable** — power-cycled
+2026-09-18, after which all four arm joints still read `P_Coefficient` 32 and every position limit
+and homing offset re-read equal to the calibration JSON.
 
 ### Untracked terrain files on the workstation
 
