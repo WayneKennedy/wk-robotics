@@ -579,6 +579,27 @@ Raspberry Pi's IMX500 support, unverified on 24.04; its one model is small (lowe
 than YOLOv8m on the HAT) and it cannot produce face embeddings; and the frames still cross
 to the Pi if video is wanted.
 
+### Depth: which kind, for which task
+
+**Owner's observation, 2026-09-19:** depth keeps turning out to be the key component,
+and depth cameras are expensive. The way out is that "depth" is three different needs,
+and only one of them wants a depth *camera*. Prices are UK retail as remembered or seen
+in passing, **unverified**; check before buying, and check stock first.
+
+| Need | What actually serves it | Owned | Cheap route (unverified prices) |
+|---|---|---|---|
+| **Mapping and navigation** (hexapod, tank): a metric range scan for SLAM and Nav2 costmaps | A 2D lidar gives a 360° laserscan directly, which is what Nav2 consumes; the hexapod's depth camera only ever made a fake laserscan from one 10-pixel band | Nothing | LD19 / LDS-type lidar ~£80–100; RPLidar A1 ~£100. Arguably better value for this task than any depth camera |
+| **Liveness / "is this surface flat?"** (door camera): coarse depth over a face-sized patch at 0.5–2 m | A few dozen range zones are enough; resolution is not the point | Dozens of HC-SR04 (one zone, no) | ST VL53L5CX / VL53L8CX 8×8-zone ToF module ~£15–25; or stereo from two cheap UVC cameras with OpenCV SGBM on the CPU, unsynchronised but fine for a still face |
+| **Manipulation and scene depth** (the toy task, obstacle shape): dense metric depth, in-sensor | The D4xx class | **One D435i**, banked with the Orin | Arducam ToF (CSI, ~£40–50, 0.15–4 m, low resolution); Luxonis OAK-D Lite ~£100–150; the D435i itself is ~£430 ex VAT new |
+| **Relative depth from one camera** (which is nearer, rough layout) | Monocular depth networks; the Hailo Model Zoo has them and `hailo-apps` ships a C++ example, so the HAT can produce it from the webcam | HAT + webcam | Free. **Not metric, and no use for liveness** — a photo of a face gets a face-shaped depth estimate |
+
+Also owned and relevant: the SO-ARM101's pair of InnoMaker UVC cameras (allocated to the
+arm) would do for a stereo experiment on the bench; the Pi 5's two CSI ports take two
+Pi camera modules for a cheap stereo head. The RealSense T265 is pose-only and obsolete.
+
+**Reading:** the two tasks that keep coming up, mapping and liveness, are the two that
+do *not* need a depth camera. Spend the one D435i where dense depth is irreplaceable.
+
 ### AI HAT+ 2 and NVMe
 
 **Documentation checked 2026-09-13; no hardware test.** Pi 5 exposes one PCIe lane on
