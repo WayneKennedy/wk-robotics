@@ -2,9 +2,9 @@
 
 Object detection and face recognition on a Raspberry Pi AI HAT+ 2 (Hailo-10H), as ROS 2
 Jazzy topics. The Devastator's intent-tier perception node (its DEC-15), developed and
-measured on the family's bench Pi 5 under Ubuntu 24.04. **State (2026-09-19): objects and
-face detection run live at 24 fps from a webcam; face recognition is wired but had no
-enrolled faces when this was written.**
+measured on the family's bench Pi 5 under Ubuntu 24.04. **State (2026-09-19): objects, face
+detection and face recognition all run live from a webcam — the owner enrolled from the
+stream and was recognised at 0.78 cosine similarity on the next frame.**
 
 ## What it does
 
@@ -70,7 +70,11 @@ apt archive, ROS 2 Jazzy from apt, plus `ros-jazzy-usb-cam`, `ros-jazzy-web-vide
 
 C920-clone UVC webcam, 640×480 MJPEG at 30 fps, both pipelines on, no faces in view:
 **24 fps, 41 ms/frame** — objects: letterbox 0.8 ms, inference 20.7 ms, parse < 0.1 ms;
-faces: letterbox 1.0 ms, inference 16.7 ms, decode 0.1 ms. The two inferences run
+faces: letterbox 1.0 ms, inference 16.7 ms, decode 0.1 ms. With one face in view and a
+one-entry gallery: **19 fps, 48 ms/frame**, identity (align + ArcFace + match) 4.2 ms;
+the owner's face read 0.78 similarity against his own enrolment, the person box 94 %.
+The 0.45 match threshold is therefore conservative for the same person; the stranger
+side is unmeasured. The two inferences run
 back-to-back synchronously in the image callback, so the frame time is their sum; the
 HAT itself benchmarks at 166 fps for YOLOv8s alone (`common.md`). Running the two
 models concurrently (`run_async`, or a second thread) is the obvious next step and is
@@ -80,9 +84,9 @@ not done.
 
 - `usb_cam` 0.8.1 segfaults with `mjpeg2rgb` at 1280×720 on this camera; 640×480 works.
   Untested: `v4l2_camera`, or YUYV at 720p (10 fps on this camera).
-- Face recognition threshold and alignment are untested on real faces at the time of
-  writing; the gallery format is deliberately plain text so the Orin half of the bench
-  (wk-robotics `docs/status.md`) can share galleries.
+- Face recognition is verified on one enrolled face; the stranger side of the match
+  threshold is unmeasured. The gallery format is deliberately plain text so the Orin
+  half of the bench (wk-robotics `docs/status.md`) can share galleries.
 - The SCRFD score maps may arrive as logits or probabilities depending on the HEF; the
   decoder checks the range each frame and applies a sigmoid only if needed.
 - The HailoRT Python binding does not install on Ubuntu 24.04 (wants Python 3.13), which

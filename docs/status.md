@@ -170,7 +170,8 @@ the Orin half's home follows its allocation, undecided — keep it in a folder u
 repo's `projects/` until then. **State:** HAT half **running** since 2026-09-19 —
 `projects/devastator/software/ros2/hailo_perception/` (C++ ROS 2 node, README has the
 numbers: 24 fps at 640×480 with objects and face detection, both inferences serial);
-face recognition wired, enrolment untested at the time of writing. Orin half not started.
+face recognition working — owner enrolled and recognised at 0.78 similarity, 19 fps with
+identity running. Orin half in progress in a separate session.
 
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 
