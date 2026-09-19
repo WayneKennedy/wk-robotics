@@ -147,7 +147,7 @@ retailer SKU **WAV-30490**, manufacturer model PCIe TO 2-CH PCIe HAT (two downst
 connectors). **Delivered 2026-09-15** — The Pi Hut #1620881, ordered 2026-09-13: AI HAT+ 2
 £192.00, expander £14.40, plus a 52Pi Tiny M.2 PCIe Adapter £11.50 and a PCIe Cable
 Selection Pack £7.70 (with a screwdriver set; £238.40 total), per the invoice read
-2026-09-17. Operation is not confirmed; AI HAT+ 2 compatibility remains untested.
+2026-09-17. **Operation confirmed 2026-09-19** on the family's bench Pi 5 under Ubuntu 24.04: driver, firmware and `hailortcli` identify a HAILO10H — recipe in [`common.md`](common.md#operating-system-for-the-hats-pi-5). The PCIe expander is still untested.
 
 Owner considers the installed NVMe HATs essential. The identified existing adapter,
 cable constraints, connector conflict and possible
