@@ -958,9 +958,17 @@ booted and ran on the Pi 5 with two settings added to the boot partition togethe
   through the mass-storage path instead of UAS (`Quirks match for vid 0bda pid 9210` in
   `dmesg` confirms it took), at some cost in throughput.
 
+**Then the bootloader update broke booting (2026-09-19).** After `rpi-eeprom-update -a`
+took the bootloader from 2024-02-16 to 2025-12-08, the Pi stalled in the bootloader
+while reading the enclosure on a USB 3 port (diagnostics screen: `boot: mode USB-MSD`,
+`Read /config.txt` repeating; the old bootloader had booted the same disk twice). The
+bootloader has its own USB stack, so the kernel quirk does not apply there. **Moving the
+enclosure to a black USB 2 port fixed it**: it boots and runs at 480 Mb/s
+(`lsusb -t`), which is adequate for a bench host.
+
 **Rules:** image Pi disks from the workstation, not from a Pi; set both lines before the
-first boot of any Pi 5 on this bridge; and if the enclosure still drops, boot from
-microSD and keep the SSD off USB.
+first boot of any Pi 5 on this bridge; put the enclosure on a **USB 2 port** on a current
+bootloader; and if it still drops, boot from microSD and keep the SSD off USB.
 
 ### The GPU workstation
 
