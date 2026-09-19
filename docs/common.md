@@ -900,7 +900,7 @@ capacity difference. eth0 is present on every unit but unused (Wi-Fi only).
 
 | Role | Board rev | OS (arm64) | Notes |
 |---|---|---|---|
-| Desktop Pi, candidate drone intent computer; **carries the AI HAT+ 2 since 2026-09-18** (owner) for bring-up ahead of the Devastator | Rev 1.0 (`d04170`) | Raspberry Pi OS (Debian 12 bookworm), desktop — a rebuild is planned; OS choice [below](#operating-system-for-the-hats-pi-5) | Boots from its Kingston SNV2S500G 500 GB, since 2026-09-18 in a **USB 3 enclosure**: the Pimoroni NVMe Base was removed to give the HAT the PCIe connector (owner). Enclosure bridge chip unrecorded — if it is the RTL9210B retired from the hexapod, TRIM is off and must not be forced (wk-hexapod DEC-23, test-log 2026-09-18). Installed 2024-03-27. See [Aircraft and the tiers](#aircraft-and-the-tiers). |
+| **The AI HAT+ 2 bench host** (since 2026-09-18; the former desktop Pi, candidate drone intent computer) | Rev 1.0 (`d04170`) | **Ubuntu Server 24.04.5**, rebuilt 2026-09-19 (was Raspberry Pi OS bookworm, desktop, from 2024-03-27); bootloader updated to current the same day | Boots from its Kingston SNV2S500G 500 GB in a **USB 3 enclosure (Realtek RTL9210B)**: the Pimoroni NVMe Base was removed to give the HAT the PCIe connector, where the Hailo-10H enumerates as `Hailo Technologies Ltd. Device 45c4`. TRIM through this bridge is not to be forced (wk-hexapod DEC-23). The enclosure setup that finally booted is recorded [below](#booting-a-pi-5-from-a-usb-nvme-enclosure). |
 | General-purpose desktop Pi | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | |
 | 3D-printer host | Rev 1.1 (`d04171`) | Raspberry Pi OS (Debian 12 bookworm), headless | |
 | wk-hexapod brain | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | Normally powered off. |
@@ -941,6 +941,26 @@ Where a Pi must keep its name regardless, set `preserve_hostname: true` in a
 `/etc/cloud/cloud.cfg.d/` drop-in (done on the desktop Pi, 2026-09-18). Recovery is
 `hostnamectl set-hostname <name>`, fix `127.0.1.1` in `/etc/hosts`, and
 `tailscale set --hostname <name>` if the tailnet name does not follow within a minute.
+
+### Booting a Pi 5 from a USB NVMe enclosure
+
+**Measured 2026-09-18/19 on two Pi 5s with the same RTL9210B enclosure and Kingston
+SNV2S500G.** Writing a 6.7 GB image to it from a Pi 5 failed at 1.5 GB with a USB device
+reset and the SSD vanishing behind the bridge; booting a Pi 5 from it dropped the root
+disk with I/O errors at about 300 s, on both a third-party and the official 27 W 5 A
+supply. The same enclosure wrote and read back cleanly on the x86 workstation. It then
+booted and ran on the Pi 5 with two settings added to the boot partition together, so
+**which one mattered is not established**:
+
+- `usb_max_current_enable=1` in `config.txt` — without it a Pi 5 caps its USB ports at
+  600 mA total; the hexapod ran the same kind of enclosure for a day with this set.
+- `usb-storage.quirks=0bda:9210:u` at the front of `cmdline.txt` — drives the RTL9210
+  through the mass-storage path instead of UAS (`Quirks match for vid 0bda pid 9210` in
+  `dmesg` confirms it took), at some cost in throughput.
+
+**Rules:** image Pi disks from the workstation, not from a Pi; set both lines before the
+first boot of any Pi 5 on this bridge; and if the enclosure still drops, boot from
+microSD and keep the SSD off USB.
 
 ### The GPU workstation
 
