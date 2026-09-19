@@ -394,6 +394,17 @@ fourth tier**; they are a placement choice inside the intent tier. See
 
 **What the problem actually consists of**, in rough order of difficulty:
 
+- **Identity is a coordinator service; embeddings stay local** (owner, 2026-09-19, from
+  the HAT bench). Face embeddings do not travel between robots — they only mean something
+  to the network that made them ([hailo_perception README](../projects/devastator/software/ros2/hailo_perception/README.md)).
+  So: a robot that meets a face it cannot name sends the coordinator the *crop* (a few
+  KB, on an unknown only — no streams); the coordinator recognises it against the
+  family's people, or asks a human, and answers with the person's record (name, whatever
+  the family keeps about them); the robot enrols the crop into its own gallery with its
+  own model and never asks about that face again. Photos and identity records are held
+  centrally, vectors per robot. The HAT bench already does the halves that run on the
+  robot: unknown-face crops are recorded, and after-the-fact enrolment from a crop works.
+  Nothing on the coordinator side exists.
 - **Share a world model, not sensor streams.** Raw depth from several robots will not
   cross a LAN — a constraint already met at single-robot scale on
   [the tank](projects.md#devastator). Each robot runs its own SLAM and perception; the
