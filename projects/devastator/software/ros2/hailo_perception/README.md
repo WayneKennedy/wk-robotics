@@ -90,6 +90,29 @@ HAT itself benchmarks at 166 fps for YOLOv8s alone (`common.md`). Running the tw
 models concurrently (`run_async`, or a second thread) is the obvious next step and is
 not done.
 
+## What the recognition data is, and whether it travels
+
+A gallery entry is one **512-float ArcFace embedding**, L2-normalised, one number per
+line in `<name>[.N].txt`; a face matches when the cosine similarity (a dot product) to
+its best sample clears the threshold. Nothing else is stored for a known person; the
+unknown record additionally keeps the JPEG crop.
+
+The text format is trivially portable, but **the numbers only mean something to the
+model that produced them.** Another host can use these files only if it runs the same
+network with the same weights and the same alignment (five landmarks to ArcFace's
+112×112 template). Two cases:
+
+- **Same model, different hardware** — `arcface_mobilefacenet` int8 on the Hailo-10H
+  against the float version on a GPU: embeddings should agree closely, but the
+  cross-host similarity has not been measured and the threshold may need to move.
+- **Different model** — e.g. `arcface_r50`, or InsightFace's `buffalo` packs, whose
+  MobileFaceNet is trained on a different dataset: a different embedding space, and the
+  vectors are not comparable at all, however similar the names.
+
+So the portable thing is **the enrolment image, not the vector**: share the crops (or the
+enrolment photos) between hosts and let each compute its own gallery. The unknown record
+already produces exactly that.
+
 ## Known limits
 
 - `usb_cam` 0.8.1 segfaults with `mjpeg2rgb` at 1280×720 on this camera; 640×480 works.

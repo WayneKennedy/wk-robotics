@@ -158,7 +158,7 @@ the Orin half independently:**
 | Camera | USB UVC webcam (C920 clone), `/dev/video0`, 1280×720 MJPEG, via `ros-jazzy-usb-cam` | Intel RealSense D435i colour stream via `realsense2_camera` (the hexapod's config is the starting point) |
 | Objects | YOLOv8s/m Hailo-10H HEFs, Model Zoo v5.4.0 (on the host in `~/hailo/models`) | YOLOv8s/m on the GPU: TensorRT via an Ultralytics export, or Isaac ROS if it supports JetPack 7 (unverified) |
 | Faces | `scrfd_2.5g` detection + `arcface_mobilefacenet` embeddings (Model Zoo, Hailo-10H builds) | An equivalent SCRFD + ArcFace pair on the GPU (InsightFace models, TensorRT) |
-| Recognition | Gallery of enrolled embeddings on the host, cosine match; enrolment script | Same code, same gallery format, so galleries are portable |
+| Recognition | Gallery of enrolled embeddings on the host, cosine match; enrolment from the stream or from recorded unknown-face crops | Same gallery format — but embeddings only transfer between hosts if the network, weights and alignment are identical, and even then the cross-host similarity is unmeasured. **Share enrolment images, not vectors**, unless the Orin runs the same `arcface_mobilefacenet` (see the HAT package README) |
 | Stream | Annotated image topic → `ros-jazzy-web-video-server` (MJPEG in a browser) | Same |
 | Record | End-to-end fps at 1280×720, per-stage latency, Pi CPU load, chip and Pi temperatures, power if measurable | Same, plus which JetPack power mode |
 
