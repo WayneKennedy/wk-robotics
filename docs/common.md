@@ -682,6 +682,29 @@ Ubuntu, native, and the container option above is not needed. Keep the two `.deb
 kernel update rebuilds the module through DKMS, and a HailoRT update must move the driver
 and runtime together.
 
+#### First measurements on the AI HAT+ 2 (2026-09-19)
+
+`hailortcli benchmark`, batch size 1, random input, 15 s per run, on the bench Pi 5 under
+Ubuntu 24.04 with HailoRT 5.1.1; precompiled Hailo-10H models from the public Model Zoo
+v5.4.0 (`https://hailo-model-zoo.s3.eu-west-2.amazonaws.com/ModelZoo/Compiled/v5.4.0/hailo10h/<model>.hef`).
+The PCIe link was already Gen 3 ×1 (`lspci`: `Speed 8GT/s, Width x1`) with no
+`pciex1_gen` line in `config.txt`. Chip temperature 50–55 °C during the runs, Pi 48 °C;
+power measurement is not supported through this driver.
+
+| Model (640×640, COCO) | Measured FPS | Model Zoo FPS | Zoo mAP |
+|---|---|---|---|
+| YOLOv8n | 221–229 | 375 | 36.4 |
+| YOLOv8s | 166.5 | 166 | 44.1 |
+| YOLOv8m | 76.3 | 76.2 | 49.2 |
+
+**Reading:** the two larger models hit the Zoo's figures exactly, so the chip is
+delivering its rated compute; the smallest falls ~40 % short, so at that size the
+Pi 5 side — one PCIe lane and the CPU's transfer and post-processing — is the limit,
+not the accelerator. For a robot camera at 15–30 fps any of the three is far more than
+enough, and YOLOv8m at 76 fps is the useful ceiling: the accuracy step from s to m is
+free at robot frame rates. These are synthetic-input numbers; a live camera pipeline
+adds capture, resize and post-processing on the CPU, unmeasured.
+
 ### AI compute — purchase comparison
 
 **Researched 2026-09-13; none tested here.** Purchase state is tracked in
