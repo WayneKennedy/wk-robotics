@@ -139,6 +139,29 @@ that would be powered up every day:
    neck, and doubt about the omni base. Banked as an idea:
    [`ideas.md`](ideas.md#a-two-armed-wheeled-torso--the-orin-ground-robot).
 
+### Perception bench: the same experiment on the HAT and on the Orin (opened 2026-09-19)
+
+Two hosts, one experiment, so the results compare. **Owner's brief:** object and face
+recognition from a camera, streamed to a web client. **Spec, so a second session can run
+the Orin half independently:**
+
+| | AI HAT+ 2 bench host (Pi 5, Ubuntu 24.04, ROS 2 Jazzy) | Orin Nano (JetPack 7.2.1, Ubuntu 24.04) |
+|---|---|---|
+| Camera | USB UVC webcam (C920 clone), `/dev/video0`, 1280×720 MJPEG, via `ros-jazzy-usb-cam` | Intel RealSense D435i colour stream via `realsense2_camera` (the hexapod's config is the starting point) |
+| Objects | YOLOv8s/m Hailo-10H HEFs, Model Zoo v5.4.0 (on the host in `~/hailo/models`) | YOLOv8s/m on the GPU: TensorRT via an Ultralytics export, or Isaac ROS if it supports JetPack 7 (unverified) |
+| Faces | `scrfd_2.5g` detection + `arcface_mobilefacenet` embeddings (Model Zoo, Hailo-10H builds) | An equivalent SCRFD + ArcFace pair on the GPU (InsightFace models, TensorRT) |
+| Recognition | Gallery of enrolled embeddings on the host, cosine match; enrolment script | Same code, same gallery format, so galleries are portable |
+| Stream | Annotated image topic → `ros-jazzy-web-video-server` (MJPEG in a browser) | Same |
+| Record | End-to-end fps at 1280×720, per-stage latency, Pi CPU load, chip and Pi temperatures, power if measurable | Same, plus which JetPack power mode |
+
+Language: C++ ROS 2 nodes on the HAT (no Python binding on 24.04); on the Orin whatever
+its toolchain makes easiest. Results land in `common.md` beside the
+[HAT measurements](common.md#first-measurements-on-the-ai-hat-2). Code for the HAT half
+lives in `projects/devastator/software/` as that robot's future perception node (DEC-15);
+the Orin half's home follows its allocation, undecided — keep it in a folder under this
+repo's `projects/` until then. **State:** HAT half started in the session of 2026-09-19;
+Orin half not started.
+
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 
 **Ordered from The Pi Hut, owner-confirmed 2026-09-13:** Raspberry Pi AI HAT+ 2 and
