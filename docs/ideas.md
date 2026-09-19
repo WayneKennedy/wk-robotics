@@ -479,6 +479,18 @@ camera should do instead, as constraints for whoever builds it:
 - Make the recognition data disposable: galleries are caches rebuilt from enrolment
   photos, and a person can be removed by deleting their files.
 
+**2D recognition can be spoofed by a photograph**, which matters at a door and not on
+a bench. What a phone's Face ID adds is not accuracy but *liveness*: a projected
+infrared dot pattern gives a 3D map of the face and an IR image, so a flat picture
+fails. The family's nearest equivalents, none tried: the D435i (active IR stereo depth —
+a depth check over the face box rejects a flat photo; the Orin half of the bench could
+test this against the HAT's 2D pipeline with a phone photo of the owner); a Luxonis
+OAK-D Pro (IR dot projector plus IR flood illuminator, on-device inference, sold in part
+for this); a challenge, blink or turn, in software. Intel's purpose-built RealSense ID
+F455 face-authentication camera existed but its status after Intel's wind-down is
+unverified. Iris or fingerprint would be more biometric still but stop being a door
+*camera*.
+
 ### Roving eyes: a whoop fleet
 
 **Unbuilt. Raised 2026-09-13 (owner) as an aspiration, not a plan.** A fleet of tiny

@@ -161,6 +161,7 @@ the Orin half independently:**
 | Recognition | Gallery of enrolled embeddings on the host, cosine match; enrolment from the stream or from recorded unknown-face crops | Same gallery format — but embeddings only transfer between hosts if the network, weights and alignment are identical, and even then the cross-host similarity is unmeasured. **Share enrolment images, not vectors**, unless the Orin runs the same `arcface_mobilefacenet` (see the HAT package README) |
 | Stream | Annotated image topic → `ros-jazzy-web-video-server` (MJPEG in a browser) | Same |
 | Record | End-to-end fps at 1280×720, per-stage latency, Pi CPU load, chip and Pi temperatures, power if measurable | Same, plus which JetPack power mode |
+| Spoof test (added 2026-09-19) | Show the camera a phone photo of an enrolled person: expected to be recognised (2D only) | Same photo: can the D435i's depth over the face box reject it? The liveness question the door-camera idea needs |
 
 Language: C++ ROS 2 nodes on the HAT (no Python binding on 24.04); on the Orin whatever
 its toolchain makes easiest. Results land in `common.md` beside the
