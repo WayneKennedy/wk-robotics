@@ -139,6 +139,14 @@ that would be powered up every day:
    neck, and doubt about the omni base. Banked as an idea:
    [`ideas.md`](ideas.md#a-two-armed-wheeled-torso--the-orin-ground-robot).
 
+### ROS 2 install audit — hexapod, bench host, Orin (opened 2026-09-19)
+
+Owner's rule: ROS 2 installs are familial, the hexapod's `ubuntu-setup.sh` is the
+reference ([`common.md`](common.md#ros-2-installs-are-familial)). **To do at the end of
+the current bring-up:** audit all three hosts against that table, bring each deviation
+into line or record it as a decision in the host's project. Known so far: the bench
+host's deviations are listed in `common.md`; the Orin's are for its session to list.
+
 ### Perception bench: the same experiment on the HAT and on the Orin (opened 2026-09-19)
 
 Two hosts, one experiment, so the results compare. **Owner's brief:** object and face

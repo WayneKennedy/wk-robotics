@@ -425,6 +425,32 @@ The rule applied to each aircraft in the fleet is
 [wk-drones F-DEC-01](https://github.com/WayneKennedy/wk-drones/blob/main/fleet/decisions.md).
 Decided 2026-09-13 (owner).
 
+### ROS 2 installs are familial
+
+**Owner's rule, 2026-09-19:** every ROS 2 host in the family is installed the same way,
+as closely as the hardware allows; the **hexapod's `scripts/ubuntu-setup.sh`** is the
+reference, and a deviation is either brought into line or recorded as a decision in that
+host's project. What "the same way" means today, from that script:
+
+| Item | Reference (hexapod) |
+|---|---|
+| OS | Ubuntu 24.04 (Server on robots), ROS 2 **Jazzy** from apt, nothing from source |
+| apt source | the `ros2-apt-source_<latest>.noble_all.deb` from `ros-infrastructure/ros-apt-source`, not a hand-written keyring and list |
+| Base packages | `ros-jazzy-ros-base ros-dev-tools python3-colcon-common-extensions python3-rosdep python3-vcstool`, with `--no-install-recommends`; robot-specific packages on top |
+| Middleware | Fast DDS (`ros-jazzy-rmw-fastrtps-cpp` installed explicitly), `ROS_DOMAIN_ID=0` |
+| rosdep | `rosdep init` once, `rosdep update` as the user; `rosdep install --from-paths src` before `colcon build` |
+| Workspace | the project's `ros2_ws/` inside its repository or folder, built with `colcon build --symlink-install`; sourced as `/opt/ros/jazzy/setup.bash` then `install/setup.bash` |
+| Not done | no ROS in `.bashrc` by default; launch scripts source what they need |
+
+**Audit, open:** at the end of the current bring-up the three ROS 2 hosts — the hexapod,
+the AI HAT+ 2 bench host and the Orin — are compared against this table and every
+deviation is made deliberate and documented ([`status.md`](status.md)). Known deviations
+on the bench host as installed 2026-09-19: base packages installed *with* recommends;
+workspace at `~/ros2_ws` rather than inside the project folder (the package lives in
+`projects/devastator/software/ros2/`, synced there); Fast DDS and domain 0 by Jazzy's
+defaults rather than set explicitly. The Orin runs JetPack's Ubuntu 24.04 and may need
+arm64 packages that differ; its session records what.
+
 ### micro-ROS: how the MCU joins the graph
 
 ROS 2 is a Linux system — its transport is DDS, which assumes an OS, a network stack and
