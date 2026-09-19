@@ -204,7 +204,13 @@ private:
       std::vector<float> v;
       float x;
       while (f >> x) v.push_back(x);
-      if (v.size() == 512) gallery_.push_back({e.path().stem().string(), v});
+      // <name>.txt, <name>.2.txt, <name>.3.txt ... are all samples of <name>; matching
+      // takes the best of them, so enrol several poses of the same person.
+      std::string name = e.path().stem().string();
+      auto dot = name.rfind('.');
+      if (dot != std::string::npos && dot + 1 < name.size() && std::all_of(name.begin() + dot + 1, name.end(), ::isdigit))
+        name = name.substr(0, dot);
+      if (v.size() == 512) gallery_.push_back({name, v});
       else RCLCPP_WARN(get_logger(), "gallery: %s has %zu values, expected 512", e.path().c_str(), v.size());
     }
   }
@@ -373,11 +379,14 @@ private:
       if ((faces[i].x2 - faces[i].x1) * (faces[i].y2 - faces[i].y1) > (faces[best].x2 - faces[best].x1) * (faces[best].y2 - faces[best].y1)) best = i;
     if (embs[best].size() != 512) return;
     fs::create_directories(gallery_dir_);
-    std::ofstream f(fs::path(gallery_dir_) / (pending_enroll_ + ".txt"));
+    fs::path file = fs::path(gallery_dir_) / (pending_enroll_ + ".txt");
+    for (int n = 2; fs::exists(file); ++n) file = fs::path(gallery_dir_) / (pending_enroll_ + "." + std::to_string(n) + ".txt");
+    std::ofstream f(file);
     for (float x : embs[best]) f << x << "\n";
-    gallery_.erase(std::remove_if(gallery_.begin(), gallery_.end(), [&](auto &g) { return g.first == pending_enroll_; }), gallery_.end());
     gallery_.push_back({pending_enroll_, embs[best]});
-    RCLCPP_INFO(get_logger(), "enrolled '%s' (%zu in gallery)", pending_enroll_.c_str(), gallery_.size());
+    size_t samples = std::count_if(gallery_.begin(), gallery_.end(), [&](auto &g) { return g.first == pending_enroll_; });
+    RCLCPP_INFO(get_logger(), "enrolled '%s' as %s (%zu samples of this name, %zu entries in gallery)", pending_enroll_.c_str(),
+                file.filename().c_str(), samples, gallery_.size());
     pending_enroll_.clear();
   }
 

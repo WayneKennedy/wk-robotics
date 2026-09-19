@@ -3,12 +3,13 @@
     enable_objects: true
     enable_faces: true
     object_score_threshold: 0.4
-    face_score_threshold: 0.5
+    face_score_threshold: 0.6  # 0.5 let through three tiny non-face crops in the first hour (2026-09-19)
     face_nms_iou: 0.4
-    # Cosine similarity to the best gallery entry needed to name a face. Start here and
-    # tune from the logged scores: same person typically > 0.5, strangers < 0.3 with
-    # arcface_mobilefacenet; unverified on this camera.
-    face_match_threshold: 0.45
+    # Cosine similarity to the best gallery entry needed to name a face. Measured
+    # 2026-09-19 with a one-sample gallery: owner frontal 0.78-0.80, owner off-angle
+    # 0.31-0.45, a stranger 0.09-0.21. Enrol several poses per name and this sits well
+    # above any stranger.
+    face_match_threshold: 0.40
     gallery_dir: "/home/wkenn/hailo/gallery"
     publish_annotated: true
     # Save each unknown face (crop + embedding) under <gallery_dir>/unknown/, at most one

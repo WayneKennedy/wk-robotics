@@ -31,7 +31,7 @@ Namespace `/hailo` in the launch file.
 | | Topic | Type | Notes |
 |---|---|---|---|
 | sub | `image` | `sensor_msgs/Image` | rgb8 or bgr8; remapped to `/image_raw` from `usb_cam` |
-| sub | `enroll` | `std_msgs/String` | a name; the next frame's largest face is saved as `<gallery_dir>/<name>.txt` (512 floats) and joins the gallery |
+| sub | `enroll` | `std_msgs/String` | a name; the next frame's largest face is saved as `<gallery_dir>/<name>.txt` (512 floats), or `<name>.2.txt`, `.3.txt`… if the name exists — all samples of a name count, and matching takes the best, so enrol several poses |
 | pub | `objects` | `vision_msgs/Detection2DArray` | `class_id` = COCO label, `score` = detector confidence |
 | pub | `faces` | `vision_msgs/Detection2DArray` | `class_id` = gallery name or `unknown`; `score` = cosine similarity to the best gallery entry (−1 with an empty gallery) |
 | pub | `image_annotated` | `sensor_msgs/Image` bgr8 | boxes, labels, landmarks, fps overlay |
@@ -78,9 +78,13 @@ C920-clone UVC webcam, 640×480 MJPEG at 30 fps, both pipelines on, no faces in 
 **24 fps, 41 ms/frame** — objects: letterbox 0.8 ms, inference 20.7 ms, parse < 0.1 ms;
 faces: letterbox 1.0 ms, inference 16.7 ms, decode 0.1 ms. With one face in view and a
 one-entry gallery: **19 fps, 48 ms/frame**, identity (align + ArcFace + match) 4.2 ms;
-the owner's face read 0.78 similarity against his own enrolment, the person box 94 %.
-The 0.45 match threshold is therefore conservative for the same person; the stranger
-side is unmeasured. The two inferences run
+the owner's frontal face read 0.78–0.80 against his single enrolment, the person box
+94 %. **Both sides of the threshold, from the unknown-face record of the first hour
+(29 crops):** the owner off-angle (looking down, turned, top of head) 0.31–0.45; a
+stranger, four crops, **0.09–0.21**; three crops were not faces at all (SCRFD score
+just over 0.5, similarity ≈ 0). Hence the settings now: face detection threshold 0.6,
+match threshold 0.40, and multi-sample enrolment so off-angle views of an enrolled
+person score against their own off-angle samples rather than the frontal one. The two inferences run
 back-to-back synchronously in the image callback, so the frame time is their sum; the
 HAT itself benchmarks at 166 fps for YOLOv8s alone (`common.md`). Running the two
 models concurrently (`run_async`, or a second thread) is the obvious next step and is
@@ -98,8 +102,8 @@ not done.
   restart. Whether the drop is the camera, its cable or the Pi's USB 2 port is unknown.
 - `pkill -f <node name>` from an interactive shell whose command line mentions the node
   kills that shell: start and stop the bench with `~/hailo/bench.sh` on the host.
-- Face recognition is verified on one enrolled face; the stranger side of the match
-  threshold is unmeasured. The gallery format is deliberately plain text so the Orin
+- Face recognition is verified on one enrolled person and one stranger; the
+  thresholds above rest on 29 samples from one camera and one hour. The gallery format is deliberately plain text so the Orin
   half of the bench (wk-robotics `docs/status.md`) can share galleries.
 - The SCRFD score maps may arrive as logits or probabilities depending on the HEF; the
   decoder checks the range each frame and applies a sigmoid only if needed.
