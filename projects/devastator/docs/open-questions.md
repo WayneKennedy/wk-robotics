@@ -41,9 +41,11 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
   any NVMe (the family's [switch candidate](../../../docs/common.md#ai-hat-2-and-nvme) is
   unverified for Hailo-10H), and a line in the power budget (DEC-07) of up to 8 W peak
   on LLM loads, a third-party figure. Not before the drivetrain works (DEC-06).
-  **2026-09-18:** the HAT is fitted to the family's desktop Pi 5 (rev 1.0, Raspberry Pi
-  OS bookworm) for bring-up meanwhile; OS and revision findings are in
-  [common.md](../../../docs/common.md#operating-system-for-the-hats-pi-5).
+  **2026-09-19: the HAT runs on Ubuntu 24.04 natively** on the family's bench Pi 5
+  (rev 1.0): DKMS driver `hailo1x_pci` 5.1.1 and firmware 5.1.1 from Raspberry Pi's apt
+  archive, `hailortcli` identifies a HAILO10H — recipe and limits in
+  [common.md](../../../docs/common.md#operating-system-for-the-hats-pi-5). What remains
+  for this robot: fitting it, the PCIe/NVMe sharing question, and the power budget line.
 
 - **OQ-04 — Where pose and heading come from.** Wheel odometry on a tracked skid-steer
   is [weak by construction](architecture.md#odometry-is-weak-by-construction) — rotation

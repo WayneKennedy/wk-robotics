@@ -661,13 +661,26 @@ not drive it.
   a container on Raspberry Pi OS is **not verified here**; Hailo documents container use
   for its own tooling.
 
-**Recommendation, not decided (revised 2026-09-18):** Raspberry Pi OS trixie as the host
-with ROS 2 Jazzy in a container for this Pi, because it keeps the HAT on its supported
-path and the ROS 2 install on its supported base, and the hexapod's Docker lesson is a
-discipline, not a blocker. Ubuntu native remains the fallback if the container cannot
-reach the HAT. Either way the bench test on this Pi settles it before the tank needs it;
-the driver version, kernel and `hailortcli fw-control identify` output belong in the
-Devastator's record when it is run.
+**Settled by test, 2026-09-19: Ubuntu 24.04 native works, with no Developer Zone
+login.** Raspberry Pi's public apt archive carries the Hailo-10H packages, and two of
+them install straight onto Ubuntu Server 24.04.5 arm64 from
+`https://archive.raspberrypi.com/debian/pool/main/h/`:
+
+- `h10-hailort-pcie-driver_5.1.1_all.deb` — DKMS source **plus the Hailo-10H firmware**
+  (`/lib/firmware/hailo/hailo10h/`); needs `linux-headers-raspi`, `dkms`,
+  `build-essential` first. Built cleanly against kernel `6.8.0-1064-raspi` as
+  `hailo1x_pci` (the module name; `hailo_pci` is the Hailo-8 driver).
+- `h10-hailort_5.1.1_arm64.deb` — the runtime and `hailortcli`; its dependencies are all
+  in Ubuntu 24.04.
+
+Result on the bench host: firmware 5.1.1 loaded in 2.7 s, `/dev/hailo0` present,
+`hailortcli fw-control identify` → `Device Architecture: HAILO10H`, firmware
+`5.1.1 (release,app)`. **Not installable on Ubuntu 24.04:** `python3-h10-hailort` (wants
+Python 3.13) and `hailo-tappas-core` (trixie's OpenCV and Python); the Python API needs
+Hailo's wheel for Python 3.12 from the Developer Zone, untested. So the ROS 2 host is
+Ubuntu, native, and the container option above is not needed. Keep the two `.deb`s: a
+kernel update rebuilds the module through DKMS, and a HailoRT update must move the driver
+and runtime together.
 
 ### AI compute — purchase comparison
 
