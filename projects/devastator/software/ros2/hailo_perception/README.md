@@ -67,6 +67,22 @@ ros2 launch hailo_perception bench.launch.py            # video_device:=/dev/vid
 # enrol:  ros2 topic pub --once /hailo/enroll std_msgs/msg/String "{data: wayne}"
 ```
 
+**Enrolling poses without watching the screen.** The person being enrolled cannot hold a
+turned pose and watch the stream at once, so `scripts/enrol_poses.sh <bench-host> <name>
+[pose ...]` (default `left right down up`) runs on a machine with a speaker and signals by
+tone: a long low tone means move to the next pose and hold, two rising beeps mean the
+sample was saved, a low buzz means no face was saved within 10 s and the pose is retried.
+The capture comes about 7 s after the move tone, most of it `ros2 topic pub` starting over
+ssh.
+
+Not built: **automatic capture of missing angles for a tracked person.** The obstacle is that
+an off-angle face does not match a frontal-only gallery (0.31–0.45 against a 0.40
+threshold, measured below), so the node cannot name it from the embedding alone. It would
+have to carry the name from a confident frontal match along a tracked box (frame-to-frame
+overlap), estimate yaw and pitch from the five landmarks, and save a sample when the
+tracked person shows a pose bin the gallery lacks. The risk is an identity swap when two
+people cross, which would enrol the wrong face under a name.
+
 Host prerequisites are recorded in wk-robotics `docs/common.md` → *Operating system for
 the HAT's Pi 5*: `h10-hailort-pcie-driver` and `h10-hailort` 5.1.1 from Raspberry Pi's
 apt archive, ROS 2 Jazzy from apt, plus `ros-jazzy-usb-cam`, `ros-jazzy-web-video-server`,
