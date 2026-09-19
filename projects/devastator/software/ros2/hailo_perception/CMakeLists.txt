@@ -14,7 +14,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(vision_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
-find_package(OpenCV REQUIRED COMPONENTS core imgproc calib3d)
+find_package(OpenCV REQUIRED COMPONENTS core imgproc calib3d imgcodecs)
 
 # HailoRT is installed by the h10-hailort .deb: /usr/include/hailo, /usr/lib/libhailort.so
 find_path(HAILORT_INCLUDE_DIR hailo/hailort.hpp REQUIRED)

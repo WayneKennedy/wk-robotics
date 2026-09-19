@@ -36,6 +36,12 @@ Namespace `/hailo` in the launch file.
 | pub | `faces` | `vision_msgs/Detection2DArray` | `class_id` = gallery name or `unknown`; `score` = cosine similarity to the best gallery entry (−1 with an empty gallery) |
 | pub | `image_annotated` | `sensor_msgs/Image` bgr8 | boxes, labels, landmarks, fps overlay |
 
+Unknown faces are recorded (`record_unknown`, default on): the crop and the embedding go
+to `<gallery_dir>/unknown/<timestamp>.{jpg,txt}`, at most one per
+`record_unknown_interval_s` (5 s), and the log line carries the best gallery similarity —
+the stranger side of the threshold. To enrol one after the fact, rename its `.txt` to
+`<name>.txt` in the gallery directory and restart the node.
+
 Parameters (`config/bench.yaml`): `enable_objects`, `enable_faces`, the three `hef_*`
 paths (set by the launch file to `~/hailo/models/`), `object_score_threshold` (0.4),
 `face_score_threshold` (0.5), `face_nms_iou` (0.4), `face_match_threshold` (0.45 — tune
@@ -84,6 +90,14 @@ not done.
 
 - `usb_cam` 0.8.1 segfaults with `mjpeg2rgb` at 1280×720 on this camera; 640×480 works.
   Untested: `v4l2_camera`, or YUYV at 720p (10 fps on this camera).
+- The C920 clone (Sonix `0c45:6536`) dropped off USB and re-enumerated once in the first
+  hour, taking `/dev/video0` with it and aborting `usb_cam` ("Unable to exchange buffer
+  with the driver"). `usb_cam` 0.8.1 will not open a `/dev/v4l/by-id` symlink (it
+  validates against its own `/dev/videoN` list and shuts down), so `~/hailo/bench.sh`
+  resolves the by-id link at start and passes the real node; a drop mid-run still needs a
+  restart. Whether the drop is the camera, its cable or the Pi's USB 2 port is unknown.
+- `pkill -f <node name>` from an interactive shell whose command line mentions the node
+  kills that shell: start and stop the bench with `~/hailo/bench.sh` on the host.
 - Face recognition is verified on one enrolled face; the stranger side of the match
   threshold is unmeasured. The gallery format is deliberately plain text so the Orin
   half of the bench (wk-robotics `docs/status.md`) can share galleries.

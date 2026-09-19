@@ -11,3 +11,7 @@
     face_match_threshold: 0.45
     gallery_dir: "/home/wkenn/hailo/gallery"
     publish_annotated: true
+    # Save each unknown face (crop + embedding) under <gallery_dir>/unknown/, at most one
+    # per interval — the stranger side of the threshold, and enrol-after-the-fact material.
+    record_unknown: true
+    record_unknown_interval_s: 5.0

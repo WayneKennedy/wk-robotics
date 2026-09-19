@@ -16,10 +16,14 @@ def generate_launch_description():
     share = get_package_share_directory("hailo_perception")
     models = os.path.expanduser("~/hailo/models")
     return LaunchDescription([
+        # usb_cam 0.8.1 only accepts a real /dev/videoN, not a /dev/v4l/by-id symlink; the
+        # C920 clone re-enumerated as /dev/video4 mid-run (2026-09-19), so bench.sh on the
+        # host resolves the by-id link with readlink -f and passes the result here.
         DeclareLaunchArgument("video_device", default_value="/dev/video0"),
         DeclareLaunchArgument("params", default_value=os.path.join(share, "config", "bench.yaml")),
         Node(
             package="usb_cam", executable="usb_cam_node_exe", name="usb_cam", output="screen",
+            respawn=True, respawn_delay=2.0,  # usb_cam 0.8.1 has aborted mid-run on the C920 clone (2026-09-19)
             parameters=[{
                 "video_device": LaunchConfiguration("video_device"),
                 "image_width": 640, "image_height": 480, "framerate": 30.0,  # 720p mjpeg2rgb segfaults usb_cam 0.8.1 on the C920 clone (2026-09-19)

@@ -28,7 +28,9 @@
 #include <chrono>
 #include <cmath>
 #include <filesystem>
+#include <ctime>
 #include <fstream>
+#include <opencv2/imgcodecs.hpp>
 #include <memory>
 #include <string>
 #include <vector>
@@ -126,6 +128,8 @@ public:
     face_match_ = declare_parameter<double>("face_match_threshold", 0.45);
     gallery_dir_ = declare_parameter<std::string>("gallery_dir", std::string(std::getenv("HOME") ? std::getenv("HOME") : "") + "/hailo/gallery");
     publish_annotated_ = declare_parameter<bool>("publish_annotated", true);
+    record_unknown_ = declare_parameter<bool>("record_unknown", true);
+    record_unknown_interval_s_ = declare_parameter<double>("record_unknown_interval_s", 5.0);
 
     auto vdev = hailort::VDevice::create();
     if (!vdev) throw std::runtime_error("VDevice::create failed, HailoRT status " + std::to_string(vdev.status()));
@@ -335,6 +339,33 @@ private:
     f.score = best;  // similarity to the best match, -1 with an empty gallery
   }
 
+  // Unknown faces are worth keeping: their best-match similarity is the stranger side of
+  // the threshold, and the crop lets a person be enrolled after the fact. Saved to
+  // <gallery_dir>/unknown/<timestamp>.{jpg,txt}, at most one every record_unknown_interval_s.
+  void maybe_record_unknown(const cv::Mat &bgr, const std::vector<Box> &faces, const std::vector<std::vector<float>> &embs) {
+    if (!record_unknown_) return;
+    auto now = Clock::now();
+    if (std::chrono::duration<double>(now - last_unknown_).count() < record_unknown_interval_s_) return;
+    for (size_t i = 0; i < faces.size(); ++i) {
+      const auto &f = faces[i];
+      if (f.label != "unknown" || embs[i].size() != 512) continue;
+      cv::Rect r(cv::Point(int(f.x1), int(f.y1)), cv::Point(int(f.x2), int(f.y2)));
+      r &= cv::Rect(0, 0, bgr.cols, bgr.rows);
+      if (r.empty()) continue;
+      fs::path dir = fs::path(gallery_dir_) / "unknown";
+      fs::create_directories(dir);
+      auto t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+      char stamp[32];
+      std::strftime(stamp, sizeof stamp, "%Y%m%d-%H%M%S", std::localtime(&t));
+      cv::imwrite((dir / (std::string(stamp) + ".jpg")).string(), bgr(r));
+      std::ofstream e(dir / (std::string(stamp) + ".txt"));
+      for (float x : embs[i]) e << x << "\n";
+      RCLCPP_INFO(get_logger(), "unknown face recorded as %s (best gallery similarity %.2f)", stamp, f.score);
+      last_unknown_ = now;
+      break;
+    }
+  }
+
   void maybe_enroll(const std::vector<Box> &faces, const std::vector<std::vector<float>> &embs) {
     if (pending_enroll_.empty() || faces.empty()) return;
     size_t best = 0;
@@ -374,6 +405,7 @@ private:
       }
       if (!faces.empty()) t_face_id_.add(ms_since(t0));
       maybe_enroll(faces, embs);
+      maybe_record_unknown(bgr, faces, embs);
     }
 
     publish_detections(pub_objects_, msg->header, objects);
@@ -438,7 +470,9 @@ private:
     for (auto *t : {&t_total_, &t_obj_pre_, &t_obj_inf_, &t_obj_post_, &t_face_pre_, &t_face_inf_, &t_face_post_, &t_face_id_}) t->reset();
   }
 
-  bool enable_objects_, enable_faces_, publish_annotated_;
+  bool enable_objects_, enable_faces_, publish_annotated_, record_unknown_ = true;
+  double record_unknown_interval_s_ = 5.0;
+  Clock::time_point last_unknown_{};
   std::string hef_objects_, hef_face_det_, hef_face_id_, gallery_dir_, pending_enroll_;
   double object_score_, face_score_, face_nms_iou_, face_match_;
   uint32_t obj_classes_ = 0, obj_max_per_class_ = 0;
