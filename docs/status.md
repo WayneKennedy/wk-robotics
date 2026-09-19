@@ -159,8 +159,10 @@ its toolchain makes easiest. Results land in `common.md` beside the
 [HAT measurements](common.md#first-measurements-on-the-ai-hat-2). Code for the HAT half
 lives in `projects/devastator/software/` as that robot's future perception node (DEC-15);
 the Orin half's home follows its allocation, undecided — keep it in a folder under this
-repo's `projects/` until then. **State:** HAT half started in the session of 2026-09-19;
-Orin half not started.
+repo's `projects/` until then. **State:** HAT half **running** since 2026-09-19 —
+`projects/devastator/software/ros2/hailo_perception/` (C++ ROS 2 node, README has the
+numbers: 24 fps at 640×480 with objects and face detection, both inferences serial);
+face recognition wired, enrolment untested at the time of writing. Orin half not started.
 
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 

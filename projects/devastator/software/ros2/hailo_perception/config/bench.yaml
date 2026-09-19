@@ -1,0 +1,13 @@
+/hailo/hailo_perception:
+  ros__parameters:
+    enable_objects: true
+    enable_faces: true
+    object_score_threshold: 0.4
+    face_score_threshold: 0.5
+    face_nms_iou: 0.4
+    # Cosine similarity to the best gallery entry needed to name a face. Start here and
+    # tune from the logged scores: same person typically > 0.5, strangers < 0.3 with
+    # arcface_mobilefacenet; unverified on this camera.
+    face_match_threshold: 0.45
+    gallery_dir: "/home/wkenn/hailo/gallery"
+    publish_annotated: true
