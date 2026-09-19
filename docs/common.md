@@ -1006,6 +1006,14 @@ enclosure to a black USB 2 port fixed it**: it boots and runs at 480 Mb/s
 first boot of any Pi 5 on this bridge; put the enclosure on a **USB 2 port** on a current
 bootloader; and if it still drops, boot from microSD and keep the SSD off USB.
 
+**USB 2 is a workaround, not the end state** (~35–40 MB/s; enough for the bench host, not
+for recording two camera streams). Open follow-ups, cheapest first, none done: (1) boot
+partition on a microSD with root on the SSD over USB 3 — also the test of whether the
+kernel side is reliable on USB 3 with the two settings, which the bootloader stall has so
+far prevented; (2) an ASMedia- or JMicron-bridged enclosure, a purchase, not before (1);
+(3) the SSD back on PCIe through the Waveshare 2-channel switch in hand — the same
+HAT-plus-NVMe question the Devastator has (its OQ-13), so one test answers both.
+
 ### The GPU workstation
 
 **Established 2026-09-07.** A workstation with an **NVIDIA GeForce RTX 5070 Ti (16 GB,
