@@ -1006,13 +1006,18 @@ enclosure to a black USB 2 port fixed it**: it boots and runs at 480 Mb/s
 first boot of any Pi 5 on this bridge; put the enclosure on a **USB 2 port** on a current
 bootloader; and if it still drops, boot from microSD and keep the SSD off USB.
 
-**USB 2 is a workaround, not the end state** (~35–40 MB/s; enough for the bench host, not
-for recording two camera streams). Open follow-ups, cheapest first, none done: (1) boot
-partition on a microSD with root on the SSD over USB 3 — also the test of whether the
-kernel side is reliable on USB 3 with the two settings, which the bootloader stall has so
-far prevented; (2) an ASMedia- or JMicron-bridged enclosure, a purchase, not before (1);
-(3) the SSD back on PCIe through the Waveshare 2-channel switch in hand — the same
-HAT-plus-NVMe question the Devastator has (its OQ-13), so one test answers both.
+**Resolved the same day by changing the bridge.** The SSD moved into a second enclosure
+the owner already had, USB ID `152d:0562` (its descriptor reads "JMicron JMS567 SATA
+6Gb/s bridge", though it is bridging an NVMe drive — the exact JMicron part is
+unverified). On a **blue USB 3 port**, current bootloader: boots first time, runs under
+UAS at 5 Gb/s, and a 2 GiB write then read gave **220 MB/s and 346 MB/s** with no USB
+errors and the HAT still present. So the RTL9210B was the whole problem, at both the
+bootloader and the kernel stage, and it is retired from Pi 5 boot duty. The RTL9210
+quirk in `cmdline.txt` is harmless and stays. Still open, now only as the tank's
+question: the SSD back on PCIe through the Waveshare 2-channel switch (Devastator OQ-13).
+A note for the record: a previous session recommended sourcing an RTL9210 enclosure; the
+basis for that is not recorded, and the evidence here — two Pi 5s, two failure modes —
+runs the other way.
 
 ### The GPU workstation
 
