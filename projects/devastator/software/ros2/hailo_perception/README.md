@@ -84,7 +84,11 @@ the owner's frontal face read 0.78–0.80 against his single enrolment, the pers
 stranger, four crops, **0.09–0.21**; three crops were not faces at all (SCRFD score
 just over 0.5, similarity ≈ 0). Hence the settings now: face detection threshold 0.6,
 match threshold 0.40, and multi-sample enrolment so off-angle views of an enrolled
-person score against their own off-angle samples rather than the frontal one. The two inferences run
+person score against their own off-angle samples rather than the frontal one. An
+aside with a lesson in it: the owner's 3D-printed InMoov head on a shelf some 3 m away
+is detected as a face intermittently (a ~20-pixel crop, similarity 0.06–0.12 against
+the gallery, so correctly unknown) — the detector does not know a face from a model of
+one, which is the liveness point made for the door-camera idea in `ideas.md`. The two inferences run
 back-to-back synchronously in the image callback, so the frame time is their sum; the
 HAT itself benchmarks at 166 fps for YOLOv8s alone (`common.md`). Running the two
 models concurrently (`run_async`, or a second thread) is the obvious next step and is
