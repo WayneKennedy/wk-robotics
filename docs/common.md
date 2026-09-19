@@ -539,8 +539,19 @@ fully, and it left the hexapod ([wk-hexapod DEC-25]({HX})). **Where the pair goe
 
 **Rule of thumb:** put a stage in the sensor when the sensor's output is what the next
 stage consumes anyway (depth for laserscan, detections for behaviour), and leave a stage
-on the Pi when it needs the whole robot's state (SLAM, Nav2). No project has yet tested an
-in-sensor or accelerator stage; the table above records options, not results.
+on the Pi when it needs the whole robot's state (SLAM, Nav2). The accelerator row has
+its first result ([AI HAT+ 2 measurements](#first-measurements-on-the-ai-hat-2)); no
+in-sensor stage has been tested.
+
+**A three-way split, raised by the owner 2026-09-19, not decided or tested:** detection in
+the sensor (an IMX500 AI Camera running one small model and emitting detections as
+metadata), generative behaviour on the HAT (the Hailo-10H's 8 GB is for LLM/VLM work,
+and a resident LLM would contend with detection for the same chip), SLAM and Nav2 on the
+Pi CPU. Each stage on the part built for it. Caveats: no AI Camera is owned; it is a CSI
+camera, so it brings the `libcamera`/`rpicam` stack that is awkward on Ubuntu and needs
+Raspberry Pi's IMX500 support, unverified on 24.04; its one model is small (lower accuracy
+than YOLOv8m on the HAT) and it cannot produce face embeddings; and the frames still cross
+to the Pi if video is wanted.
 
 ### AI HAT+ 2 and NVMe
 
