@@ -454,6 +454,31 @@ entry points already exist on this page: [the duck](#open-duck-mini-v2) for RL s
 locomotion, and [LeRobot](#lerobot-and-learned-manipulation) for learned manipulation on
 the SO-ARM101. The hive mind is the systems layer above both, not a substitute for either.
 
+### A door camera that recognises who is approaching
+
+Raised by the owner 2026-09-19 after the HAT bench recognised him and his wife live. A
+fixed camera at the door running the same detection-and-recognition pipeline as
+[hailo_perception](../projects/devastator/software/ros2/hailo_perception/README.md), on a
+Pi 5 with the AI HAT+ 2 or on any host that can run it; the first fixed node of the
+[hive-mind](#physical-ai-and-the-hive-mind) direction rather than a robot. **Tasks:**
+announce a known person at the door; distinguish household from visitor. Nothing decided.
+
+**Privacy is a design input, not an afterthought** (owner's own caveat). The bench's
+current behaviour would be wrong at a door: it records every unknown face. What a door
+camera should do instead, as constraints for whoever builds it:
+
+- Recognise only people who enrolled themselves; everyone else is "a person", not a
+  face record. Do not store unknown crops at all, or delete them within minutes.
+- Keep the field of view inside the property. In the UK a domestic camera that captures
+  the street or a neighbour's property brings data-protection law into scope (the ICO
+  publishes guidance for home CCTV), and facial recognition of people who have not
+  consented is biometric data, the most protected kind. Unverified detail; check the
+  current guidance before installing.
+- Everything on the LAN: no cloud service sees a frame. The tailnet is the only remote
+  path, as for the rest of the family.
+- Make the recognition data disposable: galleries are caches rebuilt from enrolment
+  photos, and a person can be removed by deleting their files.
+
 ### Roving eyes: a whoop fleet
 
 **Unbuilt. Raised 2026-09-13 (owner) as an aspiration, not a plan.** A fleet of tiny
