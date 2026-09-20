@@ -1077,6 +1077,66 @@ A note for the record: a previous session recommended sourcing an RTL9210 enclos
 basis for that is not recorded, and the evidence here — two Pi 5s, two failure modes —
 runs the other way.
 
+### Headless provisioning of a Raspberry Pi OS card
+
+**Measured 2026-09-20 on `2026-09-15-raspios-trixie-arm64-lite`, written from blake and booted on
+a Pi 4 B.** Do not infer the mechanism from an older image or from rpi-imager's documentation.
+
+**`custom.toml` is not read by this image.** Writing it to the boot partition does nothing, and
+fails silently. Evidence: the string appears nowhere in the rootfs or in either initramfs
+(`initramfs8`, `initramfs_2712`); there is no `firstboot` script in
+`/usr/lib/raspberrypi-sys-mods/` (only `imager_custom`, `sshswitch`, `get_fw_loc`, `i2cprobe`);
+and the `initramfs-tools` hook *named* `firstboot` only copies `lsblk` and `parted` in to serve
+the `resize` flag.
+
+**What this image expects is `firstrun.sh`** — confirmed by `/usr/lib/raspi-config/init_resize.sh`,
+which greps for `imager_custom set_wlan` inside `/boot/firstrun.sh`. The parts present to build it
+from:
+
+| Tool | Provides |
+|---|---|
+| `/usr/lib/raspberrypi-sys-mods/imager_custom` | `set_hostname`, `enable_ssh [-p]`, `set_wlan [-h] SSID [PSK [COUNTRY]]`, `set_keymap`, `set_timezone` |
+| `/usr/lib/userconf-pi/userconf NAME HASH` | Renames the shipped uid-1000 `pi` account (shell `nologin` until then) and sets its password from a crypt hash |
+| `sshswitch.service` | Enables SSH if `ssh` or `ssh.txt` is present on the boot partition |
+| `userconfig.service` | Applies `userconf.txt` from the boot partition |
+
+`set_wlan` writes `/etc/NetworkManager/system-connections/preconfigured.nmconnection` at mode 600,
+and its `psk=` accepts a 64-hex PMK, so the passphrase need never be stored in clear on the card.
+Country goes in as `cfg80211.ieee80211_regdom=` on `cmdline.txt`.
+
+Drive it by appending to `cmdline.txt`, preserving what is already there (`resize` matters):
+
+```
+systemd.run=/boot/firmware/firstrun.sh systemd.run_success_action=reboot systemd.unit=kernel-command-line.target
+```
+
+**The trap, which cost an afternoon.** `firstrun.sh` must strip its own hook before the reboot, and
+that sed must run greedily to end of line:
+
+```
+sed -i 's| systemd.run.*||g'    /boot/firmware/cmdline.txt   # correct
+sed -i 's| systemd.run[^ ]*||g' /boot/firmware/cmdline.txt   # WRONG
+```
+
+The tightened form removes the two `systemd.run*` tokens and leaves
+`systemd.unit=kernel-command-line.target` in place. `systemd-run-generator` synthesises that target
+with `Requires=kernel-command-line.service`; with no `systemd.run=` remaining there is no such
+service, the requirement fails, and the Pi drops to **rescue mode on every boot after the first**:
+`Reached target rescue.target`, then `Cannot open access to console, the root account is locked`.
+That is a dead end at the console, because Raspberry Pi OS locks root and `sulogin` has nothing to
+offer. **Provisioning itself will have completed correctly** — hostname, user, SSH, wifi and
+resize all applied — so the symptom looks far worse than the cause. Check `cmdline.txt` for a
+stray `systemd.unit=` before concluding anything failed.
+
+**Write and verify, do not trust the write.** `xz -dkc`, then `dd … oflag=direct conv=fsync`, then
+read back exactly the image's byte count and compare SHA-256. That doubles as a media test, which
+earns its keep: a card that enumerates normally can still be dead (`Media removed, stopped
+polling`, `dd: No medium found`) — and a second reader with different silicon reporting the same
+thing is what distinguishes a dead card from a bad adapter.
+
+**The PARTUUID changes on first boot.** The resize rewrites the partition table, so the
+`root=PARTUUID=` in `cmdline.txt` afterwards will not match what was written to the card.
+
 ### TRIM through the JMicron 152d:0562 bridge
 
 **Verified 2026-09-20 on a spare enclosure, then applied to hailo (owner-approved).**
