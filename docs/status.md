@@ -157,21 +157,24 @@ into line or record it as a decision in the host's project.
 same Ubuntu, same Jazzy from apt, same `ros2-apt-source` mechanism, same base packages,
 Fast DDS on domain 0 everywhere, and no ROS in any `.bashrc`. **What is left to do:**
 
-1. **Bench host — bring its workspace into line.** It is the only host with no git
-   checkout, it builds from `~/ros2_ws` outside any repo, and it was built without
-   `--symlink-install`. The drift this predicts has already happened:
-   `scripts/enrol_poses.sh` is committed but **absent from the host that runs it**, and
-   the host's `README.md` differs from the repo's. The five code and config files still
-   match. This is the one finding that is actively costing something.
+1. ~~Bench host workspace~~ — **done 2026-09-20.** It now builds from a checkout at
+   `~/Code/wk-robotics/projects/devastator/software/ros2_ws` with `--symlink-install`, runs
+   from the repo's `scripts/launch.sh`, and the stale `~/ros2_ws` is gone. The enrolled
+   galleries (`wayne`, `bev`×4) were preserved. Pattern recorded in
+   [*Host checkouts*](common.md#host-checkouts).
 2. **Push `orin-perception-bench` to origin.** Until then `projects/orin-perception/`
    exists only in a local worktree and an rsync on the Orin.
 3. ~~Timezone~~ — **done 2026-09-20.** The owner ruled that all robots run UTC; the two Pis
    were moved and all three hosts now agree. Recorded as
    [*Robots run on UTC*](common.md#robots-run-on-utc).
-4. **Realign the hexapod's own script with the hexapod.** `ros-jazzy-camera-ros` and
-   `ros-jazzy-slam-toolbox` are installed but appear nowhere in `ubuntu-setup.sh`, so
-   re-running the reference script does not reproduce the reference host. Its ROS
-   packages are also ~3 months older than the other two hosts'.
+4. ~~Realign the hexapod's script~~ — **done 2026-09-20**, with one correction to this
+   audit. `ros-jazzy-camera-ros` was genuine drift and is now listed in `ubuntu-setup.sh`
+   (it drives the kit's OV5647 for DEC-25). **`ros-jazzy-slam-toolbox` was not drift at
+   all** — it is a hard dependency of `ros-jazzy-nav2-bringup`, and removing it would take
+   Nav2 with it; it was merely mis-marked as manually installed, which is what made it look
+   deliberate. Marked `auto` on the robot. The robot's manual package set now matches the
+   script exactly. **Still open:** its ROS packages are ~3 months older than the other two
+   hosts'. Not upgraded — that wants a window where the robot can be watched coming back up.
 5. **Decide the discovery-range question** (below) — measured at 35× throughput.
 
 ### Repo shape and host checkouts (open — raised by the owner 2026-09-20)

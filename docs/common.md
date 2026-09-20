@@ -471,7 +471,7 @@ corrected the bring-up snapshot the row says so). Against the reference table ab
 | Base packages | as the table, `--no-install-recommends` | recommends were installed (`image-transport-plugins`, `camera-info-manager`, …) — **deviation, harmless** | as the table, `--no-install-recommends`; on top: `realsense2-camera`, `web-video-server`, `cv-bridge`, `image-transport`, `vision-msgs`, `diagnostic-updater` |
 | Middleware | Fast DDS explicit, `ROS_DOMAIN_ID=0` set by `scripts/launch.sh`; `.bashrc` clean | `rmw-fastrtps-cpp` explicit; **no launch script sets the domain or RMW** (Jazzy's defaults give the same) — deviation | as the hexapod (`scripts/launch.sh` copies it) **plus `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`** — deliberate, see the discovery finding below |
 | rosdep | initialised, user cache present | initialised **and updated** — 11 populated caches, `rosdep resolve` answers. *Corrected 2026-09-20: the 2026-09-19 fingerprint was taken at 12:2x, before the update ran at 12:36; it is not a deviation* | initialised, updated |
-| Workspace | `<repo>/ros2_ws` inside the checkout, `--symlink-install` | **`~/ros2_ws`**, rsynced from `projects/devastator/software/ros2_ws/src/`; **the host carries no git checkout at all**, and it was built **without `--symlink-install`** (0 symlinks under `install/`; `launch/` and `config/` are copies, so host edits do nothing until a rebuild) — three deviations | `~/Code/wk-robotics/projects/orin-perception/ros2_ws`, `--symlink-install`, laid out where the checkout goes; rsynced until the branch is on origin |
+| Workspace | `<repo>/ros2_ws` inside the checkout, `--symlink-install` | **Brought into line 2026-09-20**: `~/Code/wk-robotics/projects/devastator/software/ros2_ws` in a checkout, `--symlink-install` (17 symlinks). Was `~/ros2_ws` outside any checkout and built without symlinks — see *Host checkouts* below | `~/Code/wk-robotics/projects/orin-perception/ros2_ws`, `--symlink-install`; rsynced until the branch was pushed 2026-09-20, a checkout from here on |
 | Python | no venv; hexapod deps pip-installed into the system interpreter (`--break-system-packages`) | no venv; **`python3-pip` absent** (C++ node, nothing needed) | no venv; `cuda-python` pip-installed into the system interpreter from `requirements.txt`, as the hexapod does; TensorRT's binding from apt |
 | Groups | dialout video plugdev i2c spi gpio render docker … | dialout video plugdev i2c gpio | dialout video plugdev render (no i2c/spi/gpio groups exist on the desktop image) |
 | udev | `99-realsense-libusb.rules` | none (no RealSense) — n/a | `99-realsense-libusb.rules`, same source; NVIDIA's own rules alongside |
@@ -501,6 +501,39 @@ Jazzy form; `ROS_LOCALHOST_ONLY` is deprecated), a deliberate deviation recorded
 **For the family, open:** one domain per robot, or localhost-only by default with the domain
 opened deliberately when hosts must talk (the Devastator's Pi and its future HAT node, say).
 Until decided, any host that runs on the home LAN alongside a live robot needs the same guard.
+
+### Host checkouts
+
+**Every ROS 2 host builds from a git checkout of this repository, with the workspace inside
+it.** The bench host was the last exception and was migrated 2026-09-20 at the owner's
+instruction; all three hosts now follow it.
+
+| | Path on the host | Workspace |
+|---|---|---|
+| Hexapod | `~/Code/wk-hexapod` (its own repo; this one is also cloned) | `ros2_ws/` |
+| AI HAT+ 2 bench | `~/Code/wk-robotics` | `projects/devastator/software/ros2_ws/` |
+| Orin | `~/Code/wk-robotics` | `projects/orin-perception/ros2_ws/` |
+
+**How the clone is made, and why.** These are the assistant's calls, made while carrying out
+the migration; the owner has not ruled on them and the wider question of repo shape is still
+[open](status.md#repo-shape-and-host-checkouts-open--raised-by-the-owner-2026-09-20):
+
+- **Anonymous HTTPS, not SSH.** This repository is public, so a robot needs no key to read it.
+  An SSH deploy key on a machine that lives on a shelf can also *push*.
+- **Read-only consumers.** Authoring happens on the workstation. A host updates with
+  `git fetch && git reset --hard origin/main`, so it tracks origin exactly and never grows a
+  divergent head. Before doing that, check `git status --porcelain` is empty — if a host has
+  local edits, something has gone wrong and they should be understood, not discarded.
+- **Build products stay out of git.** `ros2_ws/{build,install,log}` are ignored, so a host can
+  hold a built workspace inside the checkout and still reset cleanly without a rebuild.
+- **Nothing is deployed by rsync any more.** `projects/orin-perception/scripts/deploy.sh`
+  predates the push and is superseded by `git pull` on the host.
+
+**What this replaced.** The bench host previously held a hand-rsynced copy and had already
+drifted: `scripts/enrol_poses.sh` was committed but absent from the host that runs it, and its
+`README.md` was two months of notes behind. Nothing unique was lost in the migration — every
+source file was byte-identical, and the host's only unique content was a superseded quickstart
+block in the README.
 
 ### Robots run on UTC
 
