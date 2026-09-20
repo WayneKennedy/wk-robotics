@@ -18,4 +18,14 @@ export RMW_IMPLEMENTATION="${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}"
 export ROS_AUTOMATIC_DISCOVERY_RANGE="${ROS_AUTOMATIC_DISCOVERY_RANGE:-LOCALHOST}"
 LAUNCH_FILE="bench.launch.py"
 if [[ "${1:-}" == *.launch.py ]]; then LAUNCH_FILE="$1"; shift; fi
-exec ros2 launch hailo_perception "$LAUNCH_FILE" "$@"
+
+# usb_cam rejects a symlink, and the C920 clone has re-enumerated mid-run (2026-09-19), so
+# /dev/videoN is not stable. Resolve the stable by-id path to its real node unless the
+# caller passed video_device: themselves.
+ARGS=("$@")
+if [[ ! " ${ARGS[*]} " == *" video_device:="* ]]; then
+    BYID=$(ls /dev/v4l/by-id/*-video-index0 2>/dev/null | head -1)
+    RESOLVED=$(readlink -f "$BYID" 2>/dev/null)
+    ARGS+=("video_device:=${RESOLVED:-/dev/video0}")
+fi
+exec ros2 launch hailo_perception "$LAUNCH_FILE" "${ARGS[@]}"
