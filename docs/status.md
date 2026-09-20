@@ -175,7 +175,12 @@ Fast DDS on domain 0 everywhere, and no ROS in any `.bashrc`. **What is left to 
    deliberate. Marked `auto` on the robot. The robot's manual package set now matches the
    script exactly. **Still open:** its ROS packages are ~3 months older than the other two
    hosts'. Not upgraded — that wants a window where the robot can be watched coming back up.
-5. **Decide the discovery-range question** (below) — measured at 35× throughput.
+5. **Decide the discovery-range question** (below) — measured at 35× throughput. Both
+   benches now pin `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST` in their `launch.sh`, so the
+   symptom is contained; what is open is the family rule (one domain per robot, or
+   localhost-only by default and the domain opened deliberately).
+6. **The Orin's last step — face recognition** — needs a person in front of the D435i. It is
+   the only thing left between it and parity with the HAT half.
 
 ### Repo shape and host checkouts (open — raised by the owner 2026-09-20)
 
@@ -280,8 +285,9 @@ write in the HAT's format, model provenance recorded); previously it had only be
 a workstation CPU through onnxruntime. **What remains needs a person in front of the camera:**
 bring the bench up with `scripts/launch.sh`, publish a name on `/orin/enroll`, and confirm it
 comes back on `/orin/faces` — the step the HAT half passed at 0.78 similarity.
-`scripts/bench-record.sh` has also never been run, so there is no CPU/GPU/power/thermal data
-and no YOLOv8m comparison.
+**Load, power, thermals and a YOLOv8s vs YOLOv8m comparison were captured 2026-09-20** and
+are in [`common.md`](common.md#first-measurements-on-the-orin-nano-2026-09-20); running them
+exposed two script bugs, both now fixed.
 
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 

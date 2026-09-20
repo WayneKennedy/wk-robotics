@@ -911,10 +911,39 @@ of the difference between the two accelerators on this workload.
 every model or resolution choice here. This is the measurement behind the discovery finding
 above, and the reason `scripts/launch.sh` pins `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`.
 
-**Not measured:** `scripts/bench-record.sh` was never run, so there are no `tegrastats`
-numbers — no CPU or GPU load, no temperatures, no power draw, and no YOLOv8m comparison.
-The run also used an **empty gallery**, so face *recognition* is unmeasured here; see the
-state note in [`status.md`](status.md#perception-bench-the-same-experiment-on-the-hat-and-on-the-orin-opened-2026-09-19).
+**Load, power and thermals, and YOLOv8s vs YOLOv8m (2026-09-20).** Two 60-second
+`scripts/bench-record.sh` captures, 55 samples each, 25 W power mode, same camera settings as
+above. `tegrastats` alongside the node's own `/orin/stats`:
+
+| | YOLOv8s | YOLOv8m | Delta |
+|---|---|---|---|
+| **Output fps** | **28.5** (27.3–28.9) | **22.9** (22.5–23.1) | −5.6 fps, −20 % |
+| Total per frame | 32.5 ms (p95 33.6) | 40.9 ms (p95 41.9) | +8.4 ms, +26 % |
+| `yolo_infer` | 9.9 ms | 17.2 ms | **+7.4 ms, +74 %** |
+| GPU (GR3D) mean / max | 25 % / 53 % | 44 % / 90 % | +19 pts / +37 pts |
+| CPU mean | 22 % | 21 % | flat |
+| Board power (`VDD_IN`) | 10.2 W | 12.0 W | +1.7 W |
+| Max junction temp | 57.0 °C | 58.7 °C | +1.7 °C |
+
+**Reading.** Almost the entire cost of the larger model is the inference itself — +7.4 ms of
+the +8.4 ms total — so the CPU-side pre/post-processing that dominates the frame budget is
+unchanged by model size, confirming the reading above. **Neither run thermally throttled**
+(junction under 59 °C against a 25 W cap), so the ceiling here is not heat. The trade is
+straightforward: YOLOv8m costs 20 % of the frame rate and 1.7 W, and takes GPU peaks to 90 %,
+which leaves little headroom for anything else on the GPU. At 22.9 fps it is still comfortably
+above a robot's needs; on the HAT the equivalent step from s to m was free at robot frame
+rates, here it is not.
+
+**Still not measured.** The run used an **empty gallery**, so face *recognition* remains
+unmeasured on this host — see the state note in
+[`status.md`](status.md#perception-bench-the-same-experiment-on-the-hat-and-on-the-orin-opened-2026-09-19).
+The YOLOv8m window also happened to contain no face, so its `face_embed` stage (3.1 ms on the
+YOLOv8s run) is absent from its total — the +8.4 ms gap is therefore a floor, not a ceiling.
+`jetson_clocks` state is unverified (needs root), so both runs sat at whatever the default
+governor did. **Unexplained:** TensorRT logs `Using an engine plan file across different
+models of devices is not supported` on every engine load, although `~/models/*.trtexec.log`
+shows the engines were built on this host. Not investigated; recorded as unknown rather than
+guessed at.
 
 ### AI compute — purchase comparison
 
