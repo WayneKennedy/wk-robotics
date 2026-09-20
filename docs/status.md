@@ -138,6 +138,12 @@ that would be powered up every day:
    with departures** — printed torso (no cart), arms hanging from shoulders, head on a
    neck, and doubt about the omni base. Banked as an idea:
    [`ideas.md`](ideas.md#a-two-armed-wheeled-torso--the-orin-ground-robot).
+   **Form reference, 2026-09-20:** the owner supplied an AliExpress kit screenshot for
+   general layout and scoped the inspiration to **the sternum up** — shoulder and head
+   geometry only, not the body, the pedestal or the arms. Read against the record in
+   [`ideas.md`](ideas.md#a-two-armed-wheeled-torso--the-orin-ground-robot), which also
+   carries an unaccepted assistant proposal: build the torso on a bench column first and
+   move it onto a base later.
 
 ### ROS 2 install audit — hexapod, bench host, Orin (opened 2026-09-19)
 
@@ -235,9 +241,10 @@ the Orin half independently:**
 | Camera | USB UVC webcam (C920 clone), `/dev/video0`, 1280×720 MJPEG, via `ros-jazzy-usb-cam` | Intel RealSense D435i colour stream via `realsense2_camera` (the hexapod's config is the starting point) |
 | Objects | YOLOv8s/m Hailo-10H HEFs, Model Zoo v5.4.0 (on the host in `~/hailo/models`) | YOLOv8s/m on the GPU: TensorRT via an Ultralytics export, or Isaac ROS if it supports JetPack 7 (unverified) |
 | Faces | `scrfd_2.5g` detection + `arcface_mobilefacenet` embeddings (Model Zoo, Hailo-10H builds) | An equivalent SCRFD + ArcFace pair on the GPU (InsightFace models, TensorRT) |
-| Recognition | Gallery of enrolled embeddings on the host, cosine match; enrolment script | Same code, same gallery format, so galleries are portable |
+| Recognition | Gallery of enrolled embeddings on the host, cosine match; enrolment from the stream or from recorded unknown-face crops | Same gallery format — but embeddings only transfer between hosts if the network, weights and alignment are identical, and even then the cross-host similarity is unmeasured. **Share enrolment images, not vectors**, unless the Orin runs the same `arcface_mobilefacenet` (see the HAT package README) |
 | Stream | Annotated image topic → `ros-jazzy-web-video-server` (MJPEG in a browser) | Same |
 | Record | End-to-end fps at 1280×720, per-stage latency, Pi CPU load, chip and Pi temperatures, power if measurable | Same, plus which JetPack power mode |
+| Spoof test (added 2026-09-19) | Show the camera a phone photo of an enrolled person: expected to be recognised (2D only) | Same photo: can the D435i's depth over the face box reject it? The liveness question the door-camera idea needs |
 
 Language: C++ ROS 2 nodes on the HAT (no Python binding on 24.04); on the Orin whatever
 its toolchain makes easiest. Results land in `common.md` beside the

@@ -150,6 +150,30 @@ idea — LeKiwi base, two SO-101 arms, a head — with three owner-set departure
 - **The head sits on a neck just above the shoulders** and carries the D435i. XLeRobot's
   head is two servos; koala-bot has a 3-RPS neck design.
 
+**Form reference, owner 2026-09-20.** The owner supplied a screenshot of an AliExpress
+kit — a bimanual humanoid torso, arms hanging at its sides, a stereo head on a short neck,
+on a bolted pedestal — as "more like the form I was thinking for a humanoid based on two
+vertically mounted SO-ARMs", **shown for general layout only**. Scope, in the owner's
+words: the general form **from the sternum up** is the possible inspiration. What it
+contributes is therefore shoulder and head geometry and nothing below — not the flat-panel
+body (which has no volume for battery, compute or servo bus), not the pedestal, not the
+arms' internals.
+
+It confirms three of the departures above — head on a neck just above the shoulder line,
+arms hanging as pendulums, a printed torso rather than a cart — and **adds a third
+shoulder-mounting option**: the arm's base flange on a *shoulder yoke standing proud of
+the torso*, rather than flat on a front or side face. That buys clearance for the arm to
+swing past the body, at the cost of a cantilevered bracket.
+
+**Arm layout, owner's reading of the image 2026-09-20:** the kit's arm carries a **bicep
+roll in place of a wrist roll** — the same joint count as an SO-101, with the roll moved
+proximal. This changes nothing about the arms here, which are SO-101s: pan, lift, elbow,
+wrist flex, wrist roll, gripper. (Assistant's note, unverified: the distal roll is the one
+task 1 wants — approach a toy from above, spin the jaws to its yaw — where a bicep roll
+mainly re-aims the elbow's swing plane. Relevant only if an arm variant is ever
+considered.) An earlier assistant reading of the same image, that the kit's arm carried a
+*shoulder* roll the SO-101 lacks, was wrong; the owner corrected it.
+
 **Locomotion is open.** The owner doubts a three-omniwheel kiwi base: its balance under a
 tall torso, and its footing on anything but flat indoor carpet. **Upstream reached the
 same conclusion** (read 2026-09-18): XLeRobot 0.4.0 (2025-12-02) replaced the LeKiwi
@@ -198,6 +222,13 @@ owner's test for the pair's home.
 **Ordering, assistant's recommendation, not accepted:** a LeKiwi base first if the omni
 doubt is settled in its favour (it is stage one of XLeRobot either way); otherwise the
 differential base first, since it is the part with no upstream to lean on.
+
+**Added 2026-09-20, also an assistant's recommendation, not accepted:** design the torso
+once and bolt it to a bench column first. That is
+[SO-ARM101 DEC-15](../projects/soarm101/docs/decisions.md)'s two arms 30 cm apart stood
+upright with a head on them — daily use with no base, no Nav2 and no Orin — and the same
+torso moves onto a base when locomotion is settled. The interface to get right early is
+how the torso meets the column, so that it later meets a base instead.
 
 ## Externally designed builds
 
@@ -394,6 +425,17 @@ fourth tier**; they are a placement choice inside the intent tier. See
 
 **What the problem actually consists of**, in rough order of difficulty:
 
+- **Identity is a coordinator service; embeddings stay local** (owner, 2026-09-19, from
+  the HAT bench). Face embeddings do not travel between robots — they only mean something
+  to the network that made them ([hailo_perception README](../projects/devastator/software/ros2/hailo_perception/README.md)).
+  So: a robot that meets a face it cannot name sends the coordinator the *crop* (a few
+  KB, on an unknown only — no streams); the coordinator recognises it against the
+  family's people, or asks a human, and answers with the person's record (name, whatever
+  the family keeps about them); the robot enrols the crop into its own gallery with its
+  own model and never asks about that face again. Photos and identity records are held
+  centrally, vectors per robot. The HAT bench already does the halves that run on the
+  robot: unknown-face crops are recorded, and after-the-fact enrolment from a crop works.
+  Nothing on the coordinator side exists.
 - **Share a world model, not sensor streams.** Raw depth from several robots will not
   cross a LAN — a constraint already met at single-robot scale on
   [the tank](projects.md#devastator). Each robot runs its own SLAM and perception; the
@@ -442,6 +484,43 @@ and act in the world through learned policies rather than hand-written control. 
 entry points already exist on this page: [the duck](#open-duck-mini-v2) for RL sim-to-real
 locomotion, and [LeRobot](#lerobot-and-learned-manipulation) for learned manipulation on
 the SO-ARM101. The hive mind is the systems layer above both, not a substitute for either.
+
+### A door camera that recognises who is approaching
+
+Raised by the owner 2026-09-19 after the HAT bench recognised him and his wife live. A
+fixed camera at the door running the same detection-and-recognition pipeline as
+[hailo_perception](../projects/devastator/software/ros2/hailo_perception/README.md), on a
+Pi 5 with the AI HAT+ 2 or on any host that can run it; the first fixed node of the
+[hive-mind](#physical-ai-and-the-hive-mind) direction rather than a robot. **Tasks:**
+announce a known person at the door; distinguish household from visitor. Nothing decided.
+
+**Privacy is a design input, not an afterthought** (owner's own caveat). The bench's
+current behaviour would be wrong at a door: it records every unknown face. What a door
+camera should do instead, as constraints for whoever builds it:
+
+- Recognise only people who enrolled themselves; everyone else is "a person", not a
+  face record. Do not store unknown crops at all, or delete them within minutes.
+- Keep the field of view inside the property. In the UK a domestic camera that captures
+  the street or a neighbour's property brings data-protection law into scope (the ICO
+  publishes guidance for home CCTV), and facial recognition of people who have not
+  consented is biometric data, the most protected kind. Unverified detail; check the
+  current guidance before installing.
+- Everything on the LAN: no cloud service sees a frame. The tailnet is the only remote
+  path, as for the rest of the family.
+- Make the recognition data disposable: galleries are caches rebuilt from enrolment
+  photos, and a person can be removed by deleting their files.
+
+**2D recognition can be spoofed by a photograph**, which matters at a door and not on
+a bench. What a phone's Face ID adds is not accuracy but *liveness*: a projected
+infrared dot pattern gives a 3D map of the face and an IR image, so a flat picture
+fails. The family's nearest equivalents, none tried: the D435i (active IR stereo depth —
+a depth check over the face box rejects a flat photo; the Orin half of the bench could
+test this against the HAT's 2D pipeline with a phone photo of the owner); a Luxonis
+OAK-D Pro (IR dot projector plus IR flood illuminator, on-device inference, sold in part
+for this); a challenge, blink or turn, in software. Intel's purpose-built RealSense ID
+F455 face-authentication camera existed but its status after Intel's wind-down is
+unverified. Iris or fingerprint would be more biometric still but stop being a door
+*camera*.
 
 ### Roving eyes: a whoop fleet
 

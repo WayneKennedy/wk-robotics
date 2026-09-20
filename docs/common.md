@@ -630,6 +630,27 @@ Raspberry Pi's IMX500 support, unverified on 24.04; its one model is small (lowe
 than YOLOv8m on the HAT) and it cannot produce face embeddings; and the frames still cross
 to the Pi if video is wanted.
 
+### Depth: which kind, for which task
+
+**Owner's observation, 2026-09-19:** depth keeps turning out to be the key component,
+and depth cameras are expensive. The way out is that "depth" is three different needs,
+and only one of them wants a depth *camera*. Prices are UK retail as remembered or seen
+in passing, **unverified**; check before buying, and check stock first.
+
+| Need | What actually serves it | Owned | Cheap route (unverified prices) |
+|---|---|---|---|
+| **Mapping and navigation** (hexapod, tank): a metric range scan for SLAM and Nav2 costmaps | A 2D lidar gives a 360° laserscan directly, which is what Nav2 consumes; the hexapod's depth camera only ever made a fake laserscan from one 10-pixel band | Nothing | LD19 / LDS-type lidar ~£80–100; RPLidar A1 ~£100. Arguably better value for this task than any depth camera |
+| **Liveness / "is this surface flat?"** (door camera): coarse depth over a face-sized patch at 0.5–2 m | A few dozen range zones are enough; resolution is not the point | Dozens of HC-SR04 (one zone, no) | ST VL53L5CX / VL53L8CX 8×8-zone ToF module ~£15–25; or stereo from two cheap UVC cameras with OpenCV SGBM on the CPU, unsynchronised but fine for a still face |
+| **Manipulation and scene depth** (the toy task, obstacle shape): dense metric depth, in-sensor | The D4xx class | **One D435i**, banked with the Orin | Arducam ToF (CSI, ~£40–50, 0.15–4 m, low resolution); Luxonis OAK-D Lite ~£100–150; the D435i itself is ~£430 ex VAT new |
+| **Relative depth from one camera** (which is nearer, rough layout) | Monocular depth networks; the Hailo Model Zoo has them and `hailo-apps` ships a C++ example, so the HAT can produce it from the webcam | HAT + webcam | Free. **Not metric, and no use for liveness** — a photo of a face gets a face-shaped depth estimate |
+
+Also owned and relevant: the SO-ARM101's pair of InnoMaker UVC cameras (allocated to the
+arm) would do for a stereo experiment on the bench; the Pi 5's two CSI ports take two
+Pi camera modules for a cheap stereo head. The RealSense T265 is pose-only and obsolete.
+
+**Reading:** the two tasks that keep coming up, mapping and liveness, are the two that
+do *not* need a depth camera. Spend the one D435i where dense depth is irreplaceable.
+
 ### AI HAT+ 2 and NVMe
 
 **Documentation checked 2026-09-13; no hardware test.** Pi 5 exposes one PCIe lane on
@@ -1064,7 +1085,7 @@ capacity difference. eth0 is present on every unit but unused (Wi-Fi only).
 
 | Role | Board rev | OS (arm64) | Notes |
 |---|---|---|---|
-| **The AI HAT+ 2 bench host** (since 2026-09-18; the former desktop Pi, candidate drone intent computer) | Rev 1.0 (`d04170`) | **Ubuntu Server 24.04.5**, rebuilt 2026-09-19 (was Raspberry Pi OS bookworm, desktop, from 2024-03-27); bootloader updated to current the same day | Boots from its Kingston SNV2S500G 500 GB in a **USB 3 enclosure (Realtek RTL9210B)**: the Pimoroni NVMe Base was removed to give the HAT the PCIe connector, where the Hailo-10H enumerates as `Hailo Technologies Ltd. Device 45c4`. TRIM through this bridge is not to be forced (wk-hexapod DEC-23). The enclosure setup that finally booted is recorded [below](#booting-a-pi-5-from-a-usb-nvme-enclosure). |
+| **The AI HAT+ 2 bench host** (since 2026-09-18; the former desktop Pi, candidate drone intent computer) | Rev 1.0 (`d04170`) | **Ubuntu Server 24.04.5**, rebuilt 2026-09-19 (was Raspberry Pi OS bookworm, desktop, from 2024-03-27); bootloader updated to current the same day | Boots from its Kingston SNV2S500G 500 GB in a **USB 3 enclosure (SSK, USB ID `152d:0562`)** on a blue USB 3 port: the Pimoroni NVMe Base was removed to give the HAT the PCIe connector, where the Hailo-10H enumerates as `Hailo Technologies Ltd. Device 45c4`. The RTL9210B enclosure it first used is retired from this duty (below). **TRIM is on** since 2026-09-20, forced by a udev rule: the RTL9210B hang behind wk-hexapod DEC-23 does not apply to this bridge, which was tested first — [below](#trim-through-the-jmicron-152d0562-bridge). Root is `noatime` from the same date. The enclosure setup that finally booted is recorded [below](#booting-a-pi-5-from-a-usb-nvme-enclosure). |
 | General-purpose desktop Pi | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | |
 | 3D-printer host | Rev 1.1 (`d04171`) | Raspberry Pi OS (Debian 12 bookworm), headless | |
 | wk-hexapod brain | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | Normally powered off. |
@@ -1146,6 +1167,118 @@ question: the SSD back on PCIe through the Waveshare 2-channel switch (Devastato
 A note for the record: a previous session recommended sourcing an RTL9210 enclosure; the
 basis for that is not recorded, and the evidence here — two Pi 5s, two failure modes —
 runs the other way.
+
+### Headless provisioning of a Raspberry Pi OS card
+
+**Measured 2026-09-20 on `2026-09-15-raspios-trixie-arm64-lite`, written from blake and booted on
+a Pi 4 B.** Do not infer the mechanism from an older image or from rpi-imager's documentation.
+
+**`custom.toml` is not read by this image.** Writing it to the boot partition does nothing, and
+fails silently. Evidence: the string appears nowhere in the rootfs or in either initramfs
+(`initramfs8`, `initramfs_2712`); there is no `firstboot` script in
+`/usr/lib/raspberrypi-sys-mods/` (only `imager_custom`, `sshswitch`, `get_fw_loc`, `i2cprobe`);
+and the `initramfs-tools` hook *named* `firstboot` only copies `lsblk` and `parted` in to serve
+the `resize` flag.
+
+**What this image expects is `firstrun.sh`** — confirmed by `/usr/lib/raspi-config/init_resize.sh`,
+which greps for `imager_custom set_wlan` inside `/boot/firstrun.sh`. The parts present to build it
+from:
+
+| Tool | Provides |
+|---|---|
+| `/usr/lib/raspberrypi-sys-mods/imager_custom` | `set_hostname`, `enable_ssh [-p]`, `set_wlan [-h] SSID [PSK [COUNTRY]]`, `set_keymap`, `set_timezone` |
+| `/usr/lib/userconf-pi/userconf NAME HASH` | Renames the shipped uid-1000 `pi` account (shell `nologin` until then) and sets its password from a crypt hash |
+| `sshswitch.service` | Enables SSH if `ssh` or `ssh.txt` is present on the boot partition |
+| `userconfig.service` | Applies `userconf.txt` from the boot partition |
+
+`set_wlan` writes `/etc/NetworkManager/system-connections/preconfigured.nmconnection` at mode 600,
+and its `psk=` accepts a 64-hex PMK, so the passphrase need never be stored in clear on the card.
+Country goes in as `cfg80211.ieee80211_regdom=` on `cmdline.txt`.
+
+Drive it by appending to `cmdline.txt`, preserving what is already there (`resize` matters):
+
+```
+systemd.run=/boot/firmware/firstrun.sh systemd.run_success_action=reboot systemd.unit=kernel-command-line.target
+```
+
+**The trap, which cost an afternoon.** `firstrun.sh` must strip its own hook before the reboot, and
+that sed must run greedily to end of line:
+
+```
+sed -i 's| systemd.run.*||g'    /boot/firmware/cmdline.txt   # correct
+sed -i 's| systemd.run[^ ]*||g' /boot/firmware/cmdline.txt   # WRONG
+```
+
+The tightened form removes the two `systemd.run*` tokens and leaves
+`systemd.unit=kernel-command-line.target` in place. `systemd-run-generator` synthesises that target
+with `Requires=kernel-command-line.service`; with no `systemd.run=` remaining there is no such
+service, the requirement fails, and the Pi drops to **rescue mode on every boot after the first**:
+`Reached target rescue.target`, then `Cannot open access to console, the root account is locked`.
+That is a dead end at the console, because Raspberry Pi OS locks root and `sulogin` has nothing to
+offer. **Provisioning itself will have completed correctly** — hostname, user, SSH, wifi and
+resize all applied — so the symptom looks far worse than the cause. Check `cmdline.txt` for a
+stray `systemd.unit=` before concluding anything failed.
+
+**Write and verify, do not trust the write.** `xz -dkc`, then `dd … oflag=direct conv=fsync`, then
+read back exactly the image's byte count and compare SHA-256. That doubles as a media test, which
+earns its keep: a card that enumerates normally can still be dead (`Media removed, stopped
+polling`, `dd: No medium found`) — and a second reader with different silicon reporting the same
+thing is what distinguishes a dead card from a bad adapter.
+
+**The PARTUUID changes on first boot.** The resize rewrites the partition table, so the
+`root=PARTUUID=` in `cmdline.txt` afterwards will not match what was written to the card.
+
+### TRIM through the JMicron 152d:0562 bridge
+
+**Verified 2026-09-20 on a spare enclosure, then applied to hailo (owner-approved).**
+This bridge advertises `LBPU=1` and "Maximum unmap LBA count: unbounded" in its Logical
+Block Provisioning VPD page, but clears `LBPME` in READ CAPACITY(16). The kernel
+therefore leaves `provisioning_mode` at `full` and `discard_max_bytes` at 0, and
+`fstrim` reports "the discard operation is not supported". **That is the same signature
+as the RTL9210B, where forcing `unmap` hung the disk and the host** (wk-hexapod
+[DEC-23](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md),
+superseded; the negative result is in that repo's `test-log.md`). So it was proved on a
+spare before hailo was touched.
+
+Forcing `provisioning_mode=unmap` yields `discard_max_bytes = 4294966784`. Two tests on a
+second, identical SSK enclosure (held in the private `wk-inventory` repo, `docs/stock.md`):
+
+- **Range correctness.** 256 MiB of random data at a 1 GiB offset, checksummed in 16 MiB
+  chunks; `blkdiscard` of a 32 MiB middle range changed exactly those two chunks and left
+  all fourteen others byte-identical.
+- **Scattered `fstrim`.** ext4, 500 x 2 MiB files, every other one deleted; `fstrim`
+  reported 915.3 GiB trimmed and all 250 survivors verified by SHA-256. The bridge's
+  "Maximum unmap block descriptor count: 63" caused no collateral loss.
+
+On hailo this trimmed 452.2 GiB on `/` and 409.4 MiB on `/boot/firmware`; 800 sampled
+binaries verified unchanged afterwards, filesystem `clean`, no I/O errors. Persisted in
+`/etc/udev/rules.d/10-ssk-nvme-trim.rules`:
+
+```
+ACTION=="add|change", SUBSYSTEM=="scsi_disk", ATTRS{idVendor}=="152d", ATTRS{idProduct}=="0562", ATTR{provisioning_mode}="unmap"
+```
+
+**This covers the JMicron bridge only. Do not force `unmap` on an RTL9210B.**
+
+**Two traps in this bridge's identity, both of which have already misled a session:**
+
+- `usb.ids` decodes `152d:0562` as "JMicron JMS567 SATA 6Gb/s bridge". That is wrong for
+  this unit, which bridges NVMe — the drives are M-key M.2 2280, and an M-key card
+  cannot seat in a SATA socket. **Do not infer the interface from `lsusb` output here.**
+  The part is most likely a **JMS583**: `smartctl -d sntjmicron` is the one passthrough
+  type whose opcode the bridge recognises (it returns a medium error, not "unsupported
+  opcode"), and JMS583 firmware is distributed against this same PID. Unverified further.
+- **Both SSK enclosures report the same bridge serial**, `DD564198838B8`. It identifies
+  the bridge model, not the unit, so nothing may key on it — use the filesystem UUID.
+  Identifiers live in the private `wk-inventory` repo, `docs/pi5-fleet.md`.
+
+Drive identity is **not readable through this bridge**: SCSI INQUIRY returns vendor `SSK`
+with an empty model field, `hdparm -I` is silent (NVMe has no ATA layer to answer it), and
+every `smartctl` passthrough type fails. Record a drive's model while the card is out of
+the enclosure; no software route exists once it is in. Firmware updating the bridge is
+possible (JMicron OEM tooling, Windows-only, unofficial redistributions) but is **not
+recommended**: these units report `bcdDevice 0209`, newer than the 2.0.8 in circulation,
+and nothing is malfunctioning.
 
 ### The GPU workstation
 
