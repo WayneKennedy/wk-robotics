@@ -477,7 +477,7 @@ corrected the bring-up snapshot the row says so). Against the reference table ab
 | udev | `99-realsense-libusb.rules` | none (no RealSense) — n/a | `99-realsense-libusb.rules`, same source; NVIDIA's own rules alongside |
 | Services | `hexapod.service`, `hexapod-buzzer-guard.service` | none (bench, launched by hand) | none (bench, launched by hand) |
 | Locale | `en_GB.UTF-8` | same | same |
-| Timezone | `Europe/London` | same | **`Etc/UTC`** — journals and bags across the three hosts are an hour apart; deviation, and the first thing the [fleet clock](ideas.md) question will trip over |
+| Timezone | `Etc/UTC` | same | same — all three since 2026-09-20, see [*Robots run on UTC*](#robots-run-on-utc) |
 | Package age | Jazzy builds of **2026-06-12…15** — the oldest of the three | builds of 2026-09-02 | builds of 2026-09-02 |
 
 **Deviations on the reference itself** (the hexapod is the reference for *how ROS 2 is installed*,
@@ -501,6 +501,35 @@ Jazzy form; `ROS_LOCALHOST_ONLY` is deprecated), a deliberate deviation recorded
 **For the family, open:** one domain per robot, or localhost-only by default with the domain
 opened deliberately when hosts must talk (the Devastator's Pi and its future HAT node, say).
 Until decided, any host that runs on the home LAN alongside a live robot needs the same guard.
+
+### Robots run on UTC
+
+**Owner's decision, 2026-09-20: every robot host's timezone is `Etc/UTC`.** Applied the same
+day — the hexapod's Pi and the AI HAT+ 2 bench host were moved from `Europe/London`; the Orin
+was already there. Verified: all three report `Etc/UTC`, NTP-synchronised, agreeing to the
+second. The workstation is **not** included and stays on local time; a person reads it.
+
+**Why**, beyond the owner's stated reason that it is the only choice that still makes sense
+off-planet: UTC has no DST discontinuity. A local-time robot's clock jumps an hour twice a
+year, and twice a year an hour of timestamps either repeats or does not exist — in journals,
+in rosbags, and in any log correlated across hosts. The hexapod already carries a
+time-discontinuity decision for a related reason (its `hexapod.service` waits on
+`time-sync.target` because the Pi 5's RTC is unbacked —
+[wk-hexapod DEC-21](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)),
+so this is the same hazard closed from the other end. *Noted 2026-09-20: the unit deployed on
+the robot cites `DEC-20`, the number that decision carried before renumbering; the repo's copy
+is correct and the difference is a comment only — the deployed unit is otherwise identical
+once `install.sh`'s placeholders are substituted. Left alone rather than restart a running
+robot for a comment.*
+
+**Consequence:** timestamps in this repository's measurements and in host journals are UTC.
+Anything quoted in local time says so. This is also the prerequisite the
+[fleet clock](ideas.md) question needs — a common timezone is not a common *clock*, which
+still wants `chrony` across the family, but cross-host correlation is meaningless without it.
+
+**To set a new host:** `sudo timedatectl set-timezone Etc/UTC`. It belongs in each host's
+setup script; the hexapod's `ubuntu-setup.sh` is the reference
+([above](#ros-2-installs-are-familial)).
 
 ### micro-ROS: how the MCU joins the graph
 

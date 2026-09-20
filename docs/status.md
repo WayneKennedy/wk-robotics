@@ -165,8 +165,9 @@ Fast DDS on domain 0 everywhere, and no ROS in any `.bashrc`. **What is left to 
    match. This is the one finding that is actively costing something.
 2. **Push `orin-perception-bench` to origin.** Until then `projects/orin-perception/`
    exists only in a local worktree and an rsync on the Orin.
-3. **Set the Orin's timezone** to `Europe/London`, or decide the family standardises on
-   UTC and change the two Pis. Journals and bags are currently an hour apart.
+3. ~~Timezone~~ — **done 2026-09-20.** The owner ruled that all robots run UTC; the two Pis
+   were moved and all three hosts now agree. Recorded as
+   [*Robots run on UTC*](common.md#robots-run-on-utc).
 4. **Realign the hexapod's own script with the hexapod.** `ros-jazzy-camera-ros` and
    `ros-jazzy-slam-toolbox` are installed but appear nowhere in `ubuntu-setup.sh`, so
    re-running the reference script does not reproduce the reference host. Its ROS
