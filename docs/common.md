@@ -451,6 +451,57 @@ workspace at `~/ros2_ws` rather than inside the project folder (the package live
 defaults rather than set explicitly. The Orin runs JetPack's Ubuntu 24.04 and may need
 arm64 packages that differ; its session records what.
 
+**Audit method.** [`scripts/ros2-fingerprint.sh`](../scripts/ros2-fingerprint.sh) prints a
+host's ROS 2 install as plain text — OS, apt sources, foreign packages, every `ros-*` package
+and version, installed RMWs, ROS environment in shell files, ROS-related services, rosdep
+state, workspaces, udev rules, groups, pip-installed Python, locale, hardware libraries and
+kernel modules — one fact per line in a fixed order, no host names, no secrets. Run it as
+`ssh <host> bash -s < scripts/ros2-fingerprint.sh > <role>.txt` for each host and `diff` the
+files. The fingerprints themselves are not checked in (they name every package version and
+go stale on the next `apt upgrade`); the findings below are.
+
+**Audit, 2026-09-19, re-run in full 2026-09-20** (the re-run is the authority; where it
+corrected the bring-up snapshot the row says so). Against the reference table above:
+
+| Item | Hexapod (reference) | AI HAT+ 2 bench host | Orin Nano |
+|---|---|---|---|
+| OS / kernel | Ubuntu 24.04, `6.8.0-1064-raspi` | same | Ubuntu 24.04 (JetPack 7.2.1), `6.8.12-1021-tegra` — *deliberate: NVIDIA's kernel is the only one* |
+| apt source | `ros2-apt-source` 1.2.0 | 1.3.0 (newer release at install time; same mechanism) | 1.3.0, same mechanism, installed by `projects/orin-perception/scripts/setup-orin.sh` (a step-for-step copy of the hexapod's script) |
+| Package snapshot | Jazzy builds of 2026-06-12…15 | builds of 2026-09-02 (installed later; **the hexapod has not been `apt upgrade`d since June** — an observation, not a deviation) | builds of 2026-09-02, as the bench host |
+| Base packages | as the table, `--no-install-recommends` | recommends were installed (`image-transport-plugins`, `camera-info-manager`, …) — **deviation, harmless** | as the table, `--no-install-recommends`; on top: `realsense2-camera`, `web-video-server`, `cv-bridge`, `image-transport`, `vision-msgs`, `diagnostic-updater` |
+| Middleware | Fast DDS explicit, `ROS_DOMAIN_ID=0` set by `scripts/launch.sh`; `.bashrc` clean | `rmw-fastrtps-cpp` explicit; **no launch script sets the domain or RMW** (Jazzy's defaults give the same) — deviation | as the hexapod (`scripts/launch.sh` copies it) **plus `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`** — deliberate, see the discovery finding below |
+| rosdep | initialised, user cache present | initialised **and updated** — 11 populated caches, `rosdep resolve` answers. *Corrected 2026-09-20: the 2026-09-19 fingerprint was taken at 12:2x, before the update ran at 12:36; it is not a deviation* | initialised, updated |
+| Workspace | `<repo>/ros2_ws` inside the checkout, `--symlink-install` | **`~/ros2_ws`**, rsynced from `projects/devastator/software/ros2/`; **the host carries no git checkout at all**, and it was built **without `--symlink-install`** (0 symlinks under `install/`; `launch/` and `config/` are copies, so host edits do nothing until a rebuild) — three deviations | `~/Code/wk-robotics/projects/orin-perception/ros2_ws`, `--symlink-install`, laid out where the checkout goes; rsynced until the branch is on origin |
+| Python | no venv; hexapod deps pip-installed into the system interpreter (`--break-system-packages`) | no venv; **`python3-pip` absent** (C++ node, nothing needed) | no venv; `cuda-python` pip-installed into the system interpreter from `requirements.txt`, as the hexapod does; TensorRT's binding from apt |
+| Groups | dialout video plugdev i2c spi gpio render docker … | dialout video plugdev i2c gpio | dialout video plugdev render (no i2c/spi/gpio groups exist on the desktop image) |
+| udev | `99-realsense-libusb.rules` | none (no RealSense) — n/a | `99-realsense-libusb.rules`, same source; NVIDIA's own rules alongside |
+| Services | `hexapod.service`, `hexapod-buzzer-guard.service` | none (bench, launched by hand) | none (bench, launched by hand) |
+| Locale | `en_GB.UTF-8` | same | same |
+| Timezone | `Europe/London` | same | **`Etc/UTC`** — journals and bags across the three hosts are an hour apart; deviation, and the first thing the [fleet clock](ideas.md) question will trip over |
+| Package age | Jazzy builds of **2026-06-12…15** — the oldest of the three | builds of 2026-09-02 | builds of 2026-09-02 |
+
+**Deviations on the reference itself** (the hexapod is the reference for *how ROS 2 is installed*,
+not a clean host): three apt sources not in its own setup script — Docker's, Intel's
+`librealsense.intel.com` (unused: the installed `librealsense2` is ROS's `ros-jazzy-librealsense2`
+2.58.1) and Raspberry Pi's bookworm archive, the one that produced the
+[foreign-package problem](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/operations.md)
+(three `+rpt`/`deb12` packages remain: `initramfs-tools`, `initramfs-tools-core`, `pastebinit`).
+Whether those sources stay is the hexapod's decision to record, not the family's.
+The Orin's desktop image also carries a Docker apt source (keyring in `/etc/apt/keyrings`) that
+no family script added and no installed package uses; its origin is not recorded.
+
+**Finding: domain 0 on one LAN means every host sees every robot.** With the family default
+(`ROS_DOMAIN_ID=0`, discovery over multicast) the Orin, with nothing of its own running, listed
+the hexapod's entire graph — Nav2, the autonomy manager, the LED and buzzer nodes, and its
+`/camera/camera` — and the hexapod's `/camera/camera/color/image_raw` collides by name with the
+D435i's on the Orin. A `ros2 topic hz` on the Orin's own camera read 3 fps until discovery was
+limited to the host, then 29 fps. Measured 2026-09-19, wk-robotics `projects/orin-perception`.
+**For the bench**, `scripts/launch.sh` sets `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST` (the
+Jazzy form; `ROS_LOCALHOST_ONLY` is deprecated), a deliberate deviation recorded in that script.
+**For the family, open:** one domain per robot, or localhost-only by default with the domain
+opened deliberately when hosts must talk (the Devastator's Pi and its future HAT node, say).
+Until decided, any host that runs on the home LAN alongside a live robot needs the same guard.
+
 ### micro-ROS: how the MCU joins the graph
 
 ROS 2 is a Linux system — its transport is DDS, which assumes an OS, a network stack and
@@ -533,7 +584,7 @@ would go.
 standard camera by one thing: depth computed in the camera. Without a host that can use
 that depth fully, a standard camera does the job for a fraction of the price. So the
 family's one **D435i is banked as a pair with the Jetson Orin Nano**, whose GPU can use it
-fully, and it left the hexapod ([wk-hexapod DEC-25]({HX})). **Where the pair goes is open**
+fully, and it left the hexapod ([wk-hexapod DEC-25](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)). **Where the pair goes is open**
 (the Holybro 10" is a candidate; its at-risk cost is the objection) — see
 [`status.md`](status.md).
 
@@ -566,7 +617,7 @@ fully, and it left the hexapod ([wk-hexapod DEC-25]({HX})). **Where the pair goe
 **Rule of thumb:** put a stage in the sensor when the sensor's output is what the next
 stage consumes anyway (depth for laserscan, detections for behaviour), and leave a stage
 on the Pi when it needs the whole robot's state (SLAM, Nav2). The accelerator row has
-its first result ([AI HAT+ 2 measurements](#first-measurements-on-the-ai-hat-2)); no
+its first result ([AI HAT+ 2 measurements](#first-measurements-on-the-ai-hat-2-2026-09-19)); no
 in-sensor stage has been tested.
 
 **A three-way split, raised by the owner 2026-09-19, not decided or tested:** detection in
@@ -741,6 +792,46 @@ not the accelerator. For a robot camera at 15–30 fps any of the three is far m
 enough, and YOLOv8m at 76 fps is the useful ceiling: the accuracy step from s to m is
 free at robot frame rates. These are synthetic-input numbers; a live camera pipeline
 adds capture, resize and post-processing on the CPU, unmeasured.
+
+#### First measurements on the Orin Nano (2026-09-20)
+
+**A live camera pipeline, not a synthetic benchmark** — so these are not comparable with the
+HAT's `hailortcli` figures above, which use random input and measure the accelerator alone.
+Measured from the node's own 1 Hz log line over a **21-hour continuous run** (2026-09-19 15:04
+→ 2026-09-20 12:03), `projects/orin-perception`. Power mode **25 W**. D435i colour
+**1280×720 RGB8 at 30 fps** → `perception_node` → `web_video_server` (MJPEG). YOLOv8s +
+SCRFD-500M + MobileFaceNet ArcFace, all TensorRT FP16, **run serially on every frame**.
+Statistics over the last 3600 samples, when nothing else was on the DDS domain:
+
+| | mean | min | max | p50 | p95 |
+|---|---|---|---|---|---|
+| **Output fps** | **28.2** | 24.4 | 29.6 | 28.4 | 29.2 |
+| Total per frame | 32.8 ms | 31.3 | 38.5 | 32.5 | 35.6 |
+| End-to-end from camera stamp | 88.8 ms | 81.7 | 97.6 | 88.6 | 92.7 |
+
+Per stage, mean ms: `yolo_infer` 9.9 · `face_det` 8.1 · `yolo_pre` 7.4 · `draw_publish` 4.2 ·
+`face_embed` 3.0 · `yolo_post` 2.2 · `convert` 0.8.
+
+**Reading.** The pipeline holds **28.2 fps against a 30 fps camera** — it is very nearly
+keeping up with the sensor, and 32.8 ms of work per frame is the reason it is not: the
+budget at 30 fps is 33.3 ms. The two TensorRT inferences are only **18 ms of that 32.8**;
+the other 45 % is pre/post-processing, colour conversion and annotation on the CPU. That is
+where the headroom is, not in a bigger or smaller model. The 89 ms end-to-end against 33 ms
+of processing means **roughly two frames of latency sit in the camera and transport**, not in
+inference. Compare the HAT half at 24 fps / 640×480 with both pipelines, 19 fps with identity:
+the Orin is doing **three times the pixels at higher frame rate**, which is the honest shape
+of the difference between the two accelerators on this workload.
+
+**Contention is the largest single effect measured.** The same run opened at **0.8 fps with
+~6.0 s end-to-end latency** while the hexapod's graph was live on domain 0, and settled to
+28.2 fps once it was not — a **35× throughput difference from DDS discovery alone**, dwarfing
+every model or resolution choice here. This is the measurement behind the discovery finding
+above, and the reason `scripts/launch.sh` pins `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`.
+
+**Not measured:** `scripts/bench-record.sh` was never run, so there are no `tegrastats`
+numbers — no CPU or GPU load, no temperatures, no power draw, and no YOLOv8m comparison.
+The run also used an **empty gallery**, so face *recognition* is unmeasured here; see the
+state note in [`status.md`](status.md#perception-bench-the-same-experiment-on-the-hat-and-on-the-orin-opened-2026-09-19).
 
 ### AI compute — purchase comparison
 

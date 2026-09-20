@@ -38,7 +38,7 @@ under Apache-2.0 in `hardware/vendor/`. The two-tier reflex/intent split describ
 **A ROS 2 autonomous hexapod**, built on Freenove Big Hexapod (FNK0052) hardware with the
 kit's own sensors: an OV5647 Pi camera and an HC-SR04 ultrasonic on the pan/tilt head. A
 RealSense D435i replaced them from 2025-12-31 until 2026-09-18, when it was banked with the
-Orin Nano ([its DEC-25]({HX})).
+Orin Nano ([its DEC-25](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)).
 
 | | |
 |---|---|
@@ -58,7 +58,7 @@ and what an "approved" mission planner is. Its `docs/roadmap.md` is authoritativ
 
 **Shares with the rest:** the Pi 5 + ROS 2 tier and the `/cmd_vel` · `/joint_commands` ·
 `/joint_states` · `/imu` · `/odom` topic vocabulary with koala-bot. It is the family's
-**baseline intent-tier reference** ([its DEC-26]({HX})) — CPU-only Pi 5, primitive
+**baseline intent-tier reference** ([its DEC-26](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)) — CPU-only Pi 5, primitive
 sensors, the only robot with a navigation and mission stack that has run — with the
 Devastator as the second reference a step above it. Its hardware ceiling is the kit's: the
 GPIO riser blocks the AI HAT+ 2 and its PWM hobby servos rule out ST3215s, so new hardware

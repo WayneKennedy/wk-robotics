@@ -144,8 +144,85 @@ that would be powered up every day:
 Owner's rule: ROS 2 installs are familial, the hexapod's `ubuntu-setup.sh` is the
 reference ([`common.md`](common.md#ros-2-installs-are-familial)). **To do at the end of
 the current bring-up:** audit all three hosts against that table, bring each deviation
-into line or record it as a decision in the host's project. Known so far: the bench
-host's deviations are listed in `common.md`; the Orin's are for its session to list.
+into line or record it as a decision in the host's project.
+
+**Audit done 2026-09-20**, all three hosts, results in
+[`common.md`](common.md#ros-2-installs-are-familial). The install spine is uniform —
+same Ubuntu, same Jazzy from apt, same `ros2-apt-source` mechanism, same base packages,
+Fast DDS on domain 0 everywhere, and no ROS in any `.bashrc`. **What is left to do:**
+
+1. **Bench host — bring its workspace into line.** It is the only host with no git
+   checkout, it builds from `~/ros2_ws` outside any repo, and it was built without
+   `--symlink-install`. The drift this predicts has already happened:
+   `scripts/enrol_poses.sh` is committed but **absent from the host that runs it**, and
+   the host's `README.md` differs from the repo's. The five code and config files still
+   match. This is the one finding that is actively costing something.
+2. **Push `orin-perception-bench` to origin.** Until then `projects/orin-perception/`
+   exists only in a local worktree and an rsync on the Orin.
+3. **Set the Orin's timezone** to `Europe/London`, or decide the family standardises on
+   UTC and change the two Pis. Journals and bags are currently an hour apart.
+4. **Realign the hexapod's own script with the hexapod.** `ros-jazzy-camera-ros` and
+   `ros-jazzy-slam-toolbox` are installed but appear nowhere in `ubuntu-setup.sh`, so
+   re-running the reference script does not reproduce the reference host. Its ROS
+   packages are also ~3 months older than the other two hosts'.
+5. **Decide the discovery-range question** (below) — measured at 35× throughput.
+
+### Repo shape and host checkouts (open — raised by the owner 2026-09-20)
+
+**Not decided.** The owner asked whether to push back on the
+[2026-09-13 consolidation](#the-github-estate) that made the Devastator and the SO-ARM101 folders
+here rather than peer repos, and proposed instead that **this repository be cloned and
+regularly fetched on every robot intent host**.
+
+**What the record already says.** The consolidation's own criterion for staying a peer repo
+was, in order: OSS licensing (koala-bot), **pulled onto a Pi** (wk-hexapod), private
+(3d-printing), mostly-not-robots (wk-drones). At the time the two consolidated projects were
+docs-only, so "pulled onto a Pi" did not fire. **It fires now:**
+`projects/devastator/software/ros2/hailo_perception/` runs on the bench host and
+`projects/orin-perception/` runs on the Orin.
+
+**The assistant's recommendation (2026-09-20), for the owner to accept or reject:** keep the
+consolidation and adopt the clone rule, because the clone rule *retires* the criterion rather
+than contradicting it — if this repo is on every intent host, a folder-project is pulled onto
+a Pi exactly as easily as a peer repo would be, and the reason to split them back out goes
+away. Supporting facts, all verified 2026-09-20: the repo is ~14.5 MB including history; it is
+public, so robots can clone it anonymously over HTTPS with no deploy key; the bench host and
+the Orin both have git 2.43.0 and can already reach GitHub; and **the hexapod's Pi has cloned
+it since at least 2026-09-19** — so the pattern exists, it is simply neither uniform nor kept
+fresh (that clone was 5 commits behind when checked). Adopting it also fixes audit item 1 by
+construction. `wk-hexapod` should stay a peer either way: it is not a small docs-led record
+but a large working repo with its own decisions, roadmap, firmware and six-package workspace,
+and it is the family's reference install.
+
+**Open sub-questions the owner has not ruled on:** whether host clones are strictly read-only
+consumers (`git pull` only, authoring on the workstation) to avoid divergent heads across
+machines; whether robots clone over HTTPS rather than SSH, since an SSH deploy key on a robot
+on a shelf can push; and whether "regularly fetched" means a `git fetch` timer (safe — never
+touches the working tree) rather than an automatic `pull`, which on a `--symlink-install`
+workspace would change the code a running robot is executing.
+
+### Claude CLI placement (open — raised by the owner 2026-09-20)
+
+**Not decided.** The hexapod's Pi is the only host with a local Claude CLI install; the
+owner's stated motive is minimising how many hosts need a `/login`, and they invited pushback.
+
+**The assistant's recommendation: keep it as it is — do not install on the other two.** The
+motive is sound and there is a stronger reason for it than convenience: every extra install is
+another credential, another config to drift, and another `.claude.json` accumulating session
+history on a machine that lives on a shelf. The evidence is this session — **the entire
+three-host ROS 2 audit was done from the workstation over SSH**, including reading apt
+history, diffing package sets, comparing file checksums across hosts and summarising a 16 MB
+log, with no agent on any remote host. `scripts/ros2-fingerprint.sh` is the generalisation of
+that pattern: `ssh <host> bash -s < script` gives an assistant the host's state without an
+assistant on the host.
+
+**Note that this is separable from the clone question above** — cloning this repo on a host
+does not imply installing an assistant there; the clone serves `git pull` deploys and gives an
+assistant working *over SSH* the repo's context on-host.
+
+**When to revisit:** a robot that must be worked on while off the LAN — a field run on
+battery, away from the workstation — is the case SSH does not cover, and the hexapod is the
+robot most likely to be in it. That may be why the install is there.
 
 ### Perception bench: the same experiment on the HAT and on the Orin (opened 2026-09-19)
 
@@ -164,14 +241,36 @@ the Orin half independently:**
 
 Language: C++ ROS 2 nodes on the HAT (no Python binding on 24.04); on the Orin whatever
 its toolchain makes easiest. Results land in `common.md` beside the
-[HAT measurements](common.md#first-measurements-on-the-ai-hat-2). Code for the HAT half
+[HAT measurements](common.md#first-measurements-on-the-ai-hat-2-2026-09-19). Code for the HAT half
 lives in `projects/devastator/software/` as that robot's future perception node (DEC-15);
 the Orin half's home follows its allocation, undecided — keep it in a folder under this
 repo's `projects/` until then. **State:** HAT half **running** since 2026-09-19 —
 `projects/devastator/software/ros2/hailo_perception/` (C++ ROS 2 node, README has the
 numbers: 24 fps at 640×480 with objects and face detection, both inferences serial);
 face recognition working — owner enrolled and recognised at 0.78 similarity, 19 fps with
-identity running. Orin half in progress in a separate session.
+identity running. **Orin half built 2026-09-19** in
+[`projects/orin-perception/`](../projects/orin-perception/AGENTS.md) (branch
+`orin-perception-bench`): Python ROS 2 node on TensorRT 10 FP16 engines — YOLOv8s/m from an
+Ultralytics ONNX export, InsightFace `det_500m` (SCRFD-500M) + `w600k_mbf` (MobileFaceNet
+ArcFace), not the HAT's `scrfd_2.5g`, which InsightFace does not publish by URL; same topics,
+parameter names and gallery format as the HAT node, under `/orin`. Host installed with a
+step-for-step copy of the hexapod's setup script (the family audit is in
+[`common.md`](common.md#ros-2-installs-are-familial)). **Measured 2026-09-20** over a 21-hour
+run: **28.2 fps at 1280×720** with objects, face detection and face embedding all serial,
+32.8 ms per frame, 89 ms end to end, streaming MJPEG — numbers and the contention finding in
+[`common.md`](common.md#first-measurements-on-the-orin-nano-2026-09-20).
+
+**Where it stopped, and it is one step short of the HAT half.** Objects, face detection,
+face embedding and the web stream all run; **face recognition was never exercised** — the
+gallery directory was never created and no enrolment happened in the whole 21-hour run, so
+every face stayed `unknown`. The recognition path itself is **verified working on the Orin's
+GPU engines** (2026-09-20: enrolled a face from `bus.jpg` through SCRFD → ArcFace → gallery
+write in the HAT's format, model provenance recorded); previously it had only been checked on
+a workstation CPU through onnxruntime. **What remains needs a person in front of the camera:**
+bring the bench up with `scripts/launch.sh`, publish a name on `/orin/enroll`, and confirm it
+comes back on `/orin/faces` — the step the HAT half passed at 0.78 similarity.
+`scripts/bench-record.sh` has also never been run, so there is no CPU/GPU/power/thermal data
+and no YOLOv8m comparison.
 
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 
