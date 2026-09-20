@@ -1,0 +1,19 @@
+# RealSense D435i for the perception bench: colour only, 1280x720x30, matching the
+# AI HAT+ 2 half of the experiment (wk-robotics docs/status.md, "Perception bench").
+# Derived from wk-hexapod ros2_ws/src/hexapod_bringup/config/realsense.yaml.
+/**:
+  ros__parameters:
+    serial_no: ""
+    device_type: "d435i"
+    rgb_camera.color_profile: "1280x720x30"
+    rgb_camera.enable_auto_exposure: true
+    enable_color: true
+    enable_depth: false
+    enable_infra1: false
+    enable_infra2: false
+    enable_gyro: false
+    enable_accel: false
+    align_depth.enable: false
+    pointcloud.enable: false
+    publish_tf: false
+    diagnostics_period: 1.0

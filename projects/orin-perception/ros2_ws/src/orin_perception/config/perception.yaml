@@ -1,0 +1,22 @@
+# Perception bench node parameters. Engines are built by scripts/build-engines.sh into models_dir.
+# Threshold and gallery parameter names mirror hailo_perception's (projects/devastator/software).
+/orin/perception_node:
+  ros__parameters:
+    models_dir: "~/models"
+    yolo_engine: "yolov8s.engine"       # or yolov8m.engine
+    face_det_engine: "det_500m.engine"
+    face_det_size: 640
+    face_embed_engine: "w600k_mbf.engine"
+    embedding_model: "insightface-buffalo_sc/w600k_mbf"
+    enable_objects: true
+    enable_faces: true
+    object_score_threshold: 0.25
+    object_nms_iou: 0.45
+    face_score_threshold: 0.5
+    face_nms_iou: 0.4
+    # Cosine similarity needed to name a face. Unverified starting point for w600k_mbf;
+    # tune from the logged scores. The HAT half starts at 0.45 with different weights.
+    face_match_threshold: 0.35
+    gallery_dir: "~/orin/gallery"
+    publish_annotated: true
+    process_every_n: 1

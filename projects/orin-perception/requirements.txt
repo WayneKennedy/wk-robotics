@@ -1,0 +1,3 @@
+# Python deps for the Orin perception bench, installed into the system interpreter
+# (no venv; ROS 2 nodes run under /usr/bin/python3). TensorRT itself comes from apt.
+cuda-python>=13
