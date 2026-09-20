@@ -125,7 +125,8 @@ not accepted are open questions, not decisions**, and are marked as such there.
 
 - **DEC-14 — The first build's Raspberry Pi 4 is retired.** (Owner, 2026-09-18.) Located
   the same day and declared obsolete for this robot; it returns to the owner's unallocated
-  stock (private `wk-inventory` `docs/stock.md`). The AI HAT+ 2 allocated here (OQ-13)
+  stock (private `wk-inventory` `docs/stock.md`). **Onward, 2026-09-20:** no longer in that
+  stock list — allocated to [edukit-rover](../../../docs/projects.md#edukit-rover). The AI HAT+ 2 allocated here (OQ-13)
   needs a Pi 5 regardless. Narrows OQ-06; which intent computer replaces it is still open.
 
 - **DEC-15 — The intent tier is a Raspberry Pi 5 with the AI HAT+ 2 and a camera; this

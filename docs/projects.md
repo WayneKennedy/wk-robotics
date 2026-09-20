@@ -128,6 +128,41 @@ press-fit findings in [`common.md`](common.md#press-fits-and-supports).
 
 ---
 
+## edukit-rover
+
+**A CamJam EduKit #3 robot in a 3D-printed chassis**, found built on 2026-09-20 and adopted as
+the family's floor: the cheapest platform that can still host the intent tier. It lives in this
+file rather than its own repo — no CAD and no roadmap yet (owner, 2026-09-20).
+
+| | |
+|---|---|
+| Repo | None — this section is the record |
+| State | Chassis printed and assembled with motors, the EduKit motor board, an HC-SR04 and the kit breadboard. **No Pi fitted, and never powered in this form** (owner, 2026-09-20) |
+| Compute | Raspberry Pi 4 B, allocated from stock 2026-09-20 — the Devastator's obsolete first-build board ([its DEC-14](../projects/devastator/docs/decisions.md)). RAM unrecorded; no purchase record found |
+| Actuation | 2× brushed DC motors through the EduKit dual H-bridge on the GPIO header, motor power from the kit's 4×AA box. **No encoders, so no wheel odometry** |
+| Sensing | HC-SR04 ultrasonic on the printed nose. ECHO is 5 V and must reach the Pi through the kit's 330 Ω / 470 Ω divider — **confirm both resistors before first power-on**. The kit's line sensor is unaccounted for |
+| Bought | CamJam EduKit #3, Amazon sold by The Pi Hut, 2019-12-19, £14.87. Was "on invoice only, in hand unknown" in the private `wk-inventory` repo until the owner found it built; moved here 2026-09-20 |
+| Start at | This section |
+
+**Why it is worth building.** [The two-tier split](common.md#compute-the-two-tier-split) puts the
+intent tier on a Pi 5, and the hexapod is the baseline reference for it, but nothing has measured
+the floor. This rover is statically stable — differential drive with a castor — so the
+load-bearing rule that the balance loop lives on the MCU does not bite here. It can legitimately
+run intent-only with no reflex tier at all, which almost nothing else in the family can.
+
+**The binding constraint is sensing, not compute.** With no encoders there is no odometry, so no
+SLAM and no Nav2: the platform supports reactive behaviour — wander, avoid, follow a line — and a
+Pi 4 B is already over-specified for that. Finding where a Pi 4 actually strains means *adding*
+sensing, a camera being the obvious step, not taking compute away. Either result is worth
+recording against the hexapod's DEC-26.
+
+**Open, and undecided by the owner:** whether it runs ROS 2 like the rest of the family or plain
+Python on GPIO. **Power is a real question** — the 4×AA box drives the motors only, and a Pi 4 B
+wants up to 3 A at 5 V where the kit assumed a Pi Zero or Pi 3, so it needs its own pack and
+should not share the motor supply.
+
+---
+
 ## Holybro 10" (wk-drones)
 
 **The family's aerial robot candidate: a 10" multirotor bought to carry a Raspberry Pi or
