@@ -505,8 +505,9 @@ Until decided, any host that runs on the home LAN alongside a live robot needs t
 ### Host checkouts
 
 **Every ROS 2 host builds from a git checkout of this repository, with the workspace inside
-it.** The bench host was the last exception and was migrated 2026-09-20 at the owner's
-instruction; all three hosts now follow it.
+it.** Completed 2026-09-20: the bench host was migrated from a hand-rsynced `~/ros2_ws`, and
+the Orin's rsynced folder was converted in place into a real checkout tracking `origin/main`
+(its build products are gitignored, so they survived untouched).
 
 | | Path on the host | Workspace |
 |---|---|---|
@@ -528,6 +529,17 @@ the migration; the owner has not ruled on them and the wider question of repo sh
   hold a built workspace inside the checkout and still reset cleanly without a rebuild.
 - **Nothing is deployed by rsync any more.** `projects/orin-perception/scripts/deploy.sh`
   predates the push and is superseded by `git pull` on the host.
+
+**Updating a host is not always safe, and is not automatic.** A host that is *running* from
+its checkout must not be updated casually: with `--symlink-install`, launch files and configs
+are symlinked out of `src/`, so a pull changes what the running stack will execute, and a
+changed message definition needs a rebuild before anything will talk to anything. Concretely,
+on 2026-09-20 the hexapod's `wk-hexapod` checkout was **6 commits behind, a 48-file diff**
+covering perception node source, a new message type and launch files, while `hexapod.service`
+was active — so it was **left alone**, and updating it wants a window where the robot can be
+rebuilt and watched coming back up. The two bench hosts carry no service and were updated
+freely. A docs-only checkout (this repository on the hexapod's Pi, which builds nothing there)
+is always safe to update.
 
 **What this replaced.** The bench host previously held a hand-rsynced copy and had already
 drifted: `scripts/enrol_poses.sh` was committed but absent from the host that runs it, and its
