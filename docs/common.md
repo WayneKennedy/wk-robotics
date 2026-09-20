@@ -447,7 +447,7 @@ the AI HAT+ 2 bench host and the Orin — are compared against this table and ev
 deviation is made deliberate and documented ([`status.md`](status.md)). Known deviations
 on the bench host as installed 2026-09-19: base packages installed *with* recommends;
 workspace at `~/ros2_ws` rather than inside the project folder (the package lives in
-`projects/devastator/software/ros2/`, synced there); Fast DDS and domain 0 by Jazzy's
+`projects/devastator/software/ros2_ws/src/`, synced there); Fast DDS and domain 0 by Jazzy's
 defaults rather than set explicitly. The Orin runs JetPack's Ubuntu 24.04 and may need
 arm64 packages that differ; its session records what.
 
@@ -471,7 +471,7 @@ corrected the bring-up snapshot the row says so). Against the reference table ab
 | Base packages | as the table, `--no-install-recommends` | recommends were installed (`image-transport-plugins`, `camera-info-manager`, …) — **deviation, harmless** | as the table, `--no-install-recommends`; on top: `realsense2-camera`, `web-video-server`, `cv-bridge`, `image-transport`, `vision-msgs`, `diagnostic-updater` |
 | Middleware | Fast DDS explicit, `ROS_DOMAIN_ID=0` set by `scripts/launch.sh`; `.bashrc` clean | `rmw-fastrtps-cpp` explicit; **no launch script sets the domain or RMW** (Jazzy's defaults give the same) — deviation | as the hexapod (`scripts/launch.sh` copies it) **plus `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`** — deliberate, see the discovery finding below |
 | rosdep | initialised, user cache present | initialised **and updated** — 11 populated caches, `rosdep resolve` answers. *Corrected 2026-09-20: the 2026-09-19 fingerprint was taken at 12:2x, before the update ran at 12:36; it is not a deviation* | initialised, updated |
-| Workspace | `<repo>/ros2_ws` inside the checkout, `--symlink-install` | **`~/ros2_ws`**, rsynced from `projects/devastator/software/ros2/`; **the host carries no git checkout at all**, and it was built **without `--symlink-install`** (0 symlinks under `install/`; `launch/` and `config/` are copies, so host edits do nothing until a rebuild) — three deviations | `~/Code/wk-robotics/projects/orin-perception/ros2_ws`, `--symlink-install`, laid out where the checkout goes; rsynced until the branch is on origin |
+| Workspace | `<repo>/ros2_ws` inside the checkout, `--symlink-install` | **`~/ros2_ws`**, rsynced from `projects/devastator/software/ros2_ws/src/`; **the host carries no git checkout at all**, and it was built **without `--symlink-install`** (0 symlinks under `install/`; `launch/` and `config/` are copies, so host edits do nothing until a rebuild) — three deviations | `~/Code/wk-robotics/projects/orin-perception/ros2_ws`, `--symlink-install`, laid out where the checkout goes; rsynced until the branch is on origin |
 | Python | no venv; hexapod deps pip-installed into the system interpreter (`--break-system-packages`) | no venv; **`python3-pip` absent** (C++ node, nothing needed) | no venv; `cuda-python` pip-installed into the system interpreter from `requirements.txt`, as the hexapod does; TensorRT's binding from apt |
 | Groups | dialout video plugdev i2c spi gpio render docker … | dialout video plugdev i2c gpio | dialout video plugdev render (no i2c/spi/gpio groups exist on the desktop image) |
 | udev | `99-realsense-libusb.rules` | none (no RealSense) — n/a | `99-realsense-libusb.rules`, same source; NVIDIA's own rules alongside |

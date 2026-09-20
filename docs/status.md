@@ -185,7 +185,7 @@ regularly fetched on every robot intent host**.
 was, in order: OSS licensing (koala-bot), **pulled onto a Pi** (wk-hexapod), private
 (3d-printing), mostly-not-robots (wk-drones). At the time the two consolidated projects were
 docs-only, so "pulled onto a Pi" did not fire. **It fires now:**
-`projects/devastator/software/ros2/hailo_perception/` runs on the bench host and
+`projects/devastator/software/ros2_ws/src/hailo_perception/` runs on the bench host and
 `projects/orin-perception/` runs on the Orin.
 
 **The assistant's recommendation (2026-09-20), for the owner to accept or reject:** keep the
@@ -253,7 +253,7 @@ its toolchain makes easiest. Results land in `common.md` beside the
 lives in `projects/devastator/software/` as that robot's future perception node (DEC-15);
 the Orin half's home follows its allocation, undecided — keep it in a folder under this
 repo's `projects/` until then. **State:** HAT half **running** since 2026-09-19 —
-`projects/devastator/software/ros2/hailo_perception/` (C++ ROS 2 node, README has the
+`projects/devastator/software/ros2_ws/src/hailo_perception/` (C++ ROS 2 node, README has the
 numbers: 24 fps at 640×480 with objects and face detection, both inferences serial);
 face recognition working — owner enrolled and recognised at 0.78 similarity, 19 fps with
 identity running. **Orin half built 2026-09-19** in

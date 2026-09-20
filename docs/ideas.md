@@ -427,7 +427,7 @@ fourth tier**; they are a placement choice inside the intent tier. See
 
 - **Identity is a coordinator service; embeddings stay local** (owner, 2026-09-19, from
   the HAT bench). Face embeddings do not travel between robots — they only mean something
-  to the network that made them ([hailo_perception README](../projects/devastator/software/ros2/hailo_perception/README.md)).
+  to the network that made them ([hailo_perception README](../projects/devastator/software/ros2_ws/src/hailo_perception/README.md)).
   So: a robot that meets a face it cannot name sends the coordinator the *crop* (a few
   KB, on an unknown only — no streams); the coordinator recognises it against the
   family's people, or asks a human, and answers with the person's record (name, whatever
@@ -489,7 +489,7 @@ the SO-ARM101. The hive mind is the systems layer above both, not a substitute f
 
 Raised by the owner 2026-09-19 after the HAT bench recognised him and his wife live. A
 fixed camera at the door running the same detection-and-recognition pipeline as
-[hailo_perception](../projects/devastator/software/ros2/hailo_perception/README.md), on a
+[hailo_perception](../projects/devastator/software/ros2_ws/src/hailo_perception/README.md), on a
 Pi 5 with the AI HAT+ 2 or on any host that can run it; the first fixed node of the
 [hive-mind](#physical-ai-and-the-hive-mind) direction rather than a robot. **Tasks:**
 announce a known person at the door; distinguish household from visitor. Nothing decided.

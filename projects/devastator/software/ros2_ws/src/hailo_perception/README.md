@@ -53,19 +53,24 @@ post-processing, identity). Those are the bench numbers.
 
 ## Running the bench
 
+The workspace lives inside the checkout and is built with `--symlink-install`, as the rest
+of the family does ([*ROS 2 installs are familial*](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#ros-2-installs-are-familial)).
+
 ```bash
-# on the bench host, once: models from the public Model Zoo
-mkdir -p ~/hailo/models && cd ~/hailo/models
-for m in yolov8s scrfd_2.5g arcface_mobilefacenet; do
-  curl -sSL -O https://hailo-model-zoo.s3.eu-west-2.amazonaws.com/ModelZoo/Compiled/v5.4.0/hailo10h/$m.hef
-done
-# build and run
-cd ~/ros2_ws && source /opt/ros/jazzy/setup.bash
-colcon build --packages-select hailo_perception && source install/setup.bash
-ros2 launch hailo_perception bench.launch.py            # video_device:=/dev/video0
+# on the bench host, once
+git clone https://github.com/WayneKennedy/wk-robotics.git ~/Code/wk-robotics
+cd ~/Code/wk-robotics/projects/devastator/software
+sudo scripts/setup-bench.sh      # driver, ROS 2, deps, Model Zoo HEFs, workspace build
+# run
+scripts/launch.sh                # video_device:=/dev/video0, or any launch argument
 # watch: http://<host>:8080/stream?topic=/hailo/image_annotated
-# enrol:  ros2 topic pub --once /hailo/enroll std_msgs/msg/String "{data: wayne}"
+# enrol:  ros2 topic pub --once /hailo/enroll std_msgs/msg/String "{data: <name>}"
 ```
+
+`launch.sh` sets `ROS_DOMAIN_ID=0` and Fast DDS explicitly and limits discovery to this
+host — on the shared LAN the hexapod's graph is otherwise visible here, which cost the Orin
+bench 35x throughput. To rebuild after an edit: `cd ros2_ws && colcon build --symlink-install`
+(config and launch files are symlinked, so edits to those need no rebuild).
 
 **Enrolling poses without watching the screen.** The person being enrolled cannot hold a
 turned pose and watch the stream at once, so `scripts/enrol_poses.sh <bench-host> <name>
