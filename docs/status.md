@@ -138,6 +138,12 @@ that would be powered up every day:
    with departures** — printed torso (no cart), arms hanging from shoulders, head on a
    neck, and doubt about the omni base. Banked as an idea:
    [`ideas.md`](ideas.md#a-two-armed-wheeled-torso--the-orin-ground-robot).
+   **Form reference, 2026-09-20:** the owner supplied an AliExpress kit screenshot for
+   general layout and scoped the inspiration to **the sternum up** — shoulder and head
+   geometry only, not the body, the pedestal or the arms. Read against the record in
+   [`ideas.md`](ideas.md#a-two-armed-wheeled-torso--the-orin-ground-robot), which also
+   carries an unaccepted assistant proposal: build the torso on a bench column first and
+   move it onto a base later.
 
 ### ROS 2 install audit — hexapod, bench host, Orin (opened 2026-09-19)
 
