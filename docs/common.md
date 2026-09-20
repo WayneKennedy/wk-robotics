@@ -994,7 +994,7 @@ capacity difference. eth0 is present on every unit but unused (Wi-Fi only).
 
 | Role | Board rev | OS (arm64) | Notes |
 |---|---|---|---|
-| **The AI HAT+ 2 bench host** (since 2026-09-18; the former desktop Pi, candidate drone intent computer) | Rev 1.0 (`d04170`) | **Ubuntu Server 24.04.5**, rebuilt 2026-09-19 (was Raspberry Pi OS bookworm, desktop, from 2024-03-27); bootloader updated to current the same day | Boots from its Kingston SNV2S500G 500 GB in a **USB 3 enclosure (Realtek RTL9210B)**: the Pimoroni NVMe Base was removed to give the HAT the PCIe connector, where the Hailo-10H enumerates as `Hailo Technologies Ltd. Device 45c4`. TRIM through this bridge is not to be forced (wk-hexapod DEC-23). The enclosure setup that finally booted is recorded [below](#booting-a-pi-5-from-a-usb-nvme-enclosure). |
+| **The AI HAT+ 2 bench host** (since 2026-09-18; the former desktop Pi, candidate drone intent computer) | Rev 1.0 (`d04170`) | **Ubuntu Server 24.04.5**, rebuilt 2026-09-19 (was Raspberry Pi OS bookworm, desktop, from 2024-03-27); bootloader updated to current the same day | Boots from its Kingston SNV2S500G 500 GB in a **USB 3 enclosure (SSK, USB ID `152d:0562`)** on a blue USB 3 port: the Pimoroni NVMe Base was removed to give the HAT the PCIe connector, where the Hailo-10H enumerates as `Hailo Technologies Ltd. Device 45c4`. The RTL9210B enclosure it first used is retired from this duty (below). **TRIM is on** since 2026-09-20, forced by a udev rule: the RTL9210B hang behind wk-hexapod DEC-23 does not apply to this bridge, which was tested first — [below](#trim-through-the-jmicron-152d0562-bridge). Root is `noatime` from the same date. The enclosure setup that finally booted is recorded [below](#booting-a-pi-5-from-a-usb-nvme-enclosure). |
 | General-purpose desktop Pi | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | |
 | 3D-printer host | Rev 1.1 (`d04171`) | Raspberry Pi OS (Debian 12 bookworm), headless | |
 | wk-hexapod brain | Rev 1.1 (`d04171`) | Ubuntu 24.04 LTS, desktop | Normally powered off. |
@@ -1076,6 +1076,58 @@ question: the SSD back on PCIe through the Waveshare 2-channel switch (Devastato
 A note for the record: a previous session recommended sourcing an RTL9210 enclosure; the
 basis for that is not recorded, and the evidence here — two Pi 5s, two failure modes —
 runs the other way.
+
+### TRIM through the JMicron 152d:0562 bridge
+
+**Verified 2026-09-20 on a spare enclosure, then applied to hailo (owner-approved).**
+This bridge advertises `LBPU=1` and "Maximum unmap LBA count: unbounded" in its Logical
+Block Provisioning VPD page, but clears `LBPME` in READ CAPACITY(16). The kernel
+therefore leaves `provisioning_mode` at `full` and `discard_max_bytes` at 0, and
+`fstrim` reports "the discard operation is not supported". **That is the same signature
+as the RTL9210B, where forcing `unmap` hung the disk and the host** (wk-hexapod
+[DEC-23](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md),
+superseded; the negative result is in that repo's `test-log.md`). So it was proved on a
+spare before hailo was touched.
+
+Forcing `provisioning_mode=unmap` yields `discard_max_bytes = 4294966784`. Two tests on a
+second, identical SSK enclosure (held in the private `wk-inventory` repo, `docs/stock.md`):
+
+- **Range correctness.** 256 MiB of random data at a 1 GiB offset, checksummed in 16 MiB
+  chunks; `blkdiscard` of a 32 MiB middle range changed exactly those two chunks and left
+  all fourteen others byte-identical.
+- **Scattered `fstrim`.** ext4, 500 x 2 MiB files, every other one deleted; `fstrim`
+  reported 915.3 GiB trimmed and all 250 survivors verified by SHA-256. The bridge's
+  "Maximum unmap block descriptor count: 63" caused no collateral loss.
+
+On hailo this trimmed 452.2 GiB on `/` and 409.4 MiB on `/boot/firmware`; 800 sampled
+binaries verified unchanged afterwards, filesystem `clean`, no I/O errors. Persisted in
+`/etc/udev/rules.d/10-ssk-nvme-trim.rules`:
+
+```
+ACTION=="add|change", SUBSYSTEM=="scsi_disk", ATTRS{idVendor}=="152d", ATTRS{idProduct}=="0562", ATTR{provisioning_mode}="unmap"
+```
+
+**This covers the JMicron bridge only. Do not force `unmap` on an RTL9210B.**
+
+**Two traps in this bridge's identity, both of which have already misled a session:**
+
+- `usb.ids` decodes `152d:0562` as "JMicron JMS567 SATA 6Gb/s bridge". That is wrong for
+  this unit, which bridges NVMe — the drives are M-key M.2 2280, and an M-key card
+  cannot seat in a SATA socket. **Do not infer the interface from `lsusb` output here.**
+  The part is most likely a **JMS583**: `smartctl -d sntjmicron` is the one passthrough
+  type whose opcode the bridge recognises (it returns a medium error, not "unsupported
+  opcode"), and JMS583 firmware is distributed against this same PID. Unverified further.
+- **Both SSK enclosures report the same bridge serial**, `DD564198838B8`. It identifies
+  the bridge model, not the unit, so nothing may key on it — use the filesystem UUID.
+  Identifiers live in the private `wk-inventory` repo, `docs/pi5-fleet.md`.
+
+Drive identity is **not readable through this bridge**: SCSI INQUIRY returns vendor `SSK`
+with an empty model field, `hdparm -I` is silent (NVMe has no ATA layer to answer it), and
+every `smartctl` passthrough type fails. Record a drive's model while the card is out of
+the enclosure; no software route exists once it is in. Firmware updating the bridge is
+possible (JMicron OEM tooling, Windows-only, unofficial redistributions) but is **not
+recommended**: these units report `bcdDevice 0209`, newer than the 2.0.8 in circulation,
+and nothing is malfunctioning.
 
 ### The GPU workstation
 
