@@ -67,6 +67,13 @@ scripts/launch.sh                # video_device:=/dev/video0, or any launch argu
 # enrol:  ros2 topic pub --once /hailo/enroll std_msgs/msg/String "{data: <name>}"
 ```
 
+`scripts/stop.sh` stops it. **Stop the bench by running that file on the host — never by
+pasting an inline `pkill` into an `ssh` command.** A plain `pkill -f perception_node` also
+matches the command line of the shell running it, so the ssh session kills itself mid-sequence
+and leaves `usb_cam` and `web_video_server` orphaned holding the camera, which makes the next
+launch fail. `stop.sh` avoids this with a bracketed pattern (`perception_[n]ode`), as the Orin
+bench's does. Hit on 2026-09-20 during the move to a checkout.
+
 `launch.sh` sets `ROS_DOMAIN_ID=0` and Fast DDS explicitly and limits discovery to this
 host — on the shared LAN the hexapod's graph is otherwise visible here, which cost the Orin
 bench 35x throughput. To rebuild after an edit: `cd ros2_ws && colcon build --symlink-install`
