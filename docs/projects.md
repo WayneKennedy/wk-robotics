@@ -193,6 +193,21 @@ No servo or software overlap with the ground robots.
 
 ---
 
+## mission-planner
+
+**The Mission Planning tier** — the band above the robots' intent tier from
+[Physical AI and the hive mind](ideas.md#physical-ai-and-the-hive-mind). Not a robot: it
+observes the fleet over ROS 2 and may later send goals, and no robot may depend on it.
+
+| | |
+|---|---|
+| Where | [`projects/mission-planner/`](../projects/mission-planner/AGENTS.md) in this repo, opened 2026-09-21 |
+| State | Host install only: ROS 2 Jazzy on the GPU workstation, receiving the hexapod's topics over the LAN (2026-09-21). No planner code |
+| Compute | [The GPU workstation](common.md#the-gpu-workstation), native Ubuntu 24.04; always-on coordination may move to [the workstation](common.md#the-workstation--the-always-on-server) (open) |
+| Start at | `AGENTS.md` |
+
+---
+
 ## 3D printing
 
 **A Creality Ender-5 S1 running Klipper on a Raspberry Pi 5** — the machine every

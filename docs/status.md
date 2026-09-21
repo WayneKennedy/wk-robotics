@@ -9,7 +9,7 @@ This is a *state* document, not a log. When an item resolves, delete it; when it
 to one project, move it to that project's repo and leave a link. It is not a transcript —
 see [`AGENTS.md`](../AGENTS.md#what-does-not-belong-here).
 
-**Last reviewed: 2026-09-18.**
+**Last reviewed: 2026-09-21.**
 
 ---
 
@@ -380,58 +380,26 @@ The Waveshare switch and the enclosure route are therefore moot for the hexapod;
 remain on the table for the Devastator, which has no header conflict but needs a Pi 5
 first ([Devastator OQ-06, OQ-13](../projects/devastator/docs/open-questions.md)).
 
-### The GPU workstation holds no robotics checkouts — 2026-09-14
+### koala-bot links still point at archived repos
 
-Owner-reported 2026-09-14: the koala-bot clone on the GPU workstation was committed,
-pushed and deleted, and that machine no longer has any robotics repo checked out. This
-workstation is now the sole working folder for every robotics repo, koala-bot included.
-`koala-bot` origin `main` is `cacc81c` (2026-09-12); nothing newer arrived, so its links
-to `wk-devastator` and `wk-soarm101` are still the archived-repo URLs and will be
-rewritten on the next koala-bot edit. The hexapod's Pi still carries its own `wk-hexapod`
-checkout; pull there before hexapod work. Resolves when the koala-bot links are rewritten.
+`koala-bot` origin `main` is `cacc81c` (2026-09-12); its links to `wk-devastator` and
+`wk-soarm101` are still the archived-repo URLs and will be rewritten on the next koala-bot
+edit. Resolves then.
 
-### The GPU workstation: native Ubuntu rebuild — decided 2026-09-21, not yet done
+### The GPU workstation: rebuilt native, and the mission planner started — 2026-09-21
 
-**Decided (owner, 2026-09-21): the machine is reformatted as native Ubuntu, probably the
-same day.** Not stated: the Ubuntu version, and single or dual boot. The recommendation
-below still applies to both. The gate below still applies until the owner says the disk is
-safe to wipe. Before the decision, the owner was open to rebuilding the GPU workstation as native Ubuntu
-Desktop, dropping Windows — *"I'm finding this stuff way more fun than the gaming I
-installed Windows for"* — and confirmed the one Windows-dependent workload, their Rust/Bevy
-game, is equally valid developed on Linux alone.
+Done: native Ubuntu 24.04 (the owner's rebuild), ROS 2 Jazzy installed and receiving the
+hexapod's topics over the LAN; the machine is recorded in
+[`common.md`](common.md#the-gpu-workstation) and the new tier in
+[`projects/mission-planner/`](../projects/mission-planner/AGENTS.md). Still to do:
 
-**Why it matters beyond training.** Under WSL2, Isaac Lab and Isaac Sim are unavailable
-outright and long runs carry a list of silent failure modes
-([common.md](common.md#rl-training-on-it--which-stack-verified-2026-09-21)). Native removes
-both. It also removes the NAT that [`common.md`](common.md#the-gpu-workstation) records as
-*the concrete reason DDS multicast discovery will not reach it*: the machine would become a
-first-class ROS 2 node on the LAN. That weakens — does not remove — the case for Zenoh in
-[`ideas.md`](ideas.md#physical-ai-and-the-hive-mind), which still stands for crossing
-networks and robots.
-
-**The assistant's recommendation (2026-09-21), for the owner to accept or reject:**
-**single-boot, native Ubuntu 24.04 — not 26.04.** Isaac Sim's requirements page lists
-**Ubuntu 22.04 / 24.04 only**, so installing the newest LTS would re-block the thing the
-rebuild is for. Single rather than dual boot because `common.md` already names the machine's
-weakness as *"It is a desktop, not a server. Availability is not guaranteed"*; dual boot
-adds *booted into the wrong OS* to that, which is fatal for any ROS 2 role. If a Windows
-hedge is wanted, a separate SSD keeps the Linux install clean.
-
-**Gate — the machine is not empty.** A read-only audit on 2026-09-21 found **no robotics
-work** on it (consistent with the entry below), but it does hold the owner's game-project
-work, including branches that exist only on that disk, ~13 GB of data under no version
-control, and a live self-hosted CI runner registered to that repo. **The owner is handling
-that separately.** Nothing may be wiped until the owner says it is safe.
-
-**Open before an install:** whether Secure Boot must be disabled for the NVIDIA modules;
-whether Blackwell wants the open kernel modules on 24.04; and, if gaming continues at all,
-which titles in the library fail under Proton (kernel-level anti-cheat is the reliable
-casualty).
-
-**Resolves when** the install is done. Then `common.md`'s GPU workstation section is
-rewritten, since its four constraints are all WSL2-specific. The NAT premise is also
-amended where it appears: the Zenoh rationale in `ideas.md`, and the Devastator's
-`architecture.md` → Networking and OQ-05. Machine identifiers change in `wk-inventory`.
+- `wk-inventory`: the machine's identifiers and OS changed; not updated from this session
+  (the private repo is not checked out on this host yet).
+- Build `hexapod_interfaces` on the host so the hexapod's own message types decode.
+- The hexapod's `/imu/data` and `/tf` delivered nothing to the planner host while
+  `/imu/data_raw` did — a robot-side question for wk-hexapod, not investigated.
+- No ML stack is installed yet; the Isaac Sim / MJX findings in `common.md` predate the
+  native install and are unverified on it.
 
 ### Surplus drive hardware — home undecided
 

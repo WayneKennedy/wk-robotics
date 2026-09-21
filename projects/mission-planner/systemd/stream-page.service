@@ -1,0 +1,22 @@
+# The stream page at boot: Caddy serving stream-page/ and proxying the benches.
+# Installed by ./install.sh, which fills the __PLACEHOLDERS__ from the checkout. Addresses come
+# from /etc/default/stream-page, never from the repo.
+[Unit]
+Description=Stream page (both perception benches, side by side)
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__USER__
+Group=__USER__
+EnvironmentFile=/etc/default/stream-page
+Environment=STREAM_ROOT=__REPO_DIR__/stream-page
+ExecStart=/usr/bin/caddy run --adapter caddyfile --config __REPO_DIR__/stream-page/Caddyfile
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

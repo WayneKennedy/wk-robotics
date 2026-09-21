@@ -1,0 +1,67 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: MIT -->
+<!-- The two perception benches side by side. Each <img> is an MJPEG stream from that bench's
+     web_video_server, proxied by Caddyfile under /hailo/ and /orin/. No ROS on this page. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perception Benches</title>
+<style>
+  :root { --bg: #f4f4f2; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6b66; --line: #dcdcd6;
+          --ok: #2f8f4e; --bad: #b3401f; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #151514; --panel: #1f1f1d; --ink: #ecece8; --muted: #9a9a93; --line: #33332f; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 16px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 18px; font-weight: 600; }
+  header p { margin: 0; color: var(--muted); font-size: 13px; }
+  main { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+         gap: 16px; padding: 0 16px 16px; }
+  figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           overflow: hidden; }
+  .frame { position: relative; aspect-ratio: 16 / 9; background: #000; }
+  .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  .frame .off { position: absolute; inset: 0; display: none; place-items: center; color: #bbb;
+                font-size: 14px; }
+  figure.down .off { display: grid; }
+  figure.down img { visibility: hidden; }
+  figcaption { padding: 10px 12px; display: flex; justify-content: space-between; gap: 8px;
+               font-size: 13px; }
+  figcaption b { font-weight: 600; }
+  figcaption span { color: var(--muted); }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px;
+         background: var(--ok); }
+  figure.down .dot { background: var(--bad); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Perception benches</h1>
+  <p>Annotated streams: objects and faces. Reconnects by itself if a bench drops.</p>
+</header>
+<main>
+  <figure data-src="hailo/stream?topic=/hailo/image_annotated&amp;quality=70">
+    <div class="frame"><img alt="AI HAT+ 2 bench stream"><div class="off">Bench offline, retrying</div></div>
+    <figcaption><b><i class="dot"></i>AI HAT+ 2</b><span>Pi 5 · Hailo-10H · USB webcam</span></figcaption>
+  </figure>
+  <figure data-src="orin/stream?topic=/orin/image_annotated&amp;quality=70">
+    <div class="frame"><img alt="Orin Nano bench stream"><div class="off">Bench offline, retrying</div></div>
+    <figcaption><b><i class="dot"></i>Orin Nano</b><span>Jetson · TensorRT · RealSense D435i</span></figcaption>
+  </figure>
+</main>
+<script>
+  // An <img> MJPEG stream fires "error" when the bench or the proxy is unreachable: retry in
+  // 5 s. A stream that stalls with the connection open fires nothing; reload the page.
+  for (const fig of document.querySelectorAll("figure")) {
+    const img = fig.querySelector("img");
+    const connect = () => { fig.classList.remove("down"); img.src = fig.dataset.src + "&t=" + Date.now(); };
+    img.addEventListener("error", () => { fig.classList.add("down"); setTimeout(connect, 5000); });
+    connect();
+  }
+</script>
+</body>
+</html>

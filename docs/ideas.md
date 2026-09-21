@@ -731,12 +731,14 @@ training both, but the two roles have different demands and only one is hard:
   argument for the tier rule above. A fleet whose robots stall when the desktop sleeps has
   the architecture wrong. **The Mission Planning tier must be treated as optional from day
   one**, and this hardware choice guarantees it gets tested.
-- **Its networking is the real constraint.** The WSL2 instance is **NAT'd, not mirrored**,
-  so the LAN cannot open connections into it; it is reachable only over the overlay
-  network. Unicast is therefore fine, but **DDS multicast discovery will not cross that
-  boundary** — the concrete instance of the "DDS does not travel" problem above.
-  **Zenoh** is the answer (`zenoh-bridge-ros2dds`, or `rmw_zenoh`), not a WSL networking
-  workaround. **Undecided but strongly indicated.**
+- **Its networking was the constraint, and no longer is on the LAN.** Under WSL2 it sat behind
+  NAT and DDS multicast could not reach it. Since the native rebuild of 2026-09-21 it is a plain
+  LAN node and received the hexapod's topics over Fast DDS multicast
+  ([mission-planner](../projects/mission-planner/AGENTS.md#verified-2026-09-21)). Zenoh remains
+  the indicated answer for robots *off* the LAN, above. **Undecided.**
+
+**Started 2026-09-21** as [`projects/mission-planner/`](../projects/mission-planner/AGENTS.md):
+the host install only, no planner yet.
 
 **What this implies for sequencing.** A hive needs **two bodies speaking one contract**,
 and there is currently one partly-working robot. So this direction is the *motivation* for

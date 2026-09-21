@@ -602,7 +602,10 @@ on the bench host as installed 2026-09-19: base packages installed *with* recomm
 workspace at `~/ros2_ws` rather than inside the project folder (the package lives in
 `projects/devastator/software/ros2_ws/src/`, synced there); Fast DDS and domain 0 by Jazzy's
 defaults rather than set explicitly. The Orin runs JetPack's Ubuntu 24.04 and may need
-arm64 packages that differ; its session records what.
+arm64 packages that differ; its session records what. A fourth host, the GPU workstation
+(x86_64, mission planner), was installed 2026-09-21 by its own
+[`setup-host.sh`](../projects/mission-planner/scripts/setup-host.sh) and is not yet in the audit
+table; its deliberate deviations are in [its AGENTS.md](../projects/mission-planner/AGENTS.md#host).
 
 **Audit method.** [`scripts/ros2-fingerprint.sh`](../scripts/ros2-fingerprint.sh) prints a
 host's ROS 2 install as plain text — OS, apt sources, foreign packages, every `ros-*` package
@@ -664,6 +667,10 @@ So no hexapod data was reaching the bench. Why the names leak is not established
 **For the family, open:** one domain per robot, or localhost-only by default with the domain
 opened deliberately when hosts must talk (the Devastator's Pi and its future HAT node, say).
 Until decided, any host that runs on the home LAN alongside a live robot needs the same guard.
+**The opposite case, 2026-09-21:** the mission planner's host on the GPU workstation runs
+`SUBNET` on purpose, to see the robots. It listed the hexapod's full graph and received its
+`sensor_msgs` data over plain multicast ([numbers](../projects/mission-planner/AGENTS.md#verified-2026-09-21)).
+Whichever policy the family picks has to leave such an observer a way in.
 
 ### Robot startup is familial
 
@@ -747,6 +754,7 @@ the Orin's rsynced folder was converted in place into a real checkout tracking `
 | Hexapod | `~/Code/wk-hexapod` (its own repo; this one is also cloned) | `ros2_ws/` |
 | AI HAT+ 2 bench | `~/Code/wk-robotics` | `projects/devastator/software/ros2_ws/` |
 | Orin | `~/Code/wk-robotics` | `projects/orin-perception/ros2_ws/` |
+| GPU workstation (mission planner) | `~/Code/wk-robotics`, an authoring checkout with the owner's key, not a read-only consumer | `projects/mission-planner/ros2_ws/` (empty) |
 
 **How the clone is made, and why.** These are the assistant's calls, made while carrying out
 the migration; the owner has not ruled on them and the wider question of repo shape is still
@@ -1652,43 +1660,44 @@ below is a headed desktop that may be off.
 
 ### The GPU workstation
 
-**Established 2026-09-07.** A workstation with an **NVIDIA GeForce RTX 5070 Ti (16 GB,
-driver 610.62)** is available, running **Ubuntu 24.04 LTS under WSL2** on a Windows
-desktop. GPU passthrough is working (`/dev/dxg` present, CUDA libraries at
-`/usr/lib/wsl/lib/`), and Docker is installed. **No ML stack is installed yet** — no
-PyTorch, JAX, MuJoCo or `uv` as of that date.
+**Established 2026-09-07; rebuilt as native Ubuntu 24.04 LTS on 2026-09-21**, replacing
+Ubuntu under WSL2 on Windows 11. It has an **NVIDIA GeForce RTX 5070 Ti (16 GB)**, driver
+**595.91.07** under Linux (read with `nvidia-smi`, 2026-09-21; the 610.62 recorded before was
+the Windows driver). Docker is installed. Machine identifiers are in `wk-inventory`.
 
 It is the only GPU in the family, and it unlocks two things nothing else can: **RL
 policy training** (MuJoCo Playground / MJX and anything else JAX- or PyTorch-based) and
-**local LLM/VLM inference** for a reasoning tier.
+**local LLM/VLM inference** for a reasoning tier. Since 2026-09-21 it is also the
+[mission planner's](../projects/mission-planner/AGENTS.md) host.
 
-Four constraints, all of which bite early:
+Two constraints:
 
 - **Blackwell means `sm_120`.** The RTX 50-series needs **CUDA 12.8 or newer** and
   framework builds carrying `sm_120` kernels — PyTorch `cu128` wheels or later, a current
   `jax[cuda12]`. Older wheels fail outright or fall back silently to CPU, which on a
   300 M-step training run looks like "it works, but slowly" rather than like an error.
-- **`nvidia-smi` is not on `PATH`.** It lives at `/usr/lib/wsl/lib/nvidia-smi`. A naive
-  check therefore reports *no GPU* on a machine that has one.
-- **WSL2 networking is NAT'd, not mirrored.** The LAN cannot open connections *into* the
-  instance. This is the concrete reason **DDS multicast discovery will not reach it**, and
-  why [Zenoh](ideas.md#physical-ai-and-the-hive-mind) rather than a networking workaround
-  is the indicated route for any ROS 2 role. Unicast over the private overlay network
-  works — that is how the machine is reached today.
 - **It is a desktop, not a server.** Availability is not guaranteed: it may be powered
   off, or busy. Any role given to it must degrade gracefully when it is absent.
+
+**It is a ROS 2 node on the home LAN.** The WSL2 NAT that kept DDS discovery out is gone:
+ROS 2 Jazzy was installed on 2026-09-21 by the mission planner's
+[`setup-host.sh`](../projects/mission-planner/scripts/setup-host.sh), and with plain Fast DDS
+multicast on domain 0 it saw the hexapod's whole graph and received its data (numbers in
+[its AGENTS.md](../projects/mission-planner/AGENTS.md#verified-2026-09-21)). Robots *off* the LAN
+still need Zenoh or unicast discovery ([`ideas.md`](ideas.md#physical-ai-and-the-hive-mind)).
 
 **16 GB of VRAM** is comfortable for MJX-scale RL training and for quantised models in the
 7–14 B class; it is the binding limit on anything larger.
 
-**Still no ML stack, re-checked 2026-09-21** — no `uv`, `cargo` or `rustc` on `PATH`. The
-machine is not empty, though: it holds non-robotics work the owner is handling separately,
-which gates any rebuild. See [status](status.md#the-gpu-workstation-native-ubuntu-rebuild--decided-2026-09-21-not-yet-done).
+**No ML stack yet, 2026-09-21** — no PyTorch, JAX, MuJoCo or `uv` has been installed on the
+native system.
 
 #### RL training on it — which stack, verified 2026-09-21
 
-**MuJoCo Playground / MJX: yes. Isaac Lab / Isaac Sim: no, under WSL2, and no driver
-update will change that.**
+**MuJoCo Playground / MJX: yes. Isaac Lab / Isaac Sim: not under WSL2** — the finding that
+led to the native rebuild of 2026-09-21. On native Ubuntu 24.04, which Isaac Sim's
+requirements list, the WSL2 blocker below no longer applies; **nothing in this section has yet
+been run on the native install.**
 
 - **Isaac Sim is unsupported under WSL2, per NVIDIA staff on record**
   ([forum, 2025-10-31](https://forums.developer.nvidia.com/t/is-it-possible-to-run-isaac-sim-in-wsl2/349609)):
@@ -1701,7 +1710,7 @@ update will change that.**
 - **JAX works.** JAX ≥ 0.6.0 is the effective floor for sm_120 (its bundled `ptxas` is CUDA
   12.8); prefer the **CUDA 13 wheel**, as JAX says it will drop CUDA 12. Wheels ship
   `compute_120` PTX rather than native SASS, so the driver JIT-compiles on first use — a
-  startup cost, not a fault. JAX lists WSL2 as **"experimental"**. JAX preallocates 75 % of
+  startup cost, not a fault. JAX preallocates 75 % of
   VRAM on first use and names *"JAX on the display GPU"* as an OOM cause; tune
   `XLA_PYTHON_CLIENT_MEM_FRACTION` before cutting environment count.
 - **16 GB is ample for a state-based biped.** Isaac Lab's own benchmark puts a **29-DOF
@@ -1718,34 +1727,14 @@ update will change that.**
   [Open_Duck_Playground #16](https://github.com/apirrone/Open_Duck_Playground/issues/16),
   where upstream's advice is to run that step in NVIDIA's NGC TensorFlow container.
 
-**WSL2 hazards for long runs, all sourced to Microsoft or NVIDIA trackers 2026-09-21:**
-
-- **Silent VRAM spill with an inert off-switch.** When VRAM runs out the driver spills to
-  system memory and keeps running slowly; NVIDIA's *Prefer No Sysmem Fallback* setting
-  **does not work under WSL2** ([WSL#11050](https://github.com/microsoft/WSL/issues/11050)).
-  It looks like a healthy run: 100 % utilisation, low power and temperature, collapsed
-  throughput. Watch **Windows Task Manager's "Shared GPU memory"**, not `nvidia-smi`.
-- **Driver 610.62 — this machine's — is in an NVIDIA-acknowledged Blackwell fault**
-  (Bug 6546168, [WSL#41224](https://github.com/microsoft/WSL/issues/41224)): a run
-  completes, the next job triggers a driver timeout and *"GPU is lost; reboot required"*.
-  The reporter says 610.74 does not reproduce it.
-- **Unverified and potentially disqualifying:** a report of a **~16 GiB CUDA
-  driver-context overhead on Blackwell under WSL2**, invisible to the memory APIs
-  ([WSL#40401](https://github.com/microsoft/WSL/issues/40401), on a 96 GB card). Measure
-  real usable VRAM before trusting any figure above.
-- **Idle and power events kill runs.** Idle is measured on the *Windows* client process,
-  and systemd does **not** keep the instance alive; set both `vmIdleTimeout=-1` and
-  `[general] instanceIdleTimeout=-1`. Logging off Windows, sleep and hibernate each
-  terminate WSL, with no defence but preventing them. Store auto-updates of WSL kill
-  running distros (install with `--inbox`). Be on WSL ≥ 2.7.0, where CUDA graph capture on
-  Blackwell was fixed. Stop runs with `SIGINT`, not `SIGTERM`.
-- **Do not enable `sparseVhd`** — it is currently gated behind `--allow-unsafe` for data
-  corruption.
+**WSL2 hazards for long runs** (silent VRAM spill, idle and power events ending runs, a
+Blackwell fault in the Windows driver 610.62) were researched on 2026-09-21 and no longer
+apply since the rebuild; they are in this file's git history.
 
 **Renting is the cheap escape hatch.** On 2026-09-21 an RTX 4090 was $0.34/h (RunPod
 Community) and a 5090 $0.69–0.99/h, both per-second billing with free egress — under $2 for
 a 300 M-step run. Compute cost is a reason neither to buy nor to rent; renting wins when it
-sidesteps the hazards above for a specific run, or when a task needs more than 16 GB.
+sidesteps a local problem for a specific run, or when a task needs more than 16 GB.
 
 **Ex-datacentre cards do not help here.** VRAM is not the constraint for biped RL (see
 6.1 GB above), and the cheap end is outside the toolchain: JAX's CUDA 13 path needs

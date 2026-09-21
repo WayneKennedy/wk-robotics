@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: MIT
+# The stream page: one origin serving index.html and proxying each bench's web_video_server.
+# Host names and addresses are not in this public repo: every {$VAR} comes from
+# /etc/default/stream-page (see ../AGENTS.md; values in the private wk-inventory repo).
+{
+	admin off
+	auto_https off
+}
+
+http://:{$STREAM_PORT:8088} {
+	bind {$STREAM_BIND:127.0.0.1}
+
+	# MJPEG is an endless multipart response: flush every chunk as it arrives.
+	handle_path /hailo/* {
+		reverse_proxy {$HAILO_UPSTREAM} {
+			flush_interval -1
+		}
+	}
+	handle_path /orin/* {
+		reverse_proxy {$ORIN_UPSTREAM} {
+			flush_interval -1
+		}
+	}
+	handle {
+		root * {$STREAM_ROOT}
+		file_server
+	}
+}

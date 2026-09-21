@@ -72,9 +72,9 @@ depth-camera SLAM route the hexapod already runs. See OQ-04.
 
 ## Networking
 
-DDS discovery is multicast and works within one LAN segment. It does **not** survive
-crossing into the coordinator, which runs in a NAT'd WSL2 instance reachable only over
-a private overlay network — the concrete instance of a general problem recorded in the
+DDS discovery is multicast and works within one LAN segment. The family's mission-planner
+host is on that LAN since its native rebuild (2026-09-21) and receives robot topics over plain
+DDS; any robot or coordinator *off* the LAN does not — a general problem recorded in the
 family repo.
 
 **Zenoh** (`zenoh-bridge-ros2dds`, or `rmw_zenoh`) is the indicated answer rather than a

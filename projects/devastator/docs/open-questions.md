@@ -19,8 +19,9 @@ against one, and do not promote one to `decisions.md`, without the owner decidin
 
 ## Software and networking
 
-- **OQ-05 — Zenoh or plain DDS.** DDS discovery is multicast and does not reach the
-  coordinator, which sits behind NAT in a WSL2 instance on a private overlay network.
+- **OQ-05 — Zenoh or plain DDS.** DDS discovery is multicast and reaches only the home
+  LAN. *Amended 2026-09-21:* the coordinator host is no longer behind WSL2 NAT; it is on the
+  LAN and receives robot topics over plain DDS. The question remains for any robot off it.
   **Recommendation, not accepted:** **Zenoh** (`zenoh-bridge-ros2dds` or `rmw_zenoh`)
   rather than a host-networking workaround, because the same wall reappears the moment
   any robot is on a different network. The counter-argument is that a workaround is
