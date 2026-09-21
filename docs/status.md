@@ -316,8 +316,11 @@ streaming at about 25 fps, and one restart re-acquired the camera cleanly. **Nei
 tested through a cold boot.**
 Later that day the web stream sent headers and then no frames. The service had been running
 with `SUBNET` discovery (see item 5 above). After the fix and a restart, three concurrent
-streams each delivered frames. Not established: whether `SUBNET` or something else caused
-the stall.
+streams each delivered frames. *Explained 2026-09-21, most likely:* logind's `RemoveIPC` deleting Fast DDS's shared memory
+when an SSH session closed. Both benches showed it that evening and were fixed with linger
+([common.md, startup rule 10](common.md#robot-startup-is-familial)). Both streams are shown
+side by side on the always-on workstation's
+[stream page](../projects/mission-planner/AGENTS.md#stream-page).
 
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 
@@ -386,18 +389,26 @@ first ([Devastator OQ-06, OQ-13](../projects/devastator/docs/open-questions.md))
 `wk-soarm101` are still the archived-repo URLs and will be rewritten on the next koala-bot
 edit. Resolves then.
 
-### The GPU workstation: rebuilt native, and the mission planner started — 2026-09-21
+### The mission planner started on both workstations — 2026-09-21
 
 Done: native Ubuntu 24.04 (the owner's rebuild), ROS 2 Jazzy installed and receiving the
 hexapod's topics over the LAN; the machine is recorded in
 [`common.md`](common.md#the-gpu-workstation) and the new tier in
 [`projects/mission-planner/`](../projects/mission-planner/AGENTS.md). Still to do:
 
-- `wk-inventory`: the machine's identifiers and OS changed; not updated from this session
-  (the private repo is not checked out on this host yet).
+- `wk-inventory` is not updated. It needs the GPU workstation's new OS and identifiers, the
+  always-on workstation's `/etc/default/stream-page` values and the page's URL, and linger on
+  both bench hosts.
 - Build `hexapod_interfaces` on the host so the hexapod's own message types decode.
-- The hexapod's `/imu/data` and `/tf` delivered nothing to the planner host while
-  `/imu/data_raw` did — a robot-side question for wk-hexapod, not investigated.
+- **Hexapod: apply startup rule 10 (linger).** Its `/imu/data` and `/tf` delivered nothing to
+  the planner hosts, and `/joint_states` and `/ultrasonic/range` came and went, while
+  `/imu/data_raw` kept arriving. That fits the `RemoveIPC` fault
+  ([common.md](common.md#robot-startup-is-familial)), which silently breaks same-host delivery.
+  Unverified: the robot's host did not answer SSH on 2026-09-21. The fix is `enable-linger`
+  plus a restart, and a restart starts autonomy, so it is the owner's call. Its
+  `systemd/install.sh` lives in wk-hexapod.
+- **Always-on workstation**: ROS 2 installed by the same `setup-host.sh`; it sees the LAN graph
+  (34 nodes) and receives `/imu/data_raw`. It also serves the stream page.
 - No ML stack is installed yet; the Isaac Sim / MJX findings in `common.md` predate the
   native install and are unverified on it.
 

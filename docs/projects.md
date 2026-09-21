@@ -202,8 +202,8 @@ observes the fleet over ROS 2 and may later send goals, and no robot may depend 
 | | |
 |---|---|
 | Where | [`projects/mission-planner/`](../projects/mission-planner/AGENTS.md) in this repo, opened 2026-09-21 |
-| State | Host install only: ROS 2 Jazzy on the GPU workstation, receiving the hexapod's topics over the LAN (2026-09-21). No planner code |
-| Compute | [The GPU workstation](common.md#the-gpu-workstation), native Ubuntu 24.04; always-on coordination may move to [the workstation](common.md#the-workstation--the-always-on-server) (open) |
+| State | ROS 2 Jazzy on both workstations, receiving the hexapod's topics over the LAN; a stream page shows both perception benches (2026-09-21). No planner code |
+| Compute | [The always-on workstation](common.md#the-workstation--the-always-on-server) for what must stay up · [the GPU workstation](common.md#the-gpu-workstation) for reasoning when on (placement split proposed, not accepted) |
 | Start at | `AGENTS.md` |
 
 ---

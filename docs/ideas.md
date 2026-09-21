@@ -738,7 +738,7 @@ training both, but the two roles have different demands and only one is hard:
   the indicated answer for robots *off* the LAN, above. **Undecided.**
 
 **Started 2026-09-21** as [`projects/mission-planner/`](../projects/mission-planner/AGENTS.md):
-the host install only, no planner yet.
+ROS 2 on both workstations and a stream page, no planner yet.
 
 **What this implies for sequencing.** A hive needs **two bodies speaking one contract**,
 and there is currently one partly-working robot. So this direction is the *motivation* for

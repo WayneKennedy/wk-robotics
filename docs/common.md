@@ -723,6 +723,17 @@ settings.
 9. **A behaviour change is a commit, a host update, and a restart.** With `--symlink-install`,
    Python, launch files and YAML are read from the checkout when the stack starts, so the
    commit a host has checked out is part of its behaviour. See [Host checkouts](#host-checkouts).
+10. **The service user lingers** (`loginctl enable-linger <user>`, done by `systemd/install.sh`).
+   A unit with `User=` a login account shares that account's IPC. With linger off, logind's
+   `RemoveIPC=yes` (Ubuntu's default) deletes the user's `/dev/shm` each time their last session
+   closes, and every Tailscale SSH command opens and closes one. Fast DDS's shared-memory
+   transport lives in `/dev/shm`, so the nodes keep running while same-host delivery stops.
+   **Found 2026-09-21 on both benches:** the HAT's `perception_node` logged 0.0 fps with the
+   camera up, and the Orin's ran at 28 fps while its `web_video_server` sent headers and no
+   frames. `/dev/shm` held no `fastrtps_*` segment on either host. With linger on and the
+   service restarted, both streamed again and kept streaming through repeated SSH sessions.
+   This is the likely cause of the earlier "headers and then no frames" stall
+   ([status](status.md#perception-bench-the-same-experiment-on-the-hat-and-on-the-orin-opened-2026-09-19)).
 
 **Conformance, 2026-09-21:**
 
@@ -737,8 +748,9 @@ settings.
 | 7 ordering | yes, plus time sync | yes, plus time sync: its RTC read 1970 at boot | yes, plus time sync: its RTC read 1970 at boot |
 | 8 host state listed | yes (`~/.hexapod/`, in its `AGENTS.md`) | yes (`~/models`, `~/orin/gallery`) | `~/hailo/` holds the models, the gallery and HailoRT's log. The unit runs there so the log stays out of the checkout |
 | 9 checkout current | yes, since 2026-09-21 (was diverged, below) | yes | yes |
+| 10 user lingers | **unverified**: host unreachable 2026-09-21. Its `/imu/data`, `/tf` and `/ultrasonic/range` stopped or came and went on the LAN that day, which fits this fault | yes, since 2026-09-21 | yes, since 2026-09-21 |
 
-All three hosts conform. The hexapod was brought into line on 2026-09-21 (its OQ-24, done
+All three hosts conformed to rules 1–9. The hexapod was brought into line on 2026-09-21 (its OQ-24, done
 from the workstation under its DEC-29). Its new unit and `launch.sh` take effect at the
 stack's next start.
 
@@ -754,6 +766,7 @@ the Orin's rsynced folder was converted in place into a real checkout tracking `
 | Hexapod | `~/Code/wk-hexapod` (its own repo; this one is also cloned) | `ros2_ws/` |
 | AI HAT+ 2 bench | `~/Code/wk-robotics` | `projects/devastator/software/ros2_ws/` |
 | Orin | `~/Code/wk-robotics` | `projects/orin-perception/ros2_ws/` |
+| Always-on workstation | `~/Code/wk-robotics`, the authoring checkout | `projects/mission-planner/ros2_ws/` (empty); runs `stream-page.service` from `projects/mission-planner/` |
 | GPU workstation (mission planner) | `~/Code/wk-robotics`, an authoring checkout with the owner's key, not a read-only consumer | `projects/mission-planner/ros2_ws/` (empty) |
 
 **How the clone is made, and why.** These are the assistant's calls, made while carrying out
