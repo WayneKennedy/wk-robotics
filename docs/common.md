@@ -699,8 +699,10 @@ settings.
    ends in `exec ros2 launch <pkg> <launch file> "$@"`.
 4. **Defaults live in the launch file.** The unit passes arguments only where the boot
    behaviour differs from a manual run, and says why.
-5. **Stop leaves the hardware safe.** Use `KillSignal=SIGINT` so nodes shut down cleanly, with
-   `TimeoutStopSec=30`. `ExecStopPost=` puts the hardware in a safe state (servo power off) or
+5. **Stop leaves the hardware safe.** Use `KillSignal=SIGINT` with `KillMode=mixed`, so the
+   signal goes to `ros2 launch` alone and it shuts its nodes down in order. The default
+   `control-group` also signals every node directly, so each node gets SIGINT twice and the
+   second one interrupts its shutdown (seen 2026-09-21). Add `TimeoutStopSec=30`. `ExecStopPost=` puts the hardware in a safe state (servo power off) or
    releases what a killed node could still hold (a camera, via `scripts/stop.sh`).
 6. **Restart and logs:** `Restart=on-failure` with `RestartSec=10`; stdout and stderr go to
    the journal.
@@ -721,7 +723,7 @@ settings.
 | 2 environment in `launch.sh` only | **no**: the unit also sets domain, RMW and pin factory | yes | yes |
 | 3 explicit, before sourcing | **no**: sets domain and RMW *after* sourcing, and no discovery range, so `SUBNET` | yes | yes |
 | 4 defaults in the launch file | **no**: `autonomy:=true` is in both the unit and `launch.sh` | yes | yes; `launch.sh` resolves the camera by id at run time, which a static default cannot |
-| 5 safe stop | yes (servo power off) | yes (`stop.sh`) | yes (`stop.sh`) |
+| 5 safe stop | servo power off, yes. **No `KillMode=mixed`**, so each node gets SIGINT twice | yes (`stop.sh`) | yes (`stop.sh`) |
 | 6 restart and logs | yes | yes | yes |
 | 7 ordering | yes, plus time sync | yes, plus time sync: its RTC read 1970 at boot | yes, plus time sync: its RTC read 1970 at boot |
 | 8 host state listed | *not checked* | yes (`~/models`, `~/orin/gallery`) | *not checked* (HEFs, gallery) |

@@ -15,8 +15,11 @@ Group=__USER__
 WorkingDirectory=__REPO_DIR__
 Environment=HOME=__HOME__
 ExecStart=__REPO_DIR__/scripts/launch.sh
-# ros2 launch shuts its nodes down cleanly on SIGINT
+# ros2 launch shuts its nodes down cleanly on SIGINT. KillMode=mixed sends it to ros2 launch
+# alone; the default (control-group) also signals every node directly, so each got SIGINT
+# twice and the second interrupted its shutdown (traceback seen 2026-09-21).
 KillSignal=SIGINT
+KillMode=mixed
 TimeoutStopSec=30
 # Killing only the launch can orphan realsense2_camera_node, which then holds the camera
 # (scripts/stop.sh header). Sweep anything left before a restart.
