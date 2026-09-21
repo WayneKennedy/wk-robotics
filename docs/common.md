@@ -759,6 +759,10 @@ the migration; the owner has not ruled on them and the wider question of repo sh
   [wk-hexapod DEC-29](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)).
   Sessions run on [the always-on workstation](#the-workstation--the-always-on-server) and
   operate hosts over SSH. The hexapod was the last host with one; it was removed that day.
+- **Remote access is Tailscale SSH, keyless** (owner, 2026-09-21). Robot and bench hosts run
+  no OpenSSH (both `ssh.service` and `ssh.socket` disabled) and hold no SSH keys. The
+  owner's personal key goes only on hosts that need GitHub write access. Per-host state is
+  in `wk-inventory`.
 - **Read-only consumers.** Authoring happens on the workstation. A host updates with
   `git fetch && git reset --hard origin/main`, so it tracks origin exactly and never grows a
   divergent head. Before doing that, check `git status --porcelain` is empty — if a host has
