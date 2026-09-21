@@ -102,6 +102,26 @@ is more than the quoted 45 cm and is **unverified** — most likely a straight-l
 against a quoted standing height, the same gap the duck shows, but that has not been
 confirmed.
 
+### SO-101 legs — `tgreen-fe/so101-legs`, CC BY-SA 4.0
+
+Loaded 2026-09-21 for a sense of the design's look, not as a build candidate: printable
+humanoid legs on the SO-101's STS3215 servos, five joints a leg by the README's table.
+Upstream says plainly that **nothing has been assembled or walked**, and there have been no
+commits since 2026-09-14.
+
+- **No Assembly tab.** The only full assembly is SolidWorks (`nip_v2.SLDASM`), which
+  nothing here can read. The viewer disables the tab rather than invent a pose.
+- **Parts are labelled from the README, not guessed.** *Current* means named in its joint
+  table; *superseded* means a newer version is named or the README says so; *not in
+  README* means neither. The classification is re-read on every build, so an upstream
+  revision updates it without editing the viewer. The **Superseded parts** toggle hides
+  them to show the current design alone.
+- **The repo does not export what its README calls current.** No STL exists for
+  `leg_upper_v2`, `leg_lower_v2`, `hip_yaw_L` or `torso`; the superseded v1 thigh and shin
+  are the only printable versions. The viewer says so on the affected parts.
+- Upstream's own STS3215 STEP model sits in the layout for scale. Loading it is what the
+  `cascadio` dependency is for.
+
 ## Adding a design
 
 Add an entry to `SOURCES` and a builder function returning `{label, assembly, parts, meta}`,

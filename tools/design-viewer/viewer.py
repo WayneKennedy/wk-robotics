@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["numpy", "trimesh", "usd-core"]
+# dependencies = ["numpy", "trimesh", "usd-core", "cascadio", "fast-simplification"]
 # ///
 """Local 3D viewer for externally designed robots this family is studying.
 
@@ -71,6 +71,13 @@ SOURCES = {
         "branch": None,
         "dir": "the-bimo-project",
         "licence": "Apache-2.0",
+    },
+    "so101legs": {
+        "label": "SO-101 legs (WIP)",
+        "repo": "https://github.com/tgreen-fe/so101-legs.git",
+        "branch": None,
+        "dir": "so101-legs",
+        "licence": "CC-BY-SA-4.0",
     },
 }
 
@@ -425,7 +432,111 @@ def bimo(src: pathlib.Path) -> dict:
     }
 
 
-BUILDERS = {"openduck": openduck, "bimo": bimo}
+# --------------------------------------------------------------------------
+# so101-legs - loose STLs, no readable assembly
+# --------------------------------------------------------------------------
+def _readme_parts(readme: str) -> tuple[set, set]:
+    """Current and explicitly-superseded part stems, as the README states them.
+
+    Current = every backticked name in the "Joints per leg" table plus the
+    "Shared:" line. Superseded = names the README calls superseded outright.
+    Read from the README rather than hard-coded so an upstream revision that
+    exports the missing parts is picked up without editing this file.
+    """
+    current, superseded, in_joints = set(), set(), False
+    for line in readme.splitlines():
+        if line.startswith("## "):
+            in_joints = line.strip() == "## Joints per leg"
+        if (in_joints and line.startswith("|")) or line.startswith("Shared:"):
+            current |= set(re.findall(r"`([^`]+)`", line))
+        if "superseded" in line.lower():
+            superseded |= {n.rstrip("*") for n in re.findall(r"`([^`]+)`", line)}
+    return current, superseded
+
+
+def so101legs(src: pathlib.Path) -> dict:
+    readme = (src / "README.md").read_text()
+    current, superseded_named = _readme_parts(readme)
+    commit = subprocess.run(["git", "-C", str(src), "rev-parse", "--short", "HEAD"],
+                            capture_output=True, text=True).stdout.strip() or "unknown"
+
+    def classify(stem: str) -> tuple[str, str]:
+        if stem in current:
+            return "current", ""
+        newer = [c for c in current if c == f"{stem}_v2" or c.startswith(stem + "_")]
+        if newer:
+            missing = [c for c in newer if not (src / f"{c}.STL").exists()]
+            note = f"Superseded by {' / '.join(sorted(newer))}."
+            if missing:
+                note += (f" {' / '.join(sorted(missing))} has no STL export, so this"
+                         " is the only printable version in the repo.")
+            return "superseded", note
+        if any(stem == s or stem.startswith(s) for s in superseded_named):
+            return "superseded", "The README marks this superseded."
+        return "unlisted", "Not named anywhere in the README; role unknown."
+
+    entries = []
+    for path in sorted(src.glob("*.STL")):
+        kind, note = classify(path.stem)
+        entries.append({"mesh": trimesh.load(path, force="mesh"), "name": path.stem,
+                        "kind": kind, "note": note})
+    # Current parts first, then the rest, so the layout reads as the design.
+    order = {"current": 0, "superseded": 1, "unlisted": 2}
+    entries.sort(key=lambda e: (order[e["kind"]], e["name"]))
+
+    step = src / "servo-motor_sts3215-v10.step"
+    if step.exists():
+        try:
+            servo = trimesh.load(step, force="mesh")      # needs cascadio
+            if max(servo.extents) < 1.0:                  # STEP arrives in metres
+                servo.apply_scale(1000.0)
+            entries.append({"mesh": decimate(servo, HARDWARE_FACE_BUDGET),
+                            "name": "sts3215 (reference)", "kind": "servo",
+                            "note": "Upstream's own STS3215 fit-check model, "
+                                    "shown for scale. Not printed."})
+        except Exception as exc:
+            print(f"so101legs: servo STEP not loaded ({exc})")
+
+    muted = {"superseded": "#6f7a86", "unlisted": "#b89a5a", "servo": SERVO_COLOUR}
+    parts = []
+    for n, entry in enumerate(layout(entries)):
+        mesh, kind = entry["mesh"], entry["kind"]
+        printed = kind != "servo"
+        parts.append(_item(
+            entry["name"], mesh,
+            muted.get(kind, PART_COLOURS[n % len(PART_COLOURS)]),
+            id=entry["name"], kind=kind, material="PLA/PETG" if printed else "unknown",
+            watertight=bool(mesh.is_watertight),
+            volume_cm3=round(float(mesh.volume) / 1000.0, 2)
+            if mesh.is_watertight else None,
+            **({"metrics": print_metrics(mesh)} if printed else {}),
+            **size_flags(mesh.extents), notes=entry["note"]))
+
+    absent = sorted(c for c in current if not (src / f"{c}.STL").exists())
+    return {
+        "label": SOURCES["so101legs"]["label"],
+        "assembly": [],
+        "parts": parts,
+        "meta": {
+            "bed": list(BED), "bed_z": BED_Z, "rule": DESIGN_RULE_MM,
+            "grid": GRID_STEP, "parts_are_printable": True,
+            "source": f"tgreen-fe/so101-legs at {commit}, CC BY-SA 4.0",
+            "warning": "Work in progress: upstream states nothing has been "
+                       "assembled or walked. No assembly exists in a readable "
+                       "format (SolidWorks only), so there is no assembled view. "
+                       "Current parts with no STL export: "
+                       + (", ".join(absent) if absent else "none") + ".",
+            "assembly_note": "",
+            "parts_note": "Every STL in the repo, in the orientation upstream "
+                          "exports it (the README says parts are oriented for "
+                          "minimal supports, so the print screen applies). "
+                          "Current / superseded / unlisted is read from the "
+                          "README at the commit shown.",
+        },
+    }
+
+
+BUILDERS = {"openduck": openduck, "bimo": bimo, "so101legs": so101legs}
 
 
 # --------------------------------------------------------------------------
