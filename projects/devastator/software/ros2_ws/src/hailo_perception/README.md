@@ -163,6 +163,12 @@ already produces exactly that.
   after start. `usb_cam` stayed alive with no error and nothing was published on `/image_raw`.
   One restart cleared it, and the next run held 22–23 fps. The service does not restart on a
   stall, because no process exits. Whether the drop is the camera, its cable or the Pi's USB 2 port is unknown.
+- **Shutdown can end in `FATAL ... infer: HailoRT status 8`, exit code 1** (seen once of two
+  service stops, 2026-09-21). SIGINT interrupts HailoRT's wait on an inference (`poll failed with
+  errno=4`, EINTR), and the node treats that failed inference as fatal. It depends on whether
+  the signal lands mid-inference. The stop is still complete: every process exits and the
+  camera is released. Proposed fix, not yet made: when `rclcpp::ok()` is false, treat an
+  inference failure as a normal shutdown.
 - `pkill -f <node name>` from an interactive shell whose command line mentions the node
   kills that shell: stop the bench with the service or `scripts/stop.sh` (above).
 - Face recognition is verified on one enrolled person and one stranger; the
