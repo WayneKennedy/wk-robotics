@@ -1,0 +1,567 @@
+{
+  "slicer": "PrusaSlicer-2.7.2+UNKNOWN based on Slic3r (with GUI support)",
+  "profile_sha256": "f674d9e3e3c643e5a07f69b8f87d4b31fe159cea25bc6196ef4298c2c11f6cca",
+  "perimeters": 3,
+  "layer_height_mm": 0.2,
+  "density_g_cm3": 1.24,
+  "notes": "Toolpath estimate, not weighed mass. Support excluded from part mass. COM assumes uniform extrusion along each line.",
+  "parts": {
+    "Base_SO101": {
+      "original": {
+        "part_mass_g": 102.09243693299987,
+        "total_mass_g": 103.45741196765533,
+        "support_mass_g": 1.3649750345576181,
+        "roles_mass_g": {
+          "Support material": 1.3649750345576181,
+          "Perimeter": 37.77248426878503,
+          "External perimeter": 20.842191074399768,
+          "Solid infill": 25.93398679938674,
+          "Overhang perimeter": 0.06529585321848667,
+          "Internal infill": 12.796610008755152,
+          "Top solid infill": 0.8729722332070637,
+          "Bridge infill": 3.80889669534548
+        },
+        "footer_total_mass_g": 103.46,
+        "deposited_center_cad_mm": [
+          -0.006339610099532122,
+          18.363126451044433,
+          20.124410784763736
+        ],
+        "gcode_sha256": "8a808ebc207942b5c68918859a119170cc431f0d225f84f0b062fdabc108a18a",
+        "stl_sha256": "04d88ca34c48fb527d76d28606b80e1a49714411869d24ce1a01f770be094f48",
+        "slicer_warnings": ""
+      },
+      "candidate": {
+        "part_mass_g": 79.389503568016,
+        "total_mass_g": 85.90464577454027,
+        "support_mass_g": 6.515142206469495,
+        "roles_mass_g": {
+          "Support material": 6.459320869201194,
+          "Perimeter": 30.644196271421798,
+          "External perimeter": 17.011806451869106,
+          "Solid infill": 17.747491483042356,
+          "Overhang perimeter": 0.13651663054586846,
+          "Internal infill": 11.148941831702231,
+          "Top solid infill": 0.6077731753029738,
+          "Bridge infill": 2.092777724186441,
+          "Support material interface": 0.0558213372683014
+        },
+        "footer_total_mass_g": 85.9,
+        "deposited_center_cad_mm": [
+          -0.004316207095981143,
+          20.99189138953503,
+          17.634956678358602
+        ],
+        "gcode_sha256": "beec092d7b06ac4e4ba3a1f3c6749203ec44507482446d9dcc9963da150f560e",
+        "stl_sha256": "80733444382856f6d5cb138980a92783eb11611742d4654746aae11e760279ed",
+        "slicer_warnings": ""
+      }
+    },
+    "Base_motor_holder_SO101": {
+      "original": {
+        "part_mass_g": 20.68820040199595,
+        "total_mass_g": 21.50259685379469,
+        "support_mass_g": 0.8143964518009755,
+        "roles_mass_g": {
+          "Support material": 0.7682649407331054,
+          "Perimeter": 10.335746064863073,
+          "External perimeter": 5.819840925704267,
+          "Solid infill": 1.1095385174113876,
+          "Internal infill": 3.073183687865192,
+          "Bridge infill": 0.24786588186015232,
+          "Top solid infill": 0.08034743852640765,
+          "Support material interface": 0.046131511067870154,
+          "Overhang perimeter": 0.02167788576323327
+        },
+        "footer_total_mass_g": 21.5,
+        "deposited_center_cad_mm": [
+          0.1053152147726877,
+          51.34350677898418,
+          12.803545721730444
+        ],
+        "gcode_sha256": "932d232056789d40dddfe36e4197d0277b31316276e3719aa50f60b56f1b8b91",
+        "stl_sha256": "2144f15a146bb131cf0d6ddb76cc077e2533cce5da552397cf31b810bb5b4084",
+        "slicer_warnings": ""
+      },
+      "candidate": {
+        "part_mass_g": 20.68820040199595,
+        "total_mass_g": 21.50259685379469,
+        "support_mass_g": 0.8143964518009755,
+        "roles_mass_g": {
+          "Support material": 0.7682649407331054,
+          "Perimeter": 10.335746064863073,
+          "External perimeter": 5.819840925704267,
+          "Solid infill": 1.1095385174113876,
+          "Internal infill": 3.073183687865192,
+          "Bridge infill": 0.24786588186015232,
+          "Top solid infill": 0.08034743852640765,
+          "Support material interface": 0.046131511067870154,
+          "Overhang perimeter": 0.02167788576323327
+        },
+        "footer_total_mass_g": 21.5,
+        "deposited_center_cad_mm": [
+          0.1053152147726877,
+          51.34350677898418,
+          12.803545721730444
+        ],
+        "gcode_sha256": "67460a26d940988e95b3365a86d73b5aa6b6e648df539336d77504fc778db03f",
+        "stl_sha256": "2144f15a146bb131cf0d6ddb76cc077e2533cce5da552397cf31b810bb5b4084",
+        "slicer_warnings": ""
+      }
+    },
+    "Moving_Jaw_SO101": {
+      "original": {
+        "part_mass_g": 15.239430870163568,
+        "total_mass_g": 17.61146810652885,
+        "support_mass_g": 2.372037236365608,
+        "roles_mass_g": {
+          "Support material interface": 0.4267263943549725,
+          "Support material": 1.9453108420106355,
+          "Perimeter": 5.688960180392671,
+          "External perimeter": 2.892322660101629,
+          "Overhang perimeter": 0.24528797482877493,
+          "Bridge infill": 1.107107381642155,
+          "Solid infill": 2.0743732461783964,
+          "Internal infill": 2.8814642709971316,
+          "Top solid infill": 0.349915156022484
+        },
+        "footer_total_mass_g": 17.61,
+        "deposited_center_cad_mm": [
+          -1.278922510981824,
+          -28.419992279026992,
+          0.13422947695389062
+        ],
+        "gcode_sha256": "5208f43e8df78f5c3cc5cb052cebf7179cb9e029e07b976ea2939f9b10af70d1",
+        "stl_sha256": "3e3033d68f831912581d71ad51008634d6d12e91f25a166b27650ba72e963b98",
+        "slicer_warnings": ""
+      },
+      "candidate": {
+        "part_mass_g": 15.239430870163568,
+        "total_mass_g": 17.61146810652885,
+        "support_mass_g": 2.372037236365608,
+        "roles_mass_g": {
+          "Support material interface": 0.4267263943549725,
+          "Support material": 1.9453108420106355,
+          "Perimeter": 5.688960180392671,
+          "External perimeter": 2.892322660101629,
+          "Overhang perimeter": 0.24528797482877493,
+          "Bridge infill": 1.107107381642155,
+          "Solid infill": 2.0743732461783964,
+          "Internal infill": 2.8814642709971316,
+          "Top solid infill": 0.349915156022484
+        },
+        "footer_total_mass_g": 17.61,
+        "deposited_center_cad_mm": [
+          -1.278922510981824,
+          -28.419992279026992,
+          0.13422947695389062
+        ],
+        "gcode_sha256": "15447ba6ba4eff3f11cdbc156f355d0db82999117ce249d57684192e88515974",
+        "stl_sha256": "3e3033d68f831912581d71ad51008634d6d12e91f25a166b27650ba72e963b98",
+        "slicer_warnings": ""
+      }
+    },
+    "Wrist_Roll_Follower_SO101": {
+      "original": {
+        "part_mass_g": 35.266393868476676,
+        "total_mass_g": 39.60566472975734,
+        "support_mass_g": 4.339270861280818,
+        "roles_mass_g": {
+          "Support material": 4.335583386174964,
+          "Perimeter": 13.31912593215315,
+          "External perimeter": 6.888068000510653,
+          "Solid infill": 5.055913596222589,
+          "Overhang perimeter": 0.21833342209601453,
+          "Internal infill": 7.989915357809785,
+          "Bridge infill": 1.203220338356405,
+          "Top solid infill": 0.5918172213279286,
+          "Support material interface": 0.003687475105854162
+        },
+        "footer_total_mass_g": 39.61,
+        "deposited_center_cad_mm": [
+          -11.271300098636136,
+          -0.7202579479605781,
+          29.468915365143328
+        ],
+        "gcode_sha256": "66020763fc95b42f870cfe1438e67a6ec5bac556c3b59a94e19b164321f86f08",
+        "stl_sha256": "410b67e8f4fd61b7926ac27e0ead553370bc223ff68ceb04e0c74e5a331a9795",
+        "slicer_warnings": ""
+      },
+      "candidate": {
+        "part_mass_g": 35.266393868476676,
+        "total_mass_g": 39.60566472975734,
+        "support_mass_g": 4.339270861280818,
+        "roles_mass_g": {
+          "Support material": 4.335583386174964,
+          "Perimeter": 13.31912593215315,
+          "External perimeter": 6.888068000510653,
+          "Solid infill": 5.055913596222589,
+          "Overhang perimeter": 0.21833342209601453,
+          "Internal infill": 7.989915357809785,
+          "Bridge infill": 1.203220338356405,
+          "Top solid infill": 0.5918172213279286,
+          "Support material interface": 0.003687475105854162
+        },
+        "footer_total_mass_g": 39.61,
+        "deposited_center_cad_mm": [
+          -11.271300098636136,
+          -0.7202579479605781,
+          29.468915365143328
+        ],
+        "gcode_sha256": "66020763fc95b42f870cfe1438e67a6ec5bac556c3b59a94e19b164321f86f08",
+        "stl_sha256": "410b67e8f4fd61b7926ac27e0ead553370bc223ff68ceb04e0c74e5a331a9795",
+        "slicer_warnings": ""
+      }
+    },
+    "Motor_holder_SO101_Base": {
+      "original": {
+        "part_mass_g": 15.753367400375987,
+        "total_mass_g": 16.004316970015356,
+        "support_mass_g": 0.2509495696400642,
+        "roles_mass_g": {
+          "Support material": 0.2509495696400642,
+          "Perimeter": 8.206416599731874,
+          "External perimeter": 4.403965164085704,
+          "Solid infill": 1.8150603392393578,
+          "Overhang perimeter": 0.0015039505982342874,
+          "Internal infill": 1.2048097688239885,
+          "Top solid infill": 0.0398088938052446,
+          "Bridge infill": 0.08180268409089081
+        },
+        "footer_total_mass_g": 16.0,
+        "deposited_center_cad_mm": [
+          -39.79304746342469,
+          -35.5206446559099,
+          0.3809351241955864
+        ],
+        "gcode_sha256": "cafb056eb3b9f10648517ded3ef4b88f0586b4d63f9798155a5daebb577341e6",
+        "stl_sha256": "b03632f809891be22a962c26ca4bd8f19520fe42c6193a90e64e641904c12ae8",
+        "slicer_warnings": ""
+      },
+      "candidate": {
+        "part_mass_g": 15.753367400375987,
+        "total_mass_g": 16.004316970015356,
+        "support_mass_g": 0.2509495696400642,
+        "roles_mass_g": {
+          "Support material": 0.2509495696400642,
+          "Perimeter": 8.206416599731874,
+          "External perimeter": 4.403965164085704,
+          "Solid infill": 1.8150603392393578,
+          "Overhang perimeter": 0.0015039505982342874,
+          "Internal infill": 1.2048097688239885,
+          "Top solid infill": 0.0398088938052446,
+          "Bridge infill": 0.08180268409089081
+        },
+        "footer_total_mass_g": 16.0,
+        "deposited_center_cad_mm": [
+          -39.79304746342469,
+          -35.5206446559099,
+          0.3809351241955864
+        ],
+        "gcode_sha256": "143f842484f7b58fbda16677670771216246c88daeb588228585c0a5f877cf9e",
+        "stl_sha256": "b03632f809891be22a962c26ca4bd8f19520fe42c6193a90e64e641904c12ae8",
+        "slicer_warnings": ""
+      }
+    },
+    "Motor_holder_SO101_Wrist": {
+      "original": {
+        "part_mass_g": 15.898540433536562,
+        "total_mass_g": 15.898540433536676,
+        "support_mass_g": 0.0,
+        "roles_mass_g": {
+          "Perimeter": 8.32325237020036,
+          "External perimeter": 4.46419053398347,
+          "Solid infill": 1.5858759844126276,
+          "Overhang perimeter": 0.000792821314868891,
+          "Internal infill": 1.3687660936084478,
+          "Bridge infill": 0.10868130111273205,
+          "Top solid infill": 0.046981328904171185
+        },
+        "footer_total_mass_g": 15.9,
+        "deposited_center_cad_mm": [
+          -39.74440628747985,
+          -35.54310365016684,
+          0.03788576219896018
+        ],
+        "gcode_sha256": "132cae025d9401925bd83ba83352ee5ae862aa11b0a5ef7fefb401a4ac297982",
+        "stl_sha256": "e99b0f9089adae27f4d53af04e980f76cd59e6ace9c46f6a3aa86a4e44f37097",
+        "slicer_warnings": ""
+      },
+      "candidate": {
+        "part_mass_g": 15.898540433536562,
+        "total_mass_g": 15.898540433536676,
+        "support_mass_g": 0.0,
+        "roles_mass_g": {
+          "Perimeter": 8.32325237020036,
+          "External perimeter": 4.46419053398347,
+          "Solid infill": 1.5858759844126276,
+          "Overhang perimeter": 0.000792821314868891,
+          "Internal infill": 1.3687660936084478,
+          "Bridge infill": 0.10868130111273205,
+          "Top solid infill": 0.046981328904171185
+        },
+        "footer_total_mass_g": 15.9,
+        "deposited_center_cad_mm": [
+          -39.74440628747985,
+          -35.54310365016684,
+          0.03788576219896018
+        ],
+        "gcode_sha256": "a2ebefda57c09a581ce400d0a4d602c9017b5eca475b52667e8db70087c2de32",
+        "stl_sha256": "e99b0f9089adae27f4d53af04e980f76cd59e6ace9c46f6a3aa86a4e44f37097",
+        "slicer_warnings": ""
+      }
+    },
+    "Rotation_Pitch_SO101": {
+      "original": {
+        "part_mass_g": 36.614795740261265,
+        "total_mass_g": 43.601184798202155,
+        "support_mass_g": 6.986389057941097,
+        "roles_mass_g": {
+          "Support material": 6.986389057941097,
+          "Perimeter": 12.345009151357276,
+          "External perimeter": 6.3793051498330104,
+          "Solid infill": 6.605963165909817,
+          "Overhang perimeter": 0.07134365836783246,
+          "Internal infill": 10.27848928615958,
+          "Bridge infill": 0.6634438938202367,
+          "Top solid infill": 0.271241434813301
+        },
+        "footer_total_mass_g": 43.6,
+        "deposited_center_cad_mm": [
+          -39.87689965808583,
+          40.72094238363975,
+          -0.08436871410434321
+        ],
+        "gcode_sha256": "e97a62ccbdff33c156c1469469ef4d1ff32507ec7e668bb69aa10fb36f884a86",
+        "stl_sha256": "24005eb6bbc92e53bc75fe850a5f56538acfcfd1936cc114e030de78efae27a9",
+        "slicer_warnings": ""
+      },
+      "candidate": {
+        "part_mass_g": 36.614795740261265,
+        "total_mass_g": 43.601184798202155,
+        "support_mass_g": 6.986389057941097,
+        "roles_mass_g": {
+          "Support material": 6.986389057941097,
+          "Perimeter": 12.345009151357276,
+          "External perimeter": 6.3793051498330104,
+          "Solid infill": 6.605963165909817,
+          "Overhang perimeter": 0.07134365836783248,
+          "Internal infill": 10.27848928615958,
+          "Bridge infill": 0.6634438938202367,
+          "Top solid infill": 0.271241434813301
+        },
+        "footer_total_mass_g": 43.6,
+        "deposited_center_cad_mm": [
+          -39.87689965808583,
+          40.72094238363975,
+          -0.08436871410434321
+        ],
+        "gcode_sha256": "6c69d43690365c06e1842fed3861ee71d2080c0c1cdad3371530f5cf81dec0e3",
+        "stl_sha256": "24005eb6bbc92e53bc75fe850a5f56538acfcfd1936cc114e030de78efae27a9",
+        "slicer_warnings": ""
+      }
+    },
+    "Under_arm_SO101": {
+      "original": {
+        "part_mass_g": 45.25920269053798,
+        "total_mass_g": 46.04208403277686,
+        "support_mass_g": 0.7828813422397537,
+        "roles_mass_g": {
+          "Support material": 0.7768408741622407,
+          "Perimeter": 14.534059816214235,
+          "External perimeter": 7.323729516734021,
+          "Solid infill": 7.341111218859137,
+          "Overhang perimeter": 0.15612301636165973,
+          "Internal infill": 13.994046437943874,
+          "Bridge infill": 1.2747177173267839,
+          "Top solid infill": 0.6354149670973996,
+          "Support material interface": 0.006040468077513048
+        },
+        "footer_total_mass_g": 46.04,
+        "deposited_center_cad_mm": [
+          9.338701704885969,
+          -31.459554501969187,
+          0.6241284711819164
+        ],
+        "gcode_sha256": "e130c819c28360ed4f55050141909d5f63795e9f232f65aa39d9362effd65e18",
+        "stl_sha256": "9d81c00225a3872eb59d6049787bdc993f16f6d8360164c79fcd52f21b23f259",
+        "slicer_warnings": ""
+      },
+      "candidate": {
+        "part_mass_g": 45.25920269053798,
+        "total_mass_g": 46.04208403277686,
+        "support_mass_g": 0.7828813422397537,
+        "roles_mass_g": {
+          "Support material": 0.7768408741622407,
+          "Perimeter": 14.534059816214235,
+          "External perimeter": 7.323729516734021,
+          "Solid infill": 7.341111218859137,
+          "Overhang perimeter": 0.15612301636165973,
+          "Internal infill": 13.994046437943874,
+          "Bridge infill": 1.2747177173267839,
+          "Top solid infill": 0.6354149670973996,
+          "Support material interface": 0.006040468077513048
+        },
+        "footer_total_mass_g": 46.04,
+        "deposited_center_cad_mm": [
+          9.338701704885969,
+          -31.459554501969187,
+          0.6241284711819164
+        ],
+        "gcode_sha256": "40ed9a6ec702dc063ee2ce43d4971f06f0954e4b9c17251f2d68fa5624d65e96",
+        "stl_sha256": "9d81c00225a3872eb59d6049787bdc993f16f6d8360164c79fcd52f21b23f259",
+        "slicer_warnings": ""
+      }
+    },
+    "Upper_arm_SO101": {
+      "original": {
+        "part_mass_g": 56.82578138813492,
+        "total_mass_g": 57.612432643150946,
+        "support_mass_g": 0.7866512550144994,
+        "roles_mass_g": {
+          "Support material": 0.7831219743354778,
+          "Perimeter": 17.433804491158998,
+          "External perimeter": 8.710447695238598,
+          "Solid infill": 9.759181243903207,
+          "Overhang perimeter": 0.16504561152215086,
+          "Internal infill": 18.121901960404216,
+          "Bridge infill": 1.7353438888905888,
+          "Top solid infill": 0.9000564970186851,
+          "Support material interface": 0.003529280679021545
+        },
+        "footer_total_mass_g": 57.61,
+        "deposited_center_cad_mm": [
+          3.6845929217734086,
+          11.423132284246599,
+          -0.16092393673005448
+        ],
+        "gcode_sha256": "312e72ba48b7e57f267a47a235c94756f47861c98de5b5f2425dc24dc43855bc",
+        "stl_sha256": "db580526b4d41ec5b14b78f8c63923ebd24777d8ae4f57184b1161588bb79454",
+        "slicer_warnings": ""
+      },
+      "candidate": {
+        "part_mass_g": 56.82578138813492,
+        "total_mass_g": 57.612432643150946,
+        "support_mass_g": 0.7866512550144994,
+        "roles_mass_g": {
+          "Support material": 0.7831219743354778,
+          "Perimeter": 17.433804491158998,
+          "External perimeter": 8.710447695238598,
+          "Solid infill": 9.759181243903207,
+          "Overhang perimeter": 0.16504561152215086,
+          "Internal infill": 18.121901960404216,
+          "Bridge infill": 1.7353438888905888,
+          "Top solid infill": 0.9000564970186851,
+          "Support material interface": 0.003529280679021545
+        },
+        "footer_total_mass_g": 57.61,
+        "deposited_center_cad_mm": [
+          3.6845929217734086,
+          11.423132284246599,
+          -0.16092393673005448
+        ],
+        "gcode_sha256": "a0dc2457e81bdc74269106bac40441545397f1ab8358b7a9f4c61cc9c4c49deb",
+        "stl_sha256": "db580526b4d41ec5b14b78f8c63923ebd24777d8ae4f57184b1161588bb79454",
+        "slicer_warnings": ""
+      }
+    },
+    "WaveShare_Mounting_Plate_SO101": {
+      "original": {
+        "part_mass_g": 6.640922523662917,
+        "total_mass_g": 6.640922523662843,
+        "support_mass_g": 0.0,
+        "roles_mass_g": {
+          "Perimeter": 1.2572936629987945,
+          "External perimeter": 0.6143717380476883,
+          "Solid infill": 2.6908659050191717,
+          "Internal infill": 0.9891184083997019,
+          "Bridge infill": 0.642386646787764,
+          "Top solid infill": 0.44688616240972173
+        },
+        "footer_total_mass_g": 6.64,
+        "deposited_center_cad_mm": [
+          0.0010300673445868824,
+          -0.005620904061643728,
+          2.5123761485340537
+        ],
+        "gcode_sha256": "45be4157213d28bd4628576c664963696eef2bad93d563551036fce1767eeb49",
+        "stl_sha256": "8b5b8d899105391827e6d69b7a6f7b92e656170d8340ba2fc453b834aa23e6b5",
+        "slicer_warnings": ""
+      },
+      "candidate": {
+        "part_mass_g": 6.12645023807974,
+        "total_mass_g": 6.12645023807951,
+        "support_mass_g": 0.0,
+        "roles_mass_g": {
+          "Perimeter": 2.0944981780547174,
+          "External perimeter": 1.0021265297257211,
+          "Solid infill": 1.6404765641601449,
+          "Internal infill": 0.7459566036511643,
+          "Bridge infill": 0.3750744227193579,
+          "Top solid infill": 0.2683179397684039
+        },
+        "footer_total_mass_g": 6.13,
+        "deposited_center_cad_mm": [
+          0.00426971530039566,
+          0.0026941140647380735,
+          2.541286618784631
+        ],
+        "gcode_sha256": "edc3ed44d68ad6ebfe64f74ee7f159190d69ec93901ab957947b96b02869148b",
+        "stl_sha256": "6be3fadf9bf061983d774b7f0a11d041cf7b40272c6c2ce65772a245a7a7e4dd",
+        "slicer_warnings": ""
+      }
+    },
+    "Wrist_Roll_Pitch_SO101": {
+      "original": {
+        "part_mass_g": 29.54840706872067,
+        "total_mass_g": 37.682642152271185,
+        "support_mass_g": 8.134235083552255,
+        "roles_mass_g": {
+          "Support material": 7.932731621744237,
+          "Perimeter": 13.571492660199972,
+          "External perimeter": 6.980646785164807,
+          "Solid infill": 5.280641455374069,
+          "Overhang perimeter": 0.19552676063935978,
+          "Internal infill": 2.707508531371498,
+          "Bridge infill": 0.6077309722271861,
+          "Top solid infill": 0.20485990374203686,
+          "Support material interface": 0.20150346180801817
+        },
+        "footer_total_mass_g": 37.68,
+        "deposited_center_cad_mm": [
+          4.193046417382321,
+          -0.3677430643598653,
+          -2.424201217461636
+        ],
+        "gcode_sha256": "6a649f261daaf78f0b9e76e9f03290dcabe25983022765d6ec2bd998aeb84bd3",
+        "stl_sha256": "4cbc14d72ad2debe57b806e2f7efd2d9e176e95e8f8a46c2d1a8cd9ecf069123",
+        "slicer_warnings": ""
+      },
+      "candidate": {
+        "part_mass_g": 29.54840706872067,
+        "total_mass_g": 37.682642152271185,
+        "support_mass_g": 8.134235083552255,
+        "roles_mass_g": {
+          "Support material": 7.932731621744237,
+          "Perimeter": 13.571492660199972,
+          "External perimeter": 6.980646785164807,
+          "Solid infill": 5.280641455374069,
+          "Overhang perimeter": 0.19552676063935978,
+          "Internal infill": 2.707508531371498,
+          "Bridge infill": 0.6077309722271861,
+          "Top solid infill": 0.20485990374203686,
+          "Support material interface": 0.20150346180801817
+        },
+        "footer_total_mass_g": 37.68,
+        "deposited_center_cad_mm": [
+          4.193046417382321,
+          -0.3677430643598653,
+          -2.424201217461636
+        ],
+        "gcode_sha256": "3ad0173c9ad62f5626760696cfdde4dc7cbf244e6fb7af8f856f76fa2571876c",
+        "stl_sha256": "4cbc14d72ad2debe57b806e2f7efd2d9e176e95e8f8a46c2d1a8cd9ecf069123",
+        "slicer_warnings": ""
+      }
+    }
+  }
+}

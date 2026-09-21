@@ -1,0 +1,129 @@
+{
+  "input_sha256": {
+    "so101_new_calib.urdf": "3a65d2d35e68a8d2f0c2cc176d19b884506543c93ba72980145b80abe276022c",
+    "software/kinematics.py": "9efbbbbf36517c98d833ce16404bfe62f15f340e2a519bac2cbbd66af919872b",
+    "software/calibration/wk_soarm101.json": "19d91753371f881e9dc8bf1202620a56c4480ab0240bda714705f8567d614deb",
+    "slices-p3.json": "b714dfd9b8cb144f8a134e61c3f73cb9cddcbf9943f453bd5122544087af374a"
+  },
+  "pitch_limits_radians": {
+    "shoulder_lift": [
+      -1.7921270912785732,
+      1.7767835374148868
+    ],
+    "elbow_flex": [
+      -1.7154093219601412,
+      1.5466302294595906
+    ],
+    "wrist_flex": [
+      -1.772180471255781,
+      1.6985314127100861
+    ]
+  },
+  "gravity_m_s2": 9.80665,
+  "nominal_servo_mass_g": 55,
+  "servos": 6,
+  "rated_torque_Nm": 0.9806649999999999,
+  "stall_torque_Nm": 2.941995,
+  "pose_degrees": {
+    "shoulder_lift": 76.0322528788043,
+    "elbow_flex": -73.82476345952254,
+    "wrist_flex": -5.0480033875832175,
+    "shoulder_pan": 0.0,
+    "wrist_roll": 0.0,
+    "gripper": 0.0
+  },
+  "shoulder_to_tool_m": 0.41082983955543984,
+  "shoulder_to_fingertip_m": 0.460731018465974,
+  "horizontal_tool_lever_m": 0.41042341802617044,
+  "unexplained_mass_vs_810_g": 100.17252068113362,
+  "residual_at_tool_adds_shoulder_Nm": 0.4031823696114563,
+  "assumptions": [
+    "CAD joint geometry with existing measured travel limits; pose maximises forward tool reach.",
+    "Static gravity only: no acceleration, cable loads, impacts, heating or control margin.",
+    "Print COM from toolpaths; six 55 g servos located at CAD case origins.",
+    "Unallocated hardware/wiring/mass discrepancy excluded; payload ceilings are optimistic model calculations, NOT arm ratings.",
+    "Half-print-mass case is a hypothetical scaling of every original print, not a design."
+  ],
+  "models": {
+    "urdf": {
+      "total_model_mass_g": 632.006001,
+      "gravity_torque_Nm": {
+        "shoulder_pan": 2.6756762978320607e-06,
+        "shoulder_lift": 0.8633820674242716,
+        "elbow_flex": 0.4524734595410671,
+        "wrist_flex": 0.1167452608679856,
+        "wrist_roll": 3.744712838361396e-05
+      },
+      "shoulder_payload_tool_Nm_per_kg": 4.024879945817228,
+      "shoulder_payload_tip_Nm_per_kg": 4.514609774259655,
+      "shoulder_torque_by_payload_Nm": {
+        "0": 0.8633820674242716,
+        "100": 1.2658700620059944,
+        "250": 1.8696020538785787,
+        "500": 2.875822040332886
+      },
+      "optimistic_rated_static_payload_tool_g": 29.139485936123915,
+      "optimistic_stall_static_payload_tool_g": 516.4409772609201
+    },
+    "original": {
+      "total_model_mass_g": 709.8274793188664,
+      "gravity_torque_Nm": {
+        "shoulder_pan": 2.8705302403527895e-06,
+        "shoulder_lift": 0.9258412138290728,
+        "elbow_flex": 0.4834368373723697,
+        "wrist_flex": 0.12481946079720681,
+        "wrist_roll": 4.231051435274103e-05
+      },
+      "shoulder_payload_tool_Nm_per_kg": 4.024879945817228,
+      "shoulder_payload_tip_Nm_per_kg": 4.514609774259655,
+      "shoulder_torque_by_payload_Nm": {
+        "0": 0.9258412138290728,
+        "100": 1.3283292084107956,
+        "250": 1.93206120028338,
+        "500": 2.938281186737687
+      },
+      "optimistic_rated_static_payload_tool_g": 13.62122272191039,
+      "optimistic_stall_static_payload_tool_g": 500.9227140467065
+    },
+    "candidate": {
+      "total_model_mass_g": 686.6100736682993,
+      "gravity_torque_Nm": {
+        "shoulder_pan": 2.8705302403527895e-06,
+        "shoulder_lift": 0.9258412138290728,
+        "elbow_flex": 0.4834368373723697,
+        "wrist_flex": 0.12481946079720681,
+        "wrist_roll": 4.231051435274103e-05
+      },
+      "shoulder_payload_tool_Nm_per_kg": 4.024879945817228,
+      "shoulder_payload_tip_Nm_per_kg": 4.514609774259655,
+      "shoulder_torque_by_payload_Nm": {
+        "0": 0.9258412138290728,
+        "100": 1.3283292084107956,
+        "250": 1.93206120028338,
+        "500": 2.938281186737687
+      },
+      "optimistic_rated_static_payload_tool_g": 13.62122272191039,
+      "optimistic_stall_static_payload_tool_g": 500.9227140467065
+    },
+    "half_print_mass": {
+      "total_model_mass_g": 519.9137396594332,
+      "gravity_torque_Nm": {
+        "shoulder_pan": 2.2452490749871767e-06,
+        "shoulder_lift": 0.7271708051005819,
+        "elbow_flex": 0.381649438128026,
+        "wrist_flex": 0.09648756990015689,
+        "wrist_roll": -5.286834612546139e-05
+      },
+      "shoulder_payload_tool_Nm_per_kg": 4.024879945817228,
+      "shoulder_payload_tip_Nm_per_kg": 4.514609774259655,
+      "shoulder_torque_by_payload_Nm": {
+        "0": 0.7271708051005819,
+        "100": 1.1296587996823046,
+        "250": 1.733390791554889,
+        "500": 2.739610778009196
+      },
+      "optimistic_rated_static_payload_tool_g": 62.98180276478968,
+      "optimistic_stall_static_payload_tool_g": 550.2832940895858
+    }
+  }
+}

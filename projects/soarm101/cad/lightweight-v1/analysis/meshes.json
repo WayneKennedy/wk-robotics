@@ -1,0 +1,245 @@
+[
+  {
+    "part": "Base_SO101",
+    "watertight": true,
+    "consistent_winding": true,
+    "shell_volumes_mm3": [
+      100172.8365438641
+    ],
+    "volume_mm3": 100172.8365438641,
+    "bed_z_min_mm": 0.0,
+    "bounds_mm": [
+      [
+        -55.462501525878906,
+        -36.00000762939453,
+        0.0
+      ],
+      [
+        55.462501525878906,
+        36.00000762939453,
+        87.0000228881836
+      ]
+    ]
+  },
+  {
+    "part": "Base_motor_holder_SO101",
+    "watertight": true,
+    "consistent_winding": true,
+    "shell_volumes_mm3": [
+      23709.034576297057
+    ],
+    "volume_mm3": 23709.034576297057,
+    "bed_z_min_mm": 0.0,
+    "bounds_mm": [
+      [
+        -23.820545196533203,
+        -40.10000228881836,
+        0.0
+      ],
+      [
+        23.820545196533203,
+        40.10000228881836,
+        31.400007247924805
+      ]
+    ]
+  },
+  {
+    "part": "Motor_holder_SO101_Base",
+    "watertight": true,
+    "consistent_winding": true,
+    "shell_volumes_mm3": [
+      13307.191396425012
+    ],
+    "volume_mm3": 13307.191396425012,
+    "bed_z_min_mm": 0.0,
+    "bounds_mm": [
+      [
+        -19.04852867126465,
+        -27.540224075317383,
+        0.0
+      ],
+      [
+        19.04852867126465,
+        27.540224075317383,
+        28.000001907348633
+      ]
+    ]
+  },
+  {
+    "part": "Motor_holder_SO101_Wrist",
+    "watertight": true,
+    "consistent_winding": true,
+    "shell_volumes_mm3": [
+      13871.623255500577
+    ],
+    "volume_mm3": 13871.623255500577,
+    "bed_z_min_mm": 0.0,
+    "bounds_mm": [
+      [
+        -28.195484161376953,
+        -18.450000762939453,
+        0.0
+      ],
+      [
+        28.195484161376953,
+        18.450000762939453,
+        28.000003814697266
+      ]
+    ]
+  },
+  {
+    "part": "Moving_Jaw_SO101",
+    "watertight": true,
+    "consistent_winding": true,
+    "shell_volumes_mm3": [
+      -75.97810914999798,
+      20768.91719765107
+    ],
+    "volume_mm3": 20692.939088501076,
+    "bed_z_min_mm": 0.0,
+    "bounds_mm": [
+      [
+        -45.273563385009766,
+        -33.565528869628906,
+        0.0
+      ],
+      [
+        45.273563385009766,
+        33.565528869628906,
+        22.299169540405273
+      ]
+    ]
+  },
+  {
+    "part": "Rotation_Pitch_SO101",
+    "watertight": true,
+    "consistent_winding": true,
+    "shell_volumes_mm3": [
+      68787.18076607682
+    ],
+    "volume_mm3": 68787.18076607682,
+    "bed_z_min_mm": 0.0,
+    "bounds_mm": [
+      [
+        -42.10000228881836,
+        -23.0,
+        0.0
+      ],
+      [
+        42.10000228881836,
+        23.0,
+        59.79999923706055
+      ]
+    ]
+  },
+  {
+    "part": "Under_arm_SO101",
+    "watertight": true,
+    "consistent_winding": true,
+    "shell_volumes_mm3": [
+      92895.02992850817
+    ],
+    "volume_mm3": 92895.02992850817,
+    "bed_z_min_mm": 0.0,
+    "bounds_mm": [
+      [
+        -65.34990692138672,
+        -32.20000457763672,
+        0.0
+      ],
+      [
+        65.34990692138672,
+        32.20000457763672,
+        24.0000057220459
+      ]
+    ]
+  },
+  {
+    "part": "Upper_arm_SO101",
+    "watertight": true,
+    "consistent_winding": true,
+    "shell_volumes_mm3": [
+      117328.19118665169
+    ],
+    "volume_mm3": 117328.19118665169,
+    "bed_z_min_mm": 0.0,
+    "bounds_mm": [
+      [
+        -71.07315063476562,
+        -33.650001525878906,
+        0.0
+      ],
+      [
+        71.07315063476562,
+        33.650001525878906,
+        24.500001907348633
+      ]
+    ]
+  },
+  {
+    "part": "WaveShare_Mounting_Plate_SO101",
+    "watertight": true,
+    "consistent_winding": true,
+    "shell_volumes_mm3": [
+      7118.561847689991
+    ],
+    "volume_mm3": 7118.561847689991,
+    "bed_z_min_mm": 0.0,
+    "bounds_mm": [
+      [
+        -25.5,
+        -21.0,
+        0.0
+      ],
+      [
+        25.5,
+        21.0,
+        7.599999904632568
+      ]
+    ]
+  },
+  {
+    "part": "Wrist_Roll_Follower_SO101",
+    "watertight": true,
+    "consistent_winding": true,
+    "shell_volumes_mm3": [
+      56618.43691597887
+    ],
+    "volume_mm3": 56618.43691597887,
+    "bed_z_min_mm": 0.0,
+    "bounds_mm": [
+      [
+        -53.064144134521484,
+        -27.111772537231445,
+        0.0
+      ],
+      [
+        53.064144134521484,
+        27.111772537231445,
+        65.20002746582031
+      ]
+    ]
+  },
+  {
+    "part": "Wrist_Roll_Pitch_SO101",
+    "watertight": true,
+    "consistent_winding": true,
+    "shell_volumes_mm3": [
+      32299.35548741234
+    ],
+    "volume_mm3": 32299.35548741234,
+    "bed_z_min_mm": 0.0,
+    "bounds_mm": [
+      [
+        -17.829795837402344,
+        -38.913856506347656,
+        0.0
+      ],
+      [
+        17.829795837402344,
+        38.913856506347656,
+        62.30001449584961
+      ]
+    ]
+  }
+]

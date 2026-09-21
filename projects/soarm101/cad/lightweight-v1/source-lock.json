@@ -1,0 +1,28 @@
+{
+  "upstream": "https://github.com/TheRobotStudio/SO-ARM100",
+  "revision": "eecbe3e0a9ebb23e25ad7b2759b03884c6660903",
+  "files": {
+    "STEP/SO101/Base_SO101.step": "95209ec6a3ca06b1ec084f72d9c73324bdcf9d0e17213ef293f45f95a3993288",
+    "STEP/SO101/Base_motor_holder_SO101.step": "f13462eea875727ae7cec7d190c59642444b9076c76cf2423bbe3c5b6c469587",
+    "STEP/SO101/Follower_Specific/Moving_Jaw_SO101.step": "dff53ace072470c9a6c84dbb68dd84f9fd0959429f181905d9d05fe3007549b5",
+    "STEP/SO101/Follower_Specific/Wrist_Roll_Follower_SO101.step": "b7f9d59f7991f425fff784eab07f0bf65471903dd6d6177e7cb109bebcd02b35",
+    "STEP/SO101/Motor_holder_SO101_Base.step": "fb2ef4603324ddea53ab655f6ecd48c7f5a72dd7603e57e92c60c0a8e67a9083",
+    "STEP/SO101/Motor_holder_SO101_Wrist.step": "e58d86502535a5a4936677e9d934f1bda9417e83f7480f475061728c146739c4",
+    "STEP/SO101/Rotation_Pitch_SO101.step": "a392681efb05bf4009c17115a9b3e37bbee9d2fcfe25e2066b11b95aaa380915",
+    "STEP/SO101/Under_arm_SO101.step": "677a1a57efeddc439d97ebdc309b1c2853cfcb83f14c7d695c312fcf13a89713",
+    "STEP/SO101/Upper_arm_SO101.step": "efa19a6dd2ccb459248500c76629cfa840630e7e15d9e146394d31da1525dd61",
+    "STEP/SO101/WaveShare_Mounting_Plate_SO101.step": "16510f5aedf04186d34aa279207d0d354d4b08c1d179a46a9974b1430d0702f8",
+    "STEP/SO101/Wrist_Roll_Pitch_SO101.step": "39c5e78647d471ab4e4328ec6d00f06ad90dc48a0b1ffe4baf1a951c1304f74b",
+    "STL/SO101/Individual/Motor_holder_SO101_Base.stl": "f9971aa805e2d6fb61726d2787e752a6fe0ff21d3c66023296ee4c57a2b100a4",
+    "STL/SO101/Individual/Upper_arm_SO101.stl": "96333913c296b13ecb1c81e63e57e4352fb6b5dea7722c84ec1fbd5073e23865",
+    "STL/SO101/Individual/Wrist_Roll_Pitch_SO101.stl": "14eb2f45ab1b279025ed2aea358f0091aad6aff967faef58527fd216f28fb6e5",
+    "STL/SO101/Individual/Motor_holder_SO101_Wrist.stl": "936c84ed2c918b3ec14e2c3ec3f742f47bed10a4e3d0a2c9bf7869d0a2a55149",
+    "STL/SO101/Individual/Rotation_Pitch_SO101.stl": "5ef34a5420071627d01323be13e80b7ac8af0760c72d8382c0664c914f281800",
+    "STL/SO101/Individual/Base_motor_holder_SO101.stl": "e10eb1296560bc00dca91af5f35d9be637be026a5b544c0ebfcac51501aa3c70",
+    "STL/SO101/Individual/Wrist_Roll_Follower_SO101.stl": "3f47a4b889b95a4c71046bda9ddfc9399d96d80a57ad7fc079700e240323a302",
+    "STL/SO101/Individual/Moving_Jaw_SO101.stl": "403763bbab8656cc7ce5ea6374741d0860bd19426b5b4b0041de3a2c1275f90b",
+    "STL/SO101/Individual/WaveShare_Mounting_Plate_SO101.stl": "6275f05ef28cd407be13ea882735282c4a8b2ef64930c77a9e7b5a3811740be1",
+    "STL/SO101/Individual/Base_SO101.stl": "19f3c6baafc23a3bc92805762e906df9514d1008be84d490a90a9096ffdcf3c8",
+    "STL/SO101/Individual/Under_arm_SO101.stl": "537b03e68ff7c061da4cc70bf0b5a61018a76c00bccc72d61f022d1644230db5"
+  }
+}

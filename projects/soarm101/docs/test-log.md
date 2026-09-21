@@ -218,8 +218,10 @@ gone. **The `Lock` = 0 procedure works and the 2026-09-14 canary failure did not
 connections**; unplugged and detached from the bench. Weighed by the owner; instrument not
 recorded.
 
-**Result: 810 g.** Against upstream's ~330 g of servos, the printed parts and fasteners come
-to ~480 g.
+**Result: 810 g.** Against nominal ~330 g of servos, the **non-servo remainder** is
+~480 g. It includes prints, fasteners, driver and internal wiring/accessories; it is
+not a measurement of plastic alone (clarified by the
+[2026-09-21 mass study](../cad/lightweight-v1/report.md#establishing-the-mass-baseline)).
 
 **Changed as a result:** [OQ-04](open-questions.md) answered. It was blocking
 [OQ-06](open-questions.md) (how the arm mounts) and **wk-devastator's OQ-12** (can the chassis

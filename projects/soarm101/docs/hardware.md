@@ -28,8 +28,9 @@ and the `Base` result established the family finding that PLA+ at these settings
 dimensionally correct with no elephant-foot compensation
 ([wk-robotics `common.md`](../../../docs/common.md#press-fits-and-supports)).
 
-**Nothing is assembled.** No part has been fastened to another; servos have only been
-test-fitted into pockets.
+**At that 2026-09-09 print snapshot, nothing was assembled:** servos had only been
+test-fitted into pockets. The current assembled/calibrated status is in
+[`AGENTS.md`](../AGENTS.md); the table above is the historical print record.
 
 **The two M3 hex-nut recesses in `Wrist_Roll_Follower` are the wrist-camera provision**
 (nuts installed 2026-09-12). They take upstream's *Hex-Nut Recess Wrist Camera Adapter*,
@@ -150,7 +151,11 @@ figure with the offsets. **Mass** beyond the pan joint **485 g**; base 147 g.
 **Gravity moments with the arm straight and horizontal**, no payload: **1.12 N·m about
 the pan axis** (11.4 kg·cm), 0.84 N·m about the shoulder-lift axis (8.6 kg·cm); a 500 g
 payload (upstream's figure) at the tool point adds 2.02 N·m about either. The 12 V
-STS3215 is rated 30 kg·cm = 2.94 N·m. The pan moment only exists when the pan axis is
+STS3215's 30 kg·cm = 2.94 N·m figure is **stall torque**, not sustained working
+torque ([rated-load distinction](../../../docs/common.md#sts3215-torque-and-mass)).
+These URDF masses are not the measured 810 g assembly; the
+[2026-09-21 study](../cad/lightweight-v1/report.md) reconstructs the printed mass and
+shows the remaining uncertainty. The pan moment only exists when the pan axis is
 horizontal — the wall-mounted, hanging-arm case in
 [wk-robotics `ideas.md`](../../../docs/ideas.md#a-two-armed-wheeled-torso--the-orin-ground-robot);
 table-mounted, the pan joint carries no gravity load.

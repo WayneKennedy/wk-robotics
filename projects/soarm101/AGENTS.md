@@ -12,12 +12,13 @@ archived and its history is carried here unchanged.
 ## What this project is
 
 **One build of the SO-101 follower arm**, the LeRobot-compatible manipulator designed by
-The Robot Studio with Hugging Face, in its **12 V servo variant**. The design is not
-changed and not forked: upstream
+The Robot Studio with Hugging Face, in its **12 V servo variant**. The commissioned arm
+uses the original design. Upstream
 [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) is cloned
-alongside this repo as a read-only reference, and **this repo holds only what is true of
-this build** — which parts exist, which servo carries which ID, what was measured, what
-was decided, what is open. Full intent: [`docs/concept.md`](docs/concept.md).
+alongside this repo as a read-only reference. This folder records the build and, since
+the owner's request of 2026-09-21, a local
+[lightweight CAD study](cad/lightweight-v1/README.md). Its alternate parts are unprinted
+prototypes, not the commissioned hardware. Full intent: [`docs/concept.md`](docs/concept.md).
 
 **The design authority is upstream.** For geometry, the bill of materials and the
 assembly order, read the upstream README and the
@@ -38,6 +39,9 @@ them here. This repo records where *this* build departs from or instantiates the
 - [`docs/sourcing.md`](docs/sourcing.md) — in hand versus still needed.
 - [`docs/references.md`](docs/references.md) — upstream, LeRobot, vendor docs.
 - [`docs/test-log.md`](docs/test-log.md) — what was actually measured, dated.
+- [`cad/lightweight-v1/`](cad/lightweight-v1/README.md) — mass/servo-load investigation,
+  complete prototype STEP set, print meshes, generator and verification results.
+  Read the report before treating the parts as mechanically qualified (OQ-19).
 - `software/` — the arm's own tools, host-side Python: `kinematics.py` (model, keep-out,
   self-collision, IK), `guarded_move.py`, `shapes.py`, `find_stops.py`, `hold_test.py`, and
   calibration data in `software/calibration/`. LeRobot's Feetech bus driver is used as a

@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+cadquery==2.8.0
+numpy==2.5.3
+trimesh==5.1.0
+scipy==1.18.1
+matplotlib==3.11.2
+shapely==2.1.2
+networkx==3.6.1
+numba==0.67.0

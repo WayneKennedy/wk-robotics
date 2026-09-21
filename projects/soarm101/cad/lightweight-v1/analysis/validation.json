@@ -1,0 +1,23 @@
+{
+  "date": "2026-09-21",
+  "status": "computational checks passed; physical validation not performed",
+  "step_parts": 11,
+  "modified_parts": [
+    "Base_SO101",
+    "WaveShare_Mounting_Plate_SO101"
+  ],
+  "byte_identical_upstream_steps": 9,
+  "step_valid_solids": 11,
+  "all_stls_watertight": true,
+  "all_stls_consistent_winding": true,
+  "protected_region_loss_tolerance_mm3": 0.0001,
+  "step_vertex_tolerance_mm": 1e-05,
+  "step_volume_relative_tolerance": 1e-05,
+  "slice_jobs": 44,
+  "slicer": "PrusaSlicer 2.7.2",
+  "filament_accounting_footer_tolerance_g": 0.1,
+  "python_syntax_checks": "passed",
+  "experimental_geometry_rebuild": "passed in separate temporary directory",
+  "upstream_clone_modified": false,
+  "scope_limit": "Geometry checks and material/load calculations do not validate FDM strength, stiffness, fatigue, creep, fit or production supports."
+}

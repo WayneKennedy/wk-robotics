@@ -1,0 +1,15 @@
+SO-101 lightweight study, 2026-09-21
+
+Derived from The Robot Studio's SO-101 design in TheRobotStudio/SO-ARM100,
+commit eecbe3e0a9ebb23e25ad7b2759b03884c6660903, licensed under Apache-2.0.
+Upstream: https://github.com/TheRobotStudio/SO-ARM100
+
+Local modifications in this STEP distribution:
+  Base_SO101.step: two rounded lightening windows in the mounting wings.
+  WaveShare_Mounting_Plate_SO101.step: four rounded lightening windows.
+The other nine STEP files are byte-identical copies of the upstream files.
+Print-oriented STL files are transformed upstream meshes for unchanged parts
+and tessellations of the modified STEP geometry for the two modified parts.
+
+This is an independent, untested prototype study for wk-robotics. It is not an
+upstream release or an assertion of equivalent strength, stiffness or payload.

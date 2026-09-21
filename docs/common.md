@@ -82,8 +82,22 @@ tolerances, one pool of spares, and tooling that transfers between projects.
 
 | Servo | Rating | Bus | Used by |
 |---|---|---|---|
-| **STS3215** | 12 V, ~30 kg·cm, positional feedback | STS serial bus | SO-ARM101 (all joints) · koala-bot (hip roll + pitch, shoulder pitch + roll, elbow) |
+| **STS3215** | 12 V, ~30 kg·cm **stall**, positional feedback | STS serial bus | SO-ARM101 (all joints) · koala-bot (hip roll + pitch, shoulder pitch + roll, elbow) |
 | **STS3032M** | 6 V, 4.5 kg·cm, positional feedback | STS serial bus (separate 6 V bus). **Fixed single lead, no pass-through port** — chains through the 3-port connector boards and link cable supplied in the 4-pack | koala-bot (3-RPS neck) |
+
+### STS3215 torque and mass
+
+**Manufacturer specification checked 2026-09-21:** Feetech's
+[ST-3215-C018 A/0 sheet, 2023-07-20, pp. 3–4](https://cdn.robotshop.com/media/F/Fit/RB-Fit-155/pdf/feetech_12v_30kg_cm_magnetic_encoding_servo_sts321_specification_pdf.pdf)
+lists **30 kg·cm stall torque (±10%)**, **10 kg·cm rated load**, and **55 ± 1 g**
+for the 12 V, 1/345 variant. These convert to **2.942 N·m stall** and **0.981 N·m
+rated load**. Stall is not a sustained working rating. Rated load is a useful
+provisional screen; a robot's thermal duty cycle still needs measurement. The
+mass specification does not clearly establish which horns/accessories are included;
+weigh the fitted assembly when closing a mass budget. Do not apply these figures
+to the 7.4 V or different-gearing variants.
+
+### Holdings and electrical operation
 
 **Servo holdings, 2026-09-12 — every V1 servo the family has planned is now in hand:**
 
@@ -120,7 +134,7 @@ realistic motion and **16.2 A** all-stalled; koala-bot's **ten** limb servos are
 This constrains the power architecture of any project using them.
 
 **Torque and speed track the rail.** Both scale roughly with voltage, so a servo fed 9 V
-delivers about three-quarters of its rated 30 kg·cm. A pack sagging toward its floor
+delivers about three-quarters of its nominal stall torque. A pack sagging toward its floor
 therefore reads as a weakening arm, not as a tuning problem — worth knowing before chasing
 the wrong fault.
 
@@ -139,6 +153,11 @@ the family. The evidence, all from published builds that demonstrably walk:
 | **ToddlerBot** (Stanford) | **0.56 m / 3.4 kg**, 30 DOF | XM430-W210 at knee and ankle pitch | **30.6 kg·cm @ 12 V** | **77 rpm** |
 | **Bimo** | 450 mm / 1.6 kg, 8 DOF | **STS3215 12 V** | 30 kg·cm @ 12 V | 45 rpm |
 | ROBOTIS **OP3** | 510 mm / 3.5 kg, 20 DOF | XM430-W350-R | 41.8 kg·cm @ 12 V | 46 rpm |
+
+**Every torque above is stall**, the only figure makers publish consistently, so the table
+ranks servos against each other; it does not rate a joint. Sustained duty is set by the
+**rated load — 10 kg·cm for the 12 V STS3215** ([above](#sts3215-torque-and-mass)) — and a
+walking gait's thermal duty cycle is unmeasured here.
 
 **ToddlerBot is the decisive case**: 0.56 m and 3.4 kg, walking omnidirectionally and doing
 push-ups, on exactly the 30 kg·cm / 12 V class. ROBO-ONE's own rules corroborate the low

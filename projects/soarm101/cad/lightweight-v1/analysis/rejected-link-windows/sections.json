@@ -1,0 +1,30 @@
+{
+  "method": "1 mm stations across x=-27.5..53.5 mm; OpenCASCADE relative linear deflection 0.025, angular tolerance 0.08 rad; homogeneous envelope only",
+  "limitations": "No raster/layer anisotropy, notch stress, contact, creep, fatigue, fastener failure or torsion. Nominal stresses are NOT FDM strength predictions.",
+  "parts": {
+    "Upper_arm_SO101": {
+      "minimum_Iy_ratio": 0.47186680294805683,
+      "minimum_Iy_at_x_mm": 33.5,
+      "middle_span_pure_bending_compliance_y_ratio": 1.465506763703858,
+      "minimum_candidate_Zy_mm3": 4399.739146178589,
+      "nominal_solid_stress_3Nm_about_y_MPa": 0.6818586057779498,
+      "minimum_Iz_ratio": 0.4813196244662718,
+      "minimum_Iz_at_x_mm": -5.5,
+      "middle_span_pure_bending_compliance_z_ratio": 1.2255020634355243,
+      "minimum_candidate_Zz_mm3": 2200.495895179234,
+      "nominal_solid_stress_3Nm_about_z_MPa": 1.3633290598597754
+    },
+    "Under_arm_SO101": {
+      "minimum_Iy_ratio": 0.469292628028638,
+      "minimum_Iy_at_x_mm": 33.5,
+      "middle_span_pure_bending_compliance_y_ratio": 1.4562556640318225,
+      "minimum_candidate_Zy_mm3": 4668.877687115916,
+      "nominal_solid_stress_3Nm_about_y_MPa": 0.6425527077478819,
+      "minimum_Iz_ratio": 0.4374785857187277,
+      "minimum_Iz_at_x_mm": 4.5,
+      "middle_span_pure_bending_compliance_z_ratio": 1.2381386688542209,
+      "minimum_candidate_Zz_mm3": 1879.2922119956836,
+      "nominal_solid_stress_3Nm_about_z_MPa": 1.596345677830591
+    }
+  }
+}

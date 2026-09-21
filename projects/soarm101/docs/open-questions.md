@@ -7,6 +7,17 @@ and not yet accepted. Do not build against one without the owner deciding.
 
 ---
 
+## Lightweight prototype
+
+- **OQ-19 — Whether any lightweight replacement merits printing and adoption.**
+  Opened 2026-09-21 at the owner's request to test whether half the printed mass
+  could be removed without mechanical weakness. No payload or duty requirement
+  was selected. The [investigation and complete STEP set](../cad/lightweight-v1/README.md)
+  record the retained base/plate prototype, rejected moving-link cuts, computed
+  results and the unperformed fixture/print tests. The hypothesis
+  is not established; the current assembled arm is unchanged. Physical mass,
+  base stiffness, clamp behaviour and creep must be measured before adoption.
+
 ## Servos and power
 
 - **OQ-01 — Where the remaining four STS3215 12 V servos come from.** **Resolved

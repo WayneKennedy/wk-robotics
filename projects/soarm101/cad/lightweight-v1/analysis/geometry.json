@@ -1,0 +1,716 @@
+{
+  "upstream_revision": "eecbe3e0a9ebb23e25ad7b2759b03884c6660903",
+  "cadquery_version": "2.8.0",
+  "experimental_links": false,
+  "parts": [
+    {
+      "part": "Base_SO101",
+      "modified": true,
+      "quantity": 1,
+      "source": "STEP/SO101/Base_SO101.step",
+      "source_sha256": "95209ec6a3ca06b1ec084f72d9c73324bdcf9d0e17213ef293f45f95a3993288",
+      "step_sha256": "0b8d6892a66eae78d6b1e5026c53453e02cf4ce8c9f873a7b6be75e9d02b44a1",
+      "stl_sha256": "80733444382856f6d5cb138980a92783eb11611742d4654746aae11e760279ed",
+      "print_translation_mm": [
+        -6.997830269028782e-06,
+        35.999994274426896,
+        16.000013840109165
+      ],
+      "mesh_watertight": true,
+      "mesh_consistent_winding": true,
+      "mesh_volume_mm3": 100172.83623858973,
+      "original_volume_mm3": 122707.5566969762,
+      "candidate_volume_mm3": 100171.17045402463,
+      "original_centroid_mm": [
+        -0.008889353495439074,
+        21.49898231283432,
+        15.020332402540452
+      ],
+      "candidate_centroid_mm": [
+        -0.010888105817421865,
+        24.240987831800982,
+        11.886496811185328
+      ],
+      "removed_volume_mm3": 22536.386242951572,
+      "bounds_mm": [
+        -55.483358585158236,
+        55.48335858515866,
+        -0.0033221125161096484,
+        72.00551353597984,
+        -16.02229666448141,
+        71.0119841471266
+      ],
+      "cuts": [
+        [
+          [
+            19,
+            40,
+            -5,
+            23,
+            6,
+            52
+          ],
+          "Y",
+          7
+        ],
+        [
+          [
+            -40,
+            -19,
+            -5,
+            23,
+            6,
+            52
+          ],
+          "Y",
+          7
+        ]
+      ],
+      "protected_regions": {
+        "servo_pocket_and_cable_provisions": [
+          -23,
+          23,
+          18,
+          80,
+          -25,
+          40
+        ],
+        "central_base_and_attachment": [
+          -18,
+          18,
+          -5,
+          80,
+          -25,
+          80
+        ],
+        "lower_mounting_bolts_and_foot": [
+          -65,
+          65,
+          -5,
+          25,
+          -25,
+          3
+        ],
+        "upper_mounting_bolts": [
+          -45,
+          45,
+          -5,
+          25,
+          54,
+          80
+        ]
+      },
+      "validation": {
+        "valid_solid": true,
+        "solids": 1,
+        "native_added_volume_mm3": 0,
+        "native_protected_region_loss_mm3": {
+          "servo_pocket_and_cable_provisions": 0,
+          "central_base_and_attachment": 0,
+          "lower_mounting_bolts_and_foot": 0,
+          "upper_mounting_bolts": 0
+        },
+        "max_bounds_error_mm": 5.730527163905208e-12,
+        "step_roundtrip_vertex_error_mm": 1.0118211199892369e-11,
+        "step_roundtrip_topology_counts_equal": true,
+        "step_roundtrip_volume_error_mm3": 0.014266310259699821
+      }
+    },
+    {
+      "part": "Base_motor_holder_SO101",
+      "modified": false,
+      "quantity": 1,
+      "source": "STEP/SO101/Base_motor_holder_SO101.step",
+      "source_sha256": "f13462eea875727ae7cec7d190c59642444b9076c76cf2423bbe3c5b6c469587",
+      "step_sha256": "f13462eea875727ae7cec7d190c59642444b9076c76cf2423bbe3c5b6c469587",
+      "stl_sha256": "2144f15a146bb131cf0d6ddb76cc077e2533cce5da552397cf31b810bb5b4084",
+      "print_translation_mm": [
+        1.4705469700447171,
+        -19.30000269643576,
+        -38.09999479406111
+      ],
+      "mesh_watertight": true,
+      "mesh_consistent_winding": true,
+      "mesh_volume_mm3": 23709.036375715732,
+      "original_volume_mm3": 23717.252520641785,
+      "candidate_volume_mm3": 23717.252520641785,
+      "original_centroid_mm": [
+        -0.24506642582409036,
+        51.5330353721409,
+        12.629231707629877
+      ],
+      "candidate_centroid_mm": [
+        -0.24506642582409036,
+        51.5330353721409,
+        12.629231707629877
+      ],
+      "removed_volume_mm3": 0.0,
+      "bounds_mm": [
+        -22.350000100000003,
+        25.2978028935357,
+        38.09999989999999,
+        69.50000010000001,
+        -20.800000100000005,
+        59.4000000999999
+      ],
+      "cuts": [],
+      "protected_regions": {},
+      "validation": {
+        "valid_solid": true,
+        "solids": 1,
+        "native_added_volume_mm3": 0.0,
+        "native_protected_region_loss_mm3": {},
+        "max_bounds_error_mm": 0.0,
+        "step_roundtrip_vertex_error_mm": 0.0,
+        "step_roundtrip_topology_counts_equal": true,
+        "step_roundtrip_volume_error_mm3": 0.0
+      }
+    },
+    {
+      "part": "Moving_Jaw_SO101",
+      "modified": false,
+      "quantity": 1,
+      "source": "STEP/SO101/Follower_Specific/Moving_Jaw_SO101.step",
+      "source_sha256": "dff53ace072470c9a6c84dbb68dd84f9fd0959429f181905d9d05fe3007549b5",
+      "step_sha256": "dff53ace072470c9a6c84dbb68dd84f9fd0959429f181905d9d05fe3007549b5",
+      "stl_sha256": "3e3033d68f831912581d71ad51008634d6d12e91f25a166b27650ba72e963b98",
+      "print_translation_mm": [
+        26.12503901748756,
+        9.17333077137459,
+        9.999167813501158
+      ],
+      "mesh_watertight": true,
+      "mesh_consistent_winding": true,
+      "mesh_volume_mm3": 20692.93909536191,
+      "original_volume_mm3": 20691.45672227405,
+      "candidate_volume_mm3": 20691.45672227405,
+      "original_centroid_mm": [
+        -1.574323533985498,
+        -30.02085287433196,
+        0.37565372447524914
+      ],
+      "candidate_centroid_mm": [
+        -1.574323533985498,
+        -30.02085287433196,
+        0.37565372447524914
+      ],
+      "removed_volume_mm3": 0.0,
+      "bounds_mm": [
+        -12.300000100495923,
+        10.0000001,
+        -82.0000001115231,
+        10.0,
+        -24.0000017494106,
+        24.000001749181703
+      ],
+      "cuts": [],
+      "protected_regions": {},
+      "validation": {
+        "valid_solid": true,
+        "solids": 1,
+        "native_added_volume_mm3": 0.0,
+        "native_protected_region_loss_mm3": {},
+        "max_bounds_error_mm": 0.0,
+        "step_roundtrip_vertex_error_mm": 0.0,
+        "step_roundtrip_topology_counts_equal": true,
+        "step_roundtrip_volume_error_mm3": 0.0
+      }
+    },
+    {
+      "part": "Wrist_Roll_Follower_SO101",
+      "modified": false,
+      "quantity": 1,
+      "source": "STEP/SO101/Follower_Specific/Wrist_Roll_Follower_SO101.step",
+      "source_sha256": "b7f9d59f7991f425fff784eab07f0bf65471903dd6d6177e7cb109bebcd02b35",
+      "step_sha256": "b7f9d59f7991f425fff784eab07f0bf65471903dd6d6177e7cb109bebcd02b35",
+      "stl_sha256": "410b67e8f4fd61b7926ac27e0ead553370bc223ff68ceb04e0c74e5a331a9795",
+      "print_translation_mm": [
+        -51.68788533681994,
+        -0.1402239596951418,
+        35.2000235328473
+      ],
+      "mesh_watertight": true,
+      "mesh_consistent_winding": true,
+      "mesh_volume_mm3": 56618.43700778001,
+      "original_volume_mm3": 56619.54949756995,
+      "candidate_volume_mm3": 56619.54949756995,
+      "original_centroid_mm": [
+        -14.156486966628748,
+        -0.4997647682826472,
+        29.701200532228217
+      ],
+      "candidate_centroid_mm": [
+        -14.156486966628748,
+        -0.4997647682826472,
+        29.701200532228217
+      ],
+      "removed_volume_mm3": 0.0,
+      "bounds_mm": [
+        -35.20000010000002,
+        29.9999994294477,
+        -24.21821457935485,
+        27.781785620646406,
+        -0.050293646521412716,
+        105.375000413425
+      ],
+      "cuts": [],
+      "protected_regions": {},
+      "validation": {
+        "valid_solid": true,
+        "solids": 1,
+        "native_added_volume_mm3": 0.0,
+        "native_protected_region_loss_mm3": {},
+        "max_bounds_error_mm": 0.0,
+        "step_roundtrip_vertex_error_mm": 0.0,
+        "step_roundtrip_topology_counts_equal": true,
+        "step_roundtrip_volume_error_mm3": 0.0
+      }
+    },
+    {
+      "part": "Motor_holder_SO101_Base",
+      "modified": false,
+      "quantity": 1,
+      "source": "STEP/SO101/Motor_holder_SO101_Base.step",
+      "source_sha256": "fb2ef4603324ddea53ab655f6ecd48c7f5a72dd7603e57e92c60c0a8e67a9083",
+      "step_sha256": "fb2ef4603324ddea53ab655f6ecd48c7f5a72dd7603e57e92c60c0a8e67a9083",
+      "stl_sha256": "b03632f809891be22a962c26ca4bd8f19520fe42c6193a90e64e641904c12ae8",
+      "print_translation_mm": [
+        36.0485267896757,
+        -1.3402257572341494,
+        -25.849905978449954
+      ],
+      "mesh_watertight": true,
+      "mesh_consistent_winding": true,
+      "mesh_volume_mm3": 13307.191403017134,
+      "original_volume_mm3": 13314.275912388859,
+      "candidate_volume_mm3": 13314.275912388859,
+      "original_centroid_mm": [
+        -39.79605021276846,
+        -36.037418412711396,
+        0.8814610993432306
+      ],
+      "candidate_centroid_mm": [
+        -39.79605021276846,
+        -36.037418412711396,
+        0.8814610993432306
+      ],
+      "removed_volume_mm3": 0.0,
+      "bounds_mm": [
+        -53.8499074366074,
+        -25.849907236607397,
+        -55.0970562748477,
+        -16.99999989999999,
+        -28.880443932947802,
+        26.2000001
+      ],
+      "cuts": [],
+      "protected_regions": {},
+      "validation": {
+        "valid_solid": true,
+        "solids": 1,
+        "native_added_volume_mm3": 0.0,
+        "native_protected_region_loss_mm3": {},
+        "max_bounds_error_mm": 0.0,
+        "step_roundtrip_vertex_error_mm": 0.0,
+        "step_roundtrip_topology_counts_equal": true,
+        "step_roundtrip_volume_error_mm3": 0.0
+      }
+    },
+    {
+      "part": "Motor_holder_SO101_Wrist",
+      "modified": false,
+      "quantity": 1,
+      "source": "STEP/SO101/Motor_holder_SO101_Wrist.step",
+      "source_sha256": "e58d86502535a5a4936677e9d934f1bda9417e83f7480f475061728c146739c4",
+      "step_sha256": "e58d86502535a5a4936677e9d934f1bda9417e83f7480f475061728c146739c4",
+      "stl_sha256": "e99b0f9089adae27f4d53af04e980f76cd59e6ace9c46f6a3aa86a4e44f37097",
+      "print_translation_mm": [
+        -1.9954807564180097,
+        -35.449998646407074,
+        -25.84990482220662
+      ],
+      "mesh_watertight": true,
+      "mesh_consistent_winding": true,
+      "mesh_volume_mm3": 13871.62334282579,
+      "original_volume_mm3": 13880.539857894682,
+      "candidate_volume_mm3": 13880.539857894682,
+      "original_centroid_mm": [
+        -39.81038086049962,
+        -36.2974349189102,
+        -0.12070214950494393
+      ],
+      "candidate_centroid_mm": [
+        -39.81038086049962,
+        -36.2974349189102,
+        -0.12070214950494393
+      ],
+      "removed_volume_mm3": 0.0,
+      "bounds_mm": [
+        -53.8499074366074,
+        -25.849907236607397,
+        -53.900000000000105,
+        -16.99999989999999,
+        -30.1909655896632,
+        26.2000001
+      ],
+      "cuts": [],
+      "protected_regions": {},
+      "validation": {
+        "valid_solid": true,
+        "solids": 1,
+        "native_added_volume_mm3": 0.0,
+        "native_protected_region_loss_mm3": {},
+        "max_bounds_error_mm": 0.0,
+        "step_roundtrip_vertex_error_mm": 0.0,
+        "step_roundtrip_topology_counts_equal": true,
+        "step_roundtrip_volume_error_mm3": 0.0
+      }
+    },
+    {
+      "part": "Rotation_Pitch_SO101",
+      "modified": false,
+      "quantity": 1,
+      "source": "STEP/SO101/Rotation_Pitch_SO101.step",
+      "source_sha256": "a392681efb05bf4009c17115a9b3e37bbee9d2fcfe25e2066b11b95aaa380915",
+      "step_sha256": "a392681efb05bf4009c17115a9b3e37bbee9d2fcfe25e2066b11b95aaa380915",
+      "stl_sha256": "24005eb6bbc92e53bc75fe850a5f56538acfcfd1936cc114e030de78efae27a9",
+      "print_translation_mm": [
+        -42.30000076442957,
+        -0.0,
+        59.79999923706055
+      ],
+      "mesh_watertight": true,
+      "mesh_consistent_winding": true,
+      "mesh_volume_mm3": 68787.1786680352,
+      "original_volume_mm3": 68811.49449208575,
+      "candidate_volume_mm3": 68811.49449208575,
+      "original_centroid_mm": [
+        -43.30847038767468,
+        38.92663491092177,
+        -0.16349212350155717
+      ],
+      "candidate_centroid_mm": [
+        -43.30847038767468,
+        38.92663491092177,
+        -0.16349212350155717
+      ],
+      "removed_volume_mm3": 0.0,
+      "bounds_mm": [
+        -59.800000100000005,
+        1e-07,
+        0.199999899999998,
+        84.40000010000001,
+        -23.00000010000001,
+        23.000000100000005
+      ],
+      "cuts": [],
+      "protected_regions": {},
+      "validation": {
+        "valid_solid": true,
+        "solids": 1,
+        "native_added_volume_mm3": 0.0,
+        "native_protected_region_loss_mm3": {},
+        "max_bounds_error_mm": 0.0,
+        "step_roundtrip_vertex_error_mm": 0.0,
+        "step_roundtrip_topology_counts_equal": true,
+        "step_roundtrip_volume_error_mm3": 0.0
+      }
+    },
+    {
+      "part": "Under_arm_SO101",
+      "modified": false,
+      "quantity": 1,
+      "source": "STEP/SO101/Under_arm_SO101.step",
+      "source_sha256": "677a1a57efeddc439d97ebdc309b1c2853cfcb83f14c7d695c312fcf13a89713",
+      "step_sha256": "677a1a57efeddc439d97ebdc309b1c2853cfcb83f14c7d695c312fcf13a89713",
+      "stl_sha256": "9d81c00225a3872eb59d6049787bdc993f16f6d8360164c79fcd52f21b23f259",
+      "print_translation_mm": [
+        -11.500000226995986,
+        2.00000067701402,
+        -19.99999724328066
+      ],
+      "mesh_watertight": true,
+      "mesh_consistent_winding": true,
+      "mesh_volume_mm3": 92895.03045840858,
+      "original_volume_mm3": 92963.3595519915,
+      "candidate_volume_mm3": 92963.3595519915,
+      "original_centroid_mm": [
+        8.6696619828305,
+        -31.670859858632785,
+        0.3464202881980638
+      ],
+      "candidate_centroid_mm": [
+        8.6696619828305,
+        -31.670859858632785,
+        0.3464202881980638
+      ],
+      "removed_volume_mm3": 0.0,
+      "bounds_mm": [
+        -53.84990743660741,
+        76.8499074366074,
+        -44.00000010000001,
+        -19.999999899999988,
+        -34.200000100000004,
+        30.2000001
+      ],
+      "cuts": [],
+      "protected_regions": {},
+      "validation": {
+        "valid_solid": true,
+        "solids": 1,
+        "native_added_volume_mm3": 0.0,
+        "native_protected_region_loss_mm3": {},
+        "max_bounds_error_mm": 0.0,
+        "step_roundtrip_vertex_error_mm": 0.0,
+        "step_roundtrip_topology_counts_equal": true,
+        "step_roundtrip_volume_error_mm3": 0.0
+      }
+    },
+    {
+      "part": "Upper_arm_SO101",
+      "modified": false,
+      "quantity": 1,
+      "source": "STEP/SO101/Upper_arm_SO101.step",
+      "source_sha256": "efa19a6dd2ccb459248500c76629cfa840630e7e15d9e146394d31da1525dd61",
+      "step_sha256": "efa19a6dd2ccb459248500c76629cfa840630e7e15d9e146394d31da1525dd61",
+      "stl_sha256": "db580526b4d41ec5b14b78f8c63923ebd24777d8ae4f57184b1161588bb79454",
+      "print_translation_mm": [
+        5.9881591834839085,
+        1.9499988010564095,
+        9.532622287608685e-07
+      ],
+      "mesh_watertight": true,
+      "mesh_consistent_winding": true,
+      "mesh_volume_mm3": 117328.19197700785,
+      "original_volume_mm3": 117417.0736861034,
+      "candidate_volume_mm3": 117417.0736861034,
+      "original_centroid_mm": [
+        4.525140254443774,
+        11.596227820128302,
+        0.0023792176244781882
+      ],
+      "candidate_centroid_mm": [
+        4.525140254443774,
+        11.596227820128302,
+        0.0023792176244781882
+      ],
+      "removed_volume_mm3": 0.0,
+      "bounds_mm": [
+        -65.08498911788121,
+        77.08498921788119,
+        -1e-07,
+        24.500000000000007,
+        -35.600000100000024,
+        31.7000001
+      ],
+      "cuts": [],
+      "protected_regions": {},
+      "validation": {
+        "valid_solid": true,
+        "solids": 1,
+        "native_added_volume_mm3": 0.0,
+        "native_protected_region_loss_mm3": {},
+        "max_bounds_error_mm": 0.0,
+        "step_roundtrip_vertex_error_mm": 0.0,
+        "step_roundtrip_topology_counts_equal": true,
+        "step_roundtrip_volume_error_mm3": 0.0
+      }
+    },
+    {
+      "part": "WaveShare_Mounting_Plate_SO101",
+      "modified": true,
+      "quantity": 1,
+      "source": "STEP/SO101/WaveShare_Mounting_Plate_SO101.step",
+      "source_sha256": "16510f5aedf04186d34aa279207d0d354d4b08c1d179a46a9974b1430d0702f8",
+      "step_sha256": "9531e7ff46908473217ad314e9a5bd63fb043fae2603c61f9170bbdca28c8ef1",
+      "stl_sha256": "6be3fadf9bf061983d774b7f0a11d041cf7b40272c6c2ce65772a245a7a7e4dd",
+      "print_translation_mm": [
+        -0.0,
+        -0.0,
+        -0.0
+      ],
+      "mesh_watertight": true,
+      "mesh_consistent_winding": true,
+      "mesh_volume_mm3": 7118.5618849018765,
+      "original_volume_mm3": 9093.30620773981,
+      "candidate_volume_mm3": 7118.580571767092,
+      "original_centroid_mm": [
+        -1.4921441961919154e-14,
+        0.006827718066349869,
+        2.4434096827729723
+      ],
+      "candidate_centroid_mm": [
+        -2.0150396261820556e-13,
+        0.008721757160096743,
+        2.5664134837390553
+      ],
+      "removed_volume_mm3": 1974.725635972718,
+      "bounds_mm": [
+        -25.502108369126574,
+        25.502108369126574,
+        -21.002108369126574,
+        21.002108369126574,
+        -0.0021083691265746532,
+        7.600000100000669
+      ],
+      "cuts": [
+        [
+          [
+            -11,
+            11,
+            12,
+            18,
+            -2,
+            10
+          ],
+          "Z",
+          2
+        ],
+        [
+          [
+            -11,
+            11,
+            -18,
+            -12,
+            -2,
+            10
+          ],
+          "Z",
+          2
+        ],
+        [
+          [
+            12,
+            21,
+            -7,
+            7,
+            -2,
+            10
+          ],
+          "Z",
+          3
+        ],
+        [
+          [
+            -21,
+            -12,
+            -7,
+            7,
+            -2,
+            10
+          ],
+          "Z",
+          3
+        ]
+      ],
+      "protected_regions": {
+        "mounting_boss": [
+          -11,
+          11,
+          -11,
+          11,
+          -3,
+          11
+        ],
+        "upper_left_screw": [
+          -27,
+          -12,
+          8,
+          23,
+          -3,
+          11
+        ],
+        "upper_right_screw": [
+          12,
+          27,
+          8,
+          23,
+          -3,
+          11
+        ],
+        "lower_left_screw": [
+          -27,
+          -12,
+          -23,
+          -8,
+          -3,
+          11
+        ],
+        "lower_right_screw": [
+          12,
+          27,
+          -23,
+          -8,
+          -3,
+          11
+        ]
+      },
+      "validation": {
+        "valid_solid": true,
+        "solids": 1,
+        "native_added_volume_mm3": 0,
+        "native_protected_region_loss_mm3": {
+          "mounting_boss": 0,
+          "upper_left_screw": 0,
+          "upper_right_screw": 0,
+          "lower_left_screw": 0,
+          "lower_right_screw": 0
+        },
+        "max_bounds_error_mm": 0.0,
+        "step_roundtrip_vertex_error_mm": 8.693159340500084e-12,
+        "step_roundtrip_topology_counts_equal": true,
+        "step_roundtrip_volume_error_mm3": 6.311893230304122e-10
+      }
+    },
+    {
+      "part": "Wrist_Roll_Pitch_SO101",
+      "modified": false,
+      "quantity": 1,
+      "source": "STEP/SO101/Wrist_Roll_Pitch_SO101.step",
+      "source_sha256": "39c5e78647d471ab4e4328ec6d00f06ad90dc48a0b1ffe4baf1a951c1304f74b",
+      "step_sha256": "39c5e78647d471ab4e4328ec6d00f06ad90dc48a0b1ffe4baf1a951c1304f74b",
+      "stl_sha256": "4cbc14d72ad2debe57b806e2f7efd2d9e176e95e8f8a46c2d1a8cd9ecf069123",
+      "print_translation_mm": [
+        -2.170205987796277,
+        1.08547239073771,
+        27.1000071469681
+      ],
+      "mesh_watertight": true,
+      "mesh_consistent_winding": true,
+      "mesh_volume_mm3": 32299.35578176088,
+      "original_volume_mm3": 32312.812243757595,
+      "candidate_volume_mm3": 32312.812243757595,
+      "original_centroid_mm": [
+        1.7686197132443506,
+        -0.38861884241997974,
+        0.9190488619983165
+      ],
+      "candidate_centroid_mm": [
+        1.7686197132443506,
+        -0.38861884241997974,
+        0.9190488619983165
+      ],
+      "removed_volume_mm3": 0.0,
+      "bounds_mm": [
+        -27.10000010000001,
+        35.2000001000001,
+        -20.0000000999999,
+        15.660093001520531,
+        -37.8283864319605,
+        40.0000001
+      ],
+      "cuts": [],
+      "protected_regions": {},
+      "validation": {
+        "valid_solid": true,
+        "solids": 1,
+        "native_added_volume_mm3": 0.0,
+        "native_protected_region_loss_mm3": {},
+        "max_bounds_error_mm": 0.0,
+        "step_roundtrip_vertex_error_mm": 0.0,
+        "step_roundtrip_topology_counts_equal": true,
+        "step_roundtrip_volume_error_mm3": 0.0
+      }
+    }
+  ]
+}

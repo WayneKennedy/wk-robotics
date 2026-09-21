@@ -1,0 +1,245 @@
+{
+  "Wrist_Roll_Follower_SO101": {
+    "rotation": [
+      [
+        4.623e-07,
+        0.1085765468,
+        0.9940880914
+      ],
+      [
+        -4.438e-07,
+        -0.9940880914,
+        0.1085765468
+      ],
+      [
+        1.0,
+        -4.914e-07,
+        -4.114e-07
+      ]
+    ],
+    "source_stl_to_plate_vertex_p95_mm": 5.5651227533461656e-05,
+    "individual_volume_mm3": 56618.43700777999,
+    "plate_volume_mm3": 56618.36799755489
+  },
+  "Motor_holder_SO101_Wrist": {
+    "rotation": [
+      [
+        8.98e-08,
+        -9.74e-08,
+        -1.0
+      ],
+      [
+        6.6e-09,
+        -1.0,
+        9.74e-08
+      ],
+      [
+        -1.0,
+        -6.6e-09,
+        -8.98e-08
+      ]
+    ],
+    "source_stl_to_plate_vertex_p95_mm": 5.877132144815459e-06,
+    "individual_volume_mm3": 13871.623342825786,
+    "plate_volume_mm3": 13871.624248696755
+  },
+  "Base_SO101": {
+    "rotation": [
+      [
+        -1.0,
+        -2.513e-07,
+        3.418e-07
+      ],
+      [
+        2.513e-07,
+        -1.0,
+        3.74e-08
+      ],
+      [
+        3.418e-07,
+        3.74e-08,
+        1.0
+      ]
+    ],
+    "source_stl_to_plate_vertex_p95_mm": 2.587117159788606e-05,
+    "individual_volume_mm3": 122689.76292945848,
+    "plate_volume_mm3": 122689.76095639293
+  },
+  "Under_arm_SO101": {
+    "rotation": [
+      [
+        1.0,
+        -4e-09,
+        1.029e-07
+      ],
+      [
+        -1.029e-07,
+        -9.91e-08,
+        1.0
+      ],
+      [
+        -4e-09,
+        -1.0,
+        -9.91e-08
+      ]
+    ],
+    "source_stl_to_plate_vertex_p95_mm": 1.2231804031947248e-05,
+    "individual_volume_mm3": 92895.03045840858,
+    "plate_volume_mm3": 92894.9635502157
+  },
+  "Upper_arm_SO101": {
+    "rotation": [
+      [
+        -1.0,
+        8e-10,
+        8.7e-09
+      ],
+      [
+        8.7e-09,
+        -3.58e-08,
+        1.0
+      ],
+      [
+        8e-10,
+        1.0,
+        3.58e-08
+      ]
+    ],
+    "source_stl_to_plate_vertex_p95_mm": 6.3062687196338684e-06,
+    "individual_volume_mm3": 117328.19197700791,
+    "plate_volume_mm3": 117328.16062217882
+  },
+  "Base_motor_holder_SO101": {
+    "rotation": [
+      [
+        -1.0,
+        -7.6e-08,
+        1.289e-07
+      ],
+      [
+        1.289e-07,
+        4.56e-08,
+        1.0
+      ],
+      [
+        -7.6e-08,
+        1.0,
+        -4.56e-08
+      ]
+    ],
+    "source_stl_to_plate_vertex_p95_mm": 2.0731451436724677e-05,
+    "individual_volume_mm3": 23709.036375715736,
+    "plate_volume_mm3": 23709.016625778033
+  },
+  "Moving_Jaw_SO101": {
+    "rotation": [
+      [
+        -5.91e-08,
+        0.866025492,
+        0.4999998473
+      ],
+      [
+        7.56e-08,
+        0.4999998473,
+        -0.866025492
+      ],
+      [
+        -1.0,
+        -1.34e-08,
+        -9.5e-08
+      ]
+    ],
+    "source_stl_to_plate_vertex_p95_mm": 2.2728560760906985e-05,
+    "individual_volume_mm3": 20692.939095361915,
+    "plate_volume_mm3": 20692.911327188252
+  },
+  "Wrist_Roll_Pitch_SO101": {
+    "rotation": [
+      [
+        -7.8e-09,
+        -1.0,
+        -1.337e-07
+      ],
+      [
+        -1.933e-07,
+        1.337e-07,
+        -1.0
+      ],
+      [
+        1.0,
+        -7.8e-09,
+        -1.933e-07
+      ]
+    ],
+    "source_stl_to_plate_vertex_p95_mm": 1.3307110097296116e-05,
+    "individual_volume_mm3": 32299.355781760885,
+    "plate_volume_mm3": 32299.342153770605
+  },
+  "WaveShare_Mounting_Plate_SO101": {
+    "rotation": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "source_stl_to_plate_vertex_p95_mm": 2.9004652030003864e-05,
+    "individual_volume_mm3": 9093.45215924056,
+    "plate_volume_mm3": 9093.443523041742
+  },
+  "Motor_holder_SO101_Base": {
+    "rotation": [
+      [
+        -5.9e-09,
+        1.0,
+        -8.11e-08
+      ],
+      [
+        -4.15e-08,
+        -8.11e-08,
+        -1.0
+      ],
+      [
+        -1.0,
+        -5.9e-09,
+        4.15e-08
+      ]
+    ],
+    "source_stl_to_plate_vertex_p95_mm": 7.701576385584814e-06,
+    "individual_volume_mm3": 13307.191403017132,
+    "plate_volume_mm3": 13307.189620329505
+  },
+  "Rotation_Pitch_SO101": {
+    "rotation": [
+      [
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ],
+      [
+        1,
+        0,
+        0
+      ]
+    ],
+    "source_stl_to_plate_vertex_p95_mm": 6.903061042347459e-06,
+    "individual_volume_mm3": 68787.1786680352,
+    "plate_volume_mm3": 68787.18616278336,
+    "note": "Flat rear face x=-59.8 mm on bed; chosen by geometric inspection, not assumed from plate."
+  }
+}

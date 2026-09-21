@@ -8,7 +8,7 @@ What this arm is, what it is for, and how it relates to upstream and the rest of
 [The Robot Studio](https://www.therobotstudio.com) with Hugging Face for
 [LeRobot](https://huggingface.co/docs/lerobot). Six degrees of freedom, six Feetech
 STS3215 bus servos at 1/345 gearing, ~500 mm reach, ~500 g payload (upstream figures, not
-measured here). The design is **not modified**: parts are printed from upstream's STLs and
+measured here). The **commissioned arm is not modified**: parts are printed from upstream's STLs and
 assembled per upstream's guide (DEC-01).
 
 The one variant choice is the **12 V servo** (DEC-02). Upstream's standard follower uses
@@ -49,18 +49,25 @@ and servos, and is banked in wk-robotics.
 ## Relation to upstream
 
 Upstream is **cloned, not forked**, as `../SO-ARM100` beside this repo. It is the design
-authority: geometry, BOM, assembly order, calibration guidance. This repo never restates
-those; it records what upstream cannot know — which physical servo carries which ID, which
+authority for baseline geometry, BOM, assembly order and calibration guidance. This
+folder records what upstream cannot know — which physical servo carries which ID, which
 printed copy of a part is the usable one, what this build measured and decided.
 
 If this build ever needs a part upstream does not have — a mount for the devastator, say —
 it is designed here under the hardware licence and, if generally useful, offered upstream.
 
+**2026-09-21 — owner-requested lightweight investigation:** local derived CAD is now
+carried in [`cad/lightweight-v1/`](../cad/lightweight-v1/README.md), with upstream
+attribution and Apache-2.0 retained. This is a prototype study, not an adopted change
+to the assembled arm. Its scope, rejected variants and remaining validation are in the
+[report](../cad/lightweight-v1/report.md); adoption remains OQ-19.
+
 ## Relation to the family
 
 | Fact class | Lives in |
 |---|---|
-| The design | upstream `SO-ARM100` |
+| Baseline design | upstream `SO-ARM100` |
+| Local prototype geometry and its analysis | [`cad/lightweight-v1/`](../cad/lightweight-v1/README.md) |
 | STS3215 electrical, bus adapters, how to configure a servo, power integrity | [wk-robotics `common.md`](../../../docs/common.md) |
 | Print jobs, slicer profiles, machine state | the family's private `3d-printing` repo |
 | Which parts exist and are usable, servo IDs, decisions, measurements | **here** |
