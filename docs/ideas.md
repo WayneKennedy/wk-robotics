@@ -288,8 +288,10 @@ buy-only or orphaned — but three things stand between printing and walking:
 
 - **The BOM electronics are not in stock.** The unallocated stock list
   ([wk-inventory `docs/stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md))
-  holds no Pi Zero 2W, no BNO055 or BNO08x, no 18650 cells, no BMS and no TPU filament.
-  Every one is an order with a lead time.
+  holds no Pi Zero 2W, no BNO055 or BNO08x, no 18650 cells and no BMS. Every one is an
+  order with a lead time. **TPU filament is in hand in quantity (owner, 2026-09-21)**,
+  though the stock list does not carry it — having it is not the same as having printed
+  it, and TPU on this printer is still unproven.
 - **"Reallocate the servos" means koala-bot's — and only 8 are in hand.** The build takes
   14 STS3215. koala-bot holds 8; its backfill 6-pack shipped 2026-09-15 and was last
   recorded undelivered on 2026-09-17, so 14 depends on that parcel. SO-ARM101's six are
