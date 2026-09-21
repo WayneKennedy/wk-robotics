@@ -722,19 +722,18 @@ settings.
 | Rule | Hexapod | Orin | AI HAT+ 2 bench |
 |---|---|---|---|
 | 1 generated unit | yes | yes | yes, `hailo-perception.service` since 2026-09-21 |
-| 2 environment in `launch.sh` only | **no**: the unit also sets domain, RMW and pin factory | yes | yes |
-| 3 explicit, before sourcing | **no**: sets domain and RMW *after* sourcing, and no discovery range, so `SUBNET` | yes | yes |
-| 4 defaults in the launch file | **no**: `autonomy:=true` is in both the unit and `launch.sh` | yes | yes; `launch.sh` resolves the camera by id at run time, which a static default cannot |
-| 5 safe stop | servo power off, yes. **No `KillMode=mixed`**, so each node gets SIGINT twice | yes (`stop.sh`) | yes (`stop.sh`) |
+| 2 environment in `launch.sh` only | yes, since 2026-09-21 | yes | yes |
+| 3 explicit, before sourcing | yes, since 2026-09-21; `SUBNET` stated | yes | yes |
+| 4 defaults in the launch file | yes, since 2026-09-21: `autonomy:=true` in the unit only | yes | yes; `launch.sh` resolves the camera by id at run time, which a static default cannot |
+| 5 safe stop | yes (servo power off; `KillMode=mixed` since 2026-09-21) | yes (`stop.sh`) | yes (`stop.sh`) |
 | 6 restart and logs | yes | yes | yes |
 | 7 ordering | yes, plus time sync | yes, plus time sync: its RTC read 1970 at boot | yes, plus time sync: its RTC read 1970 at boot |
-| 8 host state listed | *not checked* | yes (`~/models`, `~/orin/gallery`) | `~/hailo/` holds the models, the gallery and HailoRT's log. The unit runs there so the log stays out of the checkout |
+| 8 host state listed | yes (`~/.hexapod/`, in its `AGENTS.md`) | yes (`~/models`, `~/orin/gallery`) | `~/hailo/` holds the models, the gallery and HailoRT's log. The unit runs there so the log stays out of the checkout |
 | 9 checkout current | yes, since 2026-09-21 (was diverged, below) | yes | yes |
 
-The hexapod's rows are open work in its
-[OQ-24](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md). Since
-its DEC-29 they are done from the workstation over SSH, in a window where a restarted robot
-can be watched.
+All three hosts conform. The hexapod was brought into line on 2026-09-21 (its OQ-24, done
+from the workstation under its DEC-29). Its new unit and `launch.sh` take effect at the
+stack's next start.
 
 ### Host checkouts
 
