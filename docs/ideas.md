@@ -290,9 +290,13 @@ buy-only or orphaned — but three things stand between printing and walking:
   ([wk-inventory `docs/stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md))
   holds no Pi Zero 2W, no BNO055 or BNO08x, no 18650 cells, no BMS and no TPU filament.
   Every one is an order with a lead time.
-- **"Reallocate the servos" means all of koala-bot's.** The build takes 14 STS3215. The
-  family's 14 are koala-bot's twelve limb joints plus two spares once its backfill order
-  lands, and SO-ARM101's six are commissioned. Taking them halts the active design project.
+- **"Reallocate the servos" means koala-bot's — and only 8 are in hand.** The build takes
+  14 STS3215. koala-bot holds 8; its backfill 6-pack shipped 2026-09-15 and was last
+  recorded undelivered on 2026-09-17, so 14 depends on that parcel. SO-ARM101's six are
+  commissioned. **The cost is low: koala-bot is blocked at the design stage (owner,
+  2026-09-21)**, so its servos are idle, and the move reverses — unscrew, re-ID, return.
+  This is the [proven-build thread](status.md#a-proven-printed-build-alongside-koala-bot--open-2026-09-18)
+  in `status.md`, where the duck is one of several candidates.
 - **Those servos make it the modified build, not the stock one.** They are 12 V, so it is
   the [12 V fork](#stock-or-modified--the-fork-that-must-be-decided-before-buying) with
   both its costs: the policy-stiffness question *and* the 2S → 3S battery-bay CAD change.
@@ -301,9 +305,9 @@ buy-only or orphaned — but three things stand between printing and walking:
 
 Also unmeasured: total print time (not yet sliced — the slicer estimate is trustworthy to
 ±2 % on this printer, so slicing the 51 pieces answers it), the unproven TPU soles, and an
-upstream assembly guide that is marked incomplete. **The fork's recommendation stands:**
-14 × 7.4 V servos (~€196) buy a stock baseline that is diagnosable, and leave koala-bot
-intact.
+upstream assembly guide that is marked incomplete. **The fork's recommendation stands, for
+diagnosability rather than to protect koala-bot:** 14 × 7.4 V servos (~€196) buy a stock
+baseline, and a 12 V duck that will not walk cannot be told apart from a wiring fault.
 
 **Why it is interesting:** it is the only candidate on this page that delivers
 **RL sim-to-real** — a learned locomotion policy, trained in simulation and transferred to

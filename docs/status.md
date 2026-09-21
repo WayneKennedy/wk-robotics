@@ -116,6 +116,27 @@ accepted: LeKiwi, because it reuses the finished arm, the 12 V servos and a spar
 and its base plate carries a Pi or Orin cage. Not yet checked against the upstream BOM,
 print list or stock.
 
+**Update 2026-09-21 — koala-bot is blocked at the design stage (owner),** so its servos
+are idle and borrowing them is cheap and reversible. Only 8 are in hand until the backfill
+6-pack lands. What that session established about the candidates:
+
+- **Open Duck Mini V2 is proven only at 7.4 V.** On the family's 12 V servos it becomes
+  the unverified [fork](ideas.md#stock-or-modified--the-fork-that-must-be-decided-before-buying),
+  which fails the thread's own criterion of *"something proven"*. Its parts are checked
+  and printable; its electronics are not in stock; it **cannot get up after a fall**; and
+  it needs all 14 servos. Detail:
+  [`ideas.md`](ideas.md#open-duck-mini-v2).
+- **A proven build may also be the koala-bot unblocker, not a distraction from it.** The
+  koala-bot deadlock is how to mount and retain an STS3215 at a leg root (its
+  open-questions, DEC-45's blocked inboard ear screws). Assembling someone else's
+  working answer teaches that with the parts in hand. The owner asked for
+  [`tools/design-viewer`](../tools/design-viewer/) for exactly that reason; Open Duck's
+  `*_roll_to_pitch` sockets and paired `*_sheet` plates are the parts to study.
+- **`alarin/smalldog` is now the most interesting unchecked candidate.** 12 × ST3215 —
+  the family's exact servo and voltage, and 12 fits within 14 — with a shipped RL policy
+  and MuJoCo sim. Still verified only against its README; licence, maturity, print sizes
+  and whether its policy walks on hardware are all unchecked.
+
 **The owner's two directions for the Orin ground robot (2026-09-18).** LeKiwi is seen as
 a no-regrets immediate build, but too little "wow" for nearly $1,000 of compute and
 sensing. The two directions, both needing CAD but simpler than koala-bot's, both robots
