@@ -690,6 +690,8 @@ settings.
 1. **The unit is generated, never hand-edited.** It carries `__USER__`, `__REPO_DIR__` and
    `__HOME__` placeholders. `systemd/install.sh` fills them from the checkout, writes
    `/etc/systemd/system/`, and enables the unit. Re-run the installer after changing the unit.
+   Keep the unit's `WorkingDirectory` outside the checkout if anything in the stack writes to
+   its current directory (HailoRT does).
 2. **The environment lives in `launch.sh` alone.** Put no ROS variables in the unit: two
    copies drift.
 3. **`launch.sh` sets `ROS_DOMAIN_ID`, `RMW_IMPLEMENTATION` and `ROS_AUTOMATIC_DISCOVERY_RANGE`
@@ -726,7 +728,7 @@ settings.
 | 5 safe stop | servo power off, yes. **No `KillMode=mixed`**, so each node gets SIGINT twice | yes (`stop.sh`) | yes (`stop.sh`) |
 | 6 restart and logs | yes | yes | yes |
 | 7 ordering | yes, plus time sync | yes, plus time sync: its RTC read 1970 at boot | yes, plus time sync: its RTC read 1970 at boot |
-| 8 host state listed | *not checked* | yes (`~/models`, `~/orin/gallery`) | *not checked* (HEFs, gallery) |
+| 8 host state listed | *not checked* | yes (`~/models`, `~/orin/gallery`) | `~/hailo/` holds the models, the gallery and HailoRT's log. The unit runs there so the log stays out of the checkout |
 | 9 checkout current | **diverged**: 1 local commit not on `main`, 6 behind (below) | yes | yes |
 
 The hexapod's rows are **proposals** in its

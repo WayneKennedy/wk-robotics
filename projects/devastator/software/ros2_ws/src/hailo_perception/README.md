@@ -157,11 +157,14 @@ already produces exactly that.
 - The C920 clone (Sonix `0c45:6536`) dropped off USB and re-enumerated once in the first
   hour, taking `/dev/video0` with it and aborting `usb_cam` ("Unable to exchange buffer
   with the driver"). `usb_cam` 0.8.1 will not open a `/dev/v4l/by-id` symlink (it
-  validates against its own `/dev/videoN` list and shuts down), so `~/hailo/bench.sh`
+  validates against its own `/dev/videoN` list and shuts down), so `scripts/launch.sh`
   resolves the by-id link at start and passes the real node; a drop mid-run still needs a
-  restart. Whether the drop is the camera, its cable or the Pi's USB 2 port is unknown.
+  restart. **A second stall, 2026-09-21:** under the new service, frames stopped about 15 s
+  after start. `usb_cam` stayed alive with no error and nothing was published on `/image_raw`.
+  One restart cleared it, and the next run held 22–23 fps. The service does not restart on a
+  stall, because no process exits. Whether the drop is the camera, its cable or the Pi's USB 2 port is unknown.
 - `pkill -f <node name>` from an interactive shell whose command line mentions the node
-  kills that shell: start and stop the bench with `~/hailo/bench.sh` on the host.
+  kills that shell: stop the bench with the service or `scripts/stop.sh` (above).
 - Face recognition is verified on one enrolled person and one stranger; the
   thresholds above rest on 29 samples from one camera and one hour. The gallery format is deliberately plain text so the Orin
   half of the bench (wk-robotics `docs/status.md`) can share galleries.

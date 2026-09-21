@@ -12,7 +12,9 @@ Wants=network-online.target time-sync.target
 Type=simple
 User=__USER__
 Group=__USER__
-WorkingDirectory=__REPO_DIR__
+# Not the checkout: HailoRT writes hailort.log to the working directory, which dirtied the
+# checkout (2026-09-21). ~/hailo already holds the bench's models and gallery.
+WorkingDirectory=__HOME__/hailo
 Environment=HOME=__HOME__
 ExecStart=__REPO_DIR__/scripts/launch.sh
 # ros2 launch shuts its nodes down cleanly on SIGINT. KillMode=mixed sends it to ros2 launch
