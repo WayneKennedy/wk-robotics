@@ -1,0 +1,33 @@
+# wk-robotics design viewer as a user service on the reference workstation,
+# mirroring koala-bot's koala-viewer.service (that repo's DEC-35).
+#
+# Install once. %h is systemd's home-directory specifier, so no user path is baked
+# in; edit only if the checkout is not at ~/Code/wk-robotics:
+#   systemctl --user link ~/Code/wk-robotics/tools/design-viewer/systemd/design-viewer.service
+#   systemctl --user enable --now design-viewer
+#   sudo loginctl enable-linger $USER      # keep it up without a login session
+#
+# Reach it from another device the way koala's viewer is reached - the server
+# stays on loopback and Tailscale fronts it, tailnet only, over HTTPS:
+#   sudo tailscale serve --bg --https=8444 http://127.0.0.1:8019
+# (koala holds 8443. No tailnet address or hostname is recorded here: this
+# repo is public, and AGENTS.md bars them.)
+#
+# Refresh after re-fetching upstream: systemctl --user restart design-viewer
+# ExecStartPre rebuilds from the checkouts in upstream/; a failed build keeps
+# the previous build/ and the server still starts.
+[Unit]
+Description=wk-robotics design viewer (external designs on 127.0.0.1:8019)
+After=network.target
+
+[Service]
+WorkingDirectory=%h/Code/wk-robotics/tools/design-viewer
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStartPre=-%h/Code/wk-robotics/tools/design-viewer/viewer.py --build
+ExecStart=%h/Code/wk-robotics/tools/design-viewer/viewer.py --serve --no-open --port 8019
+TimeoutStartSec=900
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

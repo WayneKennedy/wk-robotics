@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design viewer</title>
+<style>
+/* Same dark instrument palette as koala-bot's viewer: this is a shop-floor
+   CAD check, not a document, so it commits to one look and paints every
+   colour explicitly. */
+:root {
+  --ground: #14171b;
+  --panel: #1b1f25;
+  --panel-2: #22272e;
+  --line: #2e343c;
+  --ink: #dfe4ea;
+  --ink-dim: #8d97a3;
+  --ink-faint: #5e6874;
+  --accent: #55b3a4;
+  --warn: #d8b24a;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --sans: "Inter var", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--ground); color: var(--ink);
+  font: 13px/1.5 var(--sans); overflow: hidden; }
+#app { display: grid; grid-template-columns: 286px 1fr; height: 100vh; }
+
+aside { background: var(--panel); border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; min-height: 0; }
+header { padding: 12px 16px 12px; border-bottom: 1px solid var(--line); }
+header select { width: 100%; background: var(--panel-2); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 5px; padding: 5px 6px;
+  font: 600 13px/1 var(--sans); }
+header p { margin: 6px 0 0; font-size: 11px; color: var(--ink-faint);
+  font-family: var(--mono); }
+.tabs { display: flex; gap: 4px; padding: 10px 12px; }
+.tabs button { flex: 1; padding: 6px 8px; font: 600 11px/1 var(--sans);
+  letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer;
+  color: var(--ink-dim); background: var(--panel-2);
+  border: 1px solid var(--line); border-radius: 5px; }
+.tabs button[aria-selected="true"] { color: var(--ground);
+  background: var(--accent); border-color: var(--accent); }
+.tabs button:focus-visible, .opt:focus-visible, .row:focus-visible,
+.view button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+#filter { padding: 0 12px 8px; }
+#filter input { width: 100%; background: var(--panel-2); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 5px; padding: 5px 8px;
+  font: 12px/1.3 var(--mono); }
+#list { flex: 1; overflow-y: auto; padding: 0 6px 12px; min-height: 100px; }
+.group { padding: 12px 10px 5px; font: 600 10px/1 var(--sans);
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-faint);
+  display: flex; justify-content: space-between; align-items: baseline; }
+.group span { font-family: var(--mono); letter-spacing: 0; }
+.row { display: grid; grid-template-columns: 10px 1fr auto; gap: 9px;
+  align-items: center; width: 100%; padding: 5px 10px; border: 0;
+  border-radius: 5px; background: none; color: var(--ink);
+  font: 12px/1.35 var(--mono); cursor: pointer; text-align: left; }
+.row > span:nth-child(2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.row:hover { background: var(--panel-2); }
+.row[aria-pressed="false"] { color: var(--ink-faint); }
+.row[aria-pressed="false"] .dot { opacity: 0.22; }
+.row.solo { background: var(--panel-2); box-shadow: inset 2px 0 0 var(--accent); }
+.row .flag { color: var(--warn); }
+.dot { width: 10px; height: 10px; border-radius: 2px; }
+.qty { font-size: 11px; color: var(--ink-faint); }
+
+footer { border-top: 1px solid var(--line); padding: 10px 12px; }
+.opt { display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 4px; border: 0; background: none; color: var(--ink-dim);
+  font: 11px/1 var(--sans); cursor: pointer; border-radius: 4px; }
+.opt:hover { color: var(--ink); }
+.box { width: 13px; height: 13px; border: 1px solid var(--line);
+  border-radius: 3px; background: var(--panel-2); flex: none; }
+.opt[aria-pressed="true"] .box { background: var(--accent); border-color: var(--accent); }
+
+main { position: relative; min-width: 0; }
+canvas { display: block; }
+.view { position: absolute; top: 14px; right: 14px; display: flex; gap: 4px;
+  background: rgba(27, 31, 37, 0.88); padding: 4px; border-radius: 6px;
+  border: 1px solid var(--line); backdrop-filter: blur(6px); }
+.view button { padding: 5px 9px; border: 0; border-radius: 4px; cursor: pointer;
+  background: none; color: var(--ink-dim);
+  font: 600 10px/1 var(--sans); letter-spacing: 0.06em; text-transform: uppercase; }
+.view button:hover { color: var(--ink); background: var(--panel-2); }
+#hud { position: absolute; left: 14px; bottom: 14px; display: flex; gap: 18px;
+  background: rgba(27, 31, 37, 0.88); border: 1px solid var(--line);
+  border-radius: 6px; padding: 8px 14px; backdrop-filter: blur(6px);
+  font-family: var(--mono); font-size: 11px; max-width: calc(100% - 28px);
+  flex-wrap: wrap; }
+#hud div { display: flex; flex-direction: column; gap: 2px; }
+#hud b { font: 600 9px/1 var(--sans); letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-faint); }
+#hud span { font-variant-numeric: tabular-nums; }
+#sel { color: var(--accent); }
+#detail { padding: 8px 16px; font-size: 11px; border-top: 1px solid var(--line);
+  color: var(--ink-dim); max-height: 132px; overflow-y: auto; }
+#detail .warn { color: var(--warn); }
+#loading { position: absolute; inset: 0; display: grid; place-items: center;
+  color: var(--ink-faint); font-family: var(--mono); font-size: 12px;
+  text-align: center; padding: 0 40px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <aside>
+    <header>
+      <select id="design" aria-label="Design"></select>
+      <p id="stamp">loading…</p>
+    </header>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-assembly" aria-selected="true">Assembly</button>
+      <button role="tab" id="tab-parts" aria-selected="false">Parts</button>
+    </div>
+    <div id="filter"><input id="q" type="search" placeholder="filter parts…" autocomplete="off"></div>
+    <div id="list"></div>
+    <div id="detail">Select a part to inspect it.</div>
+    <footer>
+      <button class="opt" id="opt-servo" aria-pressed="true"><i class="box"></i>Servo bodies</button>
+      <button class="opt" id="opt-hardware" aria-pressed="true"><i class="box"></i>Bought hardware</button>
+      <button class="opt" id="opt-wire" aria-pressed="false"><i class="box"></i>Wireframe</button>
+      <button class="opt" id="opt-grid" aria-pressed="true"><i class="box"></i>Ground grid</button>
+    </footer>
+  </aside>
+  <main>
+    <div class="view">
+      <button data-view="iso">Iso</button>
+      <button data-view="front">Front</button>
+      <button data-view="side">Side</button>
+      <button data-view="top">Top</button>
+    </div>
+    <div id="hud"></div>
+    <div id="loading">loading geometry…</div>
+  </main>
+</div>
+
+<script src="three-r128.min.js"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+const GRID_COL = 0x2a3038, AXIS_COL = 0x3d4650;
+
+function decode(s, Type) {
+  const bin = atob(s), u8 = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return new Type(u8.buffer);
+}
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+$("main").appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x14171b);
+const perspective = new THREE.PerspectiveCamera(38, 1, 1, 12000);
+const orthographic = new THREE.OrthographicCamera(-300, 300, 300, -300, 1, 12000);
+let camera = perspective, activeView = "iso";
+for (const c of [perspective, orthographic]) c.up.set(0, 0, 1);
+
+scene.add(new THREE.HemisphereLight(0xbcd0e0, 0x20242a, 0.85));
+const key = new THREE.DirectionalLight(0xffffff, 0.75);
+const fill = new THREE.DirectionalLight(0xa8c0d8, 0.35);
+scene.add(key, fill);
+
+const root = new THREE.Group(), helpers = new THREE.Group();
+scene.add(root, helpers);
+
+/* ---- orbit: azimuth/elevation about the Z axis ---- */
+const cam = { az: -0.95, el: 0.32, r: 600, t: new THREE.Vector3() };
+function place() {
+  if (camera.isOrthographicCamera) {
+    const half = cam.r * Math.tan(perspective.fov * Math.PI / 360);
+    camera.left = -half * perspective.aspect; camera.right = half * perspective.aspect;
+    camera.top = half; camera.bottom = -half;
+    camera.updateProjectionMatrix();
+  }
+  const ce = Math.cos(cam.el);
+  camera.position.set(
+    cam.t.x + cam.r * ce * Math.cos(cam.az),
+    cam.t.y + cam.r * ce * Math.sin(cam.az),
+    cam.t.z + cam.r * Math.sin(cam.el));
+  camera.lookAt(cam.t);
+  camera.updateMatrixWorld(true);
+  key.position.copy(camera.position).add(new THREE.Vector3(60, 40, 220));
+  fill.position.copy(camera.position).multiplyScalar(-1);
+}
+const el = renderer.domElement;
+let drag = null;
+el.addEventListener("pointerdown", (e) => {
+  drag = { x: e.clientX, y: e.clientY, pan: e.button === 2 || e.shiftKey };
+  el.setPointerCapture(e.pointerId);
+});
+el.addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  drag.x = e.clientX; drag.y = e.clientY;
+  if (drag.pan) {
+    const k = cam.r * 0.0016;
+    const right = new THREE.Vector3(-Math.sin(cam.az), Math.cos(cam.az), 0);
+    const up = new THREE.Vector3().crossVectors(
+      camera.position.clone().sub(cam.t).normalize(), right).normalize();
+    cam.t.addScaledVector(right, -dx * k).addScaledVector(up, -dy * k);
+  } else {
+    if (camera.isOrthographicCamera) { camera = perspective; activeView = "iso"; }
+    cam.az -= dx * 0.008;
+    cam.el = Math.max(-1.5, Math.min(1.5, cam.el + dy * 0.008));
+  }
+  place();
+});
+addEventListener("pointerup", () => { drag = null; });
+el.addEventListener("contextmenu", (e) => e.preventDefault());
+el.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  cam.r = Math.max(20, Math.min(8000, cam.r * (1 + Math.sign(e.deltaY) * 0.12)));
+  place();
+}, { passive: false });
+
+function resize() {
+  const w = $("main").clientWidth, h = $("main").clientHeight;
+  renderer.setSize(w, h);
+  perspective.aspect = w / h; perspective.updateProjectionMatrix(); place();
+}
+addEventListener("resize", resize);
+
+/* ---- scene ---- */
+let DATA = null, mode = "assembly", meshes = [], solo = null, query = "";
+const opts = { servo: true, hardware: true, wire: false, grid: true };
+
+function gridLines(x0, x1, y0, y1, step, z) {
+  const pts = [];
+  for (let x = Math.ceil(x0 / step) * step; x <= x1; x += step) pts.push(x, y0, z, x, y1, z);
+  for (let y = Math.ceil(y0 / step) * step; y <= y1; y += step) pts.push(x0, y, z, x1, y, z);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(pts), 3));
+  return new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: GRID_COL }));
+}
+
+function load(which) {
+  mode = which;
+  for (const m of meshes) { m.geometry.dispose(); m.material.dispose(); }
+  root.clear(); helpers.clear(); meshes = []; solo = null;
+  const box = new THREE.Box3();
+
+  for (const item of DATA[which]) {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(decode(item.pos, Float32Array), 3));
+    g.setIndex(new THREE.BufferAttribute(decode(item.idx, Uint32Array), 1));
+    g.computeVertexNormals();
+    const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({
+      color: new THREE.Color(item.colour), metalness: 0.05, roughness: 0.72,
+      flatShading: true, side: THREE.DoubleSide,
+    }));
+    m.userData = item;
+    root.add(m); meshes.push(m); box.expandByObject(m);
+  }
+
+  const meta = DATA.meta;
+  if (which === "assembly") {
+    const s = Math.max(200, Math.ceil(box.getSize(new THREE.Vector3()).length() / 2));
+    helpers.add(gridLines(-s, s, -s, s, meta.grid, 0));
+  } else {
+    const size = box.getSize(new THREE.Vector3());
+    helpers.add(gridLines(0, Math.max(meta.bed[0], size.x), 0,
+                          Math.max(meta.bed[1], size.y), meta.grid, 0));
+    const [bx, by] = meta.bed, b = new THREE.BufferGeometry();
+    b.setAttribute("position", new THREE.BufferAttribute(new Float32Array([
+      0, 0, 0, bx, 0, 0, bx, 0, 0, bx, by, 0,
+      bx, by, 0, 0, by, 0, 0, by, 0, 0, 0, 0]), 3));
+    helpers.add(new THREE.LineSegments(b, new THREE.LineBasicMaterial({ color: AXIS_COL })));
+  }
+  frame(box);
+  applyVisibility(); buildList(); setHud(null);
+}
+
+function frame(box) {
+  box.getCenter(cam.t);
+  const half = Math.atan(Math.tan(perspective.fov * Math.PI / 360) *
+                         Math.min(1, perspective.aspect));
+  cam.r = box.getBoundingSphere(new THREE.Sphere()).radius / Math.sin(half) * 1.08;
+  place();
+}
+function frameGeometry() {
+  root.updateMatrixWorld(true);
+  frame(new THREE.Box3().setFromObject(root));
+}
+
+function matches(it) {
+  return !query || (it.name + " " + (it.sub || "")).toLowerCase().includes(query);
+}
+
+function applyVisibility() {
+  for (const m of meshes) {
+    const it = m.userData;
+    const muted = (it.kind === "servo" && !opts.servo) ||
+                  (it.kind === "hardware" && !opts.hardware) ||
+                  (solo && solo !== it.id) || it.hidden || !matches(it);
+    m.visible = !muted;
+    m.material.wireframe = opts.wire;
+  }
+  helpers.visible = opts.grid;
+}
+
+const KINDS = [["printed", "Printed"], ["servo", "Servo bodies"],
+               ["hardware", "Bought hardware"], ["sim", "Simulation meshes"]];
+
+function buildList() {
+  const list = $("#list"); list.innerHTML = "";
+  for (const [kind, label] of KINDS) {
+    const items = DATA[mode].filter((i) => i.kind === kind && matches(i));
+    if (!items.length) continue;
+    const h = document.createElement("div");
+    h.className = "group";
+    h.innerHTML = `${label}<span>${items.length}</span>`;
+    list.appendChild(h);
+    for (const it of items) {
+      const b = document.createElement("button");
+      b.className = "row";
+      b.setAttribute("aria-pressed", it.hidden ? "false" : "true");
+      const flag = (it.fits_rule === false) ? ' <span class="flag">!</span>' : "";
+      const sub = (mode === "assembly" && it.sub) ? ` <span class="qty">${it.sub}</span>` : "";
+      b.innerHTML = `<i class="dot" style="background:${it.colour}"></i>` +
+        `<span>${it.name}${flag}${sub}</span>` +
+        `<span class="qty">${it.qty ? "×" + it.qty : ""}</span>`;
+      b.onclick = (e) => {
+        if (e.shiftKey) it.hidden = !it.hidden;
+        else solo = solo === it.id ? null : it.id;
+        applyVisibility(); buildList(); setHud(it);
+      };
+      b.onmouseenter = () => setHud(it);
+      if (solo === it.id) b.classList.add("solo");
+      list.appendChild(b);
+    }
+  }
+}
+
+function setHud(it) {
+  const m = DATA.meta;
+  const stats = mode === "assembly"
+    ? [["Links", String(DATA.assembly.length)],
+       ["Servo bodies", String(DATA.assembly.filter(i => i.kind === "servo").length)]]
+    : [["Bed", `${m.bed[0]}×${m.bed[1]} mm`],
+       ["Design rule", `≤${m.rule} mm`],
+       ["Parts", String(DATA.parts.length)]];
+  const sel = it
+    ? `<div><b>${it.name}${it.sub && it.sub !== it.name ? " · " + it.sub : ""}</b>` +
+      `<span id="sel">${it.size.join(" × ")} mm` +
+      `${it.qty ? " · ×" + it.qty : ""}${it.material && it.material !== "unknown" ? " · " + it.material : ""}</span></div>`
+    : `<div><b>Selection</b><span id="sel">click to solo · shift-click to hide</span></div>`;
+  $("#hud").innerHTML = sel + stats.map(([k, v]) => `<div><b>${k}</b><span>${v}</span></div>`).join("");
+
+  const bits = [];
+  if (it) {
+    if (it.chain) bits.push(`Joint chain: ${it.chain}.`);
+    if (it.volume_cm3 != null) bits.push(`Volume ${it.volume_cm3} cm³.`);
+    if (it.watertight === false) bits.push(`<span class="warn">Mesh is not watertight as supplied.</span>`);
+    if (it.metrics) bits.push(`Bed contact ${it.metrics.bed_area.toFixed(0)} mm²; ` +
+      `flagged overhang ${it.metrics.overhang_area.toFixed(0)} mm² ` +
+      `(${(it.metrics.overhang_frac * 100).toFixed(1)}% of surface), at 45° from straight down.`);
+    if (it.fits_bed === false) bits.push(`<span class="warn">Exceeds the ${m.bed[0]}×${m.bed[1]}×${m.bed_z} mm build volume in this orientation.</span>`);
+    else if (it.fits_rule === false) bits.push(`<span class="warn">Largest footprint side ${it.largest_xy} mm exceeds the ${m.rule} mm design rule.</span>`);
+    if (it.notes) bits.push(it.notes);
+  }
+  bits.push(mode === "assembly" ? m.assembly_note : m.parts_note);
+  if (m.warning) bits.push(`<span class="warn">${m.warning}</span>`);
+  bits.push(`Source: ${m.source}. Geometry as published; this view establishes nothing about fit, clearance or strength.`);
+  $("#detail").innerHTML = bits.join(" ");
+}
+
+/* ---- controls ---- */
+const VIEWS = { iso: [-0.95, 0.32], front: [0, 0], side: [Math.PI / 2, 0], top: [-Math.PI / 2, 1.5] };
+for (const b of document.querySelectorAll(".view button"))
+  b.onclick = () => {
+    activeView = b.dataset.view;
+    camera = activeView === "iso" ? perspective : orthographic;
+    [cam.az, cam.el] = VIEWS[activeView];
+    frameGeometry();
+  };
+for (const [id, k] of [["#opt-servo", "servo"], ["#opt-hardware", "hardware"],
+                       ["#opt-wire", "wire"], ["#opt-grid", "grid"]]) {
+  $(id).onclick = () => {
+    opts[k] = !opts[k];
+    $(id).setAttribute("aria-pressed", String(opts[k]));
+    applyVisibility();
+  };
+}
+$("#q").oninput = () => { query = $("#q").value.trim().toLowerCase(); applyVisibility(); buildList(); };
+$("#tab-assembly").onclick = () => switchTab("assembly");
+$("#tab-parts").onclick = () => switchTab("parts");
+function switchTab(which) {
+  $("#tab-assembly").setAttribute("aria-selected", String(which === "assembly"));
+  $("#tab-parts").setAttribute("aria-selected", String(which === "parts"));
+  for (const it of DATA[which]) it.hidden = false;
+  load(which);
+}
+(function tick() { requestAnimationFrame(tick); renderer.render(scene, camera); })();
+
+/* ---- load ---- */
+function loadDesign(id) {
+  $("#loading")?.remove();
+  const note = document.createElement("div");
+  note.id = "loading"; note.textContent = "loading geometry…";
+  $("main").appendChild(note);
+  return fetch(`scene-${id}.json?` + Date.now()).then(r => r.json()).then(d => {
+    DATA = d;
+    $("#stamp").textContent =
+      `${d.parts.length} parts · ${d.assembly.length} in assembly`;
+    note.remove();
+    resize(); switchTab(mode);
+  }).catch(e => { note.textContent = `scene-${id}.json did not load (${e.message}).`; });
+}
+
+fetch("designs.json?" + Date.now()).then(r => r.json()).then(d => {
+  const sel = $("#design");
+  sel.innerHTML = d.designs.map(x => `<option value="${x.id}">${x.label}</option>`).join("");
+  const ids = d.designs.map(x => x.id);
+  // #<id> deep-links a design, so each one has its own bookmarkable URL.
+  const wanted = location.hash.replace(/^#/, "");
+  const start = ids.includes(wanted) ? wanted : ids[0];
+  sel.value = start;
+  sel.onchange = () => { location.hash = sel.value; loadDesign(sel.value); };
+  addEventListener("hashchange", () => {
+    const id = location.hash.replace(/^#/, "");
+    if (ids.includes(id) && id !== sel.value) { sel.value = id; loadDesign(id); }
+  });
+  return loadDesign(start);
+}).catch((e) => {
+  $("#loading").textContent =
+    "designs.json did not load (" + e.message + "). Serve this page with " +
+    "`./viewer.py`; opening the file directly will not work.";
+});
+</script>
+</body>
+</html>

@@ -59,6 +59,7 @@ The strongest threads today:
 | [`docs/projects.md`](docs/projects.md) | Per-project detail: hardware, status, entry points |
 | [`docs/common.md`](docs/common.md) | The shared substrate — printing, actuators, compute, power |
 | [`docs/ideas.md`](docs/ideas.md) | Future project candidates and open discussion |
+| [`tools/design-viewer/`](tools/design-viewer/) | 3D viewer for external designs under study — assembly and part-by-part, from upstream geometry |
 | [`AGENTS.md`](AGENTS.md) | Onboarding for any AI assistant or contributor — **start here** |
 
 ## For AI assistants
