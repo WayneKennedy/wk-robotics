@@ -1,0 +1,28 @@
+# Perception bench at boot: camera + perception_node + web_video_server, as scripts/launch.sh.
+# Mirrors wk-hexapod systemd/hexapod.service. Installed by ./install.sh, which fills the
+# __PLACEHOLDERS__ from the checkout; no user or path is baked in.
+[Unit]
+Description=Orin perception bench (D435i -> perception_node -> web_video_server :8080)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__USER__
+Group=__USER__
+WorkingDirectory=__REPO_DIR__
+Environment=HOME=__HOME__
+ExecStart=__REPO_DIR__/scripts/launch.sh
+# ros2 launch shuts its nodes down cleanly on SIGINT
+KillSignal=SIGINT
+TimeoutStopSec=30
+# Killing only the launch can orphan realsense2_camera_node, which then holds the camera
+# (scripts/stop.sh header). Sweep anything left before a restart.
+ExecStopPost=-__REPO_DIR__/scripts/stop.sh
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

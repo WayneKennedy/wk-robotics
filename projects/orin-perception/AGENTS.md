@@ -10,7 +10,8 @@ Results go in [`docs/common.md`](../../docs/common.md) beside the HAT measuremen
 ## What it does
 
 RealSense D435i colour (1280×720×30) → `perception_node` → annotated image → `web_video_server`
-(MJPEG at `http://<jetson>:8080/stream?topic=/perception/annotated&type=mjpeg`).
+(MJPEG at `http://<jetson>:8080/stream?topic=/orin/image_annotated`; `http://<jetson>:8080/` lists
+the topics).
 
 | Stage | Model | Runtime |
 |---|---|---|
@@ -38,8 +39,10 @@ engines are built on the Jetson with `trtexec` (`scripts/build-engines.sh`).
 - `ros2_ws/src/orin_perception/` — ament_python package: `perception_node`, `enrol`, `launch/bench.launch.py`,
   `config/realsense.yaml` (colour only, derived from wk-hexapod's), `config/perception.yaml`.
 - `scripts/setup-orin.sh` — host install mirroring wk-hexapod `scripts/ubuntu-setup.sh` (JetPack SDK, ROS 2 Jazzy, realsense2_camera,
-  web_video_server, cuda-python). `scripts/deploy.sh` syncs and builds. `scripts/bench-record.sh`
-  captures `tegrastats` + `/perception/stats` and summarises.
+  web_video_server, cuda-python). `scripts/deploy.sh` (rsync) is superseded by the host's git checkout ([`common.md` → Host checkouts](../../docs/common.md#host-checkouts)). `scripts/bench-record.sh`
+  captures `tegrastats` + `/orin/stats` and summarises.
+- `systemd/` — `orin-perception.service` runs `scripts/launch.sh` at boot, and `install.sh` installs it.
+  Both mirror wk-hexapod `systemd/`. On stop, the service runs `scripts/stop.sh` to free the camera.
 
 ## Models (not checked in — regenerate with `scripts/fetch-models.sh`)
 
@@ -68,16 +71,23 @@ Exported 2026-09-19 with ultralytics 8.4.155 / torch 2.14.0+cpu / onnx 1.23.0 / 
 ```bash
 # workstation
 scripts/fetch-models.sh <jetson>    # once: ONNX -> jetson ~/models
-scripts/deploy.sh <jetson>          # sync this folder to ~/Code/wk-robotics/projects/orin-perception and build
-# jetson, in that folder
+# jetson, in ~/Code/wk-robotics (a checkout: common.md → Host checkouts) then projects/orin-perception
+[ -z "$(git status --porcelain)" ] && git fetch && git reset --hard origin/main   # update; refuses on local edits
 sudo scripts/setup-orin.sh          # once: JetPack SDK, ROS 2 Jazzy, deps, workspace build
 scripts/build-engines.sh            # once per TensorRT version: ONNX -> FP16 engines in ~/models
-scripts/launch.sh [yolo_engine:=yolov8m.engine]                 # camera + node + web_video_server
+systemd/install.sh --now            # once: start at boot, and now; logs: journalctl -u orin-perception
+scripts/launch.sh [yolo_engine:=yolov8m.engine]  # manual run: `sudo systemctl stop orin-perception` first
 source /opt/ros/jazzy/setup.bash && source ros2_ws/install/setup.bash
 ros2 topic pub --once /orin/enroll std_msgs/msg/String "{data: <name>}"   # enrol the largest face in view
 ros2 run orin_perception enrol -- --list                                  # or --name x --images a.jpg
 scripts/bench-record.sh 60 yolov8s                                         # the numbers for common.md
 ```
+
+**Stopping the service kills matching SSH sessions.** On stop, the service runs `scripts/stop.sh`,
+which kills by command-line pattern. It spares only its own ancestors, and under systemd those
+are not your shell. So an SSH command that restarts the service and also names a bench process,
+e.g. `pgrep realsense2_camera_node`, gets killed mid-run. This happened 2026-09-21. Restart in
+one SSH call and inspect in another.
 
 ## State
 

@@ -198,11 +198,11 @@ Fast DDS on domain 0 everywhere, and no ROS in any `.bashrc`. **What is left to 
    script exactly. **Still open:** its ROS packages are ~3 months older than the other two
    hosts'. Not upgraded — that wants a window where the robot can be watched coming back up.
 5. **Decide the discovery-range question** (below) — measured at 35× throughput. Both
-   benches now pin `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST` in their `launch.sh`, so the
-   symptom is contained; what is open is the family rule (one domain per robot, or
+   benches' `launch.sh` set `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`. **Until 2026-09-21 the
+   setting had no effect**: it was applied after sourcing ROS, whose setup script sets `SUBNET`
+   when the variable is unset. It is now applied before sourcing. The fix is deployed on the Orin;
+   the HAT bench host is still on the old script. What is open is the family rule (one domain per robot, or
    localhost-only by default and the domain opened deliberately).
-6. **The Orin's last step — face recognition** — needs a person in front of the D435i. It is
-   the only thing left between it and parity with the HAT half.
 
 ### Repo shape and host checkouts (open — raised by the owner 2026-09-20)
 
@@ -298,18 +298,25 @@ run: **28.2 fps at 1280×720** with objects, face detection and face embedding a
 32.8 ms per frame, 89 ms end to end, streaming MJPEG — numbers and the contention finding in
 [`common.md`](common.md#first-measurements-on-the-orin-nano-2026-09-20).
 
-**Where it stopped, and it is one step short of the HAT half.** Objects, face detection,
-face embedding and the web stream all run; **face recognition was never exercised** — the
-gallery directory was never created and no enrolment happened in the whole 21-hour run, so
-every face stayed `unknown`. The recognition path itself is **verified working on the Orin's
-GPU engines** (2026-09-20: enrolled a face from `bus.jpg` through SCRFD → ArcFace → gallery
-write in the HAT's format, model provenance recorded); previously it had only been checked on
-a workstation CPU through onnxruntime. **What remains needs a person in front of the camera:**
-bring the bench up with `scripts/launch.sh`, publish a name on `/orin/enroll`, and confirm it
-comes back on `/orin/faces` — the step the HAT half passed at 0.78 similarity.
+**Live face recognition passed 2026-09-21. The Orin half now matches the HAT half.** The owner
+was enrolled from the live D435i stream with one `/orin/enroll` publish. Five consecutive
+`/orin/faces` readings then returned the owner at cosine similarity **0.42–0.49**, against a
+match threshold of 0.35. A second, smaller face in the same frames stayed `unknown` at about
+0.0. The HAT half scored 0.78, but that figure is not comparable: the two halves use different
+models (`w600k_mbf` here, `arcface_mobilefacenet` there). Each gallery entry is one
+embedding from one frame. A second household member was enrolled the same way and recognised at 0.59–0.86.
+The gallery stays on the Orin (`~/orin/gallery/`) and is not checked in.
 **Load, power, thermals and a YOLOv8s vs YOLOv8m comparison were captured 2026-09-20** and
 are in [`common.md`](common.md#first-measurements-on-the-orin-nano-2026-09-20); running them
 exposed two script bugs, both now fixed.
+**Runs at boot since 2026-09-21** as `orin-perception.service`
+([`projects/orin-perception/systemd/`](../projects/orin-perception/systemd/)). After install it
+was streaming at about 25 fps, and one restart re-acquired the camera cleanly. A cold boot has
+not been tested yet.
+Later that day the web stream sent headers and then no frames. The service had been running
+with `SUBNET` discovery (see item 5 above). After the fix and a restart, three concurrent
+streams each delivered frames. Not established: whether `SUBNET` or something else caused
+the stall.
 
 ### AI compute purchase — AI HAT+ 2, Jetson or DGX Spark
 

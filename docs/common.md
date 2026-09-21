@@ -651,6 +651,11 @@ D435i's on the Orin. A `ros2 topic hz` on the Orin's own camera read 3 fps until
 limited to the host, then 29 fps. Measured 2026-09-19, wk-robotics `projects/orin-perception`.
 **For the bench**, `scripts/launch.sh` sets `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST` (the
 Jazzy form; `ROS_LOCALHOST_ONLY` is deprecated), a deliberate deviation recorded in that script.
+It must be exported **before** `source /opt/ros/jazzy/setup.bash`: Jazzy's `ros_environment`
+hook sets it to `SUBNET` if unset (`set-if-unset` in `1.ros_discovery.dsv`), so a default
+applied after sourcing never takes effect. Both benches' scripts had it after until 2026-09-21,
+and the guard had not been applied in any run they launched. The 2026-09-19 measurement set
+the variable by hand.
 **For the family, open:** one domain per robot, or localhost-only by default with the domain
 opened deliberately when hosts must talk (the Devastator's Pi and its future HAT node, say).
 Until decided, any host that runs on the home LAN alongside a live robot needs the same guard.
@@ -690,8 +695,9 @@ changed message definition needs a rebuild before anything will talk to anything
 on 2026-09-20 the hexapod's `wk-hexapod` checkout was **6 commits behind, a 48-file diff**
 covering perception node source, a new message type and launch files, while `hexapod.service`
 was active — so it was **left alone**, and updating it wants a window where the robot can be
-rebuilt and watched coming back up. The two bench hosts carry no service and were updated
-freely. A docs-only checkout (this repository on the hexapod's Pi, which builds nothing there)
+rebuilt and watched coming back up. The two bench hosts carried no service then and were updated
+freely. Since 2026-09-21 the Orin runs `orin-perception.service` from its checkout, so after an
+update that touches its files, run `sudo systemctl restart orin-perception`. A docs-only checkout (this repository on the hexapod's Pi, which builds nothing there)
 is always safe to update.
 
 **What this replaced.** The bench host previously held a hand-rsynced copy and had already
@@ -1074,7 +1080,9 @@ of the difference between the two accelerators on this workload.
 ~6.0 s end-to-end latency** while the hexapod's graph was live on domain 0, and settled to
 28.2 fps once it was not — a **35× throughput difference from DDS discovery alone**, dwarfing
 every model or resolution choice here. This is the measurement behind the discovery finding
-above, and the reason `scripts/launch.sh` pins `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`.
+above, and the reason `scripts/launch.sh` sets `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`. The
+recovery to 28.2 fps came from the hexapod's graph going away, not from that setting, which
+had no effect until 2026-09-21 (see the discovery finding above).
 
 **Load, power and thermals, and YOLOv8s vs YOLOv8m (2026-09-20).** Two 60-second
 `scripts/bench-record.sh` captures, 55 samples each, 25 W power mode, same camera settings as
@@ -1109,6 +1117,15 @@ governor did. **Unexplained:** TensorRT logs `Using an engine plan file across d
 models of devices is not supported` on every engine load, although `~/models/*.trtexec.log`
 shows the engines were built on this host. Not investigated; recorded as unknown rather than
 guessed at.
+
+**Live recognition, 2026-09-21.** The owner was enrolled from one live frame at 1280×720 on
+the D435i (`w600k_mbf`, match threshold 0.35). Five consecutive readings recognised them at
+cosine **0.42–0.49**, with the engines running at about 25 fps. An unenrolled second face
+stayed `unknown` at about 0.0. The HAT's 0.78 was measured with a different embedding model,
+so the two numbers are not comparable. Both halves pass the same functional test.
+A second household member was then enrolled the same way. Before enrolment, their face
+scored about 0.01 against the owner's entry. Afterwards, four readings recognised them at
+**0.59–0.86**.
 
 ### AI compute — purchase comparison
 
