@@ -91,7 +91,7 @@ tolerances, one pool of spares, and tooling that transfers between projects.
 |---|---|---|---|
 | Waveshare ST3215 12 V (Feetech STS3215 rebadge), firmware 3.10 (upgraded from 3.9, 2026-09-12) | 2 | SO-ARM101, IDs 1–2 | Amazon 204-4694570-7173960, ordered 2026-09-02, delivered 2026-09-04, £31.90 each ([`servos.md`](../projects/soarm101/docs/servos.md)) |
 | Feetech STS3215 12 V, firmware 3.10 | 4 | SO-ARM101, IDs 3–6 (wk-soarm101 DEC-09) | RCmall via koala-bot, arrived 2026-09-12 ([koala-bot `sourcing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/sourcing.md)) |
-| Feetech STS3215 12 V, firmware 3.10 (four read; the eight assumed the same batch, unverified) | 8 | koala-bot, eight of twelve limb joints — four short until a **6-pack ordered from RCmall 2026-09-14** arrives (then 14: 12 fitted, 2 spare) | same order; backfill pack (AliExpress, £103.15) shipped 2026-09-15, not delivered as of 2026-09-17 |
+| Feetech STS3215 12 V, firmware 3.10 (four read; the eight assumed the same batch, unverified) | 8 | koala-bot, eight of twelve limb joints — four short until a **6-pack ordered from RCmall 2026-09-14** arrives (then 14: 12 fitted, 2 spare) | same order; backfill pack (AliExpress, £103.15) shipped 2026-09-15, in UK customs with the final courier on 2026-09-21, expected within 2–3 days (owner) |
 | Feetech STS3032M 6 V | 4 | koala-bot, three neck + one spare | same order |
 
 SO-ARM101 has its six. koala-bot must re-order at least four STS3215 before its limbs can

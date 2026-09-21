@@ -118,7 +118,8 @@ print list or stock.
 
 **Update 2026-09-21 — koala-bot is blocked at the design stage (owner),** so its servos
 are idle and borrowing them is cheap and reversible. Only 8 are in hand until the backfill
-6-pack lands. What that session established about the candidates:
+6-pack lands — in UK customs with the final courier on 2026-09-21, expected within 2–3
+days (owner). What that session established about the candidates:
 
 - **Open Duck Mini V2 is proven only at 7.4 V.** On the family's 12 V servos it becomes
   the unverified [fork](ideas.md#stock-or-modified--the-fork-that-must-be-decided-before-buying),
