@@ -1616,8 +1616,12 @@ sidesteps the hazards above for a specific run, or when a task needs more than 1
 
 **Ex-datacentre cards do not help here.** VRAM is not the constraint for biped RL (see
 6.1 GB above), and the cheap end is outside the toolchain: JAX's CUDA 13 path needs
-**SM 7.5+**, which excludes P100 (6.0), P40 (6.1) and V100 (7.0). Isaac Sim states **"GPUs
-without RT Cores (A100, H100) are not supported"**, so even a bargain A100 is MJX-only.
+**SM 7.5+**, which excludes P100 (6.0), P40 (6.1) and V100 (7.0). The rest of their window
+closes on a timetable: PyTorch 2.15 plans to stop publishing the cu126 wheels that are
+their last prebuilt route ([RFC](https://github.com/pytorch/pytorch/issues/190385)), and
+R580, their last driver branch, reaches end of life in **June 2028**. Isaac Sim states
+**"GPUs without RT Cores (A100, H100) are not supported"**, so even a bargain A100 is
+MJX-only, and no Pascal or Volta card runs it at any VRAM.
 Where large VRAM genuinely pays is local LLM/VLM inference — a reasoning-tier ambition, to
 be decided on its own merits.
 
