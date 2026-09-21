@@ -731,10 +731,10 @@ settings.
 | 8 host state listed | *not checked* | yes (`~/models`, `~/orin/gallery`) | `~/hailo/` holds the models, the gallery and HailoRT's log. The unit runs there so the log stays out of the checkout |
 | 9 checkout current | **diverged**: 1 local commit not on `main`, 6 behind (below) | yes | yes |
 
-The hexapod's rows are **proposals** in its
-[`open-questions.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md).
-Its repo is owned by the robot for code and configuration: changes are made by a session
-running on the robot ([its `AGENTS.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/AGENTS.md#working-on-the-robot-itself)).
+The hexapod's rows are open work in its
+[OQ-20](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md). Since
+its DEC-28 they are done from the workstation over SSH, in a window where a restarted robot
+can be watched.
 
 ### Host checkouts
 
@@ -755,6 +755,10 @@ the migration; the owner has not ruled on them and the wider question of repo sh
 
 - **Anonymous HTTPS, not SSH.** This repository is public, so a robot needs no key to read it.
   An SSH deploy key on a machine that lives on a shelf can also *push*.
+- **No assistant runs on a robot host** (owner, 2026-09-21;
+  [wk-hexapod DEC-28](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)).
+  Sessions run on [the always-on workstation](#the-workstation--the-always-on-server) and
+  operate hosts over SSH. The hexapod was the last host with one; it was removed that day.
 - **Read-only consumers.** Authoring happens on the workstation. A host updates with
   `git fetch && git reset --hard origin/main`, so it tracks origin exactly and never grows a
   divergent head. Before doing that, check `git status --porcelain` is empty — if a host has
@@ -774,8 +778,8 @@ diff** covering perception node source, a message type and launch files, while
 had not fallen behind. It had **diverged**. The code difference is the robot's own commit
 `343638f` (sonar and head stack, 47 files), which was never pushed. GitHub's six newer commits
 are docs and `ubuntu-setup.sh` only. The commit is preserved on GitHub as branch
-`robot/343638f-sonar-head`. Reconciling it with `main` is the robot's job, in a window
-where the robot can be rebuilt and watched coming back up. Both bench hosts run a service
+`robot/343638f-sonar-head`. Reconciling it with `main` is done from the workstation (wk-hexapod DEC-28,
+OQ-20), in a window where the robot can be rebuilt and watched coming back up. Both bench hosts run a service
 from their checkout since 2026-09-21 (`orin-perception`, `hailo-perception`). After an
 update that touches a bench's files, restart its service. A docs-only checkout, such as this
 repository on the hexapod's Pi, builds nothing and is always safe to update.
