@@ -748,7 +748,7 @@ settings.
 | 7 ordering | yes, plus time sync | yes, plus time sync: its RTC read 1970 at boot | yes, plus time sync: its RTC read 1970 at boot |
 | 8 host state listed | yes (`~/.hexapod/`, in its `AGENTS.md`) | yes (`~/models`, `~/orin/gallery`) | `~/hailo/` holds the models, the gallery and HailoRT's log. The unit runs there so the log stays out of the checkout |
 | 9 checkout current | yes, since 2026-09-21 (was diverged, below) | yes | yes |
-| 10 user lingers | **unverified**: host unreachable 2026-09-21. Its `/imu/data`, `/tf` and `/ultrasonic/range` stopped or came and went on the LAN that day, which fits this fault | yes, since 2026-09-21 | yes, since 2026-09-21 |
+| 10 user lingers | since 2026-09-21. The fault was confirmed there: stack active since 09-20, no `fastrtps_*` segment in `/dev/shm`. The restart that restores delivery is pending ([wk-hexapod OQ-25](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md)) | yes, since 2026-09-21 | yes, since 2026-09-21 |
 
 All three hosts conformed to rules 1–9. The hexapod was brought into line on 2026-09-21 (its OQ-24, done
 from the workstation under its DEC-29). Its new unit and `launch.sh` take effect at the
@@ -1552,7 +1552,7 @@ runs the other way.
 
 ### Headless provisioning of a Raspberry Pi OS card
 
-**Measured 2026-09-20 on `2026-09-15-raspios-trixie-arm64-lite`, written from blake and booted on
+**Measured 2026-09-20 on `2026-09-15-raspios-trixie-arm64-lite`, written from the always-on workstation and booted on
 a Pi 4 B.** Do not infer the mechanism from an older image or from rpi-imager's documentation.
 
 **`custom.toml` is not read by this image.** Writing it to the boot partition does nothing, and
@@ -1676,7 +1676,9 @@ below is a headed desktop that may be off.
 **Established 2026-09-07; rebuilt as native Ubuntu 24.04 LTS on 2026-09-21**, replacing
 Ubuntu under WSL2 on Windows 11. It has an **NVIDIA GeForce RTX 5070 Ti (16 GB)**, driver
 **595.91.07** under Linux (read with `nvidia-smi`, 2026-09-21; the 610.62 recorded before was
-the Windows driver). Docker is installed. Machine identifiers are in `wk-inventory`.
+the Windows driver). It runs **NVIDIA's open kernel module with Secure Boot enabled**, so
+neither has to be given up for Blackwell on 24.04. Docker is installed. Machine identifiers
+are in `wk-inventory`.
 
 It is the only GPU in the family, and it unlocks two things nothing else can: **RL
 policy training** (MuJoCo Playground / MJX and anything else JAX- or PyTorch-based) and

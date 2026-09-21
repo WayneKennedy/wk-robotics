@@ -62,8 +62,9 @@ graph (Nav2, autonomy manager, LEDs, sonar). Data arrived for `std_msgs` and `se
 echoed. `/imu/data` and `/tf` delivered nothing within 10 s, with a publisher listed on
 `/imu/data`. Later `/ultrasonic/range` stopped too, and the always-on workstation briefly could not
 get `/joint_states`. `/imu/data_raw`, the same type from the same robot, arrived at both hosts
-throughout, so the fault is on the robot. The likely cause is
-[startup rule 10](../../docs/common.md#robot-startup-is-familial); it is unverified.
+throughout, so the fault is on the robot. The cause is
+[startup rule 10](../../docs/common.md#robot-startup-is-familial)'s fault, confirmed on the robot;
+the fix waits on a restart ([wk-hexapod OQ-25](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md)).
 
 ## Not yet
 

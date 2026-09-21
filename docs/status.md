@@ -391,24 +391,21 @@ edit. Resolves then.
 
 ### The mission planner started on both workstations — 2026-09-21
 
-Done: native Ubuntu 24.04 (the owner's rebuild), ROS 2 Jazzy installed and receiving the
-hexapod's topics over the LAN; the machine is recorded in
-[`common.md`](common.md#the-gpu-workstation) and the new tier in
-[`projects/mission-planner/`](../projects/mission-planner/AGENTS.md). Still to do:
+**Done.** The GPU workstation was rebuilt as native Ubuntu 24.04 (by the owner). Both
+workstations have ROS 2 Jazzy from the same `setup-host.sh` and receive the hexapod's topics
+over the LAN. The always-on workstation serves the stream page for both perception benches.
+Recorded in [`common.md`](common.md#the-gpu-workstation) and
+[`projects/mission-planner/`](../projects/mission-planner/AGENTS.md); identifiers in `wk-inventory`
+`docs/workstations.md`. Still to do:
 
-- `wk-inventory` is not updated. It needs the GPU workstation's new OS and identifiers, the
-  always-on workstation's `/etc/default/stream-page` values and the page's URL, and linger on
-  both bench hosts.
-- Build `hexapod_interfaces` on the host so the hexapod's own message types decode.
-- **Hexapod: apply startup rule 10 (linger).** Its `/imu/data` and `/tf` delivered nothing to
-  the planner hosts, and `/joint_states` and `/ultrasonic/range` came and went, while
-  `/imu/data_raw` kept arriving. That fits the `RemoveIPC` fault
-  ([common.md](common.md#robot-startup-is-familial)), which silently breaks same-host delivery.
-  Unverified: the robot's host did not answer SSH on 2026-09-21. The fix is `enable-linger`
-  plus a restart, and a restart starts autonomy, so it is the owner's call. Its
-  `systemd/install.sh` lives in wk-hexapod.
-- **Always-on workstation**: ROS 2 installed by the same `setup-host.sh`; it sees the LAN graph
-  (34 nodes) and receives `/imu/data_raw`. It also serves the stream page.
+- Build `hexapod_interfaces` on the workstations so the hexapod's own message types decode.
+- **Hexapod: restart under linger.** Its `/imu/data` and `/tf` went silent on the LAN because
+  `RemoveIPC` had deleted its Fast DDS shared memory (confirmed on the Pi 2026-09-21). Linger is
+  now on, and the restart is pending until the robot is safe to explore:
+  [wk-hexapod OQ-25](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md).
+- **Open: does the Tailscale-SSH-only rule cover the workstations?** The rule names robot and
+  bench hosts. The GPU workstation conforms anyway. The always-on workstation runs OpenSSH and
+  holds the owner's personal key, which it needs for GitHub writes. The owner's call.
 - No ML stack is installed yet; the Isaac Sim / MJX findings in `common.md` predate the
   native install and are unverified on it.
 
