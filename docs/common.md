@@ -124,6 +124,56 @@ delivers about three-quarters of its rated 30 kg·cm. A pack sagging toward its 
 therefore reads as a weakening arm, not as a tuning problem — worth knowing before chasing
 the wrong fault.
 
+### Is the STS3215 class enough for a walking biped?
+
+**For walking at 0.3–0.5 m scale: yes, with margin. Torque is not the binding constraint —
+speed, mass and backlash are.** Surveyed 2026-09-21 because
+[a ROBO-ONE-class humanoid](ideas.md#a-robo-one-class-humanoid) would be the first biped in
+the family. The evidence, all from published builds that demonstrably walk:
+
+| Robot | Size / mass | Joint servo | Stall torque | Speed |
+|---|---|---|---|---|
+| Kondo **KHR-3HV** — the ROBO-ONE reference machine | 401 mm / 1.5 kg, 17 axes | KRS-2552R3HV | **14.0 kgf·cm** @ 11.1 V | 0.14 s/60° |
+| "Alex", 3D-printed ROBO-ONE Light entrant | 350 mm / **1.2 kg**, 17 axes | KRS-3304 | 13.9 kgf·cm @ 7.4 V, 33.7 g | **0.11 s/60° ≈ 91 rpm** |
+| **DARwIn-OP** | 455 mm / 2.9 kg, 20 DOF | MX-28T | 25.5 kg·cm @ 12 V | 55 rpm |
+| **ToddlerBot** (Stanford) | **0.56 m / 3.4 kg**, 30 DOF | XM430-W210 at knee and ankle pitch | **30.6 kg·cm @ 12 V** | **77 rpm** |
+| **Bimo** | 450 mm / 1.6 kg, 8 DOF | **STS3215 12 V** | 30 kg·cm @ 12 V | 45 rpm |
+| ROBOTIS **OP3** | 510 mm / 3.5 kg, 20 DOF | XM430-W350-R | 41.8 kg·cm @ 12 V | 46 rpm |
+
+**ToddlerBot is the decisive case**: 0.56 m and 3.4 kg, walking omnidirectionally and doing
+push-ups, on exactly the 30 kg·cm / 12 V class. ROBO-ONE's own rules corroborate the low
+end — certified *commercial* robots are capped **below 20 kg·cm**, so the entire Light class
+is designed around servos weaker than an STS3215.
+
+**What actually bites, in order:**
+
+- **Speed.** The STS3215 turns **45 rpm**. The equal-torque Dynamixel XM430-W210 turns 77,
+  and Kondo's KRS-3304 turns ~91 at *half* the torque and 34 g. A third-party
+  [Zeroth-01 build log](https://github.com/Justin-Riekehof/zeroth-01-build) moved that
+  robot's legs to **STS3250** (50 kg·cm, 77.6 rpm) stating the STS3215's 45 rpm *"is no
+  longer sufficient for the speed requirements of the legs"*. Getting up and striking are
+  power problems, not torque problems.
+- **Mass.** These servos are heavy for their torque. Every open in-class design found is
+  2.1–3.4 kg. ROBO-ONE Light's **1.2 kg** ceiling across 16–20 of them is the hard wall.
+- **Backlash.** [Bench-measured](https://robonine.com/testing-of-feetech-sts3215-servomotor-backlash-repeatability-and-torque/)
+  at **0.87° against a ≤ 0.5° spec**, with repeatability ±0.3 mm at a 100 mm lever. The
+  same test measured stall at ~35 kg·cm, *above* datasheet. At an ankle the slop matters
+  more than the torque.
+- **Scaling.** The same build log gives the rule of thumb that required joint torque scales
+  roughly with **L⁴** for geometrically similar robots — doubling size is ~16× the torque —
+  and puts STS3250 at the ceiling for this scale. *Third-party engineering note, not a
+  measurement here.*
+
+**Where designs add margin at the margin, they do it mechanically, not electrically.**
+Poppy spans springs across the upper and lower leg so the support leg stays straight
+without motorisation; Wolfgang-OP adds a torsion spring specifically to cut knee torque.
+Worth reaching for before a bigger servo.
+
+**The step up, if one is needed, is the STS3250** — same bus, same protocol, 50 kg·cm and
+77.6 rpm. It is already the pattern elsewhere: HOPEJr uses STS3250 at shoulder yaw and
+elbow on a robot that never has to stand up, and Zeroth-01 shipped STS3215 arms with
+STS3250 legs.
+
 ### Drive motors, drivers and MCUs in hand
 
 Two projects use 12 V geared DC motors with encoders rather than servos, and both drive
@@ -395,6 +445,90 @@ its telemetry:
 conditions, what escalates to the intent tier versus what the reflex tier handles alone, and
 whether a fault should ever require a human to clear it. SO-ARM101 is the first project to face
 this, under its OQ-09.
+
+### A third regime: the policy on the MCU
+
+**The two-tier rule is about control band, and a learned locomotion policy does not sit
+where intuition puts it.** Established 2026-09-21 while costing
+[a ROBO-ONE-class humanoid](ideas.md#a-robo-one-class-humanoid); it also settles what
+[`ideas.md`](ideas.md#open-duck-mini-v2) flagged as an open question about the duck
+breaking the split.
+
+**What a gait policy is.** One feedforward MLP. In: projected gravity, angular velocity,
+joint positions and velocities, previous actions, and the commanded velocity. Out: target
+joint positions. No IK, no gait table, no model of the robot at runtime. Both flagship
+duck-class policies are the same shape — `obs → 512 → 256 → 128 → act`, ~200 k parameters,
+**50 Hz**. The intelligence is spent in training; what ships is a matrix multiply.
+
+**Why 50 Hz is not a reflex loop.** [The load-bearing rule above](#compute-the-two-tier-split)
+comes from an inverted-pendulum PID, which needs 200–1000 Hz of determinism. A locomotion
+policy is *trained against* latency: Open Duck randomises action delay and IMU delay over
+**0–60 ms** each. A controller deliberately hardened against 60 ms of jitter does not need
+a real-time tier beneath it — which is why the duck runs on a bare Pi Zero 2W with no MCU
+at all. **The rule is not contradicted; the policy is simply an intent-tier object.**
+Note also that the duck writes *goal positions* with `kp = 32, kd = 0` into each servo's
+own loop, so the genuine high-rate loop is inside the STS3215.
+
+**But it fits on an MCU, and that is the interesting option.** Sizing, computed 2026-09-21
+against the Teensy 4.1 (600 MHz Cortex-M7, hardware FPU, 7936 KiB flash, and **512 KiB of
+tightly-coupled memory shared between ITCM and DTCM** — not 1 MB):
+
+| | Params | float32 | Fits TCM? |
+|---|---|---|---|
+| Open Duck walk policy as shipped | 220,262 | 860 KiB | **No** |
+| A distilled student, `61 → 256 → 128 → 64 → 14` | 54,736 | 214 KiB | **Yes** |
+
+- **Compute is not the constraint; placement is.** Batch-1 inference reads every weight
+  once with no reuse, so a policy that does not fit in TCM streams from flash or PSRAM and
+  is bandwidth-bound — ~16.7 ms per inference at the Teensy's 52.8 MB/s PSRAM clock, a
+  **~60 Hz ceiling** before any other work. A policy that *does* fit runs in well under a
+  millisecond, leaving kilohertz of headroom.
+- **Distil first, quantise only if still short.** Distillation buys 10–20×; int8 buys a
+  flat 4×. **Do not carry the "int8 gives 10×" intuition from FPU-less parts** — that gain
+  comes from software float on a Cortex-M0, and the M7's FPU already matches its int8 path.
+- **Toolchain: [`onnx2c`](https://github.com/kraiskil/onnx2c)**, which emits one
+  self-contained `.c` with no malloc or stdio that Teensyduino compiles like any other
+  file. Two dead ends: **microTVM was removed from Apache TVM**, and TFLite Micro's
+  **Arduino port has been archived since 2023**. CMSIS-DSP already ships inside the Teensy
+  core.
+- **Unverified:** nobody has published a measured float MLP benchmark on a Teensy 4.x or
+  any i.MX RT1062. The timings above are arithmetic anchored to a measured Cortex-M4F
+  datapoint. **Flash a dummy net of the right shape and time it before committing an
+  architecture.** Bimo is the only known biped running a policy on an MCU, and its RP2040
+  runs a 3 k-MAC student at 20 Hz — an existence proof for the toolchain, not for a
+  compute ceiling.
+
+**What this buys architecturally:** it satisfies *each tier must stay useful when the tier
+above is unreachable* better than the duck does. A robot whose policy lives on the MCU
+keeps walking with the SBC off, crashed or still booting, and a zero command means stand
+still. The division that follows:
+
+| | Owns |
+|---|---|
+| **MCU** | Servo bus, safety limits, power cut, protective-fall reflex, and running whichever policy is loaded |
+| **SBC** | Vision, *which* policy is loaded, *what* command it is given, and when to stop |
+
+**The SBC does not filter a policy's output** — those numbers only mean anything as a
+sequence. It selects among policies (Microduck's runtime is a policy registry with entry
+poses, switching networks and restarting the episode), sets the command, which is *part of
+the observation vector* and therefore the designed control surface, or stops the robot.
+
+**Two reflexes worth hand-writing, and one fallback that should not be.** A protective
+fall is genuine reflex-tier work: predict from projected gravity and rate that the robot
+is past recovery within ~300 ms, drop servo gains so it goes limp and rides the fall down,
+and end the state when the gyro says motion stopped. Conversely, **hand-writing active
+balance for a many-DOF biped is a much larger problem than koala-bot's two-wheel inverted
+pendulum** — switching contacts, and the ankle/hip/stepping strategy choice is itself the
+hard part. Where no policy fits, the cheap and proven fallback is a *trained* stand-still
+policy, which comes nearly free alongside the walk.
+
+**A third option exists and needs no training at all: online planning (MPC)** — simulate
+forward from the current state, pick the best action, repeat. It has decades of prior art
+and an open implementation in
+[MuJoCo MPC](https://github.com/google-deepmind/mujoco_mpc). It needs a GPU, so it is an
+intent-tier or Orin-class capability, never an MCU one. Recorded because it is the honest
+answer to *"none of the trained policies covers this situation"*, and because it is what
+[Vsim](ideas.md#vsim--onboard-planning-worth-watching) is actually doing.
 
 **What is *not* a tier: a smart sensor.** A camera that computes depth or runs a detector
 on-board closes no control loop, takes no setpoints and offers no graceful degradation —
@@ -1414,6 +1548,79 @@ Four constraints, all of which bite early:
 **16 GB of VRAM** is comfortable for MJX-scale RL training and for quantised models in the
 7–14 B class; it is the binding limit on anything larger.
 
+**Still no ML stack, re-checked 2026-09-21** — no `uv`, `cargo` or `rustc` on `PATH`. The
+machine is not empty, though: it holds non-robotics work the owner is handling separately,
+which gates any rebuild. See [status](status.md#the-gpu-workstation-native-ubuntu-rebuild--open-2026-09-21).
+
+#### RL training on it — which stack, verified 2026-09-21
+
+**MuJoCo Playground / MJX: yes. Isaac Lab / Isaac Sim: no, under WSL2, and no driver
+update will change that.**
+
+- **Isaac Sim is unsupported under WSL2, per NVIDIA staff on record**
+  ([forum, 2025-10-31](https://forums.developer.nvidia.com/t/is-it-possible-to-run-isaac-sim-in-wsl2/349609)):
+  the blocker is the RTX renderer and the PhysX GPU pipeline, not CUDA. Someone on **this
+  exact card, a 5070 Ti,** reproduces it under WSL2 — training hangs at "Starting the
+  simulation" with PhysX falling back to software
+  ([IsaacLab #3497](https://github.com/isaac-sim/IsaacLab/issues/3497)). That shuts out
+  Bimo's stack and Berkeley Humanoid Lite's. Blackwell itself is fine for Isaac Lab on a
+  current release; **WSL2 is the problem.**
+- **JAX works.** JAX ≥ 0.6.0 is the effective floor for sm_120 (its bundled `ptxas` is CUDA
+  12.8); prefer the **CUDA 13 wheel**, as JAX says it will drop CUDA 12. Wheels ship
+  `compute_120` PTX rather than native SASS, so the driver JIT-compiles on first use — a
+  startup cost, not a fault. JAX lists WSL2 as **"experimental"**. JAX preallocates 75 % of
+  VRAM on first use and names *"JAX on the display GPU"* as an OOM cause; tune
+  `XLA_PYTHON_CLIENT_MEM_FRACTION` before cutting environment count.
+- **16 GB is ample for a state-based biped.** Isaac Lab's own benchmark puts a **29-DOF
+  Unitree G1 on rough terrain at 4096 environments in 6.1 GB**. A 14–22 DOF flat-ground
+  biped is cheaper. **Camera observations are the exception** — one RGB-camera task measures
+  16.7 GB — so vision-in-the-loop training does not fit.
+- **Open Duck's 300 M-step run: ~1–1.5 hours, order-of-magnitude only.** Its trainer reuses
+  Berkeley Humanoid's config (8192 envs), which the Playground notebook clocks at 17 min for
+  150 M steps on a 4090; scaling for steps and card gives about an hour. A third-party
+  walkthrough says "several hours", and **no MJX benchmark on any 50-series card exists**.
+  Rough terrain runs ~4× slower.
+- **The trap that bites after training:** Open Duck's **ONNX export pulls in TensorFlow,
+  which does not support Blackwell** — reported on a 5070 Ti in
+  [Open_Duck_Playground #16](https://github.com/apirrone/Open_Duck_Playground/issues/16),
+  where upstream's advice is to run that step in NVIDIA's NGC TensorFlow container.
+
+**WSL2 hazards for long runs, all sourced to Microsoft or NVIDIA trackers 2026-09-21:**
+
+- **Silent VRAM spill with an inert off-switch.** When VRAM runs out the driver spills to
+  system memory and keeps running slowly; NVIDIA's *Prefer No Sysmem Fallback* setting
+  **does not work under WSL2** ([WSL#11050](https://github.com/microsoft/WSL/issues/11050)).
+  It looks like a healthy run: 100 % utilisation, low power and temperature, collapsed
+  throughput. Watch **Windows Task Manager's "Shared GPU memory"**, not `nvidia-smi`.
+- **Driver 610.62 — this machine's — is in an NVIDIA-acknowledged Blackwell fault**
+  (Bug 6546168, [WSL#41224](https://github.com/microsoft/WSL/issues/41224)): a run
+  completes, the next job triggers a driver timeout and *"GPU is lost; reboot required"*.
+  The reporter says 610.74 does not reproduce it.
+- **Unverified and potentially disqualifying:** a report of a **~16 GiB CUDA
+  driver-context overhead on Blackwell under WSL2**, invisible to the memory APIs
+  ([WSL#40401](https://github.com/microsoft/WSL/issues/40401), on a 96 GB card). Measure
+  real usable VRAM before trusting any figure above.
+- **Idle and power events kill runs.** Idle is measured on the *Windows* client process,
+  and systemd does **not** keep the instance alive; set both `vmIdleTimeout=-1` and
+  `[general] instanceIdleTimeout=-1`. Logging off Windows, sleep and hibernate each
+  terminate WSL, with no defence but preventing them. Store auto-updates of WSL kill
+  running distros (install with `--inbox`). Be on WSL ≥ 2.7.0, where CUDA graph capture on
+  Blackwell was fixed. Stop runs with `SIGINT`, not `SIGTERM`.
+- **Do not enable `sparseVhd`** — it is currently gated behind `--allow-unsafe` for data
+  corruption.
+
+**Renting is the cheap escape hatch.** On 2026-09-21 an RTX 4090 was $0.34/h (RunPod
+Community) and a 5090 $0.69–0.99/h, both per-second billing with free egress — under $2 for
+a 300 M-step run. Compute cost is a reason neither to buy nor to rent; renting wins when it
+sidesteps the hazards above for a specific run, or when a task needs more than 16 GB.
+
+**Ex-datacentre cards do not help here.** VRAM is not the constraint for biped RL (see
+6.1 GB above), and the cheap end is outside the toolchain: JAX's CUDA 13 path needs
+**SM 7.5+**, which excludes P100 (6.0), P40 (6.1) and V100 (7.0). Isaac Sim states **"GPUs
+without RT Cores (A100, H100) are not supported"**, so even a bargain A100 is MJX-only.
+Where large VRAM genuinely pays is local LLM/VLM inference — a reasoning-tier ambition, to
+be decided on its own merits.
+
 ### The Jetson Orin Nano
 
 **Flashed 2026-09-18.** One **Orin Nano Super Developer Kit, 8 GB** (module `3767-0005`) on
@@ -1597,6 +1804,14 @@ a host crash; a Pi does not.
   loops*, so anything parallel (koala-bot's torso and 3-RPS neck) is modelled in CAD or a
   loop-capable simulator.
 - **Physics** — Gazebo (ROS 2-native), or PyBullet / MuJoCo for balance and gait.
+- **Learned gait** — MuJoCo Playground / MJX for training policies; what runs where is in
+  [the third compute regime](#a-third-regime-the-policy-on-the-mcu), and which training
+  stack the GPU workstation can run is in [its section](#rl-training-on-it--which-stack-verified-2026-09-21).
+- **Studying someone else's design** — [`tools/design-viewer`](../tools/design-viewer/)
+  renders published upstream geometry (URDF plus STLs, or a USD stage) as an orbitable
+  assembly and a part-by-part layout with bed and design-rule checks, in the same
+  instrument as koala-bot's viewer. Open Duck Mini v2 and Bimo are loaded. Inspection only:
+  it establishes nothing about fit, clearance or strength.
 
 ---
 

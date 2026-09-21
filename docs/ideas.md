@@ -282,6 +282,29 @@ owner's**: the design is the 7.4 V STS3215 on 2S; the family stock is the 12 V v
 and the 12 V-on-3S conversion is the unverified fork below. Stock build means buying 14
 7.4 V units (~€196).
 
+**Could it be walking this week? Checked 2026-09-21, when the owner asked: no.** It is the
+only walking biped surveyed that is printable tomorrow — everything else is CAD-less,
+buy-only or orphaned — but three things stand between printing and walking:
+
+- **The BOM electronics are not in stock.** The unallocated stock list
+  ([wk-inventory `docs/stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md))
+  holds no Pi Zero 2W, no BNO055 or BNO08x, no 18650 cells, no BMS and no TPU filament.
+  Every one is an order with a lead time.
+- **"Reallocate the servos" means all of koala-bot's.** The build takes 14 STS3215. The
+  family's 14 are koala-bot's twelve limb joints plus two spares once its backfill order
+  lands, and SO-ARM101's six are commissioned. Taking them halts the active design project.
+- **Those servos make it the modified build, not the stock one.** They are 12 V, so it is
+  the [12 V fork](#stock-or-modified--the-fork-that-must-be-decided-before-buying) with
+  both its costs: the policy-stiffness question *and* the 2S → 3S battery-bay CAD change.
+  A **tethered 12 V bench supply** sidesteps the battery bay for first tests, leaving only
+  the policy question.
+
+Also unmeasured: total print time (not yet sliced — the slicer estimate is trustworthy to
+±2 % on this printer, so slicing the 51 pieces answers it), the unproven TPU soles, and an
+upstream assembly guide that is marked incomplete. **The fork's recommendation stands:**
+14 × 7.4 V servos (~€196) buy a stock baseline that is diagnosable, and leave koala-bot
+intact.
+
 **Why it is interesting:** it is the only candidate on this page that delivers
 **RL sim-to-real** — a learned locomotion policy, trained in simulation and transferred to
 hardware. No current project does this: the hexapod is analytic IK, koala-bot's balance
@@ -314,11 +337,84 @@ see below.
 - **No ROS 2 anywhere in the stack**, so nothing joins the
   [topic contract](common.md#the-topic-contract) without being written.
 - **Upstream cadence.** Hub repo last pushed **2026-01-31**; the runtime to
-  **2026-07-23**. Since July the maintainer's public work is a `microduck_*` family
-  (Rust, v1/v1.5 assets) whose runtime repo is **not public**. Read as *design finished
-  and stable* — kits are still sold — rather than actively maintained; do not plan on
-  upstream fixes.
-- **Part sizes have not been checked** against koala-bot's ≤ 200 × 200 mm design rule.
+  **2026-09-07** (re-checked 2026-09-21). Read as *design finished and stable* — kits are
+  still sold — rather than actively maintained; do not plan on upstream fixes. The
+  maintainer's current work is the Microduck ([below](#microduck--the-successor-buy-only)),
+  a different robot on different actuators.
+- **It cannot get up after a fall (repo-verified, 2026-09-21).** There is no get-up
+  policy, script, reward or fall detector anywhere in the three repos. A fall is a
+  *terminal condition* in training — `fall_termination = get_gravity(data)[-1] < 0.0` in
+  both `joystick.py` and `standing.py` — so the policy has never seen a fallen state, and
+  `standing.py` is stand-still balance from near-upright, not recovery. The runtime's only
+  state branch is a pause button: no IMU fall check, no safe-shutdown, no recovery. Both
+  committed policies are walk-only, and the maintainer's own V2.5 TODO
+  ([issue #33](https://github.com/apirrone/Open_Duck_Mini/issues/33)) lists no standup
+  item. **A human picks it up.** Secondary sources claiming otherwise are describing the
+  Microduck. Consequence for any task statement: it is a companion that walks, not one
+  that survives unattended.
+- **A builder reports the 12 V knee swap cured falling over.**
+  [Issue #52](https://github.com/apirrone/Open_Duck_Mini/issues/52): *"I swapped the 7.4V
+  19kg STS3215 motors in the knees for their 12V 30kg counterparts, which stopped the duck
+  from falling over."* Unanswered by the maintainer, and a single report — but it is
+  evidence on the [12 V fork](#stock-or-modified--the-fork-that-must-be-decided-before-buying)
+  pointing the opposite way to the stiffness worry recorded there, and it suggests knee
+  torque is marginal for *walking* on the stock build. The maintainer's own framing in
+  `docs/sim2real.md`: *"we are using cheap servomotors that are hard to model and not
+  overly powerful."*
+
+**The policy, measured 2026-09-21** (parsed from the committed ONNX, not inferred). Both
+`BEST_WALK_ONNX*.onnx` are the same architecture, different weights:
+
+| | |
+|---|---|
+| Shape | `obs[101] → 512 → 256 → 128 → 28`, SiLU/Swish |
+| Output | 14 joint means (tanh) + 14 log-std, the log-std discarded at inference |
+| Parameters | **220,262** · 860 KiB as float32 |
+| Rate | **50 Hz**, onnxruntime CPU on the Pi Zero 2W |
+| Structure | A plain MLP. **No recurrence, no adaptation or encoder module** |
+
+The observation is proprioception only — projected gravity, commands, joint positions and
+velocities, three frames of previous action, foot contacts, reference motion. **Nothing in
+it sees**; the robot feels terrain through its feet after the foot lands. That bears on
+[where a policy sits in the two-tier split](common.md#compute-the-two-tier-split).
+
+#### Microduck — the successor, buy-only
+
+**Not a candidate build; recorded because it holds the get-up engineering and because it
+corrects what this page used to say about the `microduck_*` repos.** Pollen Robotics
+(Hugging Face's robotics arm), [store](https://store.pollen-robotics.com/products/microduck)
+**€340 / $399 assembled**, pre-orders opened 2026-08-27, lead time quoted 4–6 months as of
+2026-09-21. 25 cm, 780–800 g, Rockchip RK3566, camera, 8×8 ToF, two IMUs.
+
+- **It moved off Feetech.** 15 × **Dynamixel XL330** (14 policy-controlled plus a mouth),
+  confirmed from the runtime source, not press. So it shares no actuator, spares pool or
+  bus tooling with this family.
+- **Software is open, hardware is not.** The Rust runtime
+  ([`pollen-robotics/microduck`](https://github.com/pollen-robotics/microduck)) and the
+  training envs ([`microduck_rl`](https://github.com/pollen-robotics/microduck_rl)) are
+  Apache-2.0 — **this corrects the earlier note that the runtime was not public.** But the
+  press kit states the mechanical and electronic design files are not open, and the
+  Onshape document 403s. **You cannot build one.**
+- **It does get up**, and the mechanism is documented: a recovery reward layer *gated on
+  actually being fallen* (trunk z < 0.10 m or tilt > 40°) folded into the walk policy, so
+  it contributes exactly zero during clean walking; plus a predictive protective-fall
+  reflex in the runtime that drops servo gains from 200 to 50 and lets the robot go limp
+  on the way down, ending when the gyro says motion stopped. With no arms it rolls and
+  folds — `hip_roll_neutral` was deliberately removed from the rewards because *getting up
+  requires spreading the legs*. Supine is markedly harder than prone (trunk rests 48 mm off
+  the floor on its back against 75 mm face-down) and is introduced last on a curriculum.
+
+**The transferable lesson, whatever gets built here:** getting up is a *separate training
+problem* with its own rewards and its own curriculum, not a bonus that falls out of a walk
+policy. Budget it as such from the start.
+- ~~Part sizes have not been checked~~ **Checked 2026-09-21: every part passes.** All 36
+  STLs in `print/` clear both the Ender-5 S1's 220 × 220 × 280 mm volume and koala-bot's
+  stricter ≤ 200 × 200 mm rule, in the orientation upstream ships them, and all 36 are
+  watertight. The binding part is **`head.stl` at 199.85 × 197.32 × 59.4 mm** — 0.15 mm
+  inside the rule, so treat it as fixed rather than adjustable. Part count confirms
+  upstream's guide exactly: 36 distinct STLs, **51 printed pieces**. Measured with
+  [`tools/design-viewer`](../tools/design-viewer/), which renders this design's assembly
+  and parts from upstream geometry.
 
 #### Stock or modified — the fork that must be decided before buying
 
@@ -396,9 +492,144 @@ neither has been.
 
 ---
 
+## Designed here
+
+Candidates that would be original mechanical design, not a build of someone else's.
+
+### A ROBO-ONE-class humanoid
+
+**Raised by the owner 2026-09-20 after watching footage of ROBO-ONE matches, and kept for
+the form factor rather than the sport:** a servo-driven biped of roughly 0.35–0.45 m that
+walks well and stands itself up after a topple. The owner's framing — *"more as a form
+factor that works"* — with a **Teensy 4.1 reflex tier and an onboard Pi**, which is this
+family's [two-tier split](common.md#compute-the-two-tier-split) rather than ROBO-ONE
+practice.
+
+**Tasks** (per the state-the-tasks-first rule above): **unstated, and this does not
+advance until they are.** "Walks and gets up" is a capability, not a task. Competing is one
+possible answer and would set every constraint below; a companion that walks the house is
+another and would set quite different ones. The sport is named here because its rules are
+the only published, tested definition of *what a small humanoid must physically do* — not
+because entering is decided.
+
+**What the class is.** ROBO-ONE is a Japanese humanoid fighting competition, running since
+2002, organised by 一般社団法人二足歩行ロボット協会. It is alive: the 44th ran 2025-09-20/21;
+the **45th ran 2026-09-26/27**; ROBO-ONE Light's 28th ran 2026-03-07/08. **Rules are
+published in English and current** — the [45th rules](https://www.robo-one.com/upload/roboones/93_780ae3facd3ac2e9f16c51af0187693aoriginal_en.pdf)
+were revised 2026-07-28, and Light's are maintained as markdown in a public repo,
+[nishibra/ROBO-ONE_rule](https://github.com/nishibra/ROBO-ONE_rule).
+
+What the rules actually require, as read 2026-09-21:
+
+- **Weight ≤ 4 kg** (4.5 kg if entered as autonomous). **ROBO-ONE Light: ≤ 1.2 kg
+  including batteries.** Weight is set per event, not a permanent ladder.
+- **No height limit exists.** Height enters only through the sole-to-leg-length ratio
+  (for ≤ 5 kg: sole ≤ 40 % of leg length, max 13 cm; width ≤ 25 %).
+- **Two arms are mandatory**, each with at least one working axis. This disqualifies both
+  Open Duck Mini and Bimo by construction.
+- **DOF is otherwise unregulated** — no minimum leg DOF, no total. The 16–24 DOF norm is
+  convention.
+- **No servo restriction for custom robots.** The < 20 kg·cm cap applies only to
+  *officially certified commercial* machines.
+- **It must get up inside the referee's 10-count**; three downs is a KO. Also: bipedal
+  walking with ≥ 10 mm foot clearance, provable as three consecutive steps in each
+  direction, and no crouch-walking.
+- **A direct mechanical battery cut-off is mandatory** as of the 2026-07-28 revision —
+  MOSFET or relay-only power control is explicitly not permitted. Fire or smoke is an
+  immediate TKO.
+
+**The servo question is settled, and not the way it looks.** ~30 kg·cm at 12 V is *ample*
+for walking at this scale — the detail and the real limits are in
+[`common.md`](common.md#is-the-sts3215-class-enough-for-a-walking-biped).
+
+**Unresolved, and what makes this a hard project rather than a build:**
+
+- **No competitive ROBO-ONE machine publishes CAD.** Verified 2026-09-21 across the
+  rankings: 3D-printed entrants place well — "Alex" is 35 cm, 1.2 kg, 17 × Kondo KRS-3304
+  on a printed frame, Best-32 at the 26th Light — but the pages carry photographs, not
+  design files. The only official STL set is the **4-servo Beginners kit**,
+  [nishibra/ROBO-ONE_Beginners_auto](https://github.com/nishibra/ROBO-ONE_Beginners_auto).
+  **There is nothing to fork.** This is original mechanical design in the same weight class
+  as koala-bot.
+- **Nothing open exists on STS3215 with arms.** The whole surveyed field is in
+  [`common.md`](common.md#is-the-sts3215-class-enough-for-a-walking-biped); the nearest
+  things are legs-only ([Bimo](#bimo--reference-only-no-cad), Open Duck) or orphaned
+  ([Zeroth-01](https://github.com/Justin-Riekehof/zeroth-01-build), 16 DOF with STS3215
+  arms and STS3250 legs, whose company folded and whose official CAD is offline).
+- **Getting up is a second training problem**, with its own rewards and curriculum — see
+  the Microduck note [above](#microduck--the-successor-buy-only). For a fighting robot it
+  is also a *rules* requirement, not a nicety.
+- **Mass is the wall, not torque.** Every open in-class design found is 2.1–3.4 kg, i.e.
+  main-class only; Light's 1.2 kg ceiling across 16–20 STS3215 is brutal, since these
+  servos are heavy for their torque.
+- **Where the policy runs is open** — see [the third compute regime](common.md#a-third-regime-the-policy-on-the-mcu).
+- **Training is possible locally**, subject to [the GPU workstation](common.md#the-gpu-workstation).
+
+**Reuses:** the printer; the STS3215 family, bus tooling and press-fit knowledge; the
+reflex-tier firmware pattern and the topic contract; the Teensy 4.1 already in hand.
+**Does not reuse:** any existing mechanical design.
+
+### Bimo — reference only, no CAD
+
+**Not adoptable (owner, 2026-09-21), and recorded for its architecture.**
+[mekion/the-bimo-project](https://github.com/mekion/the-bimo-project), Apache-2.0. A 45 cm,
+~1.6 kg, **8 × STS3215 12 V** hip-and-knee biped that walks omnidirectionally on a CPG and
+on an RL policy — **direct proof the 12 V STS3215 walks a biped of this size**. Kit $500,
+pre-order.
+
+**It publishes no CAD.** No STL, no STEP, no URDF; the README still says CAD files are
+coming soon, and the controller PCB has no schematic or gerbers either. The only geometry
+is `IsaacLab/bimo/assets/Bimo.usd`, a simulation asset — viewable through
+[`tools/design-viewer`](../tools/design-viewer/), useful for seeing how an 8-DOF biped
+carries its servos, useless for printing.
+
+**Why it is worth knowing anyway — it is the family's only worked example of a policy on
+an MCU.** A custom RP2040 board (bare chip, not a Pico) drives 8 STS servos on one UART at
+1 Mbaud, reads a **BNO08x** — the koala-bot IMU family — plus four VL53L0X through a
+TCA9548A, cuts servo power on a GPIO, reads pack voltage on an ADC, and splits the fast
+loop and blocking sensors across the two cores. Three firmware builds: tethered to a host,
+standalone CPG, and **standalone distilled neural policy**. It also powers an SBC over USB-C
+at 5 V 4 A, so tethered operation is an option rather than the only path. Details of the
+policy route are in [`common.md`](common.md#a-third-regime-the-policy-on-the-mcu).
+
+---
+
 ## Open directions
 
 Threads worth pulling that are not yet attached to a specific build.
+
+### Vsim — onboard planning, worth watching
+
+**Recorded 2026-09-21 as technology to learn from, not something to adopt** (owner:
+*"we can learn what's possible and adopt what we can"*). Vsim Technology Ltd, Cambridge,
+Companies House 14509090, incorporated 2022-11-28. Founders **Dr Fengyun (Michelle) Lu** and
+**Dr Kier Storey**, each over a decade at NVIDIA and both co-authors of the
+[Isaac Gym paper](https://arxiv.org/abs/2108.10470). $24 M raised, the $21.5 M seed led by
+EQT Ventures (2024-09); ARIA funds them on its Robot Dexterity programme. Coverage that
+prompted this: [BBC News, 2026-09-17](https://www.bbc.co.uk/news/articles/c79g0j3d4q9o).
+
+**What the "policies in real time" claim actually is — three separable things:**
+
+1. **A GPU-first physics engine** — the real differentiator. Real-time hard-contact and
+   thin-deformable demos: a house of cards at true 0.3 mm card thickness with no
+   stabilisation, 1,000+ rods at 256 segments on an RTX 4090.
+2. **Onboard sampling-based MPC** — *"about a second … ahead into the future for 20,000
+   different kind of combinations"* (Storey, BBC), replanned while the robot moves. **This
+   involves no training.** It is online planning, with decades of prior art and an open
+   implementation in [MuJoCo MPC](https://github.com/google-deepmind/mujoco_mpc).
+3. **Fast training and fine-tuning** — minutes to train, seconds to adapt, for *narrow
+   tabletop manipulation*. The BBC's own word is "minutes".
+
+So nobody is synthesising a robust locomotion policy from scratch in real time; the
+~10⁸-timestep cost of that is untouched.
+
+**Not usable.** Fully proprietary: no paper, no benchmark, no repo, no package, no
+waitlist, and **no independent verification of any number**. The one outside expert the
+BBC quotes speaks in the conditional and is funded under the same ARIA programme.
+
+**What transfers:** the *idea* of onboard planning as the answer to "no trained policy
+covers this" — see [the third compute regime](common.md#a-third-regime-the-policy-on-the-mcu).
+The open route to trying it is MuJoCo MPC, on intent-tier or Orin-class hardware.
 
 ### Physical AI and the hive mind
 

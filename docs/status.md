@@ -360,6 +360,45 @@ to `wk-devastator` and `wk-soarm101` are still the archived-repo URLs and will b
 rewritten on the next koala-bot edit. The hexapod's Pi still carries its own `wk-hexapod`
 checkout; pull there before hexapod work. Resolves when the koala-bot links are rewritten.
 
+### The GPU workstation: native Ubuntu rebuild — open (2026-09-21)
+
+**Not decided.** The owner is open to rebuilding the GPU workstation as native Ubuntu
+Desktop, dropping Windows — *"I'm finding this stuff way more fun than the gaming I
+installed Windows for"* — and confirmed the one Windows-dependent workload, their Rust/Bevy
+game, is equally valid developed on Linux alone.
+
+**Why it matters beyond training.** Under WSL2, Isaac Lab and Isaac Sim are unavailable
+outright and long runs carry a list of silent failure modes
+([common.md](common.md#rl-training-on-it--which-stack-verified-2026-09-21)). Native removes
+both. It also removes the NAT that [`common.md`](common.md#the-gpu-workstation) records as
+*the concrete reason DDS multicast discovery will not reach it*: the machine would become a
+first-class ROS 2 node on the LAN. That weakens — does not remove — the case for Zenoh in
+[`ideas.md`](ideas.md#physical-ai-and-the-hive-mind), which still stands for crossing
+networks and robots.
+
+**The assistant's recommendation (2026-09-21), for the owner to accept or reject:**
+**single-boot, native Ubuntu 24.04 — not 26.04.** Isaac Sim's requirements page lists
+**Ubuntu 22.04 / 24.04 only**, so installing the newest LTS would re-block the thing the
+rebuild is for. Single rather than dual boot because `common.md` already names the machine's
+weakness as *"It is a desktop, not a server. Availability is not guaranteed"*; dual boot
+adds *booted into the wrong OS* to that, which is fatal for any ROS 2 role. If a Windows
+hedge is wanted, a separate SSD keeps the Linux install clean.
+
+**Gate — the machine is not empty.** A read-only audit on 2026-09-21 found **no robotics
+work** on it (consistent with the entry below), but it does hold the owner's game-project
+work, including branches that exist only on that disk, ~13 GB of data under no version
+control, and a live self-hosted CI runner registered to that repo. **The owner is handling
+that separately.** Nothing may be wiped until the owner says it is safe.
+
+**Open before an install:** whether Secure Boot must be disabled for the NVIDIA modules;
+whether Blackwell wants the open kernel modules on 24.04; and, if gaming continues at all,
+which titles in the library fail under Proton (kernel-level anti-cheat is the reliable
+casualty).
+
+**Resolves when** the owner decides; if adopted, `common.md`'s GPU workstation section is
+rewritten — its four constraints are all WSL2-specific — and the Zenoh rationale in
+`ideas.md` is amended.
+
 ### Surplus drive hardware — home undecided
 
 Two 37D motors and one Dual TB9051FTG arrived 2026-09-11 with no project to go to:
