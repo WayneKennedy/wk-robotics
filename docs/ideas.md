@@ -140,11 +140,18 @@ idea — LeKiwi base, two SO-101 arms, a head — with three owner-set departure
   shoulder-lift axis sits at about **0.5 m** above the floor for a fingertip that just
   reaches it, and the pan/base flange some 65 mm above and behind that. Arm mass beyond
   the pan joint 485 g. Gravity moment about the horizontal pan axis with the arm swung
-  out straight and horizontal: **1.12 N·m unloaded (38 % of the servo's 2.94 N·m)**, and
-  3.1 N·m with upstream's 500 g payload at the tool point — over the rating, so the arm
-  may not carry a full payload swung out horizontally in the pan plane; task 1 lifts
-  below the shoulder, where the moment is far smaller. The shoulder-lift joint's moment
-  (0.84 N·m unloaded) is the same as on a table.
+  out straight and horizontal: **1.12 N·m unloaded — 114 % of the 12 V STS3215's
+  0.981 N·m rated load**, though only 38 % of its 2.94 N·m stall
+  ([`common.md`](common.md#sts3215-torque-and-mass); corrected 2026-09-21, this line
+  previously compared against stall alone). **Holding the empty arm swung out
+  horizontally is therefore outside the servo's sustained rating** — a transient pose at
+  most; the thermal duty cycle is unmeasured. With upstream's 500 g payload at the tool
+  point the moment is 3.1 N·m, past stall. Task 1 lifts below the shoulder, where the
+  moment is far smaller. The shoulder-lift joint's moment (0.84 N·m unloaded, 86 % of
+  rated load) is the same as on a table; the
+  [2026-09-21 mass study](../projects/soarm101/cad/lightweight-v1/report.md#servo-capability-and-realistic-loads)
+  reconstructs it at 0.926 N·m at full reach, leaving about 14 g of tool payload within
+  rated load.
   koala-bot's shoulder work (its DEC-54: roll-first, on the torso's lateral faces) is the
   closest prior art in the family for the torso side of the joint.
 - **The head sits on a neck just above the shoulders** and carries the D435i. XLeRobot's
