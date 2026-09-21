@@ -27,7 +27,7 @@ as supplied, in the orientation as supplied, and a slicer may reorient the part.
 
 ### Reaching it from another device
 
-Blake is headless, so `localhost` is only useful on the box itself. The pattern is
+The reference workstation is headless, so `localhost` is only useful on the box itself. The pattern is
 koala-bot's, and the server does not need rebinding: it stays on loopback and Tailscale
 fronts it over HTTPS, tailnet only.
 
