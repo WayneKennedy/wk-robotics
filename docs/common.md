@@ -622,13 +622,13 @@ corrected the bring-up snapshot the row says so). Against the reference table ab
 | apt source | `ros2-apt-source` 1.2.0 | 1.3.0 (newer release at install time; same mechanism) | 1.3.0, same mechanism, installed by `projects/orin-perception/scripts/setup-orin.sh` (a step-for-step copy of the hexapod's script) |
 | Package snapshot | Jazzy builds of 2026-06-12…15 | builds of 2026-09-02 (installed later; **the hexapod has not been `apt upgrade`d since June** — an observation, not a deviation) | builds of 2026-09-02, as the bench host |
 | Base packages | as the table, `--no-install-recommends` | recommends were installed (`image-transport-plugins`, `camera-info-manager`, …) — **deviation, harmless** | as the table, `--no-install-recommends`; on top: `realsense2-camera`, `web-video-server`, `cv-bridge`, `image-transport`, `vision-msgs`, `diagnostic-updater` |
-| Middleware | Fast DDS explicit, `ROS_DOMAIN_ID=0` set by `scripts/launch.sh`; `.bashrc` clean | `rmw-fastrtps-cpp` explicit; **no launch script sets the domain or RMW** (Jazzy's defaults give the same) — deviation | as the hexapod (`scripts/launch.sh` copies it) **plus `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`** — deliberate, see the discovery finding below |
+| Middleware | Fast DDS explicit, `ROS_DOMAIN_ID=0` set by `scripts/launch.sh`; `.bashrc` clean | `rmw-fastrtps-cpp` explicit; **no launch script sets the domain or RMW** (Jazzy's defaults give the same) — deviation; *since resolved: `scripts/launch.sh` sets both, and the discovery range, before sourcing (2026-09-21)* | as the hexapod (`scripts/launch.sh` copies it) **plus `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`** — deliberate, see the discovery finding below |
 | rosdep | initialised, user cache present | initialised **and updated** — 11 populated caches, `rosdep resolve` answers. *Corrected 2026-09-20: the 2026-09-19 fingerprint was taken at 12:2x, before the update ran at 12:36; it is not a deviation* | initialised, updated |
 | Workspace | `<repo>/ros2_ws` inside the checkout, `--symlink-install` | **Brought into line 2026-09-20**: `~/Code/wk-robotics/projects/devastator/software/ros2_ws` in a checkout, `--symlink-install` (17 symlinks). Was `~/ros2_ws` outside any checkout and built without symlinks — see *Host checkouts* below | `~/Code/wk-robotics/projects/orin-perception/ros2_ws`, `--symlink-install`; rsynced until the branch was pushed 2026-09-20, a checkout from here on |
 | Python | no venv; hexapod deps pip-installed into the system interpreter (`--break-system-packages`) | no venv; **`python3-pip` absent** (C++ node, nothing needed) | no venv; `cuda-python` pip-installed into the system interpreter from `requirements.txt`, as the hexapod does; TensorRT's binding from apt |
 | Groups | dialout video plugdev i2c spi gpio render docker … | dialout video plugdev i2c gpio | dialout video plugdev render (no i2c/spi/gpio groups exist on the desktop image) |
 | udev | `99-realsense-libusb.rules` | none (no RealSense) — n/a | `99-realsense-libusb.rules`, same source; NVIDIA's own rules alongside |
-| Services | `hexapod.service`, `hexapod-buzzer-guard.service` | none (bench, launched by hand) | none (bench, launched by hand) |
+| Services | `hexapod.service`, `hexapod-buzzer-guard.service` | none (bench, launched by hand) — *since 2026-09-21 `hailo-perception.service`* | none (bench, launched by hand) — *since 2026-09-21 `orin-perception.service`*. Both: see [Robot startup](#robot-startup-is-familial) |
 | Locale | `en_GB.UTF-8` | same | same |
 | Timezone | `Etc/UTC` | same | same — all three since 2026-09-20, see [*Robots run on UTC*](#robots-run-on-utc) |
 | Package age | Jazzy builds of **2026-06-12…15** — the oldest of the three | builds of 2026-09-02 | builds of 2026-09-02 |
@@ -665,6 +665,73 @@ So no hexapod data was reaching the bench. Why the names leak is not established
 opened deliberately when hosts must talk (the Devastator's Pi and its future HAT node, say).
 Until decided, any host that runs on the home LAN alongside a live robot needs the same guard.
 
+### Robot startup is familial
+
+**Owner's rule, 2026-09-21:** the *pattern* by which a robot starts is shared across the family.
+The *behaviour* it starts belongs to each robot. The rules below were drafted by the assistant
+the same day from the hexapod and the Orin, and apply the rule. As with
+[installs](#ros-2-installs-are-familial), a deviation is either brought into line or recorded
+as a decision in the host's project.
+
+**Five layers, each with one job.** A question about what a robot does at boot is answered by
+layers 2 and 3. The launch file is the manifest of nodes, and the YAML it names holds their
+settings.
+
+| Layer | In the repo | Owns | Shared or per robot |
+|---|---|---|---|
+| 1. systemd unit | `systemd/<name>.service`, installed by `systemd/install.sh` | *Whether* and *when* it starts, as whom, restart and stop behaviour | Pattern shared |
+| 2. `scripts/launch.sh` | Project root | The ROS environment, and which launch file runs | Pattern shared, near-identical text |
+| 3. Launch file | `ros2_ws/src/<pkg>/launch/` | Which nodes run, their names, namespaces and remaps, and argument defaults | Per robot |
+| 4. Parameters | `ros2_ws/src/<pkg>/config/*.yaml` | Every node's settings | Per robot |
+| 5. Nodes | `ros2_ws/src/<pkg>/` | What each node does | Per robot |
+
+**Rules.**
+
+1. **The unit is generated, never hand-edited.** It carries `__USER__`, `__REPO_DIR__` and
+   `__HOME__` placeholders. `systemd/install.sh` fills them from the checkout, writes
+   `/etc/systemd/system/`, and enables the unit. Re-run the installer after changing the unit.
+2. **The environment lives in `launch.sh` alone.** Put no ROS variables in the unit: two
+   copies drift.
+3. **`launch.sh` sets `ROS_DOMAIN_ID`, `RMW_IMPLEMENTATION` and `ROS_AUTOMATIC_DISCOVERY_RANGE`
+   explicitly, *before* sourcing ROS.** Jazzy's setup script silently fills in any it finds
+   unset ([the finding](#ros-2-installs-are-familial)). Which discovery range the family uses
+   is still open; being explicit about it is not. Then it sources ROS and the workspace, and
+   ends in `exec ros2 launch <pkg> <launch file> "$@"`.
+4. **Defaults live in the launch file.** The unit passes arguments only where the boot
+   behaviour differs from a manual run, and says why.
+5. **Stop leaves the hardware safe.** Use `KillSignal=SIGINT` so nodes shut down cleanly, with
+   `TimeoutStopSec=30`. `ExecStopPost=` puts the hardware in a safe state (servo power off) or
+   releases what a killed node could still hold (a camera, via `scripts/stop.sh`).
+6. **Restart and logs:** `Restart=on-failure` with `RestartSec=10`; stdout and stderr go to
+   the journal.
+7. **Ordering:** `After=`/`Wants=network-online.target`. A host without a battery-backed clock
+   also waits for `time-sync.target`, bounded
+   ([wk-hexapod DEC-21](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)).
+8. **State that git does not hold is listed in the project's `AGENTS.md`**, for example
+   engines, galleries and maps. It changes behaviour, and it will not survive a rebuild.
+9. **A behaviour change is a commit, a host update, and a restart.** With `--symlink-install`,
+   Python, launch files and YAML are read from the checkout when the stack starts, so the
+   commit a host has checked out is part of its behaviour. See [Host checkouts](#host-checkouts).
+
+**Conformance, 2026-09-21:**
+
+| Rule | Hexapod | Orin | AI HAT+ 2 bench |
+|---|---|---|---|
+| 1 generated unit | yes | yes | yes, `hailo-perception.service` since 2026-09-21 |
+| 2 environment in `launch.sh` only | **no**: the unit also sets domain, RMW and pin factory | yes | yes |
+| 3 explicit, before sourcing | **no**: sets domain and RMW *after* sourcing, and no discovery range, so `SUBNET` | yes | yes |
+| 4 defaults in the launch file | **no**: `autonomy:=true` is in both the unit and `launch.sh` | yes | yes; `launch.sh` resolves the camera by id at run time, which a static default cannot |
+| 5 safe stop | yes (servo power off) | yes (`stop.sh`) | yes (`stop.sh`) |
+| 6 restart and logs | yes | yes | yes |
+| 7 ordering | yes, plus time sync | yes, plus time sync: its RTC read 1970 at boot | yes, plus time sync: its RTC read 1970 at boot |
+| 8 host state listed | *not checked* | yes (`~/models`, `~/orin/gallery`) | *not checked* (HEFs, gallery) |
+| 9 checkout current | **diverged**: 1 local commit not on `main`, 6 behind (below) | yes | yes |
+
+The hexapod's rows are **proposals** in its
+[`open-questions.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md).
+Its repo is owned by the robot for code and configuration: changes are made by a session
+running on the robot ([its `AGENTS.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/AGENTS.md#working-on-the-robot-itself)).
+
 ### Host checkouts
 
 **Every ROS 2 host builds from a git checkout of this repository, with the workspace inside
@@ -690,20 +757,24 @@ the migration; the owner has not ruled on them and the wider question of repo sh
   local edits, something has gone wrong and they should be understood, not discarded.
 - **Build products stay out of git.** `ros2_ws/{build,install,log}` are ignored, so a host can
   hold a built workspace inside the checkout and still reset cleanly without a rebuild.
-- **Nothing is deployed by rsync any more.** `projects/orin-perception/scripts/deploy.sh`
-  predates the push and is superseded by `git pull` on the host.
+- **Nothing is deployed by rsync any more.** The Orin's `deploy.sh`, which predated the push,
+  was removed on 2026-09-21.
 
 **Updating a host is not always safe, and is not automatic.** A host that is *running* from
 its checkout must not be updated casually: with `--symlink-install`, launch files and configs
 are symlinked out of `src/`, so a pull changes what the running stack will execute, and a
 changed message definition needs a rebuild before anything will talk to anything. Concretely,
-on 2026-09-20 the hexapod's `wk-hexapod` checkout was **6 commits behind, a 48-file diff**
-covering perception node source, a new message type and launch files, while `hexapod.service`
-was active — so it was **left alone**, and updating it wants a window where the robot can be
-rebuilt and watched coming back up. The two bench hosts carried no service then and were updated
-freely. Since 2026-09-21 the Orin runs `orin-perception.service` from its checkout, so after an
-update that touches its files, run `sudo systemctl restart orin-perception`. A docs-only checkout (this repository on the hexapod's Pi, which builds nothing there)
-is always safe to update.
+on 2026-09-20 the hexapod's `wk-hexapod` checkout differed from `origin/main` by **a 48-file
+diff** covering perception node source, a message type and launch files, while
+`hexapod.service` was active — so it was **left alone**. *Corrected 2026-09-21:* the checkout
+had not fallen behind. It had **diverged**. The code difference is the robot's own commit
+`343638f` (sonar and head stack, 47 files), which was never pushed. GitHub's six newer commits
+are docs and `ubuntu-setup.sh` only. The commit is preserved on GitHub as branch
+`robot/343638f-sonar-head`. Reconciling it with `main` is the robot's job, in a window
+where the robot can be rebuilt and watched coming back up. Both bench hosts run a service
+from their checkout since 2026-09-21 (`orin-perception`, `hailo-perception`). After an
+update that touches a bench's files, restart its service. A docs-only checkout, such as this
+repository on the hexapod's Pi, builds nothing and is always safe to update.
 
 **What this replaced.** The bench host previously held a hand-rsynced copy and had already
 drifted: `scripts/enrol_poses.sh` was committed but absent from the host that runs it, and its
@@ -1558,6 +1629,15 @@ possible (JMicron OEM tooling, Windows-only, unofficial redistributions) but is 
 recommended**: these units report `bcdDevice 0209`, newer than the 2.0.8 in circulation,
 and nothing is malfunctioning.
 
+### The workstation — the always-on server
+
+**The owner's headless server, up about 99.9 % of the time (owner, 2026-09-21).** All work
+that needs neither the GPU nor a monitor happens here. It is where this repository is
+authored ([Host checkouts](#host-checkouts)), and it hosts the
+[design viewer](../tools/design-viewer/README.md). Machine identifiers are in `wk-inventory`.
+**The workstation hosts any family service that must always be up.** The GPU workstation
+below is a headed desktop that may be off.
+
 ### The GPU workstation
 
 **Established 2026-09-07.** A workstation with an **NVIDIA GeForce RTX 5070 Ti (16 GB,
@@ -1591,7 +1671,7 @@ Four constraints, all of which bite early:
 
 **Still no ML stack, re-checked 2026-09-21** — no `uv`, `cargo` or `rustc` on `PATH`. The
 machine is not empty, though: it holds non-robotics work the owner is handling separately,
-which gates any rebuild. See [status](status.md#the-gpu-workstation-native-ubuntu-rebuild--open-2026-09-21).
+which gates any rebuild. See [status](status.md#the-gpu-workstation-native-ubuntu-rebuild--decided-2026-09-21-not-yet-done).
 
 #### RL training on it — which stack, verified 2026-09-21
 

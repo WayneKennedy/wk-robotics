@@ -61,13 +61,18 @@ of the family does ([*ROS 2 installs are familial*](https://github.com/WayneKenn
 git clone https://github.com/WayneKennedy/wk-robotics.git ~/Code/wk-robotics
 cd ~/Code/wk-robotics/projects/devastator/software
 sudo scripts/setup-bench.sh      # driver, ROS 2, deps, Model Zoo HEFs, workspace build
-# run
-scripts/launch.sh                # video_device:=/dev/video0, or any launch argument
+# start at boot (and now), as hailo-perception.service; logs: journalctl -u hailo-perception
+systemd/install.sh --now
+# or run by hand, after: sudo systemctl stop hailo-perception
+scripts/launch.sh                # resolves the camera by id; or video_device:=/dev/videoN
 # watch: http://<host>:8080/stream?topic=/hailo/image_annotated
 # enrol:  ros2 topic pub --once /hailo/enroll std_msgs/msg/String "{data: <name>}"
 ```
 
-`scripts/stop.sh` stops it. **Stop the bench by running that file on the host — never by
+`sudo systemctl stop hailo-perception` stops the service; `scripts/stop.sh` stops a manual run.
+**Stopping the service kills matching SSH sessions**, as on the Orin
+([its `AGENTS.md`](../../../../../orin-perception/AGENTS.md)): restart in one SSH call and inspect in
+another. **Stop a manual run by running that file on the host — never by
 pasting an inline `pkill` into an `ssh` command.** A plain `pkill -f perception_node` also
 matches the command line of the shell running it, so the ssh session kills itself mid-sequence
 and leaves `usb_cam` and `web_video_server` orphaned holding the camera, which makes the next

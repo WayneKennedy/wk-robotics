@@ -1,6 +1,6 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
-# Install orin-perception.service so the bench starts at boot. Mirrors wk-hexapod
+# Install hailo-perception.service so the bench starts at boot. Mirrors wk-hexapod
 # systemd/install.sh: fills in the repo path and user from the current checkout.
 #   systemd/install.sh            # install and enable
 #   systemd/install.sh --now      # and start it
@@ -22,16 +22,16 @@ sudo cp "$SCRIPT_DIR/time-wait-sync-timeout.conf" \
 sudo systemctl daemon-reload
 sudo systemctl enable systemd-time-wait-sync.service
 
-echo "Installing orin-perception.service (user=$RUN_USER, repo=$REPO_DIR)"
+echo "Installing hailo-perception.service (user=$RUN_USER, repo=$REPO_DIR)"
 sed -e "s|__USER__|$RUN_USER|g" \
     -e "s|__REPO_DIR__|$REPO_DIR|g" \
     -e "s|__HOME__|$RUN_HOME|g" \
-    "$SCRIPT_DIR/orin-perception.service" | sudo tee /etc/systemd/system/orin-perception.service > /dev/null
+    "$SCRIPT_DIR/hailo-perception.service" | sudo tee /etc/systemd/system/hailo-perception.service > /dev/null
 sudo systemctl daemon-reload
-sudo systemctl enable ${1:-} orin-perception.service
+sudo systemctl enable ${1:-} hailo-perception.service
 
 echo ""
-echo "  sudo systemctl start|stop|restart orin-perception"
-echo "  sudo systemctl disable orin-perception   # no auto-start"
-echo "  journalctl -u orin-perception -f"
+echo "  sudo systemctl start|stop|restart hailo-perception"
+echo "  sudo systemctl disable hailo-perception   # no auto-start"
+echo "  journalctl -u hailo-perception -f"
 echo "A manual scripts/launch.sh needs the service stopped first: both want the camera and :8080."

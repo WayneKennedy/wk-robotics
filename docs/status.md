@@ -309,10 +309,11 @@ The gallery stays on the Orin (`~/orin/gallery/`) and is not checked in.
 **Load, power, thermals and a YOLOv8s vs YOLOv8m comparison were captured 2026-09-20** and
 are in [`common.md`](common.md#first-measurements-on-the-orin-nano-2026-09-20); running them
 exposed two script bugs, both now fixed.
-**Runs at boot since 2026-09-21** as `orin-perception.service`
-([`projects/orin-perception/systemd/`](../projects/orin-perception/systemd/)). After install it
-was streaming at about 25 fps, and one restart re-acquired the camera cleanly. A cold boot has
-not been tested yet.
+**Both benches run at boot since 2026-09-21**, as `orin-perception.service` and
+`hailo-perception.service`. Each waits, bounded, for the clock to sync, and both conform to
+[*Robot startup is familial*](common.md#robot-startup-is-familial). After install the Orin was
+streaming at about 25 fps, and one restart re-acquired the camera cleanly. **Neither has been
+tested through a cold boot.**
 Later that day the web stream sent headers and then no frames. The service had been running
 with `SUBNET` discovery (see item 5 above). After the fix and a restart, three concurrent
 streams each delivered frames. Not established: whether `SUBNET` or something else caused
@@ -389,9 +390,12 @@ to `wk-devastator` and `wk-soarm101` are still the archived-repo URLs and will b
 rewritten on the next koala-bot edit. The hexapod's Pi still carries its own `wk-hexapod`
 checkout; pull there before hexapod work. Resolves when the koala-bot links are rewritten.
 
-### The GPU workstation: native Ubuntu rebuild — open (2026-09-21)
+### The GPU workstation: native Ubuntu rebuild — decided 2026-09-21, not yet done
 
-**Not decided.** The owner is open to rebuilding the GPU workstation as native Ubuntu
+**Decided (owner, 2026-09-21): the machine is reformatted as native Ubuntu, probably the
+same day.** Not stated: the Ubuntu version, and single or dual boot. The recommendation
+below still applies to both. The gate below still applies until the owner says the disk is
+safe to wipe. Before the decision, the owner was open to rebuilding the GPU workstation as native Ubuntu
 Desktop, dropping Windows — *"I'm finding this stuff way more fun than the gaming I
 installed Windows for"* — and confirmed the one Windows-dependent workload, their Rust/Bevy
 game, is equally valid developed on Linux alone.
@@ -424,9 +428,10 @@ whether Blackwell wants the open kernel modules on 24.04; and, if gaming continu
 which titles in the library fail under Proton (kernel-level anti-cheat is the reliable
 casualty).
 
-**Resolves when** the owner decides; if adopted, `common.md`'s GPU workstation section is
-rewritten — its four constraints are all WSL2-specific — and the Zenoh rationale in
-`ideas.md` is amended.
+**Resolves when** the install is done. Then `common.md`'s GPU workstation section is
+rewritten, since its four constraints are all WSL2-specific. The NAT premise is also
+amended where it appears: the Zenoh rationale in `ideas.md`, and the Devastator's
+`architecture.md` → Networking and OQ-05. Machine identifiers change in `wk-inventory`.
 
 ### Surplus drive hardware — home undecided
 

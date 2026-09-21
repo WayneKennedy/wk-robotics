@@ -695,6 +695,30 @@ fourth tier**; they are a placement choice inside the intent tier. See
   degrades across WiFi, subnets and overlay networks. The current answer for multi-robot
   and wide-area ROS 2 is **Zenoh** (`rmw_zenoh`, or `zenoh-bridge-ros2dds` alongside
   existing DDS). Worth knowing before designing around plain DDS.
+  **Off the home LAN, three ways, checked 2026-09-21. None has been tried here.**
+  Tailscale is layer 3 and carries no multicast. Multicast support is an open feature
+  request ([tailscale#11134](https://github.com/tailscale/tailscale/issues/11134)), so
+  discovery over the tailnet needs one of these:
+  - **Unicast DDS discovery.** Either use the Fast DDS Discovery Server
+    (`ROS_DISCOVERY_SERVER`, [Jazzy tutorial](https://docs.ros.org/en/jazzy/Tutorials/Advanced/Discovery-Server/Discovery-Server.html)),
+    or list the peers' addresses in an XML profile. This works over Tailscale addresses,
+    but a raw DDS graph over WAN is chatty.
+  - **Layer 2 tunnelled inside the tailnet.** VXLAN or GRE-TAP between tailnet addresses,
+    or ZeroTier instead of Tailscale, which is a layer-2 network. Either would restore
+    multicast, but it recreates one flat LAN across the WAN, which the tier rule argues
+    against.
+  - **Zenoh.** Robots dial out to a router (`rmw_zenohd`, `sudo apt install
+    ros-jazzy-rmw-zenoh-cpp`), which forwards discovery without multicast. Recommended by
+    the assistant, not accepted: it suits intermittent links, and each robot shares only
+    what it chooses.
+  For a robot out of Wi-Fi range, the link itself is a cellular modem with Tailscale on
+  top. That makes the world-model rule above mandatory rather than advisable.
+
+**Placement follows the two machines' availability (owner, 2026-09-21).** Coordination that
+must always be up runs on [the always-on workstation](common.md#the-workstation--the-always-on-server):
+the Zenoh router or discovery server, the identity coordinator, the world-model store and the
+stream page. The GPU workstation adds GPU reasoning when it is on. This is the tier rule
+applied inside the planner tier. An assistant's split, not yet accepted.
 
 **The mission planner has a candidate machine** (2026-09-07): [the GPU
 workstation](common.md#the-gpu-workstation) — 16 GB Blackwell, Docker present, reachable
