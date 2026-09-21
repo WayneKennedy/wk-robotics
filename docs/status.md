@@ -200,8 +200,8 @@ Fast DDS on domain 0 everywhere, and no ROS in any `.bashrc`. **What is left to 
 5. **Decide the discovery-range question** (below) — measured at 35× throughput. Both
    benches' `launch.sh` set `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`. **Until 2026-09-21 the
    setting had no effect**: it was applied after sourcing ROS, whose setup script sets `SUBNET`
-   when the variable is unset. It is now applied before sourcing. The fix is deployed on the Orin;
-   the HAT bench host is still on the old script. What is open is the family rule (one domain per robot, or
+   when the variable is unset. It is now applied before sourcing. Deployed on both benches
+   2026-09-21 and confirmed in their running processes. What is open is the family rule (one domain per robot, or
    localhost-only by default and the domain opened deliberately).
 
 ### Repo shape and host checkouts (open — raised by the owner 2026-09-20)

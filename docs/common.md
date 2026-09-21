@@ -656,6 +656,11 @@ hook sets it to `SUBNET` if unset (`set-if-unset` in `1.ros_discovery.dsv`), so 
 applied after sourcing never takes effect. Both benches' scripts had it after until 2026-09-21,
 and the guard had not been applied in any run they launched. The 2026-09-19 measurement set
 the variable by hand.
+**Unexplained, observed 2026-09-21 with the fix live on both benches:** a fresh LOCALHOST node
+on the Orin no longer sees the HAT bench. But `ros2 topic list` still lists the hexapod's topic
+*names* (Nav2, LEDs, `/camera/camera/color/image_raw`); the hexapod runs `SUBNET`. `ros2 node
+list` shows only the Orin's own nodes, and the Orin's camera topic has one publisher, its own.
+So no hexapod data was reaching the bench. Why the names leak is not established.
 **For the family, open:** one domain per robot, or localhost-only by default with the domain
 opened deliberately when hosts must talk (the Devastator's Pi and its future HAT node, say).
 Until decided, any host that runs on the home LAN alongside a live robot needs the same guard.
