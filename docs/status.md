@@ -117,9 +117,10 @@ and its base plate carries a Pi or Orin cage. Not yet checked against the upstre
 print list or stock.
 
 **Update 2026-09-21 — koala-bot is blocked at the design stage (owner),** so its servos
-are idle and borrowing them is cheap and reversible. Only 8 are in hand until the backfill
-6-pack lands — in UK customs with the final courier on 2026-09-21, expected within 2–3
-days (owner). What that session established about the candidates:
+are idle and borrowing them is cheap and reversible. **All 14 are now in hand: the backfill
+6-pack was delivered 2026-09-22** ([`common.md`](common.md#holdings-and-electrical-operation)),
+so a candidate needing 14 servos is no longer short of them — their firmware is unread and
+must be 3.10 before they share a bus. What that session established about the candidates:
 
 - **Open Duck Mini V2 is proven only at 7.4 V.** On the family's 12 V servos it becomes
   the unverified [fork](ideas.md#stock-or-modified--the-fork-that-must-be-decided-before-buying),
