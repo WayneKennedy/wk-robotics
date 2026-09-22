@@ -106,13 +106,13 @@ to the 7.4 V or different-gearing variants.
 | Waveshare ST3215 12 V (Feetech STS3215 rebadge), firmware 3.10 (upgraded from 3.9, 2026-09-12) | 2 | SO-ARM101, IDs 1–2 | Amazon 204-4694570-7173960, ordered 2026-09-02, delivered 2026-09-04, £31.90 each ([`servos.md`](../projects/soarm101/docs/servos.md)) |
 | Feetech STS3215 12 V, firmware 3.10 | 4 | SO-ARM101, IDs 3–6 (wk-soarm101 DEC-09) | RCmall via koala-bot, arrived 2026-09-12 ([koala-bot `sourcing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/sourcing.md)) |
 | Feetech STS3215 12 V, firmware 3.10 (four read; the eight assumed the same batch, unverified) | 8 | koala-bot, eight of twelve limb joints | same order |
-| Feetech STS3215 12 V, **firmware unread** | 6 | koala-bot backfill — completes the twelve limb joints, two spare (OQ-16) | RCmall backfill 6-pack, AliExpress #3076088966873179 ordered 2026-09-14, £103.15, **arrived 2026-09-22** (owner) |
+| Feetech STS3215 12 V, firmware unread (expected 3.10 — read at ID assignment) | 6 | koala-bot backfill — completes the twelve limb joints, two spare (OQ-16) | RCmall backfill 6-pack, AliExpress #3076088966873179 ordered 2026-09-14, £103.15, **arrived 2026-09-22** (owner) |
 | Feetech STS3032M 6 V | 4 | koala-bot, three neck + one spare | same order |
 
 SO-ARM101 has its six. koala-bot has fourteen — twelve for its limb joints and two spare —
 since the backfill pack arrived on 2026-09-22; nothing further need be bought for V1
-(koala-bot OQ-16). **Read the new pack's firmware before it shares a bus with the others**
-(next paragraph but one).
+(koala-bot OQ-16). The new pack's firmware is read when its IDs are set (next paragraph but
+one).
 
 koala-bot's **knee is not a servo joint**: it is a wheel on a 12 V geared DC motor, and
 the V1 leg ends there. A knee servo is designed for and deferred
@@ -302,9 +302,12 @@ model number **777**; LeRobot 0.6.1's `FeetechMotorsBus.setup_motor()` and
 the rail in 0.1 V units and is the quickest proof that a servo is actually powered.
 
 **Every STS3215 on a bus must run the same firmware, and that firmware is 3.10 (verified
-2026-09-12, SO-ARM101, six servos).** Units ship with **3.9** (the 2026-09-07 Waveshare pair
-did) or **3.10** (the RCmall Feetech packs read so far; the 2026-09-22 backfill pack is
-unread). Mixed, they collide: in a `sync_read` the servos
+2026-09-12, SO-ARM101, six servos).** **Shipped firmware tracks the source:** the only **3.9**
+units found are the two Waveshare/Amazon ones (2026-09-07, upgraded 2026-09-12); every
+**Feetech** unit read so far — four, from the RCmall packs — shipped **3.10**. That makes a
+Feetech pack *expected* to be 3.10, not known to be: **firmware is read when IDs are
+assigned**, so every new pack is checked as a matter of course and needs no separate step
+(owner, 2026-09-22). Mixed, they collide: in a `sync_read` the servos
 answer in the order asked, and a 3.10 unit starts its reply too early when the unit before it
 is a 3.9 unit that was not the first responder — its header lands on the previous checksum
 byte, the host sees `Incorrect status packet`, and `broadcast_ping()` loses IDs.
