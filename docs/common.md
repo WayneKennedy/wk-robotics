@@ -666,6 +666,16 @@ hook sets it to `SUBNET` if unset (`set-if-unset` in `1.ros_discovery.dsv`), so 
 applied after sourcing never takes effect. Both benches' scripts had it after until 2026-09-21,
 and the guard had not been applied in any run they launched. The 2026-09-19 measurement set
 the variable by hand.
+**Unexplained, and now seen both ways round. 2026-09-22, hexapod cold boot:** from the
+always-on workstation (`SUBNET`, no stack of its own), `ros2 node list --no-daemon` over 25 s
+returned **1 of the robot's 33 nodes** and `ros2 topic list` **8 of its 23** — while
+`ros2 topic hz` on five of the unlisted topics delivered at full rate (`/imu/data` 108 Hz,
+`/tf` 50 Hz, `/joint_states` 67 Hz, `/imu/data_raw` 100 Hz, `/ultrasonic/range` 15 Hz). The
+robot lists all 33 and 23 itself. So the graph a host reports is not the set of topics it can
+actually receive, in either direction: **data without names here, and names without data on
+2026-09-21 below.** Treat `node list`/`topic list` across hosts as a lower bound, and test
+delivery with `topic hz` on the name you want.
+
 **Unexplained, observed 2026-09-21 with the fix live on both benches:** a fresh LOCALHOST node
 on the Orin no longer sees the HAT bench. But `ros2 topic list` still lists the hexapod's topic
 *names* (Nav2, LEDs, `/camera/camera/color/image_raw`); the hexapod runs `SUBNET`. `ros2 node
@@ -755,7 +765,7 @@ settings.
 | 7 ordering | yes, plus time sync | yes, plus time sync: its RTC read 1970 at boot | yes, plus time sync: its RTC read 1970 at boot |
 | 8 host state listed | yes (`~/.hexapod/`, in its `AGENTS.md`) | yes (`~/models`, `~/orin/gallery`) | `~/hailo/` holds the models, the gallery and HailoRT's log. The unit runs there so the log stays out of the checkout |
 | 9 checkout current | yes, since 2026-09-21 (was diverged, below) | yes | yes |
-| 10 user lingers | since 2026-09-21. The fault was confirmed there: stack active since 09-20, no `fastrtps_*` segment in `/dev/shm`. The restart that restores delivery is pending ([wk-hexapod OQ-25](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md)) | yes, since 2026-09-21 | yes, since 2026-09-21 |
+| 10 user lingers | since 2026-09-21; **confirmed on a cold boot 2026-09-22** — 226 `fastrtps_*` entries survived four SSH sessions and the LAN reads `/imu/data` and `/tf` again ([wk-hexapod OQ-25](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md), resolved) | yes, since 2026-09-21 | yes, since 2026-09-21 |
 
 All three hosts conformed to rules 1–9. The hexapod was brought into line on 2026-09-21 (its OQ-24, done
 from the workstation under its DEC-29). Its new unit and `launch.sh` take effect at the

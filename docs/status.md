@@ -312,8 +312,14 @@ exposed two script bugs, both now fixed.
 **Both benches run at boot since 2026-09-21**, as `orin-perception.service` and
 `hailo-perception.service`. Each waits, bounded, for the clock to sync, and both conform to
 [*Robot startup is familial*](common.md#robot-startup-is-familial). After install the Orin was
-streaming at about 25 fps, and one restart re-acquired the camera cleanly. **Neither has been
-tested through a cold boot.**
+streaming at about 25 fps, and one restart re-acquired the camera cleanly.
+**Cold boot, 2026-09-22 — the HAT bench passed.** Both Pis lost power at about 22:00 on
+2026-09-21 and came back at 22:16 on 2026-09-22 (shared supply, owner relocating hardware).
+`hailo-perception` started at **22:17:10**, `NRestarts=0`, and had run 13 min at a steady
+**16.6 fps, 42 ms/frame** (objects 20.6 ms, faces 16.7 ms) with no camera stall; a snapshot
+fetched from the workstation returned a 37 kB JPEG, so frames leave the host. **The Orin has
+still not been cold-booted** — it was powered down on 2026-09-22 to be relocated, so its next
+power-on is that test.
 Later that day the web stream sent headers and then no frames. The service had been running
 with `SUBNET` discovery (see item 5 above). After the fix and a restart, three concurrent
 streams each delivered frames. *Explained 2026-09-21, most likely:* logind's `RemoveIPC` deleting Fast DDS's shared memory
@@ -399,10 +405,15 @@ Recorded in [`common.md`](common.md#the-gpu-workstation) and
 `docs/workstations.md`. Still to do:
 
 - Build `hexapod_interfaces` on the workstations so the hexapod's own message types decode.
-- **Hexapod: restart under linger.** Its `/imu/data` and `/tf` went silent on the LAN because
-  `RemoveIPC` had deleted its Fast DDS shared memory (confirmed on the Pi 2026-09-21). Linger is
-  now on, and the restart is pending until the robot is safe to explore:
-  [wk-hexapod OQ-25](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md).
+- **Hexapod: restart under linger — done 2026-09-22.** Its `/imu/data` and `/tf` had gone
+  silent on the LAN because `RemoveIPC` deleted its Fast DDS shared memory (confirmed on the Pi
+  2026-09-21). An unplanned power cycle supplied the cold boot: linger held the segments across
+  SSH sessions and the workstation now reads `/imu/data` at 108 Hz and `/tf` at 50 Hz
+  ([wk-hexapod OQ-25](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/open-questions.md)
+  and its [`test-log.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/test-log.md)).
+  **What that boot left open:** the workstation lists only 1 of the robot's 33 nodes and 8 of
+  its 23 topics while receiving all five tested topics at full rate — see the discovery finding
+  in [`common.md`](common.md#ros-2-installs-are-familial).
 - **Open: does the Tailscale-SSH-only rule cover the workstations?** The rule names robot and
   bench hosts. The GPU workstation conforms anyway. The always-on workstation runs OpenSSH and
   holds the owner's personal key, which it needs for GitHub writes. The owner's call.
