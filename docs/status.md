@@ -176,6 +176,13 @@ accepted: LeKiwi, because it reuses the finished arm, the 12 V servos and a spar
 and its base plate carries a Pi or Orin cage. Not yet checked against the upstream BOM,
 print list or stock.
 
+**2026-09-23 — still open; the owner is "still fidgeting about building something else
+before Koala".** Two things changed that day: two RPLIDAR C1 lidars are on order (one to the
+hexapod on a plate that fits any Pi-carrying robot, wk-hexapod DEC-30), so whatever is built
+next has a Nav2-grade scan available; and koala-bot's four-foot build now exists in simulation
+with real inertia ([the sim thread](#a-sim-model-of-koala-bots-four-foot-build-via-known-good-examples--opened-2026-09-23)),
+so a walking policy can be trained before a leg is printed. Neither decides the question.
+
 **Update 2026-09-21 — koala-bot is blocked at the design stage (owner),** so its servos
 are idle and borrowing them is cheap and reversible. **All 14 are now in hand: the backfill
 6-pack was delivered 2026-09-22** ([`common.md`](common.md#holdings-and-electrical-operation)),
