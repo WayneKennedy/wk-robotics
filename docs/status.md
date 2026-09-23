@@ -133,8 +133,9 @@ reflex) deferred until step 3 produces a policy that walks in sim. State per ste
    12 × STS3215 **12 V**, hip roll → hip pitch → knee per leg, 2.55 kg in its MJCF, prints
    inside 200 × 200 mm, CadQuery code-CAD, MuJoCo MJCF generated from the CAD, MJX + Brax
    PPO on `uv` with the same JAX pin, a shipped 30 M-step ONNX policy. **On this host:** its
-   model check passes, the MJCF holds a stance for 3 s, and its MJX environment compiles and
-   steps (a full PPO iteration was not completed within the agent's time cap). **Caveats:**
+   model check passes, the MJCF holds a stance for 3 s, and its `--smoke` training run completes:
+   0.41 M steps in 4.0 min, reward 130 → 254 (the author reports 8.5 min for the same run
+   on the same card under WSL2). **Caveats:**
    no licence file anywhere but the ROS 2 packages (MIT) — *read and learn, copy nothing*;
    hardware evidence is the author's dated notes only (walks laminate at ~0.18 m/s,
    2026-09-17), no video; its shipped policy was trained with the position loop moved to
