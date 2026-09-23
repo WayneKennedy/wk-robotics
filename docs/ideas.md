@@ -720,6 +720,51 @@ the Zenoh router or discovery server, the identity coordinator, the world-model 
 stream page. The GPU workstation adds GPU reasoning when it is on. This is the tier rule
 applied inside the planner tier. An assistant's split, not yet accepted.
 
+**The rendezvous layer: naming is solved, meeting is not (2026-09-23).** Prompted by the
+owner asking whether [Ubuntu Workshop](https://ubuntu.com/workshop/docs/)'s per-instance
+host names might serve as a hive fabric. They do not — that is DNS on one machine's container
+bridge, local to that host. But the question separates two things worth keeping apart:
+
+- **Identity and addressing are already done.** Every robot has a stable name and address on
+  the family tailnet from any network, including a cellular link. Nothing needs inventing.
+- **Rendezvous is what is missing.** DDS finds peers by multicast, and the tailnet carries
+  none ([above](#physical-ai-and-the-hive-mind)). Both surviving options work the same way:
+  point every robot at **one well-known endpoint**, which is precisely what a tailnet name is.
+
+**That endpoint wants a host that is up when the house is not.** The always-on workstation is
+the stated home for coordination, but it shares the house's power and broadband, so a robot on
+a cellular link cannot reach it when either drops. The family already owns better: **two
+small always-on VPSes on the tailnet**, freed by the owner on 2026-09-23 from the production
+work they were bought for, and currently a two-node k3s cluster. Identifiers, specification
+and what they still run are in the private wk-inventory `docs/vps.md`. **Not decided — an
+assistant's proposal.** The two shapes, both untried here:
+
+- **Fast DDS Discovery Server.** Robots set `ROS_DISCOVERY_SERVER` to the endpoint (in
+  `scripts/launch.sh`, per [startup rule 2](common.md#robot-startup-is-familial)). The server
+  brokers *discovery metadata only* — matched endpoints then exchange data directly over
+  unicast, so the VPS never carries camera frames or scans, and a small instance is
+  sufficient. Same-LAN robots keep talking to each other directly.
+- **Zenoh router** (`rmw_zenohd`). Robots dial out to it, which also solves NAT for a
+  cellular robot with no inbound path. How much *data* the router relays rather than
+  brokering depends on the topology and is **unverified here**.
+
+**What must hold either way:**
+
+- **The tier rule still governs.** A robot must degrade to autonomous when the rendezvous is
+  unreachable. What exactly survives a discovery-server outage — already-matched endpoints,
+  presumably, but not new ones — is **unverified** and is the first thing to test.
+- **Keep it inside the tailnet.** Bind the endpoint to the tailnet address, never the public
+  interface, and gate it with tailnet ACLs. A public DDS or Zenoh port is an open door into
+  every robot.
+- **One flat overlay recreates a known fault.** On domain 0 every host sees every robot's
+  whole graph, which cost 35× throughput on the Orin
+  ([the discovery finding](common.md#ros-2-installs-are-familial)). A fleet needs domains or
+  Zenoh scoping per robot from the start, not after it hurts.
+- **The cheap first test**, before any of this is designed further: run one discovery server
+  on a VPS, point the always-on workstation and one robot at it on a domain of their own, and
+  check `ros2 topic hz` on a known topic — the same acceptance test that proved the hexapod's
+  delivery on 2026-09-22 (wk-hexapod `test-log.md`). It touches nothing that runs today.
+
 **The mission planner has a candidate machine** (2026-09-07): [the GPU
 workstation](common.md#the-gpu-workstation) — 16 GB Blackwell, Docker present, reachable
 over the private overlay network. It is a good fit for the reasoning tier and for RL
