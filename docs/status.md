@@ -120,10 +120,12 @@ reflex) deferred until step 3 produces a policy that walks in sim. State per ste
    fit of a 12 V unit settles them — rig, parts in hand and the two code shims are listed in
    [`common.md`](common.md#the-servo-in-simulation--bams-fit-and-the-12-v-gap), the
    consequence for the duck in [`ideas.md`](ideas.md#stock-or-modified--the-fork-that-must-be-decided-before-buying).
-   **A third-party measurement of the 12 V unit** (`alarin/smalldog`: 40.9 N·m/rad at 12 V,
-   2.4× the trained stiffness — unverified, different registers) is recorded there too; if
-   it holds, the shipped duck policies cannot transfer to 12 V servos, which makes the
-   identification decisive rather than optional.
+   **Two independent 12 V figures now exist**, recorded there: smalldog's bench measurement
+   (40.9 N·m/rad) and an unmerged BAM fit by Open Duck's own author (≈ 44). Both ~2.5× the
+   trained stiffness, both unverified. If they hold, the shipped duck policies cannot
+   transfer to 12 V servos. **The code side of the identification is done** (local BAM
+   branch, recorder ported, `sts3215_12v` registered, procedure written); what remains is the
+   bench: the printed rig, 2.0 kg of weighed load, and under an hour of recording.
 2. **A known-good quadruped on the family's servo — assessed, usable with caveats.**
    [`alarin/smalldog`](https://github.com/alarin/smalldog), checked out read-only at
    `../smalldog` (273 commits, 2026-08-27 → 09-21, one author, no stars or issues):

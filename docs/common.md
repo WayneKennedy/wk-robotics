@@ -107,16 +107,24 @@ to the 7.4 V or different-gearing variants.
 **Established 2026-09-23 from the sources on disk** (`../Open_Duck_Playground`, `../bam`,
 read-only clones), for any project that wants to train a policy on STS3215 joints.
 
-- **The only published actuator model of an STS3215 is Rhoban's BAM fit of the 7.4 V unit**
+- **The published actuator model of an STS3215 is Rhoban's BAM fit of the 7.4 V unit**
   (`bam/params/feetech_sts3215_7_4V/m1…m6.json`; `m6`: kt 1.28 N·m/A, R 2.75 Ω, armature
-  0.0216 kg·m², max velocity 5.10 rad/s). **No 12 V STS3215 fit exists** in BAM, its history
-  or its issues, nor in Open Duck's; BAM's one 12 V entry is the different Waveshare ST3025.
+  0.0216 kg·m², max velocity 5.10 rad/s). **A 12 V fit exists but was never merged:** BAM
+  branch `origin/add_sts3215_12v_params`, one commit by Open Duck's author on 2025-06-16,
+  `params/feetech_sts3215_12V/m1.json` — kt 1.44, R 2.03, armature 0.032, max velocity
+  14.6 rad/s (a value no STS3215 reaches; conditions unrecorded). Exported at kp 32 and 12 V it
+  gives **kp ≈ 44 N·m/rad**, forcerange ±8.5 N·m, damping 1.06. Single unmerged m1, unverified —
+  but it is a second, independent source for the same ~2.5× stiffness as smalldog's
+  measurement below. BAM's only merged 12 V entry is the different Waveshare ST3025.
 - **How it becomes MuJoCo numbers** (`bam/to_mujoco.py`, deprecated but what Open Duck's XML
   embodies): `forcerange = V·kt/R`, `kp = 0.166·32·V·0.97·kt/R` (for the servo's own kp
   register at 32), `damping = viscous + kt²/R` (≈ 95 % back-EMF), `frictionloss =
   friction_base`, `armature`. Open Duck's `sts3215` class: damping 0.56, frictionloss 0.068,
   armature 0.027, forcerange ±3.23 N·m, kp 17.11 (`open_duck_mini_v2_backlash.xml`) or
   **13.37 in the default flat-terrain file** (`open_duck_mini_v2.xml`, lowered 2025-03-23).
+  Those are not exactly today's `m6` (which exports to ±3.43 and kp 17.66); they come from an
+  earlier fit. The pipeline reproduces Rhoban's numbers here: a 2000-trial `m6` refit of their
+  published logs on 2026-09-23 landed within 2 % on kt, R and armature.
   So torque saturates at 11–14° of position error, and kv = 0 matches the runtime's kd = 0.
 - **The fitted torque ceiling is an extrapolation, not a measurement.** BAM has no torque
   sensor (`record.py` logs `load = 0`); kt and R come from position tracking under pendulum
@@ -136,7 +144,8 @@ read-only clones), for any project that wants to train a policy on STS3215 joint
   method not reproduced here, and fitted with D = 32 where the duck runs kd = 0 — so not
   directly comparable. If it holds, the 12 V unit is **2.4× stiffer** than the trained 17.11,
   and the shipped duck policies cannot transfer to 12 V servos at any kp scaling inside the
-  envelope. Unverified; the identification below decides it.
+  envelope. Unverified, but now corroborated by the unmerged BAM branch above: two
+  independent sources put the 12 V unit at 41–44 N·m/rad. The identification below decides it.
 - **What a BAM identification of one 12 V unit needs.** A pendulum on the output horn:
   printed arms of two lengths (0.10 and 0.15 m in Rhoban's set), a bracket, weights to
   about 1.5 kg at 0.15 m (2.2 N·m, to cover the 12 V stall; Rhoban's set peaked at 84 % of
@@ -148,8 +157,16 @@ read-only clones), for any project that wants to train a policy on STS3215 joint
   `record.py` imports `pypot.feetech`, which is not a declared dependency (port ~30 lines to
   rustypot, already a dependency), and `STS3215Actuator` hard-codes `vin = 7.4`, so a
   `sts3215_12v` actuator class is needed, on the pattern of `waveshare/actuator.py`. Then
-  `bam.process --dt 0.005` and `bam.fit --model m6` (CMA-ES; fit time undocumented). Worth
-  contributing back — BAM issue #13 asked for more STS3215 fits.
+  `bam.process --dt 0.005` and `bam.fit --model m6 --trials N` (CMA-ES; **measured
+  2026-09-23: ~40 ms per trial on this host, so the default 100 000 trials is ~65 min per
+  model**; 2000 trials, 79 s, already reproduced Rhoban's `m6` within 2 %). Stall current for
+  the 12 V unit is **2.7 A** ([Feetech](https://www.feetechrc.com/525603.html)), so covering
+  the full 2.94 N·m stall needs **2.0 kg at 0.15 m**; 1.5 kg reaches 75 %. **Both shims are
+  done, 2026-09-23**, on the local branch `local/sts3215-12v` in `../bam` (not pushed): the
+  recorder runs on rustypot and honours `--port`, `--id` and `--arm-mass`; `sts3215_12v` is
+  registered with datasheet starting values; `RECORDING.md` on that branch is the bench
+  procedure. Only the hardware steps remain. Worth contributing back — BAM issue #13 asked
+  for more STS3215 fits.
 - **To retrain Open Duck on the result:** export with `bam.to_mujoco --kp 32 --vin 12`, write
   the five numbers into *both* XMLs, set `max_motor_velocity` in `joystick.py` to the fitted
   value (≈ 4.7 expected), keep the ±10 % kp randomisation, retrain. BAM's own stateful
