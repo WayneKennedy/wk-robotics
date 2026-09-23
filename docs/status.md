@@ -141,17 +141,20 @@ reflex) deferred until step 3 produces a policy that walks in sim. State per ste
    print STLs are not shipped and its CAD toolchain is unpinned. Directly reusable: the
    servo measurement above and its MjSpec actuator substitution (`rl/model.py`), which
    swaps the position actuators for torque motors under a fitted voltage law at load time.
-3. **koala-bot itself — a crude model exists and stands.** koala-bot
-   `hardware/src/koala_hardware/mjcf.py` writes `hardware/sim/koala_walking_crude.xml` from
-   the CAD's joint centres and axes: capsule links, torso box, four Ø32 mm sphere feet at
-   the CAD contact points, twelve position actuators, IMU and foot sites, 1.67 kg (solid
-   upper bounds plus 55 g per servo; no battery or electronics). Loads in MuJoCo 3.14 and
-   stands on four feet for 3 s under zero control. Labelled placeholders: masses, joint
-   ranges (the viewer's shared-slider clearance bounds, not servo limits), and Open Duck's
-   7.4 V actuator. koala-bot's CAD venv builds on this host (16 tests: 15 pass; one errors
-   because the git-ignored vendor servo STEP is absent). **Next:** mesh links from the
-   solids with proper inertia, per-joint limits, the 12 V actuator model from step 1, then a
-   Playground environment on the Open Duck pattern.
+3. **koala-bot itself — the model carries the CAD's links and inertia; it stands.** koala-bot
+   `koala_hardware.mjcf` (koala-bot `6406744`) writes `hardware/sim/koala_walking.xml`: each
+   body is a rigid group from the CAD — its prints unioned with the servo cases at their
+   socket frames — exported as a mesh in the joint frame, with mass, centre and inertia
+   tensor from the BREP solids at an effective density (slicer filament mass where the STL
+   hash matches a recorded slice, solid density otherwise, 55 g box per servo). **1.515 kg**,
+   660 g of it servos; CoM 81 mm ahead of the hip and 145 mm up, inside the four-foot polygon;
+   stands 3 s under zero control (1.5 mm settle, 0.1° tilt). `mjcf_check.py` verifies all of
+   that and renders a view. Collision is four sphere feet and a torso box. **Still
+   placeholder, labelled in the file:** Open Duck's 7.4 V actuator (until step 1's fit);
+   joint ranges are the viewer's shared-slider clearance bounds — no per-joint search exists
+   in the CAD; three prints at solid density (no slice record); no battery, electronics,
+   fasteners, head or cables (koala-bot OQ-04/26). **Next:** a Playground environment on the
+   Open Duck pattern, then train once the 12 V actuator exists.
 
 Upstream checkouts for this thread go beside the family repos: `../Open_Duck_Playground`,
 `../Open_Duck_Mini`, `../bam`, `../smalldog`, read-only.
