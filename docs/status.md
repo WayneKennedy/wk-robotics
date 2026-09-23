@@ -125,7 +125,8 @@ reflex) deferred until step 3 produces a policy that walks in sim. State per ste
    trained stiffness, both unverified. If they hold, the shipped duck policies cannot
    transfer to 12 V servos. **The code side of the identification is done** (local BAM
    branch, recorder ported, `sts3215_12v` registered, procedure written); what remains is the
-   bench: the printed rig, 2.0 kg of weighed load, and under an hour of recording.
+   bench: print [`tools/bam-rig/`](../tools/bam-rig/README.md) (five parts, designed
+   2026-09-23), 2.0 kg of weighed load on an M8 bolt, and under an hour of recording.
 2. **A known-good quadruped on the family's servo — assessed, usable with caveats.**
    [`alarin/smalldog`](https://github.com/alarin/smalldog), checked out read-only at
    `../smalldog` (273 commits, 2026-08-27 → 09-21, one author, no stars or issues):

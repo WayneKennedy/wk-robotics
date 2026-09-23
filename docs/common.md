@@ -146,7 +146,11 @@ read-only clones), for any project that wants to train a policy on STS3215 joint
   and the shipped duck policies cannot transfer to 12 V servos at any kp scaling inside the
   envelope. Unverified, but now corroborated by the unmerged BAM branch above: two
   independent sources put the 12 V unit at 41–44 N·m/rad. The identification below decides it.
-- **What a BAM identification of one 12 V unit needs.** A pendulum on the output horn:
+- **What a BAM identification of one 12 V unit needs.** **The rig is designed:**
+  [`tools/bam-rig/`](../tools/bam-rig/README.md) (2026-09-23) — a printable bracket on
+  koala-bot's measured SO-101 saddle, arms at 0.10 and 0.15 m, and load pots for a
+  kitchen-scale-weighed fill; five support-free parts, clearance-swept ±90°, unprinted. In
+  general, a pendulum on the output horn:
   printed arms of two lengths (0.10 and 0.15 m in Rhoban's set), a bracket, weights to
   about 1.5 kg at 0.15 m (2.2 N·m, to cover the 12 V stall; Rhoban's set peaked at 84 % of
   the 7.4 V stall), ±90° clearance, everything weighed. Five rigs × ~20 logs of ~7 s at

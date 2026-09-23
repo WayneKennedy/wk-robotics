@@ -1,0 +1,13 @@
+[project]
+name = "bam-rig"
+version = "0.1.0"
+description = "Printable BAM identification rig for the 12 V Feetech STS3215: parametric build123d bracket, pendulum arms and load pot"
+requires-python = ">=3.12"
+dependencies = [
+    "build123d==0.11.1",
+    "numpy>=2.0",
+    "trimesh>=5.0",
+]
+
+[tool.uv]
+package = false
