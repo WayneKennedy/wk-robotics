@@ -9,7 +9,7 @@ This is a *state* document, not a log. When an item resolves, delete it; when it
 to one project, move it to that project's repo and leave a link. It is not a transcript —
 see [`AGENTS.md`](../AGENTS.md#what-does-not-belong-here).
 
-**Last reviewed: 2026-09-21.**
+**Last reviewed: 2026-09-23.**
 
 ---
 
@@ -101,6 +101,58 @@ D435i**, and wants each where it gives most value.
   unallocated stock.
 - **The Devastator's camera** (its OQ-09) and which spare Pi 5 it takes (its OQ-13).
 
+### A sim model of koala-bot's four-foot build, via known-good examples — opened 2026-09-23
+
+**Owner's end goal (2026-09-23): a simulation model of koala-bot in its four-foot form
+(DEC-62, footed rear shanks, no wheels), to train a walking policy on the GPU workstation.**
+The route runs through known-good examples first, and includes assessing Open Duck Mini V2
+against the family's 12 V STS3215. Sequence proposed by the assistant, not yet accepted; the
+first pass was run the same day. State per step:
+
+0. **Training stack on the native GPU workstation — done.** MJX trains at ~70 k steps/s
+   with 8192 environments; the pins and pitfalls are in
+   [`common.md`](common.md#rl-training-on-it--which-stack-verified-2026-09-21). **Open:** both
+   Open Duck policies barely walk in the headless harness (recorded there), and Isaac Lab
+   is untried on native.
+1. **Open Duck against the 12 V servo — desk assessment done, identification pending.**
+   Torque and speed are settled and benign; stiffness and damping are not, and only a BAM
+   fit of a 12 V unit settles them — rig, parts in hand and the two code shims are listed in
+   [`common.md`](common.md#the-servo-in-simulation--bams-fit-and-the-12-v-gap), the
+   consequence for the duck in [`ideas.md`](ideas.md#stock-or-modified--the-fork-that-must-be-decided-before-buying).
+   **A third-party measurement of the 12 V unit** (`alarin/smalldog`: 40.9 N·m/rad at 12 V,
+   2.4× the trained stiffness — unverified, different registers) is recorded there too; if
+   it holds, the shipped duck policies cannot transfer to 12 V servos, which makes the
+   identification decisive rather than optional.
+2. **A known-good quadruped on the family's servo — assessed, usable with caveats.**
+   [`alarin/smalldog`](https://github.com/alarin/smalldog), checked out read-only at
+   `../smalldog` (273 commits, 2026-08-27 → 09-21, one author, no stars or issues):
+   12 × STS3215 **12 V**, hip roll → hip pitch → knee per leg, 2.55 kg in its MJCF, prints
+   inside 200 × 200 mm, CadQuery code-CAD, MuJoCo MJCF generated from the CAD, MJX + Brax
+   PPO on `uv` with the same JAX pin, a shipped 30 M-step ONNX policy. **On this host:** its
+   model check passes, the MJCF holds a stance for 3 s, and its MJX environment compiles and
+   steps (a full PPO iteration was not completed within the agent's time cap). **Caveats:**
+   no licence file anywhere but the ROS 2 packages (MIT) — *read and learn, copy nothing*;
+   hardware evidence is the author's dated notes only (walks laminate at ~0.18 m/s,
+   2026-09-17), no video; its shipped policy was trained with the position loop moved to
+   the host at 165 Hz (servos in open-loop PWM), a mode koala-bot is not committed to; the
+   print STLs are not shipped and its CAD toolchain is unpinned. Directly reusable: the
+   servo measurement above and its MjSpec actuator substitution (`rl/model.py`), which
+   swaps the position actuators for torque motors under a fitted voltage law at load time.
+3. **koala-bot itself — a crude model exists and stands.** koala-bot
+   `hardware/src/koala_hardware/mjcf.py` writes `hardware/sim/koala_walking_crude.xml` from
+   the CAD's joint centres and axes: capsule links, torso box, four Ø32 mm sphere feet at
+   the CAD contact points, twelve position actuators, IMU and foot sites, 1.67 kg (solid
+   upper bounds plus 55 g per servo; no battery or electronics). Loads in MuJoCo 3.14 and
+   stands on four feet for 3 s under zero control. Labelled placeholders: masses, joint
+   ranges (the viewer's shared-slider clearance bounds, not servo limits), and Open Duck's
+   7.4 V actuator. koala-bot's CAD venv builds on this host (16 tests: 15 pass; one errors
+   because the git-ignored vendor servo STEP is absent). **Next:** mesh links from the
+   solids with proper inertia, per-joint limits, the 12 V actuator model from step 1, then a
+   Playground environment on the Open Duck pattern.
+
+Upstream checkouts for this thread go beside the family repos: `../Open_Duck_Playground`,
+`../Open_Duck_Mini`, `../bam`, `../smalldog`, read-only.
+
 ### A proven printed build alongside koala-bot — open (2026-09-18)
 
 koala-bot continues at background pace, throttled by the owner's frontier-AI token limits
@@ -133,10 +185,11 @@ so a candidate needing 14 servos is no longer short of them. What that session e
   working answer teaches that with the parts in hand. The owner asked for
   [`tools/design-viewer`](../tools/design-viewer/) for exactly that reason; Open Duck's
   `*_roll_to_pitch` sockets and paired `*_sheet` plates are the parts to study.
-- **`alarin/smalldog` is now the most interesting unchecked candidate.** 12 × ST3215 —
-  the family's exact servo and voltage, and 12 fits within 14 — with a shipped RL policy
-  and MuJoCo sim. Still verified only against its README; licence, maturity, print sizes
-  and whether its policy walks on hardware are all unchecked.
+- **`alarin/smalldog` — checked 2026-09-23** as the sim thread's known-good quadruped
+  ([above](#a-sim-model-of-koala-bots-four-foot-build-via-known-good-examples--opened-2026-09-23)):
+  12 × ST3215 12 V and 12 fits within 14, but **no licence file**, no print STLs shipped,
+  and hardware evidence is the author's notes only. As a *print-and-assemble* candidate it
+  fails the thread's criterion until the author licenses it.
 
 **The owner's two directions for the Orin ground robot (2026-09-18).** LeKiwi is seen as
 a no-regrets immediate build, but too little "wow" for nearly $1,000 of compute and

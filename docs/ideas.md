@@ -480,15 +480,23 @@ Training also hard-caps `max_motor_velocity = 5.24 rad/s` (**50 rpm**) with
      ceiling for a 12 V STS3215. A third cell means a different holder and, almost
      certainly, a modified `battery_pack_lid` and body bay — plus a mass and CoM change.
      **Not yet checked against the CAD.**
-  3. *Control is the real risk.* Whether a 12 V SKU at 12 V presents an effective
-     stiffness within the **±10 %** kp envelope of a 7.4 V SKU at 7.4 V is **unverified** —
-     it depends on how Feetech wound the 12 V variant, and the two SKUs' torque-speed
-     curves have not been compared here. Outside that envelope, the shipped policies do
-     not transfer. The 50 rpm speed cap is the benign direction (a faster servo is simply
-     under-used). **Hypothesis, untested:** scaling the kp register down in proportion to
-     supply voltage may bring the response back inside the envelope. The rigorous route is
-     re-running [BAM](https://github.com/Rhoban/bam) on a 12 V unit, re-fitting the sim
-     actuator model and re-training — a job for [the GPU workstation](common.md#the-gpu-workstation).
+  3. *Control is the real risk, and datasheets cannot settle it.* **Desk assessment
+     2026-09-23** (sources in [`common.md`](common.md#the-servo-in-simulation--bams-fit-and-the-12-v-gap)):
+     the sim servo's torque ceiling, ±3.23 N·m, is a BAM extrapolation 1.7× the 7.4 V
+     datasheet stall (1.91 N·m), and the 12 V unit's 2.94 N·m stall sits 9 % *below* it —
+     so torque is not the problem. Speed is settled and benign: 45 rpm = 4.71 rad/s against
+     the trained 5.24 rad/s cap, so a 12 V build lowers the cap by 10 %. **Stiffness is
+     not settled:** the 12 V winding's datasheet-derived kp is ≈ 15 N·m/rad, but applying
+     the same fit-to-datasheet ratio the 7.4 V unit showed gives ≈ 26, and the trained
+     envelope is 17.11 ±10 % (the flat-terrain XML trains at 13.37 — the two model files
+     differ). The plausible range straddles it, and back-EMF damping is likely about half
+     the fitted value. Upstream's own answer to a 12 V build, in
+     [issue #21](https://github.com/apirrone/Open_Duck_Mini/issues/21) (trembling feet on
+     12 V units at kp 32): the two variants *"require different parameters … given by
+     system identification"*. The route is therefore
+     [BAM identification of one 12 V unit](common.md#the-servo-in-simulation--bams-fit-and-the-12-v-gap),
+     a refitted actuator model, and a retrain on [the GPU workstation](common.md#the-gpu-workstation) —
+     no duck need be printed to answer it, and the fit serves koala-bot's twelve joints too.
 
 **Recommendation (not a decision): buy the 7.4 V servos and build stock first.** The servo
 order is the only part of this fork that is expensive to reverse, and €196 buys a
@@ -500,8 +508,8 @@ only the last requires re-identification and re-training.
 
 **If it is ever picked up**, start from the recommendation above — 7.4 V servos, stock
 build first — rather than re-deriving it. The two open technical questions are the 12 V
-kp envelope and whether a 3S pack fits the battery bay; both are cheap to close and
-neither has been.
+kp envelope (now scoped, above: an identification, not a calculation) and whether a 3S pack
+fits the battery bay; neither has been closed.
 
 ---
 

@@ -96,6 +96,66 @@ provisional screen; a robot's thermal duty cycle still needs measurement. The
 mass specification does not clearly establish which horns/accessories are included;
 weigh the fitted assembly when closing a mass budget. Do not apply these figures
 to the 7.4 V or different-gearing variants.
+**The 7.4 V variant** (Open Duck's, not owned here): 19.5 kg·cm stall = 1.91 N·m,
+5 kg·cm rated, 1/345, 55 g; Feetech's page lists 6–7.4 V and 0.238 s/60° with 2 A stall at
+6 V ([Feetech](https://www.feetechrc.com/74v-19-kgcm-plastic-case-metal-tooth-magnetic-code-double-axis-ttl-series-steering-gear.html),
+[Seeed](https://www.seeedstudio.com/STS3215-19kg-cm-7-4V-Serial-Servo-p-6338.html), read
+2026-09-23). Same case, gear train and bus; different winding and part number.
+
+### The servo in simulation — BAM's fit, and the 12 V gap
+
+**Established 2026-09-23 from the sources on disk** (`../Open_Duck_Playground`, `../bam`,
+read-only clones), for any project that wants to train a policy on STS3215 joints.
+
+- **The only published actuator model of an STS3215 is Rhoban's BAM fit of the 7.4 V unit**
+  (`bam/params/feetech_sts3215_7_4V/m1…m6.json`; `m6`: kt 1.28 N·m/A, R 2.75 Ω, armature
+  0.0216 kg·m², max velocity 5.10 rad/s). **No 12 V STS3215 fit exists** in BAM, its history
+  or its issues, nor in Open Duck's; BAM's one 12 V entry is the different Waveshare ST3025.
+- **How it becomes MuJoCo numbers** (`bam/to_mujoco.py`, deprecated but what Open Duck's XML
+  embodies): `forcerange = V·kt/R`, `kp = 0.166·32·V·0.97·kt/R` (for the servo's own kp
+  register at 32), `damping = viscous + kt²/R` (≈ 95 % back-EMF), `frictionloss =
+  friction_base`, `armature`. Open Duck's `sts3215` class: damping 0.56, frictionloss 0.068,
+  armature 0.027, forcerange ±3.23 N·m, kp 17.11 (`open_duck_mini_v2_backlash.xml`) or
+  **13.37 in the default flat-terrain file** (`open_duck_mini_v2.xml`, lowered 2025-03-23).
+  So torque saturates at 11–14° of position error, and kv = 0 matches the runtime's kd = 0.
+- **The fitted torque ceiling is an extrapolation, not a measurement.** BAM has no torque
+  sensor (`record.py` logs `load = 0`); kt and R come from position tracking under pendulum
+  loads. ±3.23 N·m is 1.7× the 7.4 V datasheet stall, and the fitted kt is 1.6× the
+  8 kg·cm/A the code itself cites. Treat the model as *behaviourally* right for the duck at
+  7.4 V, not as a torque figure.
+- **The 12 V unit against it:** stall 2.94 N·m, 9 % under the sim ceiling; 4.71 rad/s, 10 %
+  under the 5.24 rad/s training cap, so a 12 V build lowers the cap and the motor, not the
+  firmware's 3400 steps/s target rate, then limits. **Stiffness and damping are unknown** —
+  datasheet-derived kp ≈ 15 N·m/rad, or ≈ 26 if the 7.4 V fit's ratio to its datasheet
+  carries over; back-EMF damping ≈ 0.27 vs 0.59. Only an identification settles them.
+- **One third-party measurement of the 12 V unit exists, and it disagrees with the duck's
+  model.** `alarin/smalldog` (`ST3215_STS3215_measured_parameters.md`, `../smalldog`; four
+  units, registers P32 D32 I0, read 2026-09-23): stiffness **40.9 N·m/rad at 12 V**, Coulomb
+  friction 0.18 N·m, rotor inertia 0.0165 kg·m², no-load 3.86 rad/s in position mode (the
+  firmware's profile cap, not the motor), stall ~3.2 N·m peak and ~2.3 held. Single author,
+  method not reproduced here, and fitted with D = 32 where the duck runs kd = 0 — so not
+  directly comparable. If it holds, the 12 V unit is **2.4× stiffer** than the trained 17.11,
+  and the shipped duck policies cannot transfer to 12 V servos at any kp scaling inside the
+  envelope. Unverified; the identification below decides it.
+- **What a BAM identification of one 12 V unit needs.** A pendulum on the output horn:
+  printed arms of two lengths (0.10 and 0.15 m in Rhoban's set), a bracket, weights to
+  about 1.5 kg at 0.15 m (2.2 N·m, to cover the 12 V stall; Rhoban's set peaked at 84 % of
+  the 7.4 V stall), ±90° clearance, everything weighed. Five rigs × ~20 logs of ~7 s at
+  kp ∈ {4, 8, 16, 32}: under an hour on the bench. **In hand:** the two spare 12 V units,
+  the Waveshare Bus Servo Adapter (A) on `/dev/ttyACM0` (which `record.py` hard-codes, with
+  ID 1), the Eventek bench supply, PLA+ for the rig. **Not recorded in stock:** a scale or
+  calibrated masses — one was used on 2026-09-17, instrument unrecorded. **Two code shims:**
+  `record.py` imports `pypot.feetech`, which is not a declared dependency (port ~30 lines to
+  rustypot, already a dependency), and `STS3215Actuator` hard-codes `vin = 7.4`, so a
+  `sts3215_12v` actuator class is needed, on the pattern of `waveshare/actuator.py`. Then
+  `bam.process --dt 0.005` and `bam.fit --model m6` (CMA-ES; fit time undocumented). Worth
+  contributing back — BAM issue #13 asked for more STS3215 fits.
+- **To retrain Open Duck on the result:** export with `bam.to_mujoco --kp 32 --vin 12`, write
+  the five numbers into *both* XMLs, set `max_motor_velocity` in `joystick.py` to the fitted
+  value (≈ 4.7 expected), keep the ±10 % kp randomisation, retrain. BAM's own stateful
+  controllers (`bam.mujoco`, `bam.mjlab`) do not plug into the MJX/JAX Playground; the
+  collapsed position actuator is the practical route. The runtime's written kp must equal
+  the kp the model was identified and exported at.
 
 ### Holdings and electrical operation
 
@@ -1726,10 +1786,43 @@ native system.
 
 #### RL training on it — which stack, verified 2026-09-21
 
-**MuJoCo Playground / MJX: yes. Isaac Lab / Isaac Sim: not under WSL2** — the finding that
-led to the native rebuild of 2026-09-21. On native Ubuntu 24.04, which Isaac Sim's
-requirements list, the WSL2 blocker below no longer applies; **nothing in this section has yet
-been run on the native install.**
+**MuJoCo Playground / MJX: yes, and verified on the native install 2026-09-23 (below).
+Isaac Lab / Isaac Sim: not under WSL2** — the finding that led to the native rebuild of
+2026-09-21. On native Ubuntu 24.04, which Isaac Sim's requirements list, the WSL2 blocker
+below no longer applies; **Isaac has not been tried on the native install.**
+
+**MJX on the 5070 Ti, measured 2026-09-23** — the first MJX number on a 50-series card known
+here. Open Duck Playground's `joystick` task, flat terrain, Brax PPO, **8192 environments**:
+**20.6 M steps in 293 s ≈ 70 k steps/s**, after ~90 s of JIT compilation; 11.5 GB of VRAM
+at `XLA_PYTHON_CLIENT_MEM_FRACTION=0.5`. Reward rose 12 → 190 over the run. Projected from
+that rate, upstream's default 150 M steps is ~36 min and the 300 M headline ~72 min, which
+confirms the order-of-magnitude estimate below. Stack: driver 595.91.07 (open module), JAX
+0.9.2 `cuda12` plugin, MuJoCo and MJX 3.14.0, Brax 0.14.2, `playground` 0.0.5, `uv`. Checkouts
+`../Open_Duck_Playground` (local branch `local/pin-playground` holds the two pins), `../Open_Duck_Mini`, `../bam`,
+`../smalldog`, all read-only upstream clones.
+
+**What it took, so the next run does not rediscover it:**
+
+- **Upstream has no lockfile and its `>=` bounds have floated onto breaking releases.**
+  Two pins are needed: `playground==0.0.5` (`0.2.0` dropped `mujoco_playground._src.collision`,
+  which `joystick.py` imports) and `jax<0.10` (Brax 0.14.2, the newest, still calls
+  `jax.device_put_replicated`, removed in JAX 0.11). `alarin/smalldog` pins the same JAX bound
+  for the same reason.
+- **TensorFlow is in the dependency list for ONNX export only, and it costs at import.** It
+  claims GPU memory alongside JAX, and warns that it was not built for compute capability
+  12.0a and will JIT from PTX (*"30 minutes or longer"* — about 90 s here). With JAX's default
+  75 % preallocation plus TF plus a second job on the card, the run died at its first
+  evaluation with `CUDA_ERROR_OUT_OF_MEMORY`. `XLA_PYTHON_CLIENT_MEM_FRACTION=0.5` and
+  `TF_FORCE_GPU_ALLOW_GROWTH=true` fixed it; one training job per card is the rule.
+- XLA's Triton GEMM autotuner logs `E … xtile_compiler.cc` lines for `sm_120a` fusions at
+  compile time. They are not fatal; training proceeds.
+- **The policies barely walk in this harness, and that is unexplained.** A headless rollout
+  (MuJoCo 3.14, upstream's own observation code, command 0.15 m/s forward) moved the
+  20 M-step policy 0.03 m in 20 s and upstream's shipped `BEST_WALK_ONNX.onnx` 0.39 m in 20 s
+  — upright throughout, but far under the commanded speed. 20 M steps is 7 % of the headline
+  run, so the first is expected; the shipped policy is not. Candidates, none checked: the
+  physics version (the policy predates MuJoCo 3.14; upstream never pinned one) or the
+  harness. Upstream's `mujoco_infer.py` needs a display, which this host's sessions lack.
 
 - **Isaac Sim is unsupported under WSL2, per NVIDIA staff on record**
   ([forum, 2025-10-31](https://forums.developer.nvidia.com/t/is-it-possible-to-run-isaac-sim-in-wsl2/349609)):
@@ -1752,7 +1845,7 @@ been run on the native install.**
 - **Open Duck's 300 M-step run: ~1–1.5 hours, order-of-magnitude only.** Its trainer reuses
   Berkeley Humanoid's config (8192 envs), which the Playground notebook clocks at 17 min for
   150 M steps on a 4090; scaling for steps and card gives about an hour. A third-party
-  walkthrough says "several hours", and **no MJX benchmark on any 50-series card exists**.
+  walkthrough says "several hours". *Measured above, 2026-09-23: ~70 k steps/s, so ~72 min.*
   Rough terrain runs ~4× slower.
 - **The trap that bites after training:** Open Duck's **ONNX export pulls in TensorFlow,
   which does not support Blackwell** — reported on a 5070 Ti in
