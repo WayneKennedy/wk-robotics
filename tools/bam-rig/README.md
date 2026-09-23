@@ -90,9 +90,16 @@ gitignored. Exit status 1 on any failure.
 
 Every horizontal hole is a teardrop (45° roof), which is why the walls print without
 support; the pan-head seats stay flat (a countersink would wedge layers apart — koala
-`fasteners.m3_counterbore`). Material: PLA+ (profile `3d-printing/reference/ender5s1_plaplus.ini`)
-or PETG. Print the **arms at 100 % infill** so they are stiff and the modelled mass estimate
-means something; the bracket with ≥ 4 walls. All five together are one plate's worth
+`fasteners.m3_counterbore`). Material: **PETG** (the printer's standing profile), chosen 2026-09-23 over
+PLA+: the arm hangs up to 2 kg off the horn for a session and the servo warms the pocket at
+stall current, so creep and toughness matter more than stiffness; the servo pocket is the
+SO-101 saddle confirmed to fit in both materials (koala-bot DEC-33). PLA+ also works. The
+script's arm-mass estimate uses PLA's density; the scale replaces it either way. Print the
+**arms at 100 % infill** so they are stiff and the modelled mass estimate means something;
+the bracket with ≥ 4 walls. PETG is less stiff than PLA+, and the arm's droop under load is
+uncalculated: with the full load hanging and the servo torqued off, measure the tip; under a
+millimetre, ignore it. PETG holes print slightly undersize — the M8 hole and lid spigot are
+not measurement-critical, so drill or trim if tight. All five together are one plate's worth
 (bracket 92 × 50, arms 11 × 175, pots 70 × 70).
 
 ## Assembly
