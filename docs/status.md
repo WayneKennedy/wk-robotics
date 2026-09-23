@@ -106,8 +106,9 @@ D435i**, and wants each where it gives most value.
 **Owner's end goal (2026-09-23): a simulation model of koala-bot in its four-foot form
 (DEC-62, footed rear shanks, no wheels), to train a walking policy on the GPU workstation.**
 The route runs through known-good examples first, and includes assessing Open Duck Mini V2
-against the family's 12 V STS3215. Sequence proposed by the assistant, not yet accepted; the
-first pass was run the same day. State per step:
+against the family's 12 V STS3215. **Sequence accepted by the owner 2026-09-23**, with a
+step 4 (sim-to-real: the printed four-foot build, a runtime on the tiers, a protective-fall
+reflex) deferred until step 3 produces a policy that walks in sim. State per step:
 
 0. **Training stack on the native GPU workstation — done.** MJX trains at ~70 k steps/s
    with 8192 environments; the pins and pitfalls are in
