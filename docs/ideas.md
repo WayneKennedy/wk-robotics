@@ -1002,6 +1002,55 @@ question that has since closed.
   pattern — **exhaust what the machine already measures before buying an instrument to measure
   it.**
 
+### A brushless capstan limb — learning exercise
+
+One printed limb driven by brushless motors under field-oriented control (FOC), through a
+printed **capstan drive**: a small drum on the motor shaft, low-stretch braided line
+(Dyneema) wrapped round it, and both ends anchored to a large output drum or sector. The
+point is to learn the actuator style used in current legged robots: **backdrivable,
+zero-backlash, force-sensing joints**. Hobby servos and the 37D gearmotors
+([koala-bot `drive-motor-sizing.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/drive-motor-sizing.md))
+cannot do this. Raised by the owner on 2026-09-24 as a learning exercise, from YouTube builds
+(James Bruton's ODrive projects; Aaed Musa's capstan drives). Neither build has been reviewed
+here.
+
+- **Why capstan:** no teeth to shear on impact, and no backlash (the line is pre-tensioned).
+  Friction is very low, so the motor current is a usable measure of joint torque. **The
+  line is chosen *not* to stretch.** A compliant joint is made compliant in software, by
+  current control, not by the rope.
+- **Limits:** travel is limited, which is fine for a joint but rules out a wheel (a toothed
+  belt is the continuous-rotation equivalent). The output drum grows with the ratio, so one
+  stage stays in single digits. Dyneema creeps under sustained load, so the design needs a
+  tensioner.
+- **Reuses:** the printer; the unused **4× T-Motor F2004 1700KV** (the Bee35 mis-order,
+  [wk-inventory `stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md)).
+  They are weak for the job. Estimates from the KV rating alone, not measured: torque
+  constant ≈ 9.55 / KV ≈ **0.0056 N·m/A**, so about 0.4 N·m for short bursts through an 8:1
+  capstan. Holding torque with no propeller airflow is limited by heat. Enough for a
+  bench-scale single joint swinging a light link. Not enough for a load-bearing leg.
+  - The fixed-wing power set in the same stock list contains an Overlander 4250 800 kV motor.
+    It is larger, but its torque constant is still only ≈ 0.012 N·m/A, estimated from KV.
+    Suitability unverified.
+- **Must be bought, nothing matching in stock** (checked 2026-09-24):
+  - a FOC driver **with phase-current sensing**. Low-resistance drone motors need current
+    sensing, so a gimbal-motor driver without it will not do. Example, not chosen: ST
+    B-G431B-ESC1, which carries its own STM32, so it may not need a separate MCU.
+  - a magnetic absolute encoder (AS5047P / MT6701 class) and a diametric magnet
+  - braided line and bearings
+  - **Drone ESCs (BLHeli/AM32) cannot substitute.** They are sensorless and cannot hold
+    position at zero speed.
+- **Suggested path, not decided:**
+  1. One motor spinning under FOC (SimpleFOC or the driver's own firmware).
+  2. Add the encoder and close a position loop.
+  3. Add the capstan and one link, then try impedance (virtual spring) control.
+  4. A second joint or a stronger motor only after that.
+- **Unresolved:** which driver board; whether the F2004s are enough to learn on or a
+  gimbal-class (wide, low-KV) motor is worth buying; capstan ratio and line diameter.
+- **Budget:** the owner's hobby budget is stretched (2026-09-24), and this competes with
+  nine unfinished projects in
+  [wk-inventory `projects.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/projects.md).
+  **Not committed.**
+
 ---
 
 ## Adding an idea
