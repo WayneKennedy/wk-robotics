@@ -4,7 +4,9 @@ The plate from [wk-hexapod DEC-30](https://github.com/WayneKennedy/wk-hexapod/bl
 one printed part that carries a Slamtec RPLIDAR C1 above any Pi-carrying robot's existing
 standoffs, so one lidar moves between robots. Designed 2026-09-26 to the owner's brief:
 HAT-style plate on the Pi holes, M2.5 clearance, 3 mm, rounded corners; printed standoffs
-raising the lidar 10 mm, counterbored for M2.5×8 screws from below. **Unprinted.**
+raising the lidar 10 mm, counterbored for M2.5×8 screws from below. **Printed and fitted on the hexapod
+2026-09-28** (owner: "success", with a photo). The labelled choices at the foot of this page
+are still unconfirmed one by one.
 
 ```sh
 uv sync && uv run python mount.py     # checks, then build/lidar_mount.stl and .json
