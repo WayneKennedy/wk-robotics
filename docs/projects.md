@@ -35,18 +35,20 @@ under Apache-2.0 in `hardware/vendor/`. The two-tier reflex/intent split describ
 
 ## wk-hexapod
 
-**A ROS 2 autonomous hexapod**, built on Freenove Big Hexapod (FNK0052) hardware with the
-kit's own sensors: an OV5647 Pi camera and an HC-SR04 ultrasonic on the pan/tilt head. A
-RealSense D435i replaced them from 2025-12-31 until 2026-09-18, when it was banked with the
-Orin Nano ([its DEC-25](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)).
+**A ROS 2 autonomous hexapod**, built on Freenove Big Hexapod (FNK0052) hardware. It maps
+and navigates on an RPLIDAR C1 since 2026-09-29
+([its DEC-32](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md)); the kit's
+OV5647 camera and HC-SR04 ultrasonic sit on a pan/tilt head that is disabled. A RealSense
+D435i served from 2025-12-31 until 2026-09-18, when it was banked with the Orin Nano (its
+DEC-25).
 
 | | |
 |---|---|
 | Repo | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |
-| State | Native stack verified end to end with the D435i: on the bench 2026-09-09, a frontier reached on the battery 2026-09-15. Since 2026-09-18 the code needs drivers and a mapping route for the kit's sensors (its OQ-19) |
+| State | A frontier reached on the battery with the D435i, 2026-09-15. On the lidar since 2026-09-29: it stands, maps and plans, and has not yet reached a frontier. Current state and what to check first: [its `AGENTS.md`](https://github.com/WayneKennedy/wk-hexapod/blob/main/AGENTS.md#status) |
 | Compute | Raspberry Pi 5 (8 GB), ROS 2 Jazzy on Ubuntu Server 24.04, **installed natively from apt** (the Docker container was removed 2026-09-09); runs as a `systemd` service |
 | Actuation | 20 hobby servos (18 leg + 2 head) via 2× PCA9685 on I²C — direct from the Pi, no reflex MCU |
-| Sensing | OV5647 Pi camera · HC-SR04 ultrasonic · MPU6050 body IMU · ADS7830 ADC for dual-battery monitoring |
+| Sensing | Slamtec RPLIDAR C1 (navigation's only range sensor) · MPU6050 body IMU · ADS7830 ADC for dual-battery monitoring · OV5647 Pi camera and HC-SR04 ultrasonic on the disabled head, feeding nothing |
 | Reference | [Freenove upstream](https://github.com/Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi) — vendor code, read directly from a sparse clone of `Code/Server/`; recipe, pinned commit and the CC BY-NC-SA caveat in its `docs/references.md` (DEC-20) |
 | Start at | `AGENTS.md`, then `docs/architecture.md` |
 | Licence | `Apache-2.0` (software and docs only; hardware is Freenove's) — adopting the tri-licence is open in its repo, and blocked on OQ-15 there: whether any driver is a derived work of the CC BY-NC-SA vendor code |
