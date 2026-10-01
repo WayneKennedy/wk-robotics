@@ -8,6 +8,8 @@ __pycache__/
 .venv/
 # CAD scratch
 *.FCStd1
+*.rebuilt.FCStd
+cad/freecad/build/
 *.f3d~
 # Local-only reference material (unlicensed third-party images - kept out of the repo)
 docs/inspiration/

@@ -1,0 +1,303 @@
+{
+ "upstream_revision": "eecbe3e0a9ebb23e25ad7b2759b03884c6660903",
+ "freecad_version": "1.1.3",
+ "test_pose_rad": {
+  "shoulder_pan": 0.5,
+  "shoulder_lift": -0.7,
+  "elbow_flex": 0.9,
+  "wrist_flex": 0.4,
+  "wrist_roll": -1.1,
+  "gripper": 0.6
+ },
+ "frames": [
+  {
+   "mesh": "base_motor_holder_so101_v1",
+   "part": "Base_motor_holder_SO101",
+   "source": "../lightweight-v1/step/Base_motor_holder_SO101.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0004,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0022
+   },
+   "volume_cm3": {
+    "step": 23.72,
+    "mesh": 23.72
+   }
+  },
+  {
+   "mesh": "base_so101_v2",
+   "part": "Base_SO101",
+   "source": "reference-sources/95209ec6a3ca06b1ec084f72d9c73324bdcf9d0e17213ef293f45f95a3993288/Base_SO101.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0003,
+    "max": 0.0056
+   },
+   "volume_cm3": {
+    "step": 122.71,
+    "mesh": 122.71
+   }
+  },
+  {
+   "mesh": "base_so101_v2",
+   "part": "Base_SO101",
+   "source": "../lightweight-v1/step/Base_SO101.step",
+   "modified": true,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 3.3125,
+    "max": 9.2235
+   },
+   "volume_cm3": {
+    "step": 100.17,
+    "mesh": 122.71
+   }
+  },
+  {
+   "mesh": "motor_holder_so101_base_v1",
+   "part": "Motor_holder_SO101_Base",
+   "source": "../lightweight-v1/step/Motor_holder_SO101_Base.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0003
+   },
+   "volume_cm3": {
+    "step": 13.31,
+    "mesh": 13.31
+   }
+  },
+  {
+   "mesh": "motor_holder_so101_wrist_v1",
+   "part": "Motor_holder_SO101_Wrist",
+   "source": "../lightweight-v1/step/Motor_holder_SO101_Wrist.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0005
+   },
+   "volume_cm3": {
+    "step": 13.88,
+    "mesh": 13.88
+   }
+  },
+  {
+   "mesh": "moving_jaw_so101_v1",
+   "part": "Moving_Jaw_SO101",
+   "source": "../lightweight-v1/step/Moving_Jaw_SO101.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0053,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0003
+   },
+   "volume_cm3": {
+    "step": 20.69,
+    "mesh": 20.7
+   }
+  },
+  {
+   "mesh": "rotation_pitch_so101_v1",
+   "part": "Rotation_Pitch_SO101",
+   "source": "../lightweight-v1/step/Rotation_Pitch_SO101.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0003
+   },
+   "volume_cm3": {
+    "step": 68.81,
+    "mesh": 68.8
+   }
+  },
+  {
+   "mesh": "sts3215_03a_no_horn_v1",
+   "part": "STS3215_03a",
+   "source": "reference-sources/cacd717c2f22bec856fdace2c3bc9fa58084d54b6e70378eae90562f34df93ef/STS3215_03a.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0
+   },
+   "volume_cm3": {
+    "step": 36.22,
+    "mesh": 35.66
+   }
+  },
+  {
+   "mesh": "sts3215_03a_v1",
+   "part": "STS3215_03a",
+   "source": "reference-sources/cacd717c2f22bec856fdace2c3bc9fa58084d54b6e70378eae90562f34df93ef/STS3215_03a.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0
+   },
+   "volume_cm3": {
+    "step": 36.22,
+    "mesh": 36.22
+   }
+  },
+  {
+   "mesh": "under_arm_so101_v1",
+   "part": "Under_arm_SO101",
+   "source": "../lightweight-v1/step/Under_arm_SO101.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0077
+   },
+   "volume_cm3": {
+    "step": 92.96,
+    "mesh": 92.95
+   }
+  },
+  {
+   "mesh": "upper_arm_so101_v1",
+   "part": "Upper_arm_SO101",
+   "source": "../lightweight-v1/step/Upper_arm_SO101.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0005
+   },
+   "volume_cm3": {
+    "step": 117.42,
+    "mesh": 117.4
+   }
+  },
+  {
+   "mesh": "waveshare_mounting_plate_so101_v2",
+   "part": "WaveShare_Mounting_Plate_SO101",
+   "source": "reference-sources/16510f5aedf04186d34aa279207d0d354d4b08c1d179a46a9974b1430d0702f8/WaveShare_Mounting_Plate_SO101.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0
+   },
+   "volume_cm3": {
+    "step": 9.09,
+    "mesh": 9.09
+   }
+  },
+  {
+   "mesh": "waveshare_mounting_plate_so101_v2",
+   "part": "WaveShare_Mounting_Plate_SO101",
+   "source": "../lightweight-v1/step/WaveShare_Mounting_Plate_SO101.step",
+   "modified": true,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0
+   },
+   "volume_cm3": {
+    "step": 7.12,
+    "mesh": 9.09
+   }
+  },
+  {
+   "mesh": "wrist_roll_follower_so101_v1",
+   "part": "Wrist_Roll_Follower_SO101",
+   "source": "../lightweight-v1/step/Wrist_Roll_Follower_SO101.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0048
+   },
+   "volume_cm3": {
+    "step": 56.62,
+    "mesh": 56.64
+   }
+  },
+  {
+   "mesh": "wrist_roll_pitch_so101_v2",
+   "part": "Wrist_Roll_Pitch_SO101",
+   "source": "../lightweight-v1/step/Wrist_Roll_Pitch_SO101.step",
+   "modified": false,
+   "samples": 400,
+   "bounds_difference_mm": 0.0023,
+   "distance_mm": {
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0037
+   },
+   "volume_cm3": {
+    "step": 32.31,
+    "mesh": 32.29
+   }
+  }
+ ],
+ "kinematics": [
+  {
+   "assembly": "so101-follower",
+   "pose": "zero",
+   "joint_frames": 7,
+   "max_origin_difference_mm": 2.5304201618501834e-13,
+   "max_rotation_element_difference": 9.178025499973971e-16,
+   "invalid_objects": []
+  },
+  {
+   "assembly": "so101-follower",
+   "pose": "test",
+   "joint_frames": 7,
+   "max_origin_difference_mm": 2.5618982671915015e-13,
+   "max_rotation_element_difference": 1.4432899320127035e-15,
+   "invalid_objects": []
+  },
+  {
+   "assembly": "so101-follower-lightweight-v1",
+   "pose": "zero",
+   "joint_frames": 7,
+   "max_origin_difference_mm": 2.5304201618501834e-13,
+   "max_rotation_element_difference": 9.178025499973971e-16,
+   "invalid_objects": []
+  },
+  {
+   "assembly": "so101-follower-lightweight-v1",
+   "pose": "test",
+   "joint_frames": 7,
+   "max_origin_difference_mm": 2.5618982671915015e-13,
+   "max_rotation_element_difference": 1.4432899320127035e-15,
+   "invalid_objects": []
+  }
+ ]
+}

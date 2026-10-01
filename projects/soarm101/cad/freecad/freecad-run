@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
+"""Run a Python script with the installed FreeCAD's headless interpreter.
+
+Usage: ./freecad-run so101_freecad.py [--check] [--only NAME ...]
+       ./freecad-run references/<hash>/<name>.py        # replay one model
+
+Uses FREECAD_CMD, else an installed FreeCADCmd/freecadcmd, else the org.freecad.FreeCAD
+Flatpak. The Flatpak cannot see the host's /tmp: keep every path under the checkout.
+"""
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+if len(sys.argv) < 2:
+    raise SystemExit(__doc__)
+command = os.environ.get("FREECAD_CMD") or shutil.which("FreeCADCmd") or shutil.which("freecadcmd")
+base = [command] if command else ["flatpak", "run", "--command=FreeCADCmd", "org.freecad.FreeCAD"]
+script = str(Path(sys.argv[1]).resolve())
+# FreeCADCmd swallows a script's exit status; report it through os._exit instead.
+code = f"""import os, runpy, sys, traceback
+sys.argv = {[script] + sys.argv[2:]!r}
+try:
+    runpy.run_path(sys.argv[0], run_name="__main__")
+except SystemExit as e:
+    sys.stdout.flush(); sys.stderr.flush()
+    os._exit(e.code if isinstance(e.code, int) else (1 if e.code else 0))
+except BaseException:
+    traceback.print_exc(); sys.stdout.flush(); sys.stderr.flush(); os._exit(1)
+sys.stdout.flush(); sys.stderr.flush(); os._exit(0)
+"""
+raise SystemExit(subprocess.call(base + ["-c", code]))

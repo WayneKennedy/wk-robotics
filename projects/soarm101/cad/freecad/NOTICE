@@ -1,0 +1,22 @@
+SO-101 in FreeCAD, 2026-10-01
+
+Geometry and the URDF are The Robot Studio's SO-101 design in
+TheRobotStudio/SO-ARM100, commit eecbe3e0a9ebb23e25ad7b2759b03884c6660903,
+licensed under Apache-2.0. Upstream: https://github.com/TheRobotStudio/SO-ARM100
+The licence text is ../lightweight-v1/LICENSE.
+
+reference-sources/ holds unmodified upstream files:
+  STEP/SO101/Base_SO101.step
+  STEP/SO101/WaveShare_Mounting_Plate_SO101.step
+  STEP/SO100/STS3215_03a.step
+  Simulation/SO101/so101_new_calib.urdf
+
+The FreeCAD documents under references/ and assemblies/ are conversions of
+that geometry and of the lightweight-v1 STEP set beside this folder, whose two
+modified parts are described in ../lightweight-v1/NOTICE. The conversion
+changes the file format and adds placement from the URDF; it does not change
+any part's shape. They remain under Apache-2.0.
+
+so101_freecad.py, verify.py, freecad-run and the replay scripts are this
+project's software, under MIT. README.md, INDEX.md, manifest.json and
+evidence.json are documentation, under CC-BY-SA-4.0.

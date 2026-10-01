@@ -7,7 +7,7 @@ This project (`projects/soarm101/` in wk-robotics) is a mixed hardware / softwar
 | Area | Covers | Licence | SPDX |
 |------|--------|---------|------|
 | **Original hardware** | New parts, mounts or fixtures designed independently for this build (none yet) | CERN Open Hardware Licence v2 – Strongly Reciprocal | `CERN-OHL-S-2.0` |
-| **Upstream-derived CAD** | `cad/lightweight-v1/step/`, `stl/`, including modified and unchanged SO-101 parts | Apache License 2.0, retained from upstream | `Apache-2.0` |
+| **Upstream-derived CAD** | `cad/lightweight-v1/step/`, `stl/`, including modified and unchanged SO-101 parts; `cad/freecad/` documents and `reference-sources/` ([`NOTICE`](cad/freecad/NOTICE)) | Apache License 2.0, retained from upstream | `Apache-2.0` |
 | **Software** | Host-side scripts and tooling, including CAD generation and analysis scripts | MIT | `MIT` |
 | **Docs & media** | Documentation, diagrams, photographs (`docs/`) | Creative Commons Attribution-ShareAlike 4.0 | `CC-BY-SA-4.0` |
 

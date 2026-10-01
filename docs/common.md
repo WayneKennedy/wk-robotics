@@ -2083,7 +2083,36 @@ a host crash; a Pi does not.
   renders published upstream geometry (URDF plus STLs, or a USD stage) as an orbitable
   assembly and a part-by-part layout with bed and design-rule checks, in the same
   instrument as koala-bot's viewer. Open Duck Mini v2 and Bimo are loaded. Inspection only:
-  it establishes nothing about fit, clearance or strength.
+  it establishes nothing about fit, clearance or strength. **Predates the rule below**; no
+  new design goes into it.
+
+### CAD and viewing: FreeCAD
+
+**FreeCAD is how the family does all design activity, and it is the viewer** (owner,
+2026-10-01). A design is modelled in FreeCAD and shown by opening it in FreeCAD. No web
+viewer, published page or other bespoke viewer is built for a design from now on.
+
+- **Python is the source of truth; the `.FCStd` is generated and checked in beside it.**
+  Three worked precedents, each self-contained in its repository:
+  [wk-drones](https://github.com/WayneKennedy/wk-drones/blob/main/AGENTS.md#cad-in-freecad)
+  (parametric parts, PartDesign, a shared helper),
+  [koala-bot](https://github.com/WayneKennedy/koala-bot/blob/main/docs/freecad.md) (a whole
+  robot: native Part histories, assemblies, frozen STEP references, a hash manifest), and
+  the [SO-ARM101](../projects/soarm101/cad/freecad/README.md) (STEP references and an
+  assembly placed from a URDF and posed from a spreadsheet).
+- **An assistant drives the owner's running FreeCAD through its MCP server**, so the owner
+  watches the model change. FreeCAD 1.1.3 as a Flatpak on the machine this was written
+  on, 2026-10-01: the Flatpak cannot read the host's `/tmp`, so every file it opens or
+  writes must sit under a checkout.
+- **Work on FreeCAD's GUI thread freezes its window**, and GNOME offers to kill a window
+  that does not answer within `org.gnome.mutter check-alive-timeout`: 5 s by default. On
+  that machine it was raised to 120 s on 2026-10-01
+  (`gsettings set org.gnome.mutter check-alive-timeout 120000`), after a 39 s build drew
+  "FreeCAD is not responding" dialogs. Answer **Wait** if one appears. Heavy geometry that
+  touches no open document belongs in a headless FreeCAD process instead.
+- **The viewers that exist are not removed by this rule.** `tools/design-viewer` here and
+  koala-bot's `viewer.py` remain in their repositories; whether to retire them is not
+  decided.
 
 ---
 

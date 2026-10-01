@@ -135,3 +135,18 @@ that was made. Recommendations offered and not accepted are open questions.
   planners that exchange trajectories (OQ-13); the second arm's identity and bus; and the
   shared frame between the two bases.
 
+- **DEC-16 — The arm's CAD is in FreeCAD, generated from Python by koala-bot's approach;
+  FreeCAD is its only viewer.** (Owner, 2026-10-01: "convert all CAD files for SOARM into
+  FreeCAD files", and the family rule of the same day that FreeCAD is how all design
+  activity is done, [`common.md`](../../../docs/common.md#cad-and-viewing-freecad).)
+  [`cad/freecad/`](../cad/freecad/README.md) holds one `.FCStd` per STEP file and two
+  assemblies, each paired with a replay script and listed in a hash manifest, as koala-bot
+  does for its STEP references (its DEC-63). What follows from it: a STEP file has no
+  feature history, so the part documents are frozen solids with recorded provenance, not
+  editable models; the assemblies are placed from upstream's URDF, which the STEP solids
+  were measured to share frames with, so **upstream stays the design authority** (DEC-01)
+  and nothing here re-derives a dimension; upstream's two original parts, its servo model
+  and its URDF are frozen in the folder so a replay needs no sibling checkout. Departures
+  from koala-bot, both to avoid a second copy: the study's eleven STEP files are read in
+  place rather than copied, and the builder is one file. Not decided: remodelling any part
+  natively in FreeCAD, which is what a design change would need.

@@ -112,6 +112,10 @@ idea earns a repo, move it out of `ideas.md` and into the index.
   document should be one hop from the authoritative source.
 - **Docs are written AI-first** — dense, factual, cross-referenced, greppable, on the
   assumption an AI assistant is the primary reader.
+- **FreeCAD is the design tool and the viewer** (owner, 2026-10-01). All design activity
+  happens in FreeCAD, and a model is shown to the owner by opening it there. Do not build a
+  web viewer, a published page or any other bespoke viewer for a design. How:
+  [`docs/common.md`](docs/common.md#cad-and-viewing-freecad).
 
 ## Invoices and order history
 
