@@ -470,8 +470,10 @@ left alone**, for two reasons found on inspection:
   ranges from `docs/design/walking/viewer-endpoints.json`), `mechanical_limits.js` and
   three test files depend on `viewer.py` or its output, and `test_front_cad.py` uses its
   tessellation. Deleting it means rehoming those checks in Python or FreeCAD first.
-- **Its working tree held another session's uncommitted work** (42 changed paths,
-  including `mechanical_limits.js` and `test_viewer_joint_order.cjs`).
+- **Another session's work was in flight in its checkout**: 42 uncommitted paths when
+  inspected, including `mechanical_limits.js` and `test_viewer_joint_order.cjs`, committed
+  later that day and not yet pushed. That work adds `bend_limits.py` and
+  `bend_clearance.py`, so limits may already be moving into Python there.
 
 To remove, in koala-bot's own session: `hardware/src/koala_hardware/viewer.py`,
 `viewer.html`, `pitch_socket_tilt_study.html`, `hardware/vendor/viewer/`,

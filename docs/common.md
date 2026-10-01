@@ -2111,7 +2111,8 @@ viewer, published page or other bespoke viewer is built for a design from now on
   workstation: this repository's `tools/design-viewer` (external designs; deleted, last
   present at commit `216c470`), `3d-printing`'s `tools/cad-viewer` (the 5 Plus CoreXY
   whole-printer STEP; deleted) and koala-bot's `koala_hardware.viewer`. The two user
-  services, their Tailscale routes and the third server were stopped and removed that day.
+  services, their Tailscale routes and the third server were stopped and removed that day;
+  the three upstream clones the design viewer had cached are now sibling checkouts there.
   **koala-bot's viewer code is not yet removed**: its clearance and travel-limit checks
   run through it ([`status.md`](status.md#koala-bots-web-viewer--service-stopped-code-still-to-remove)).
   Not design viewers, and untouched: the hexapod's mission dashboard and the mission
