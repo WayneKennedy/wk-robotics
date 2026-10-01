@@ -425,9 +425,13 @@ policy. Budget it as such from the start.
   stricter ≤ 200 × 200 mm rule, in the orientation upstream ships them, and all 36 are
   watertight. The binding part is **`head.stl` at 199.85 × 197.32 × 59.4 mm** — 0.15 mm
   inside the rule, so treat it as fixed rather than adjustable. Part count confirms
-  upstream's guide exactly: 36 distinct STLs, **51 printed pieces**. Measured with
-  [`tools/design-viewer`](../tools/design-viewer/), which renders this design's assembly
-  and parts from upstream geometry.
+  upstream's guide exactly: 36 distinct STLs, **51 printed pieces**, one pair in TPU.
+- **The assembly, measured 2026-09-21** from `mini_bdx/robots/open_duck_mini_v2/robot.urdf`
+  at its zero pose (131 meshes, metres converted to mm): **430 mm to the head and 518 mm to
+  the antenna tips**, against the ~42 cm upstream quotes. The zero pose holds the legs dead
+  straight, which is not the crouch it walks in. 14 servos; the `wj-wk00-*` meshes are the
+  three STS3215 case shells, 45.22 × 24.72 mm, matching the Waveshare ST3215 drawing in
+  [`common.md`](common.md#actuators). Nothing was checked through joint travel.
 
 #### Stock or modified — the fork that must be decided before buying
 
@@ -600,9 +604,13 @@ pre-order.
 
 **It publishes no CAD.** No STL, no STEP, no URDF; the README still says CAD files are
 coming soon, and the controller PCB has no schematic or gerbers either. The only geometry
-is `IsaacLab/bimo/assets/Bimo.usd`, a simulation asset — viewable through
-[`tools/design-viewer`](../tools/design-viewer/), useful for seeing how an 8-DOF biped
-carries its servos, useless for printing.
+is `IsaacLab/bimo/assets/Bimo.usd`, a simulation asset: useful for seeing how an 8-DOF
+biped carries its servos, useless for printing or measuring. Nine meshes, five distinct.
+**Its units are mislabelled** (found 2026-09-21): the stage declares
+`metersPerUnit = 0.01`, but the data is in metres (hip-to-foot 0.4028, thigh mesh 0.22, on
+a robot documented as 45 cm), so the declared unit gives a 5 mm robot. Read as metres the
+default pose stands 506 mm, more than the quoted 45 cm; **unverified**, most likely a
+straight-legged pose against a standing height, as with the duck.
 
 **Why it is worth knowing anyway — it is the family's only worked example of a policy on
 an MCU.** A custom RP2040 board (bare chip, not a Pico) drives 8 STS servos on one UART at
@@ -612,6 +620,16 @@ loop and blocking sensors across the two cores. Three firmware builds: tethered 
 standalone CPG, and **standalone distilled neural policy**. It also powers an SBC over USB-C
 at 5 V 4 A, so tethered operation is an option rather than the only path. Details of the
 policy route are in [`common.md`](common.md#a-third-regime-the-policy-on-the-mcu).
+
+### SO-101 legs — looked at, not a candidate
+
+[tgreen-fe/so101-legs](https://github.com/tgreen-fe/so101-legs), CC BY-SA 4.0: printable
+humanoid legs on the SO-101's STS3215 servos, five joints a leg by its README's table.
+Looked at on 2026-09-21 for the design's look. Upstream says plainly that **nothing has
+been assembled or walked**, and it had no commits after 2026-09-14. The only full assembly
+is SolidWorks (`nip_v2.SLDASM`). **The repository does not export what its README calls
+current:** no STL exists for `leg_upper_v2`, `leg_lower_v2`, `hip_yaw_L` or `torso`; the
+superseded v1 thigh and shin are the only printable versions.
 
 ---
 

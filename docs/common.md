@@ -1764,8 +1764,7 @@ and nothing is malfunctioning.
 
 **The owner's headless server, up about 99.9 % of the time (owner, 2026-09-21).** All work
 that needs neither the GPU nor a monitor happens here. It is where this repository is
-authored ([Host checkouts](#host-checkouts)), and it hosts the
-[design viewer](../tools/design-viewer/README.md). Machine identifiers are in `wk-inventory`.
+authored ([Host checkouts](#host-checkouts)). Machine identifiers are in `wk-inventory`.
 **The workstation hosts any family service that must always be up.** The GPU workstation
 below is a headed desktop that may be off.
 
@@ -2079,12 +2078,9 @@ a host crash; a Pi does not.
 - **Learned gait** — MuJoCo Playground / MJX for training policies; what runs where is in
   [the third compute regime](#a-third-regime-the-policy-on-the-mcu), and which training
   stack the GPU workstation can run is in [its section](#rl-training-on-it--which-stack-verified-2026-09-21).
-- **Studying someone else's design** — [`tools/design-viewer`](../tools/design-viewer/)
-  renders published upstream geometry (URDF plus STLs, or a USD stage) as an orbitable
-  assembly and a part-by-part layout with bed and design-rule checks, in the same
-  instrument as koala-bot's viewer. Open Duck Mini v2 and Bimo are loaded. Inspection only:
-  it establishes nothing about fit, clearance or strength. **Predates the rule below**; no
-  new design goes into it.
+- **Studying someone else's design** — open its published geometry in FreeCAD
+  ([below](#cad-and-viewing-freecad)). What the retired web viewer found in Open Duck Mini
+  v2, Bimo and the SO-101 legs is in [`ideas.md`](ideas.md#externally-designed-builds).
 
 ### CAD and viewing: FreeCAD
 
@@ -2110,9 +2106,16 @@ viewer, published page or other bespoke viewer is built for a design from now on
   (`gsettings set org.gnome.mutter check-alive-timeout 120000`), after a 39 s build drew
   "FreeCAD is not responding" dialogs. Answer **Wait** if one appears. Heavy geometry that
   touches no open document belongs in a headless FreeCAD process instead.
-- **The viewers that exist are not removed by this rule.** `tools/design-viewer` here and
-  koala-bot's `viewer.py` remain in their repositories; whether to retire them is not
-  decided.
+- **The web viewers were retired on 2026-10-01** (owner). Three existed, all Three.js
+  pages fed by a Python tessellation step, and all three were being served from the
+  workstation: this repository's `tools/design-viewer` (external designs; deleted, last
+  present at commit `216c470`), `3d-printing`'s `tools/cad-viewer` (the 5 Plus CoreXY
+  whole-printer STEP; deleted) and koala-bot's `koala_hardware.viewer`. The two user
+  services, their Tailscale routes and the third server were stopped and removed that day.
+  **koala-bot's viewer code is not yet removed**: its clearance and travel-limit checks
+  run through it ([`status.md`](status.md#koala-bots-web-viewer--service-stopped-code-still-to-remove)).
+  Not design viewers, and untouched: the hexapod's mission dashboard and the mission
+  planner's stream page, which show a running robot.
 
 ---
 

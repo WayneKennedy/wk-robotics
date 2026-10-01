@@ -9,7 +9,7 @@ This is a *state* document, not a log. When an item resolves, delete it; when it
 to one project, move it to that project's repo and leave a link. It is not a transcript —
 see [`AGENTS.md`](../AGENTS.md#what-does-not-belong-here).
 
-**Last reviewed: 2026-09-23.**
+**Last reviewed: 2026-09-23.** (Items added since carry their own dates.)
 
 ---
 
@@ -197,9 +197,10 @@ so a candidate needing 14 servos is no longer short of them. What that session e
 - **A proven build may also be the koala-bot unblocker, not a distraction from it.** The
   koala-bot deadlock is how to mount and retain an STS3215 at a leg root (its
   open-questions, DEC-45's blocked inboard ear screws). Assembling someone else's
-  working answer teaches that with the parts in hand. The owner asked for
-  [`tools/design-viewer`](../tools/design-viewer/) for exactly that reason; Open Duck's
-  `*_roll_to_pitch` sockets and paired `*_sheet` plates are the parts to study.
+  working answer teaches that with the parts in hand. Open Duck's `*_roll_to_pitch`
+  sockets and paired `*_sheet` plates are the parts to study, in FreeCAD
+  ([`common.md`](common.md#cad-and-viewing-freecad)): the web viewer built for this was
+  retired on 2026-10-01.
 - **`alarin/smalldog` — checked 2026-09-23** as the sim thread's known-good quadruped
   ([above](#a-sim-model-of-koala-bots-four-foot-build-via-known-good-examples--opened-2026-09-23)):
   12 × ST3215 12 V and 12 fits within 14, but **no licence file**, no print STLs shipped,
@@ -456,6 +457,29 @@ as it was. Detail in [`common.md` → AI HAT+ 2 and NVMe](common.md#ai-hat-2-and
 The Waveshare switch and the enclosure route are therefore moot for the hexapod; they
 remain on the table for the Devastator, which has no header conflict but needs a Pi 5
 first ([Devastator OQ-06, OQ-13](../projects/devastator/docs/open-questions.md)).
+
+### koala-bot's web viewer — service stopped, code still to remove
+
+**Opened 2026-10-01.** The owner retired every web design viewer in favour of FreeCAD
+([`common.md`](common.md#cad-and-viewing-freecad)). koala-bot's `koala-viewer` service and
+its Tailscale route were stopped and removed on the workstation that day. **Its code was
+left alone**, for two reasons found on inspection:
+
+- **The viewer is also an instrument.** `rear_leg_review.py`, `pitch_socket_tilt_study.py`,
+  `travel_validation.py` (reads `build/viewer/mechanical-limits.json`), `mjcf.py` (joint
+  ranges from `docs/design/walking/viewer-endpoints.json`), `mechanical_limits.js` and
+  three test files depend on `viewer.py` or its output, and `test_front_cad.py` uses its
+  tessellation. Deleting it means rehoming those checks in Python or FreeCAD first.
+- **Its working tree held another session's uncommitted work** (42 changed paths,
+  including `mechanical_limits.js` and `test_viewer_joint_order.cjs`).
+
+To remove, in koala-bot's own session: `hardware/src/koala_hardware/viewer.py`,
+`viewer.html`, `pitch_socket_tilt_study.html`, `hardware/vendor/viewer/`,
+`hardware/systemd/koala-viewer.service`, `hardware/tests/viewer_smoke.py`,
+`rear_viewer_smoke.py`, `test_viewer_joint_order.cjs`, the two HTML studies under
+`docs/design/carrier-orientation/`, and the viewer passages in `docs/freecad.md`,
+`hardware/README.md`, `docs/cad-integrated-design.md` and its DEC-35. The archived
+snapshots under `hardware/freecad/sources/` stay as they are. Delete this item when done.
 
 ### koala-bot links still point at archived repos
 
