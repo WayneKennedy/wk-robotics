@@ -21,8 +21,8 @@ lives upstream.
 within 1.5 cm, capsule self-collision and a bench keep-out on every move, and a wake-up from any
 contact pose. Next: the Teensy 4.1 on micro-ROS (milestone 5). No camera fitted yet; two are on
 order. See
-[`docs/roadmap.md`](docs/roadmap.md) for direction, [`docs/decisions.md`](docs/decisions.md)
-for what is settled, and [`docs/open-questions.md`](docs/open-questions.md) for what is not.
+[*SO-ARM101 Roadmap*](memory://main/robotics/soarm101/so-arm101-roadmap) for direction, [*SO-ARM101 Decisions*](memory://main/robotics/soarm101/so-arm101-decisions)
+for what is settled, and [*SO-ARM101 Open Questions*](memory://main/robotics/soarm101/so-arm101-open-questions) for what is not.
 
 ## What it is
 
@@ -47,15 +47,15 @@ facts need a home that is not a chat transcript and not a private print log.
 | File | Contents |
 |---|---|
 | [`AGENTS.md`](AGENTS.md) | Onboarding for any AI assistant or contributor — **start here** |
-| [`docs/concept.md`](docs/concept.md) | What it is, what it is for, relation to upstream |
-| [`docs/hardware.md`](docs/hardware.md) | Printed parts and their state; electronics in hand |
-| [`docs/servos.md`](docs/servos.md) | The servo map — IDs, joints, how they were set |
-| [`docs/decisions.md`](docs/decisions.md) | Banked decisions — the durable *why* |
-| [`docs/open-questions.md`](docs/open-questions.md) | Unresolved. Never state these as settled |
-| [`docs/roadmap.md`](docs/roadmap.md) | Print → commission → assemble → calibrate → geometry → Teensy on micro-ROS → mount |
-| [`docs/sourcing.md`](docs/sourcing.md) | In hand versus still needed |
-| [`docs/references.md`](docs/references.md) | Upstream, LeRobot, vendor documentation |
-| [`docs/test-log.md`](docs/test-log.md) | What was actually measured |
+| [*SO-ARM101 Concept*](memory://main/robotics/soarm101/so-arm101-concept) | What it is, what it is for, relation to upstream |
+| [*SO-ARM101 Hardware*](memory://main/robotics/soarm101/so-arm101-hardware) | Printed parts and their state; electronics in hand |
+| [*SO-ARM101 Servos*](memory://main/robotics/soarm101/so-arm101-servos) | The servo map — IDs, joints, how they were set |
+| [*SO-ARM101 Decisions*](memory://main/robotics/soarm101/so-arm101-decisions) | Banked decisions — the durable *why* |
+| [*SO-ARM101 Open Questions*](memory://main/robotics/soarm101/so-arm101-open-questions) | Unresolved. Never state these as settled |
+| [*SO-ARM101 Roadmap*](memory://main/robotics/soarm101/so-arm101-roadmap) | Print → commission → assemble → calibrate → geometry → Teensy on micro-ROS → mount |
+| [*SO-ARM101 Sourcing*](memory://main/robotics/soarm101/so-arm101-sourcing) | In hand versus still needed |
+| [*SO-ARM101 References*](memory://main/robotics/soarm101/so-arm101-references) | Upstream, LeRobot, vendor documentation |
+| [*SO-ARM101 Test Log*](memory://main/robotics/soarm101/so-arm101-test-log) | What was actually measured |
 | [`cad/lightweight-v1/`](cad/lightweight-v1/README.md) | Lightweight hypothesis investigation, alternate STEP set and unperformed physical validation |
 
 ## Family

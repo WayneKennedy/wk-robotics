@@ -24,7 +24,7 @@ uses the original design. Upstream
 alongside this repo as a read-only reference. This folder records the build and, since
 the owner's request of 2026-09-21, a local
 [lightweight CAD study](cad/lightweight-v1/README.md). Its alternate parts are unprinted
-prototypes, not the commissioned hardware. Full intent: [`docs/concept.md`](docs/concept.md).
+prototypes, not the commissioned hardware. Full intent: [*SO-ARM101 Concept*](memory://main/robotics/soarm101/so-arm101-concept).
 
 **The design authority is upstream.** For geometry, the bill of materials and the
 assembly order, read the upstream README and the
@@ -33,18 +33,18 @@ them here. This repo records where *this* build departs from or instantiates the
 
 ## Where things live
 
-- [`docs/concept.md`](docs/concept.md) — what it is, what it is for, and how it
+- [*SO-ARM101 Concept*](memory://main/robotics/soarm101/so-arm101-concept) — what it is, what it is for, and how it
   relates to upstream and the rest of the family.
-- [`docs/hardware.md`](docs/hardware.md) — what exists: printed parts and their
+- [*SO-ARM101 Hardware*](memory://main/robotics/soarm101/so-arm101-hardware) — what exists: printed parts and their
   state, electronics in hand.
-- [`docs/servos.md`](docs/servos.md) — **the servo map**: which physical servo has
+- [*SO-ARM101 Servos*](memory://main/robotics/soarm101/so-arm101-servos) — **the servo map**: which physical servo has
   which ID and joint, how it was set, and what calibration will add.
-- [`docs/decisions.md`](docs/decisions.md) — **banked decisions** (the durable *why*).
-- [`docs/open-questions.md`](docs/open-questions.md) — **pending decisions**.
-- [`docs/roadmap.md`](docs/roadmap.md) — print → commission → assemble → calibrate → geometry → Teensy on micro-ROS → mount.
-- [`docs/sourcing.md`](docs/sourcing.md) — in hand versus still needed.
-- [`docs/references.md`](docs/references.md) — upstream, LeRobot, vendor docs.
-- [`docs/test-log.md`](docs/test-log.md) — what was actually measured, dated.
+- [*SO-ARM101 Decisions*](memory://main/robotics/soarm101/so-arm101-decisions) — **banked decisions** (the durable *why*).
+- [*SO-ARM101 Open Questions*](memory://main/robotics/soarm101/so-arm101-open-questions) — **pending decisions**.
+- [*SO-ARM101 Roadmap*](memory://main/robotics/soarm101/so-arm101-roadmap) — print → commission → assemble → calibrate → geometry → Teensy on micro-ROS → mount.
+- [*SO-ARM101 Sourcing*](memory://main/robotics/soarm101/so-arm101-sourcing) — in hand versus still needed.
+- [*SO-ARM101 References*](memory://main/robotics/soarm101/so-arm101-references) — upstream, LeRobot, vendor docs.
+- [*SO-ARM101 Test Log*](memory://main/robotics/soarm101/so-arm101-test-log) — what was actually measured, dated.
 - [`cad/lightweight-v1/`](cad/lightweight-v1/README.md) — mass/servo-load investigation,
   complete prototype STEP set, print meshes, generator and verification results.
   Read the report before treating the parts as mechanically qualified (OQ-19).
@@ -59,7 +59,7 @@ them here. This repo records where *this* build departs from or instantiates the
 ## Placement
 
 Facts true of **more than one** robot live one level up in
-[`docs/common.md`](../../docs/common.md) — the printer and its profiles, the **STS3215
+[*Robotics Common*](memory://main/robotics/robotics-common) — the printer and its profiles, the **STS3215
 servo family and how to configure one**, the bus adapters, power integrity, licensing.
 **Link to them; never copy them.** Facts true of *this arm* alone live in this folder and
 nowhere else.
@@ -68,10 +68,10 @@ Two neighbours hold facts that touch this build:
 
 - [koala-bot](https://github.com/WayneKennedy/koala-bot) shares the servo family and
   vendors the upstream CAD as reference. Its two Amazon test-fit servos became this
-  arm's first two joints ([`docs/servos.md`](docs/servos.md)).
+  arm's first two joints ([*SO-ARM101 Servos*](memory://main/robotics/soarm101/so-arm101-servos)).
 - [Devastator](../devastator/README.md) is the intended
   mobile base. Whether it can carry the arm is its OQ-12 and needs **this arm's real
-  mass** — see [`docs/open-questions.md`](docs/open-questions.md).
+  mass** — see [*SO-ARM101 Open Questions*](memory://main/robotics/soarm101/so-arm101-open-questions).
 
 The print jobs themselves are in the family's private `3d-printing` repo. Their
 *results* — which parts exist and whether they are usable — are recorded here.
@@ -79,8 +79,8 @@ The print jobs themselves are in the family's private `3d-printing` repo. Their
 ## Conventions specific to this project
 
 - **Every servo write is logged.** IDs and calibration are set by script, never by a
-  GUI, and each write lands in [`docs/servos.md`](docs/servos.md) and
-  [`docs/test-log.md`](docs/test-log.md). Label the servo physically at the same time.
+  GUI, and each write lands in [*SO-ARM101 Servos*](memory://main/robotics/soarm101/so-arm101-servos) and
+  [*SO-ARM101 Test Log*](memory://main/robotics/soarm101/so-arm101-test-log). Label the servo physically at the same time.
 - Recommendations offered to the owner and not yet accepted are open questions, not
   decisions.
 - **CAD is FreeCAD, generated from Python** (DEC-16). Change `cad/freecad/so101_freecad.py`
@@ -96,8 +96,8 @@ with a spirit level, a square or a tape; the wrist roll re-homed; the gripper ga
 The model agrees with a tape within 1.5 cm, and the arm wakes itself from any contact pose.
 Direction: LeRobot's role ended at calibration (DEC-14); the runtime is a Teensy 4.1 on
 micro-ROS into ROS 2 (milestone 5; open parts in OQ-09); the endgame is two arms that plan
-against each other's hit boxes (DEC-15). Details: [`docs/roadmap.md`](docs/roadmap.md),
-[`docs/test-log.md`](docs/test-log.md), [`docs/servos.md`](docs/servos.md).
+against each other's hit boxes (DEC-15). Details: [*SO-ARM101 Roadmap*](memory://main/robotics/soarm101/so-arm101-roadmap),
+[*SO-ARM101 Test Log*](memory://main/robotics/soarm101/so-arm101-test-log), [*SO-ARM101 Servos*](memory://main/robotics/soarm101/so-arm101-servos).
 
 **2026-09-17/18 — weighed at 810 g (OQ-04 answered), and its speed ceiling found and moved.**
 The cube now runs clean at **8 cm/s commanded, 7.5 cm/s real, max lag 86 of 150** — up from a

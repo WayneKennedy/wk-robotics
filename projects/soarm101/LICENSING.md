@@ -2,7 +2,7 @@
 
 This project (`projects/soarm101/` in wk-robotics) is a mixed hardware / software / documentation project and uses the
 **tri-licence** standard for open-source hardware, matching the rest of the family
-([`common.md`](../../docs/common.md#licensing)):
+([*Robotics Common*](memory://main/robotics/robotics-common)):
 
 | Area | Covers | Licence | SPDX |
 |------|--------|---------|------|

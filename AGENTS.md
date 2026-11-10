@@ -34,14 +34,15 @@ none of the other three count if the content is wrong.
 **A brand-new assistant, on a first read of this repository alone, must be able to do
 useful work.** That is a hard requirement, not an aspiration. It has three consequences:
 
-- **The repository is the memory.** Anything durable — a decision, a measurement, a
-  constraint, a lesson — lands in a file here. A fact that exists only in one assistant's
-  private memory or chat history does not exist.
+- **Basic Memory is the memory; the repositories hold code and artefacts** (split rule:
+  [*Memory Map*](memory://main/memory-map)). Anything durable — a decision, a measurement, a constraint, a lesson — lands
+  in a Basic Memory note, or in a repo file when it is about the code or an artefact. A
+  fact that exists only in one assistant's private memory or chat history does not exist.
 - **Per-harness memory holds pointers only.** It is legitimate for an assistant's own
-  memory to record *"the printer facts are in `3d-printing/docs/`"* or a preference about
+  memory to record *"the printer facts are in Basic Memory, folder `3d-printing/`"* or a preference about
   how the user likes to be addressed. It is not legitimate for it to hold a project fact,
   a measurement, or a decision. If you find yourself about to save one, write it to a
-  repo file instead and save the pointer.
+  Basic Memory note (or the repo file it is about) instead and save the pointer.
 - **Instructions live in `AGENTS.md`.** Harness-specific files carry only what is
   genuinely useless to other harnesses — a tool name, a slash command, a file-format
   quirk. If a note would help any assistant, it belongs here.
@@ -60,13 +61,13 @@ exists because some things are true of several of them at once.
 Three jobs, and nothing else:
 
 - **Index** — what exists and what state it is in.
-  [`README.md`](README.md) · [`docs/projects.md`](docs/projects.md)
+  [`README.md`](README.md) · [*Robotics Projects*](memory://main/robotics/robotics-projects)
 - **Commonality** — facts true of more than one project: the printer, the actuator
-  family, the compute pattern, the conventions. [`docs/common.md`](docs/common.md)
+  family, the compute pattern, the conventions. [*Robotics Common*](memory://main/robotics/robotics-common)
 - **Idea bench** — candidate projects that do not have a repo yet.
-  [`docs/ideas.md`](docs/ideas.md)
+  [*Robotics Ideas*](memory://main/robotics/robotics-ideas)
 - **Handover** — where things stand and what is in flight, so work can be picked up on
-  another machine or in a new session. [`docs/status.md`](docs/status.md)
+  another machine or in a new session. [*Robotics Status*](memory://main/robotics/robotics-status)
 
 ### The placement rule
 
@@ -75,27 +76,26 @@ Three jobs, and nothing else:
 | The fact is… | It lives… |
 |---|---|
 | True of *one* project | In that project's repo, or its `projects/<name>/` folder here. Link to it from the index; never copy it |
-| True of *several* projects | Here, in `docs/common.md`. The project repos link back |
-| Not yet true of anything | In `docs/ideas.md`, labelled as unbuilt |
-| In flight, spanning projects | In `docs/status.md`, until it resolves or finds a home |
-| An item owned but allocated to no project, or the list of unfinished projects (any hobby) | In the private `wk-inventory` repo: `docs/stock.md`, `docs/projects.md`. Allocating an item moves its row into the project's BOM |
+| True of *several* projects | Here, in [*Robotics Common*](memory://main/robotics/robotics-common). The project repos link back |
+| Not yet true of anything | In [*Robotics Ideas*](memory://main/robotics/robotics-ideas), labelled as unbuilt |
+| In flight, spanning projects | In [*Robotics Status*](memory://main/robotics/robotics-status), until it resolves or finds a home |
+| An item owned but allocated to no project, or the list of unfinished projects (any hobby) | In Basic Memory, folder `inventory/` (private): [*Stock*](memory://main/inventory/stock), [*Project Register*](memory://main/inventory/project-register). Allocating an item moves its row into the project's BOM |
 
 When a fact stops being project-specific, move it here and replace it with a link. When an
-idea earns a repo, move it out of `ideas.md` and into the index.
+idea earns a repo, move it out of [*Robotics Ideas*](memory://main/robotics/robotics-ideas) and into the index.
 
 ### What does not belong here
 
-- **Operational detail of a single machine or robot** in the index or `docs/`. That is the
-  project repo's, or project folder's, job.
+- **Operational detail of a single machine or robot** in the index or the family notes.
+  That belongs to the project's own notes and repo.
 - **Credentials, host names, network addresses, tailnet or LAN identifiers**, or anything
   else that is only in a private repo because it is private. **This repository is
   public.** Not every repo it indexes is — check before quoting. `3d-printing` is
   private: its calibration and material *findings* are fine to reference here, its access
-  and infrastructure details are not. **Machine identifiers go in the private
-  `wk-inventory` repo** ([WayneKennedy/wk-inventory](https://github.com/WayneKennedy/wk-inventory),
-  checked out at `../wk-inventory`); public docs describe a machine by role and link there.
-  The same repo holds the owner's stock list and project register: link to them, never
-  copy rows.
+  and infrastructure details are not. **Machine identifiers go in Basic Memory, folder `inventory/`**
+  (private; the `wk-inventory` repo it came from is frozen since 2026-11-07); public
+  files describe a machine by role and link there. The same folder holds the owner's
+  stock list and project register: link to them, never copy rows.
 - **Chat transcripts.** Distil the conclusion; discard the conversation.
 
 ---
@@ -103,15 +103,15 @@ idea earns a repo, move it out of `ideas.md` and into the index.
 ## Working conventions
 
 - **Check what is owned before suggesting a purchase.** Read the private
-  [wk-inventory `docs/stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md)
+  [*Stock*](memory://main/inventory/stock)
   and search the owner's invoices ([below](#invoices-and-order-history)), and say what was
   found. The full rule, and the owner's goal behind it — fewer unused parts, more finished
   projects — are in
-  [wk-inventory `AGENTS.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/AGENTS.md#before-anything-is-bought).
+  [*Inventory Guide*](memory://main/inventory/inventory-guide).
 - **No project fact lives only in chat.** If a session establishes something durable, it
-  lands in a repo before the session ends — this one, or the project's.
+  lands in Basic Memory, or in the repo file it is about, before the session ends.
 - **Distinguish decided from open.** Never state an open question as settled. Projects
-  here keep the two in separate documents (`decisions.md` vs `open-questions.md`).
+  here keep the two in separate notes (*Decisions* vs *Open Questions*).
 - **Verified beats plausible.** Measured numbers carry the date and the conditions they
   were measured under. An unverified figure is labelled as one.
 - **Cross-link generously.** The value of this repo is its links; a reader landing on any
@@ -121,7 +121,7 @@ idea earns a repo, move it out of `ideas.md` and into the index.
 - **FreeCAD is the design tool and the viewer** (owner, 2026-10-01). All design activity
   happens in FreeCAD, and a model is shown to the owner by opening it there. Do not build a
   web viewer, a published page or any other bespoke viewer for a design. How:
-  [`docs/common.md`](docs/common.md#cad-and-viewing-freecad).
+  [*Robotics Common*](memory://main/robotics/robotics-common).
 
 ## Invoices and order history
 
@@ -149,7 +149,7 @@ harnesses are not connected. No credential, token or address belongs in any repo
 
 ## The projects and where they are
 
-Full detail is in [`docs/projects.md`](docs/projects.md). Two projects are folders here;
+Full detail is in [*Robotics Projects*](memory://main/robotics/robotics-projects). Two projects are folders here;
 the rest are sibling repos checked out alongside this one:
 
 | Project | Path | Repo |
@@ -162,7 +162,7 @@ the rest are sibling repos checked out alongside this one:
 | mission-planner | [`projects/mission-planner/`](projects/mission-planner/AGENTS.md) | In this repo since 2026-09-21; not a robot — the tier above them |
 | wk-hexapod | `../wk-hexapod` | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) — public |
 | wk-drones | `../wk-drones` | [WayneKennedy/wk-drones](https://github.com/WayneKennedy/wk-drones) — public, the aircraft fleet (drones and planes); only its Holybro 10" is a robot |
-| Freenove hexapod (vendor) | `../freenove-hexapod` | [Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi](https://github.com/Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi) — upstream, sparse clone, read-only; recipe in wk-hexapod `docs/operations.md` |
+| Freenove hexapod (vendor) | `../freenove-hexapod` | [Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi](https://github.com/Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi) — upstream, sparse clone, read-only; recipe in [*Hexapod Operations*](memory://main/robotics/hexapod/hexapod-operations) |
 
 Read those repos and folders directly rather than re-deriving their state from this
 index. Each carries its own `AGENTS.md` with what is specific to it; this page is the
@@ -176,6 +176,6 @@ belong to any existing robot yet. Work that belongs to a single project is done 
 project's repo or `projects/` folder, against that project's own `AGENTS.md`.
 
 **Leave the repository complete.** A session ends by writing what it established into a
-file — the index, `docs/common.md`, `docs/ideas.md`, or `docs/status.md` for anything
+file — the index, [*Robotics Common*](memory://main/robotics/robotics-common), [*Robotics Ideas*](memory://main/robotics/robotics-ideas), or [*Robotics Status*](memory://main/robotics/robotics-status) for anything
 still in flight. The next session may be a different assistant on a different machine with
-no history at all; [`docs/status.md`](docs/status.md) is what it reads to carry on.
+no history at all; [*Robotics Status*](memory://main/robotics/robotics-status) is what it reads to carry on.

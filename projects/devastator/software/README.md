@@ -7,7 +7,7 @@ and Nav2 configuration, mission logic.
 checkout, built with `--symlink-install`, as
 [wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) and
 [`projects/orin-perception/`](../../orin-perception/AGENTS.md) do. See
-[*ROS 2 installs are familial*](../../../docs/common.md#ros-2-installs-are-familial).
+[*ROS 2 installs are familial*](memory://main/robotics/robotics-common).
 
 **Contents.** `hailo_perception` — the intent-tier perception node (objects and face
 recognition on an AI HAT+ 2), developed and measured on the family's bench Pi 5, not on the

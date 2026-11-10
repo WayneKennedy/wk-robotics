@@ -15,13 +15,13 @@ DFRobot Devastator; everything above it is being replaced.
 
 **Status:** milestone 0 — the **two Pololu 25D 12 V gearmotors with encoders are fitted**
 (2026-10-14), the Teensy 4.1 and the driver are in hand, and the electronics are designed
-([`docs/electronics.md`](docs/electronics.md)) around a Jetson Orin Nano intent host with a
+([*Devastator Electronics*](memory://main/robotics/devastator/devastator-electronics)) around a Jetson Orin Nano intent host with a
 Pi 5 as the drop-in alternative (DEC-16). First use case: a **SLAM rover** with the Orin,
 the D435i and an RPLIDAR C1 (DEC-19); the arm is deferred. Reflex tier on the lower deck,
 intent on the upper (DEC-18). Next: the owner measures the decks, then the layout is drawn.
-No code written. See [`docs/roadmap.md`](docs/roadmap.md) for direction,
-[`docs/decisions.md`](docs/decisions.md) for what is settled, and
-[`docs/open-questions.md`](docs/open-questions.md) for what is not.
+No code written. See [*Devastator Roadmap*](memory://main/robotics/devastator/devastator-roadmap) for direction,
+[*Devastator Decisions*](memory://main/robotics/devastator/devastator-decisions) for what is settled, and
+[*Devastator Open Questions*](memory://main/robotics/devastator/devastator-open-questions) for what is not.
 
 ## What it is
 
@@ -32,7 +32,7 @@ itself — which is precisely what makes it useful: the cheapest platform on whi
 shared navigation stack and a multi-robot architecture can actually be tested, and the
 intended mobile base for the family's
 [SO-ARM101](https://github.com/TheRobotStudio/SO-ARM100) (deferred, DEC-19; feasibility
-open — [OQ-12](docs/open-questions.md)).
+open — [OQ-12](memory://main/robotics/devastator/devastator-open-questions)).
 
 - Aluminium tracked chassis, **225 × 220 × 108 mm**, 1.3 kg, 3 kg payload.
 - Reflex tier on a 32-bit MCU running **micro-ROS** — encoder decoding, closed-loop
@@ -45,7 +45,7 @@ open — [OQ-12](docs/open-questions.md)).
 ## Why it exists
 
 It was bought, part-built, and abandoned. The build is documented honestly in
-[`docs/concept.md`](docs/concept.md#the-first-build-and-why-it-stopped): it stalled on
+[*Devastator Concept*](memory://main/robotics/devastator/devastator-concept): it stalled on
 battery limitations and over-ambitious scope, with two depth cameras and a Pi 4 mounted
 before the drivetrain worked. **The resurrection inverts that order.** Milestone 1
 carries no perception at all.
@@ -55,16 +55,16 @@ carries no perception at all.
 | File | Contents |
 |---|---|
 | [`AGENTS.md`](AGENTS.md) | Onboarding for any AI assistant or contributor — **start here** |
-| [`docs/concept.md`](docs/concept.md) | What it is, what it is for, and the history |
-| [`docs/architecture.md`](docs/architecture.md) | The three tiers, micro-ROS, power |
-| [`docs/hardware.md`](docs/hardware.md) | Chassis spec and the as-found inventory |
-| [`docs/electronics.md`](docs/electronics.md) | The new build's power tree, wiring, host-agnostic reflex link, layout |
-| [`docs/decisions.md`](docs/decisions.md) | Banked decisions — the durable *why* |
-| [`docs/open-questions.md`](docs/open-questions.md) | Unresolved. Never state these as settled |
-| [`docs/roadmap.md`](docs/roadmap.md) | Milestones 1–3 |
-| [`docs/sourcing.md`](docs/sourcing.md) | What still needs buying |
-| [`docs/references.md`](docs/references.md) | Upstream and prior art |
-| [`docs/test-log.md`](docs/test-log.md) | What was actually measured |
+| [*Devastator Concept*](memory://main/robotics/devastator/devastator-concept) | What it is, what it is for, and the history |
+| [*Devastator Architecture*](memory://main/robotics/devastator/devastator-architecture) | The three tiers, micro-ROS, power |
+| [*Devastator Hardware*](memory://main/robotics/devastator/devastator-hardware) | Chassis spec and the as-found inventory |
+| [*Devastator Electronics*](memory://main/robotics/devastator/devastator-electronics) | The new build's power tree, wiring, host-agnostic reflex link, layout |
+| [*Devastator Decisions*](memory://main/robotics/devastator/devastator-decisions) | Banked decisions — the durable *why* |
+| [*Devastator Open Questions*](memory://main/robotics/devastator/devastator-open-questions) | Unresolved. Never state these as settled |
+| [*Devastator Roadmap*](memory://main/robotics/devastator/devastator-roadmap) | Milestones 1–3 |
+| [*Devastator Sourcing*](memory://main/robotics/devastator/devastator-sourcing) | What still needs buying |
+| [*Devastator References*](memory://main/robotics/devastator/devastator-references) | Upstream and prior art |
+| [*Devastator Test Log*](memory://main/robotics/devastator/devastator-test-log) | What was actually measured |
 
 ## Family
 

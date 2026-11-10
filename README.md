@@ -16,9 +16,9 @@ projects cannot hold individually:
 
 1. **The index** — what exists, what state it is in, where it lives (below).
 2. **The shared substrate** — the printer, the actuators, the compute pattern and
-   the conventions that recur across projects ([`docs/common.md`](docs/common.md)).
+   the conventions that recur across projects ([*Robotics Common*](memory://main/robotics/robotics-common)).
 3. **The idea bench** — candidate future projects, before they earn a repo
-   ([`docs/ideas.md`](docs/ideas.md)).
+   ([*Robotics Ideas*](memory://main/robotics/robotics-ideas)).
 
 Nothing here duplicates a project repo. When a fact belongs to one robot it stays
 in that robot's repo and this one links to it; when a fact is true of several, it
@@ -42,13 +42,13 @@ quad and several planes) are flown by hand and are not robots, so they appear on
 vendor reference is read from Freenove's upstream directly, not from a repo of ours.
 
 Longer per-project notes — hardware, what each one shares, where its documentation
-starts — are in [`docs/projects.md`](docs/projects.md).
+starts — are in [*Robotics Projects*](memory://main/robotics/robotics-projects).
 
 ## What they have in common
 
 The projects are not independent. They share a printer, an actuator family, a
 compute split and a documentation standard; a lesson learned on one is usually
-worth banking for all of them. That is [`docs/common.md`](docs/common.md).
+worth banking for all of them. That is [*Robotics Common*](memory://main/robotics/robotics-common).
 
 The strongest threads today:
 
@@ -63,10 +63,10 @@ The strongest threads today:
 
 | File | Contents |
 |---|---|
-| [`docs/status.md`](docs/status.md) | Where things stand and what is in flight — **read this to pick work up** |
-| [`docs/projects.md`](docs/projects.md) | Per-project detail: hardware, status, entry points |
-| [`docs/common.md`](docs/common.md) | The shared substrate — printing, actuators, compute, power |
-| [`docs/ideas.md`](docs/ideas.md) | Future project candidates and open discussion |
+| [*Robotics Status*](memory://main/robotics/robotics-status) | Where things stand and what is in flight — **read this to pick work up** |
+| [*Robotics Projects*](memory://main/robotics/robotics-projects) | Per-project detail: hardware, status, entry points |
+| [*Robotics Common*](memory://main/robotics/robotics-common) | The shared substrate — printing, actuators, compute, power |
+| [*Robotics Ideas*](memory://main/robotics/robotics-ideas) | Future project candidates and open discussion |
 | [`AGENTS.md`](AGENTS.md) | Onboarding for any AI assistant or contributor — **start here** |
 
 ## For AI assistants
@@ -75,10 +75,10 @@ The onboarding is **provider-neutral**: [`AGENTS.md`](AGENTS.md) is the single e
 point, and the per-harness files (`CLAUDE.md`, `GEMINI.md`) do nothing but point at it.
 This repository — and every project it indexes — is written to stand alone: a brand-new
 assistant reading it cold should be able to do useful work without any prior session
-history. Durable facts live in files, not in an assistant's private memory.
+history. Durable facts live in Basic Memory notes and repo files, not in an assistant's private memory.
 
 ## Licence
 
 The index and `docs/` are documentation, licensed [CC BY-SA 4.0](LICENSE). Each project,
 whether a sibling repo or a folder under `projects/`, carries its own licensing in its
-`LICENSING.md`; see [`docs/common.md`](docs/common.md#licensing) for the pattern.
+`LICENSING.md`; see [*Robotics Common*](memory://main/robotics/robotics-common) for the pattern.

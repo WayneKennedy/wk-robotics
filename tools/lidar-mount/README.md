@@ -1,6 +1,6 @@
 # lidar-mount — RPLIDAR C1 on the Raspberry Pi hole pattern
 
-The plate from [wk-hexapod DEC-30](https://github.com/WayneKennedy/wk-hexapod/blob/main/docs/decisions.md):
+The plate from [wk-hexapod DEC-30](memory://main/robotics/hexapod/hexapod-decisions):
 one printed part that carries a Slamtec RPLIDAR C1 above any Pi-carrying robot's existing
 standoffs, so one lidar moves between robots. Designed 2026-09-26 to the owner's brief:
 HAT-style plate on the Pi holes, M2.5 clearance, 3 mm, rounded corners; printed standoffs

@@ -2,10 +2,10 @@
 
 **Read [`../../AGENTS.md`](../../AGENTS.md) first.** This folder is the Orin Nano half of the
 two-host perception experiment specified in
-[`docs/status.md` → Perception bench](../../docs/status.md#perception-bench-the-same-experiment-on-the-hat-and-on-the-orin-opened-2026-09-19).
+[`docs/status.md` → Perception bench](memory://main/robotics/robotics-status).
 It lives here until the Jetson is allocated to a robot; then it moves to that robot's repo.
 The AI HAT+ 2 half is in [`../devastator/software/`](../devastator/software/README.md).
-Results go in [`docs/common.md`](../../docs/common.md) beside the HAT measurements, not here.
+Results go in [*Robotics Common*](memory://main/robotics/robotics-common) beside the HAT measurements, not here.
 
 ## What it does
 
@@ -39,11 +39,11 @@ engines are built on the Jetson with `trtexec` (`scripts/build-engines.sh`).
 - `ros2_ws/src/orin_perception/` — ament_python package: `perception_node`, `enrol`, `launch/bench.launch.py`,
   `config/realsense.yaml` (colour only, derived from wk-hexapod's), `config/perception.yaml`.
 - `scripts/setup-orin.sh` — host install mirroring wk-hexapod `scripts/ubuntu-setup.sh` (JetPack SDK, ROS 2 Jazzy, realsense2_camera,
-  web_video_server, cuda-python). The host updates from its git checkout ([`common.md` → Host checkouts](../../docs/common.md#host-checkouts)). `scripts/bench-record.sh`
+  web_video_server, cuda-python). The host updates from its git checkout ([`common.md` → Host checkouts](memory://main/robotics/robotics-common)). `scripts/bench-record.sh`
   captures `tegrastats` + `/orin/stats` and summarises.
 - `systemd/` — `orin-perception.service` runs `scripts/launch.sh` at boot, after the clock syncs (the Orin has
   no battery-backed clock). `install.sh` installs it, with a 90 s bound on the sync wait.
-  Both follow [*Robot startup is familial*](../../docs/common.md#robot-startup-is-familial). On stop, the service runs `scripts/stop.sh` to free the camera.
+  Both follow [*Robot startup is familial*](memory://main/robotics/robotics-common). On stop, the service runs `scripts/stop.sh` to free the camera.
 
 ## Models (not checked in — regenerate with `scripts/fetch-models.sh`)
 
@@ -92,4 +92,4 @@ one SSH call and inspect in another.
 
 ## State
 
-See [`docs/status.md`](../../docs/status.md#perception-bench-the-same-experiment-on-the-hat-and-on-the-orin-opened-2026-09-19).
+See [*Robotics Status*](memory://main/robotics/robotics-status).

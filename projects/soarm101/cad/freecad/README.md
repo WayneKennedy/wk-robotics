@@ -6,13 +6,13 @@ approach koala-bot uses for its STEP references
 ([its `docs/freecad.md`](https://github.com/WayneKennedy/koala-bot/blob/main/docs/freecad.md)):
 Python is the source of truth, each `.FCStd` is generated and paired with a replay script,
 and a manifest carries the hashes. FreeCAD is how the family views and designs
-([`common.md`](../../../../docs/common.md#cad-and-viewing-freecad)); there is no other viewer
+([*Robotics Common*](memory://main/robotics/robotics-common)); there is no other viewer
 for this arm.
 
 - [`INDEX.md`](INDEX.md) — every document and its replay script (generated).
 - [`manifest.json`](manifest.json) — the same, with hashes, solid counts, volumes, bounds.
 - [`evidence.json`](evidence.json) — the two checks under [Evidence](#evidence).
-- [Decision](../../docs/decisions.md) — DEC-16.
+- [Decision](memory://main/robotics/soarm101/so-arm101-decisions) — DEC-16.
 
 ## What is here
 
@@ -61,7 +61,7 @@ import runpy; runpy.run_path("<absolute path>/so101_freecad.py", run_name="__mai
 
 A headless build has the same geometry and visibility and no colours. A build takes about
 40 s on the GUI thread, during which FreeCAD does not repaint
-([what the desktop then does](../../../../docs/common.md#cad-and-viewing-freecad)).
+([what the desktop then does](memory://main/robotics/robotics-common)).
 
 A build writes `sources/<sha256>/so101_freecad.py`, the builder frozen at that revision;
 replay scripts import it from there, so an old revision replays after the builder changes.
@@ -107,4 +107,4 @@ copies exist so a replay needs no sibling checkout. Licence: [`NOTICE`](NOTICE).
   `wrist_link` has no horn, and the STEP model has one. The object carries a note.
 - **No screws, bearings, horns as separate parts, cables or electronics**: the URDF has none.
 - **The masses in the URDF are not used.** A solid's volume here says nothing about a
-  printed part's mass; the study's slicing figures do ([report](../lightweight-v1/report.md)).
+  printed part's mass; the study's slicing figures do ([report](memory://main/robotics/soarm101/so-arm101-lightweight-v1-report)).

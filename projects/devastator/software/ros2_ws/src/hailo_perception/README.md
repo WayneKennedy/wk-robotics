@@ -54,7 +54,7 @@ post-processing, identity). Those are the bench numbers.
 ## Running the bench
 
 The workspace lives inside the checkout and is built with `--symlink-install`, as the rest
-of the family does ([*ROS 2 installs are familial*](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#ros-2-installs-are-familial)).
+of the family does ([*ROS 2 installs are familial*](memory://main/robotics/robotics-common)).
 
 ```bash
 # on the bench host, once
@@ -100,7 +100,7 @@ overlap), estimate yaw and pitch from the five landmarks, and save a sample when
 tracked person shows a pose bin the gallery lacks. The risk is an identity swap when two
 people cross, which would enrol the wrong face under a name.
 
-Host prerequisites are recorded in wk-robotics `docs/common.md` → *Operating system for
+Host prerequisites are recorded in wk-robotics [*Robotics Common*](memory://main/robotics/robotics-common) → *Operating system for
 the HAT's Pi 5*: `h10-hailort-pcie-driver` and `h10-hailort` 5.1.1 from Raspberry Pi's
 apt archive, ROS 2 Jazzy from apt, plus `ros-jazzy-usb-cam`, `ros-jazzy-web-video-server`,
 `ros-jazzy-cv-bridge`, `ros-jazzy-vision-msgs`, `libopencv-dev`.
@@ -121,9 +121,9 @@ person score against their own off-angle samples rather than the frontal one. An
 aside with a lesson in it: the owner's 3D-printed InMoov head on a shelf some 3 m away
 is detected as a face intermittently (a ~20-pixel crop, similarity 0.06–0.12 against
 the gallery, so correctly unknown) — the detector does not know a face from a model of
-one, which is the liveness point made for the door-camera idea in `ideas.md`. The two inferences run
+one, which is the liveness point made for the door-camera idea in [*Robotics Ideas*](memory://main/robotics/robotics-ideas). The two inferences run
 back-to-back synchronously in the image callback, so the frame time is their sum; the
-HAT itself benchmarks at 166 fps for YOLOv8s alone (`common.md`). Running the two
+HAT itself benchmarks at 166 fps for YOLOv8s alone ([*Robotics Common*](memory://main/robotics/robotics-common)). Running the two
 models concurrently (`run_async`, or a second thread) is the obvious next step and is
 not done.
 
@@ -173,7 +173,7 @@ already produces exactly that.
   kills that shell: stop the bench with the service or `scripts/stop.sh` (above).
 - Face recognition is verified on one enrolled person and one stranger; the
   thresholds above rest on 29 samples from one camera and one hour. The gallery format is deliberately plain text so the Orin
-  half of the bench (wk-robotics `docs/status.md`) can share galleries.
+  half of the bench (wk-robotics [*Robotics Status*](memory://main/robotics/robotics-status)) can share galleries.
 - The SCRFD score maps may arrive as logits or probabilities depending on the HEF; the
   decoder checks the range each frame and applies a sigmoid only if needed.
 - The HailoRT Python binding does not install on Ubuntu 24.04 (wants Python 3.13), which

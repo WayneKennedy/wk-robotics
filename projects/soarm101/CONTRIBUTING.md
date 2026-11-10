@@ -8,10 +8,10 @@ appropriate licences and validation limits; see the
 [lightweight study](cad/lightweight-v1/README.md).
 
 - **Read first:** [`AGENTS.md`](AGENTS.md) (how this repo is organised) and
-  [`docs/concept.md`](docs/concept.md) (what is being built and why).
+  [*SO-ARM101 Concept*](memory://main/robotics/soarm101/so-arm101-concept) (what is being built and why).
 - **Every artefact meets the 4Cs** — Correct, Complete, Coherent, Concise (see `AGENTS.md`).
-- **Record durable decisions** in [`docs/decisions.md`](docs/decisions.md); raise
-  unresolved ones in [`docs/open-questions.md`](docs/open-questions.md). Never let a
+- **Record durable decisions** in [*SO-ARM101 Decisions*](memory://main/robotics/soarm101/so-arm101-decisions); raise
+  unresolved ones in [*SO-ARM101 Open Questions*](memory://main/robotics/soarm101/so-arm101-open-questions). Never let a
   project fact live only in chat.
 - **Measured beats plausible.** Figures carry the date and the conditions they were taken
   under; an unverified figure is labelled as one.

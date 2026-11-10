@@ -4,7 +4,7 @@ Family tooling: a pendulum test bench in the form Rhoban's BAM asks for
 (`../bam/docs/identification/setup.rst`), sized for the Feetech STS3215 and printable
 on the family printer. It serves koala-bot, the Open Duck question and any future STS
 project; the plan it implements is in
-[`docs/common.md` → "The servo in simulation — BAM's fit, and the 12 V gap"](../../docs/common.md#the-servo-in-simulation--bams-fit-and-the-12-v-gap).
+[`docs/common.md` → "The servo in simulation — BAM's fit, and the 12 V gap"](memory://main/robotics/robotics-common).
 
 **Status 2026-09-23: designed and built in CAD, nothing printed, nothing measured.** Every
 figure below is either copied from koala-bot's measured servo geometry (cited) or a design
@@ -50,7 +50,7 @@ Rig choices, all `[DESIGN]` unless tagged:
 
 | Constant | Value | Why |
 |---|---|---|
-| `ARM_LENGTHS_MM` | 100, 150 | BAM `length` 0.10 / 0.15 m, Rhoban's set (`docs/common.md`) |
+| `ARM_LENGTHS_MM` | 100, 150 | BAM `length` 0.10 / 0.15 m, Rhoban's set ([*Robotics Common*](memory://main/robotics/robotics-common)) |
 | `ARM_W`, `ARM_T` | 25 × 6 | bar section; bending at 2.2 N·m ≈ 4 MPa, far under PLA |
 | `ARM_CLEAR` | 2.0 | bar inner face beyond the drive wall (`WALL_OUT` 22.45) → bar at X 24.45…30.45 |
 | `PAD_R` | 12.5 | hub pad radius; the nearest bracket point is 18.1 mm from the axis, so the pad never reaches it |
@@ -72,7 +72,7 @@ The script builds every part, asserts each is one valid solid, exports `build/*.
 print orientation (+Z up, lowest face at Z = 0), refuses any STL that is not a closed
 positive-volume mesh (koala-bot `meshing.export_mesh`, condensed), screens each mesh for
 downward faces steeper than 45° that are not on the bed (koala-bot `printability.metrics`),
-checks the bed limit (≤ 200 × 200 mm, `docs/common.md`), checks the servo envelope
+checks the bed limit (≤ 200 × 200 mm, [*Robotics Common*](memory://main/robotics/robotics-common)), checks the servo envelope
 (koala `case_boxes()` plus horns) does not intersect the pocket, and sweeps arm + load
 through −90…+90° in 10° steps against bracket, servo and bench, requiring zero
 intersection. It prints the parts table and writes `build/report.json`. `build/` is
@@ -128,7 +128,7 @@ not measurement-critical, so drill or trim if tight. All five together are one p
    in the hub's relief. Reach the heads through the Ø6.4 pockets on the outer face.
 3. Load: M8 bolt or threaded rod (≥ 80 mm for one pot, ≥ 130 mm for two) through the bar
    from the inboard side, head or nut against the bar; pot floor against the bar's outer
-   face; contents; lid; washer; nut. **Not recorded in stock** (wk-inventory `docs/stock.md`
+   face; contents; lid; washer; nut. **Not recorded in stock** ([*Stock*](memory://main/inventory/stock)
    searched 2026-09-23 for M8 hardware, clamps, scales, masses: nothing) — see *Hardware to
    find or buy*.
 4. Push the lip against the bench edge, drive horn overhanging, and clamp the plate inboard
@@ -145,7 +145,7 @@ BAM wants several masses per length. Pot inner volume 156 cm³; approximate fill
 `[GUESS]`, packed bulk densities from general references, not measured:
 lead shot ≈ 7 g/cm³ → ~1.1 kg per pot; steel shot ≈ 4.5 → ~0.7 kg; loose steel nuts and
 bolts ≈ 3–4 → ~0.5 kg; dry sand ≈ 1.5 → ~0.25 kg; rice ≈ 0.8 → ~0.12 kg. Covering the
-12 V unit's full stall needs **2.0 kg at 0.15 m** (`docs/common.md`; 1.5 kg reaches 75 %):
+12 V unit's full stall needs **2.0 kg at 0.15 m** ([*Robotics Common*](memory://main/robotics/robotics-common); 1.5 kg reaches 75 %):
 two pots of lead shot (~2.2 kg) do it, two of steel shot (~1.4 kg) do not. Small
 masses also work as a washer stack on the bolt with no pot. Whatever it is, the scale is
 the source of truth.
@@ -181,7 +181,7 @@ uv run python -m bam.feetech.all_record --mass <kg> --length 0.15 --motor sts321
 uv run python -m bam.process --raw data_raw --logdir data_processed --dt 0.005
 ```
 
-Then `bam.fit --model m6`, and the results go where `docs/common.md` says: a
+Then `bam.fit --model m6`, and the results go where [*Robotics Common*](memory://main/robotics/robotics-common) says: a
 `sts3215_12v` actuator class and params in BAM, and the five MuJoCo numbers via
 `bam.to_mujoco --kp 32 --vin 12`.
 
@@ -217,9 +217,9 @@ Then `bam.fit --model m6`, and the results go where `docs/common.md` says: a
 
 ## Hardware to find or buy
 
-Searched 2026-09-23 per AGENTS.md: wk-inventory `docs/stock.md` and the owner's mailbox.
+Searched 2026-09-23 per AGENTS.md: [*Stock*](memory://main/inventory/stock) and the owner's mailbox.
 **Owned:** 4 × 4-inch quick-grip F clamps (above); M2×5 self-tappers and M3×6 pan heads in
 the servo boxes. **Not found on any invoice or in stock** — check the odds box before
 buying: M8 bolt ≥ 80 mm or threaded rod, 2 M8 nuts, 2 large washers; a kitchen scale (one
-was used on 2026-09-17, instrument unrecorded — `docs/common.md`); dense fill (lead or
+was used on 2026-09-17, instrument unrecorded — [*Robotics Common*](memory://main/robotics/robotics-common)); dense fill (lead or
 steel shot for the top of the range).

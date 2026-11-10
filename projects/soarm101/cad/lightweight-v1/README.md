@@ -6,12 +6,12 @@ establish the proposed 50% reduction or unchanged mechanical performance. The ba
 and board plate are unprinted prototypes; the nine moving/servo-bearing parts in
 this set are byte-identical to upstream STEP files.
 
-- [Detailed investigation and conclusion](report.md)
+- [Detailed investigation and conclusion](memory://main/robotics/soarm101/so-arm101-lightweight-v1-report)
 - [STEP set](step/) — one of each file; millimetres; original CAD coordinates
 - [Print-oriented STL set](stl/) — one of each file; millimetres; placed on Z = 0
 - [Per-part mass comparison](analysis/mass-p3.csv)
 - [Geometry, source hashes and interface checks](analysis/geometry.json)
-- [Printing and validation requirements](report.md#printing-and-physical-validation)
+- [Printing and validation requirements](memory://main/robotics/soarm101/so-arm101-lightweight-v1-report)
 
 ![Original and retained prototype changes](figures/comparison.png)
 
