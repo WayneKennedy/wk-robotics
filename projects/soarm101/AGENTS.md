@@ -1,5 +1,11 @@
 # SO-ARM101 build — agent / contributor onboarding
 
+> **The project record moved to Basic Memory on 2026-11-10** (project `main`, folder `robotics/soarm101/`; start at the
+> *SO-ARM101* note). `README.md`, every file under `docs/` and `cad/lightweight-v1/report.md` are canonical there and
+> frozen here; read them in Basic Memory, not from this checkout. This repo keeps what is about the code and artefacts:
+> this file, `CLAUDE.md`, `GEMINI.md`, `CONTRIBUTING.md`, `LICENSING.md`, `software/`, `cad/freecad/` and the
+> `cad/lightweight-v1/` model, analysis and README.
+
 **Read this first, after the family's [`AGENTS.md`](../../AGENTS.md)** two levels up: the
 4Cs, harness independence, the placement rule and the working conventions are defined
 there once and apply here in full. This file holds only what is true of this project.

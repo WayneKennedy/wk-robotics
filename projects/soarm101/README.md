@@ -1,5 +1,11 @@
 # SO-ARM101 build 🦾
 
+> **The project record moved to Basic Memory on 2026-11-10** (project `main`, folder `robotics/soarm101/`; start at the
+> *SO-ARM101* note). This README, `docs/` — concept, decisions, open questions, roadmap, hardware, servos, sourcing,
+> references, test log — and `cad/lightweight-v1/report.md` are canonical there; the copies here were deleted on 2026-11-10 (git history keeps them). This repo keeps what
+> is about the code and artefacts: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `CONTRIBUTING.md`, `LICENSING.md`,
+> `software/`, `cad/freecad/` (README and INDEX) and `cad/lightweight-v1/` (model, analysis and README).
+
 > A folder in [wk-robotics](../../README.md) since 2026-09-13. Formerly the repository
 > `wk-soarm101`, now archived; its history is carried here. Family-wide facts and rules are
 > one level up; this folder holds only what is true of this project.

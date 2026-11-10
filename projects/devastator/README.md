@@ -1,5 +1,11 @@
 # Devastator 🛞🤖
 
+> **The project record moved to Basic Memory on 2026-11-10** (project `main`, folder `robotics/devastator/`; start at the
+> *Devastator* note). This README and `docs/` — concept, architecture, decisions, open questions, roadmap, hardware,
+> electronics, sourcing, references, test log — are canonical there; the copies here were deleted on 2026-11-10 (git history keeps them). This repo keeps what is about the
+> code and artefacts: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `CONTRIBUTING.md`, `LICENSING.md`, `firmware/`,
+> `software/` (incl. the `hailo_perception` package), `cad/` and `docs/images/`.
+
 > A folder in [wk-robotics](../../README.md) since 2026-09-13. Formerly the repository
 > `wk-devastator`, now archived; its history is carried here. Family-wide facts and rules are
 > one level up; this folder holds only what is true of this project.
@@ -7,9 +13,12 @@
 **A tracked ROS 2 robot, resurrected from a stalled build.** The chassis is a
 DFRobot Devastator; everything above it is being replaced.
 
-**Status:** milestone 0 — deciding and measuring. The chassis and its original
-electronics exist and are documented; the drivetrain has been measured and its
-replacement chosen (**two Pololu 25D 12 V gearmotors with encoders**, on back order, due end of October 2026).
+**Status:** milestone 0 — the **two Pololu 25D 12 V gearmotors with encoders are fitted**
+(2026-10-14), the Teensy 4.1 and the driver are in hand, and the electronics are designed
+([`docs/electronics.md`](docs/electronics.md)) around a Jetson Orin Nano intent host with a
+Pi 5 as the drop-in alternative (DEC-16). First use case: a **SLAM rover** with the Orin,
+the D435i and an RPLIDAR C1 (DEC-19); the arm is deferred. Reflex tier on the lower deck,
+intent on the upper (DEC-18). Next: the owner measures the decks, then the layout is drawn.
 No code written. See [`docs/roadmap.md`](docs/roadmap.md) for direction,
 [`docs/decisions.md`](docs/decisions.md) for what is settled, and
 [`docs/open-questions.md`](docs/open-questions.md) for what is not.
@@ -22,13 +31,15 @@ simplest body in the family — no balance loop, no gait, and no manipulator it 
 itself — which is precisely what makes it useful: the cheapest platform on which the
 shared navigation stack and a multi-robot architecture can actually be tested, and the
 intended mobile base for the family's
-[SO-ARM101](https://github.com/TheRobotStudio/SO-ARM100) (feasibility open —
-[OQ-12](docs/open-questions.md)).
+[SO-ARM101](https://github.com/TheRobotStudio/SO-ARM100) (deferred, DEC-19; feasibility
+open — [OQ-12](docs/open-questions.md)).
 
 - Aluminium tracked chassis, **225 × 220 × 108 mm**, 1.3 kg, 3 kg payload.
 - Reflex tier on a 32-bit MCU running **micro-ROS** — encoder decoding, closed-loop
   wheel velocity, safety watchdog.
-- Intent tier on a Raspberry Pi 5 with the AI HAT+ 2 and one camera, running **ROS 2** — SLAM, Nav2, mission (DEC-15). The family's second intent-tier reference, a step above the hexapod.
+- Intent tier running **ROS 2** — SLAM, Nav2, mission — on a Jetson Orin Nano first, with a
+  Raspberry Pi 5 + AI HAT+ 2 as the drop-in alternative (DEC-16, amending DEC-15); one
+  camera. The family's second intent-tier reference, a step above the hexapod.
 - Designed from the outset to keep working when the coordination tier is unreachable.
 
 ## Why it exists
@@ -47,6 +58,7 @@ carries no perception at all.
 | [`docs/concept.md`](docs/concept.md) | What it is, what it is for, and the history |
 | [`docs/architecture.md`](docs/architecture.md) | The three tiers, micro-ROS, power |
 | [`docs/hardware.md`](docs/hardware.md) | Chassis spec and the as-found inventory |
+| [`docs/electronics.md`](docs/electronics.md) | The new build's power tree, wiring, host-agnostic reflex link, layout |
 | [`docs/decisions.md`](docs/decisions.md) | Banked decisions — the durable *why* |
 | [`docs/open-questions.md`](docs/open-questions.md) | Unresolved. Never state these as settled |
 | [`docs/roadmap.md`](docs/roadmap.md) | Milestones 1–3 |

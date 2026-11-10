@@ -1,5 +1,11 @@
 # wk-robotics — agent / contributor onboarding
 
+> **The project record moved to Basic Memory on 2026-11-10** (project `main`, folder `robotics/`; start at the
+> *Robotics* note). `README.md`, `docs/common.md`, `docs/projects.md`, `docs/status.md`, `docs/ideas.md` and
+> `projects/mission-planner/AGENTS.md` are canonical there; the copies here were deleted on 2026-11-10 (git history keeps them); read them in Basic Memory, not from
+> this checkout. This repo keeps what is about the code and artefacts: this file, `CLAUDE.md`, `GEMINI.md`,
+> `scripts/`, `tools/`, `projects/orin-perception/`, and each project's firmware, software and CAD.
+
 **Read this first.** It is the entry point for any AI assistant or human working in this
 repository, and it is written to be complete on a first read with no prior context.
 

@@ -1,5 +1,12 @@
 # wk-robotics
 
+> **The project record moved to Basic Memory on 2026-11-10** (project `main`, folder `robotics/`; start at the
+> *Robotics* note). This README, `docs/common.md`, `docs/projects.md`, `docs/status.md`, `docs/ideas.md` and
+> `projects/mission-planner/AGENTS.md` are canonical there; the copies here were deleted on 2026-11-10 (git history keeps them), as are each project's record under
+> `robotics/devastator/` and `robotics/soarm101/`. This repo keeps what is about the code and artefacts:
+> `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `scripts/`, `tools/` (bam-rig, lidar-mount), `projects/orin-perception/`,
+> and each project's firmware, software and CAD.
+
 **The table of contents for my robotics and physical-AI work, and the home for
 everything those projects have in common.**
 
@@ -22,7 +29,7 @@ moves here and they link back.
 | Project | What it is | State | Repo |
 |---|---|---|---|
 | **koala-bot** | Self-balancing, knee-wheeled companion robot; first of a printable family | Design phase — CAD started, coupons printed; all V1 servos and drive hardware in hand, nothing assembled | [WayneKennedy/koala-bot](https://github.com/WayneKennedy/koala-bot) (public) |
-| **Devastator** | Tracked ROS 2 robot on a DFRobot Devastator chassis; resurrection of a stalled build | Design record; motors on back order to end of October 2026, driver and MCU in hand, nothing built | [`projects/devastator/`](projects/devastator/README.md) (here; formerly `wk-devastator`) |
+| **Devastator** | Tracked ROS 2 robot on a DFRobot Devastator chassis; resurrection of a stalled build | Motors fitted and Teensy in hand (2026-10-14); electronics designed for a Jetson Orin Nano intent host with a Pi 5 alternative (its DEC-16); layout next, nothing wired | [`projects/devastator/`](projects/devastator/README.md) (here; formerly `wk-devastator`) |
 | **wk-hexapod** | ROS 2 autonomous hexapod on Freenove Big Hexapod hardware | Walks on the battery. Since 2026-09-29 it maps and navigates on an RPLIDAR C1 with `slam_toolbox`, head disabled; no frontier reached on the lidar yet, and its I2C bus needs checking ([its status](https://github.com/WayneKennedy/wk-hexapod/blob/main/AGENTS.md#status)) | [WayneKennedy/wk-hexapod](https://github.com/WayneKennedy/wk-hexapod) (public) |
 | **SO-ARM101** | Standard Open Arm — LeRobot-compatible manipulator, built from the upstream design in its 12 V variant | Assembled, calibrated, moving under script (2026-09-12); teleop and camera next | [`projects/soarm101/`](projects/soarm101/README.md) (here; formerly `wk-soarm101`) · upstream [TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) |
 | **Holybro 10"** | Aerial robot candidate: a Holybro X500 V2 bought to carry a Pi or Jetson wired to its Matek H743 Wing V3 flight controller — the one aircraft in the drone fleet that meets the family's robot criterion | Parts identified from invoices 2026-09-17; nothing flashed, build state unknown | [WayneKennedy/wk-drones](https://github.com/WayneKennedy/wk-drones) `aircraft/holybro-10/` (public) |
