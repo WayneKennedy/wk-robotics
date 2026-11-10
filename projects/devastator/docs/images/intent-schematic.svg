@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" width="1000" height="640" role="img" aria-label="Intent tier schematic: the shared Teensy USB link, lidar, distribution block and LAN in the centre; the Jetson Orin Nano as initial host on the left with its barrel feed and D435i; the Raspberry Pi 5 with AI HAT+ 2 as the alternative host on the right with its 5 V buck" font-family="IBM Plex Sans, system-ui, sans-serif" color="#1d2329"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs><text x="20" y="22" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" text-anchor="start" fill="currentColor" font-weight="600" opacity="1">INTENT TIER — SLAM rover (DEC-19) · the Orin is the initial install (DEC-16); the Pi 5 is the drop-in alternative · upper deck only (DEC-18)</text>
+<rect x="380" y="60" width="240" height="62" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/>
+<text x="390" y="79" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="12" font-weight="600" fill="currentColor">Teensy 4.1 USB link (shared)</text>
+<text x="390" y="94" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">CDC serial · USB ID 16c0:0483</text>
+<text x="390" y="109" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">udev → /dev/reflex · agent --dev /dev/reflex</text>
+<rect x="380" y="150" width="240" height="50" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/>
+<text x="390" y="169" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="12" font-weight="600" fill="currentColor">RPLIDAR C1 (shared, allocated DEC-19)</text>
+<text x="390" y="184" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">USB adapter · 5 V 230 mA from host USB</text>
+<rect x="380" y="400" width="240" height="50" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/>
+<text x="390" y="419" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="12" font-weight="600" fill="currentColor">LAN (shared)</text>
+<text x="390" y="434" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">Wi-Fi · DDS multicast · Zenoh is OQ-05</text>
+<rect x="380" y="540" width="240" height="50" rx="3" fill="none" stroke="#b8432f" stroke-width="1.4"/>
+<text x="390" y="559" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="12" font-weight="600" fill="currentColor">Distribution block (shared)</text>
+<text x="390" y="574" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">12 V nominal · 9.0–12.6 V</text>
+<rect x="40" y="60" width="280" height="400" rx="3" fill="none" stroke="#2f6fb5" stroke-width="1.4"/>
+<text x="50" y="79" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="12" font-weight="600" fill="currentColor">Jetson Orin Nano Super dev kit, 8 GB</text>
+<text x="50" y="94" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">JetPack 7.2.1 · Ubuntu 24.04 · ROS 2 Jazzy</text>
+<text x="50" y="109" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">micro-ROS agent container (arm64)</text>
+<text x="50" y="124" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">orin-perception: TensorRT FP16</text>
+<text x="50" y="139" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">4 × USB 3.2 A (3 A per stack) · M.2 NVMe 1 TB</text>
+<text x="50" y="154" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">25 W mode default · MAXN SUPER available</text>
+<text x="350" y="84" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="1">USB-A</text>
+<text x="350" y="169" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="1">USB-A</text>
+<text x="130" y="452" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="1">USB 3</text>
+<text x="290" y="452" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="1">barrel 5.5×2.5</text>
+<rect x="40" y="480" width="180" height="60" rx="3" fill="none" stroke="#2f6fb5" stroke-width="1.4"/>
+<text x="50" y="499" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">RealSense D435i</text>
+<text x="50" y="514" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">allocated (DEC-19) · USB 3</text>
+<text x="50" y="529" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">in-sensor depth; runs here now</text>
+<rect x="680" y="60" width="280" height="400" rx="3" fill="none" stroke="#2f6fb5" stroke-width="1.4"/>
+<text x="690" y="79" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="12" font-weight="600" fill="currentColor">Raspberry Pi 5, 8 GB — alternative</text>
+<text x="690" y="94" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">Ubuntu 24.04 · ROS 2 Jazzy</text>
+<text x="690" y="109" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">micro-ROS agent container (same image)</text>
+<text x="690" y="124" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">hailo_perception: Hailo-10H</text>
+<text x="690" y="139" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">USB 3 ×2 / USB 2 ×2 · 5 V 5 A input</text>
+<rect x="700" y="290" width="240" height="66" rx="3" fill="none" stroke="#2f6fb5" stroke-width="1.4"/>
+<text x="710" y="309" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">AI HAT+ 2 (Hailo-10H)</text>
+<text x="710" y="324" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">on the PCIe FFC · powered via the header</text>
+<text x="710" y="339" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">NVMe sharing OQ-13 · ≤ 8 W pk (3rd-party)</text>
+<text x="650" y="84" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="1">USB</text>
+<text x="650" y="169" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="1">USB</text>
+<text x="710" y="452" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="1">USB-C 5 V</text>
+<text x="870" y="452" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="1">CSI / USB</text>
+<rect x="780" y="480" width="180" height="60" rx="3" fill="none" stroke="#2f6fb5" stroke-width="1.4" stroke-dasharray="6 4"/>
+<text x="790" y="499" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">Camera — open (OQ-09)</text>
+<text x="790" y="514" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">none chosen for the Pi route</text>
+<polyline points="380,90 320,90" fill="none" stroke="currentColor" stroke-width="2.2" marker-end="url(#arrow)"/>
+<polyline points="620,90 680,90" fill="none" stroke="currentColor" stroke-width="2.2" marker-end="url(#arrow)"/>
+<polyline points="380,175 320,175" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)"/>
+<polyline points="620,175 680,175" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)"/>
+<polyline points="380,112 320,112" fill="none" stroke="#2f6fb5" stroke-width="1.2" stroke-dasharray="5 4"/>
+<polyline points="620,112 680,112" fill="none" stroke="#2f6fb5" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="500" y="136" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="middle" fill="#2f6fb5" opacity="1">dashed: 40-pin UART fallback, 3.3 V, not cabled</text>
+<polyline points="380,425 320,425" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4"/>
+<polyline points="620,425 680,425" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="350" y="418" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="1">Wi-Fi</text>
+<text x="650" y="418" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="1">Wi-Fi</text>
+<polyline points="130,460 130,480" fill="none" stroke="#2f6fb5" stroke-width="1.6" marker-end="url(#arrow)"/>
+<polyline points="870,460 870,480" fill="none" stroke="#2f6fb5" stroke-width="1.6" stroke-dasharray="5 4"/>
+<polyline points="380,565 290,565 290,460" fill="none" stroke="#b8432f" stroke-width="2.2" marker-end="url(#arrow)"/>
+<text x="300" y="510" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="start" fill="#b8432f" opacity="1">9–20 V · ≤ 4.2 A</text>
+<text x="300" y="524" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="start" fill="#b8432f" opacity="1">own 5 A fuse + bulk cap (OQ-14)</text>
+<polyline points="620,565 655,565" fill="none" stroke="#b8432f" stroke-width="2.2"/>
+<rect x="655" y="545" width="100" height="40" rx="3" fill="none" stroke="#b3791a" stroke-width="1.4"/>
+<text x="661" y="560" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="10.5" font-weight="600" fill="currentColor">5 V / 5 A buck</text>
+<text x="661" y="575" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">Pi route only</text>
+<polyline points="710,545 710,460" fill="none" stroke="#b3791a" stroke-width="2.2" marker-end="url(#arrow)"/>
+<text x="698" y="500" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="end" fill="#b3791a" opacity="1">usb_max_current_enable=1</text>
+<text x="698" y="514" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" text-anchor="end" fill="#b3791a" opacity="1">else USB peripherals ≤ 600 mA</text>
+<line x1="40" y1="578" x2="66" y2="578" stroke="currentColor" stroke-width="2.2"/>
+<text x="74" y="581.5" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" text-anchor="start" fill="currentColor" opacity="1">shared, unchanged on a host swap</text>
+<line x1="40" y1="594" x2="66" y2="594" stroke="#2f6fb5" stroke-width="2.2"/>
+<text x="74" y="597.5" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" text-anchor="start" fill="currentColor" opacity="1">changes with the host: board, feed, camera/accelerator</text>
+<line x1="40" y1="610" x2="66" y2="610" stroke="#b8432f" stroke-width="2.2"/>
+<text x="74" y="613.5" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" text-anchor="start" fill="currentColor" opacity="1">pack feed</text>
+<line x1="40" y1="626" x2="66" y2="626" stroke="#b3791a" stroke-width="2.2"/>
+<text x="74" y="629.5" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" text-anchor="start" fill="currentColor" opacity="1">5 V</text>
+<text x="380" y="632" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" text-anchor="start" fill="currentColor" opacity="0.8">Source: wk-robotics projects/devastator/docs/electronics.md · GND common, not drawn</text></svg>

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 330" width="1000" height="330" role="img" aria-label="Power tree: 3S LiPo through main fuse, XT60, master switch to a distribution block, which feeds the unregulated motor bus, the intent-host feed and the 5 V logic buck; the Teensy 3V3 derives from the logic rail" font-family="IBM Plex Sans, system-ui, sans-serif" color="#1d2329"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs><text x="20" y="22" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" text-anchor="start" fill="currentColor" font-weight="600" opacity="1">POWER TREE — 3S LiPo, 12 V nominal · recommendations labelled, OQ-07 / OQ-14 open</text>
+<rect x="20" y="40" width="110" height="58" rx="3" fill="none" stroke="#b8432f" stroke-width="1.4"/>
+<text x="30" y="59" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">3S LiPo</text>
+<text x="30" y="74" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">capacity: OQ-07</text>
+<rect x="150" y="40" width="110" height="58" rx="3" fill="none" stroke="#b8432f" stroke-width="1.4"/>
+<text x="160" y="59" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">Main fuse</text>
+<text x="160" y="74" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">10 A blade (rec.)</text>
+<rect x="280" y="40" width="90" height="58" rx="3" fill="none" stroke="#b8432f" stroke-width="1.4"/>
+<text x="290" y="59" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">XT60</text>
+<text x="290" y="74" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">pack connector</text>
+<rect x="390" y="40" width="130" height="58" rx="3" fill="none" stroke="#b8432f" stroke-width="1.4"/>
+<text x="400" y="59" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">Master switch</text>
+<text x="400" y="74" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">anti-spark if large pack</text>
+<rect x="540" y="40" width="220" height="58" rx="3" fill="none" stroke="#b8432f" stroke-width="1.4"/>
+<text x="550" y="59" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">Distribution block</text>
+<text x="550" y="74" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">12 V nominal · 9.0–12.6 V</text>
+<text x="550" y="89" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">firmware stop at 10.5 V (3.5 V/cell)</text>
+<polyline points="130,69 150,69" fill="none" stroke="#b8432f" stroke-width="2.2" marker-end="url(#arrow)"/>
+<polyline points="260,69 280,69" fill="none" stroke="#b8432f" stroke-width="2.2" marker-end="url(#arrow)"/>
+<polyline points="370,69 390,69" fill="none" stroke="#b8432f" stroke-width="2.2" marker-end="url(#arrow)"/>
+<polyline points="520,69 540,69" fill="none" stroke="#b8432f" stroke-width="2.2" marker-end="url(#arrow)"/>
+<polyline points="650,98 650,130" fill="none" stroke="#b8432f" stroke-width="2.2"/>
+<polyline points="140,130 860,130" fill="none" stroke="#b8432f" stroke-width="2.2"/>
+<polyline points="140,130 140,170" fill="none" stroke="#b8432f" stroke-width="2.2" marker-end="url(#arrow)"/>
+<polyline points="500,130 500,170" fill="none" stroke="#b8432f" stroke-width="2.2" marker-end="url(#arrow)"/>
+<polyline points="860,130 860,170" fill="none" stroke="#b8432f" stroke-width="2.2" marker-end="url(#arrow)"/>
+<rect x="20" y="170" width="240" height="76" rx="3" fill="none" stroke="#b8432f" stroke-width="1.4"/>
+<text x="30" y="189" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">Motor bus — unregulated</text>
+<text x="30" y="204" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">TB9051FTG VIN (4.5–28 V)</text>
+<text x="30" y="219" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">1000–2200 µF ≥ 25 V at the terminals</text>
+<text x="30" y="234" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">2 × 1.8 A stall = 3.6 A sizing</text>
+<rect x="380" y="170" width="240" height="76" rx="3" fill="none" stroke="#2f6fb5" stroke-width="1.4"/>
+<text x="390" y="189" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">Intent-host feed — own fuse</text>
+<text x="390" y="204" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">Orin: barrel 9–20 V, ≤ 4.2 A, 5 A fuse (rec.)</text>
+<text x="390" y="219" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">pack-direct or 12 V buck-boost: OQ-14</text>
+<text x="390" y="234" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">Pi route: 5 V / 5 A buck → USB-C</text>
+<rect x="740" y="170" width="240" height="76" rx="3" fill="none" stroke="#b3791a" stroke-width="1.4"/>
+<text x="750" y="189" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">5 V logic buck, ≥ 3 A (rec.)</text>
+<text x="750" y="204" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">Teensy VIN (VUSB–VIN pads cut)</text>
+<text x="750" y="219" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">driver 5V pin · encoder VCC</text>
+<text x="750" y="234" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">level shifter A side</text>
+<polyline points="860,246 860,275" fill="none" stroke="#1f8a7c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="740" y="275" width="240" height="44" rx="3" fill="none" stroke="#1f8a7c" stroke-width="1.4"/>
+<text x="750" y="294" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="11" font-weight="600" fill="currentColor">Teensy 3V3</text>
+<text x="750" y="309" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="currentColor" opacity="0.85">shield IOREF · shifter B side · BNO085 IMU</text>
+<text x="20" y="275" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" text-anchor="start" fill="currentColor" opacity="1">Pack sense: distribution block → 47 k/10 k → Teensy A6 → /telemetry</text>
+<text x="20" y="292" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" text-anchor="start" fill="currentColor" opacity="1">Budget, first pass: ~40 W continuous (motor cruise estimated), ~8 A sizing case; the arm (milestone 5) is excluded</text>
+<text x="20" y="309" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" text-anchor="start" fill="currentColor" opacity="0.8">Source: wk-robotics projects/devastator/docs/electronics.md</text></svg>
